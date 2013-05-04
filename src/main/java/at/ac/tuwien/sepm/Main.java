@@ -1,0 +1,25 @@
+package at.ac.tuwien.sepm;
+
+import org.apache.log4j.BasicConfigurator;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.awt.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        // Log4J
+        BasicConfigurator.configure();
+
+        final ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ctx.getBean("mainFrame");
+            }
+        });
+    }
+
+}
