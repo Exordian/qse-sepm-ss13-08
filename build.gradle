@@ -1,0 +1,38 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+//apply plugin: 'application'
+
+// mainClassName = "sepm.Main"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    /* Spring */
+    compile 'org.springframework:spring-context:3.2.2.RELEASE'
+    compile 'org.springframework:spring-tx:3.2.2.RELEASE'
+    compile 'org.springframework:spring-jdbc:3.2.2.RELEASE'
+
+    compile 'commons-dbcp:commons-dbcp:1.4'
+    compile 'org.hsqldb:hsqldb:2.2.9'
+    compile 'log4j:log4j:1.2.16'
+
+    /* UI */
+    // compile 'com.miglayout:miglayout:3.7.4'
+
+    /* Testing */
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.springframework:spring-test:3.2.2.RELEASE'
+}
+
+//jar {
+//  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//  manifest { attributes 'Main-Class': mainClassName }
+//}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.5'
+}
