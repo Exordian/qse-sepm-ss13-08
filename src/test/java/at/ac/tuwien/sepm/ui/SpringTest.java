@@ -21,6 +21,6 @@ public class SpringTest {
     @Test
     public void testTest() throws Exception {
         //System.out.println(iTissService.test());
-        lvaDao.test2();
+        lvaDao.test();
     }
 }

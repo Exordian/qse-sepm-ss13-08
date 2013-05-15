@@ -1,9 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-//apply plugin: 'application'
+apply plugin: 'application'
+apply plugin: 'jacoco'
 
-// mainClassName = "sepm.Main"
+mainClassName = "at.ac.tuwien.sepm.Main"
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
 
 repositories {
     mavenCentral()
@@ -33,11 +37,14 @@ dependencies {
 
 }
 
+// Gradle Workaround
+jacocoTestReport.dependsOn(test)
+
 //jar {
 //  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 //  manifest { attributes 'Main-Class': mainClassName }
 //}
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.5'
+    gradleVersion = '1.6'
 }
