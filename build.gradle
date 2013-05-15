@@ -38,7 +38,12 @@ dependencies {
 }
 
 // Gradle Workaround
-jacocoTestReport.dependsOn(test)
+jacocoTestReport {
+    dependsOn(test)
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+}
 
 //jar {
 //  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
