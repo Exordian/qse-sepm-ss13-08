@@ -9,10 +9,11 @@ import java.io.IOException;
 @UI
 public class PropsPanel extends JPanel {
     private Image image;
+    private final Rectangle size = new Rectangle(67, 50, 1119, 639);
 
     public PropsPanel() {
         this.setLayout(null);
-        this.setBounds(160, 122, 930, 518);
+        this.setBounds(size);
         this.setOpaque(false);
 
         try {
@@ -21,16 +22,18 @@ public class PropsPanel extends JPanel {
             e.printStackTrace();
         }
 
-        JLabel text = new JLabel("Eigenschaften");
-        text.setBounds(10,0,100,100);
-        this.add(text);
+        JLabel title = new JLabel("Eigenschaften");
+        title.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+3, (int)(size.getHeight()/2-image.getHeight(null)/2)-42,225,45);
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("SansSerif", Font.PLAIN, 35));
+        this.add(title);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (image != null) {
-            g.drawImage(image, 0, 0, null);
+            g.drawImage(image, (int)((size.getWidth()/2)-(image.getWidth(null)/2)), (int)(size.getHeight()/2-image.getHeight(null)/2), null);
         }
     }
 }
