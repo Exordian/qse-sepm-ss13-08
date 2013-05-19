@@ -19,14 +19,16 @@ public class BGPanel extends JPanel {
     private JButton tab3;
     private JButton tab4;
     private JPanel calPanel;
+    private JPanel studPanel;
     private JPanel propsPanel;
     private Image image;
 
     @Autowired
-    public BGPanel(CalPanel calPanel, PropsPanel propsPanel) {
+    public BGPanel(CalPanel calPanel, StudPanel studPanel, PropsPanel propsPanel) {
         this.setLayout(null);
         this.calPanel = calPanel;
         this.propsPanel = propsPanel;
+        this.studPanel = studPanel;
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
@@ -43,6 +45,7 @@ public class BGPanel extends JPanel {
     private void removeAddedPanels() {
         this.remove(propsPanel);
         this.remove(calPanel);
+        this.remove(studPanel);
     }
 
     private void changeImage(int nmb) {
@@ -58,6 +61,7 @@ public class BGPanel extends JPanel {
                     break;
                 case 3:
                     image = ImageIO.read(new File("src/main/resources/img/stud.jpg"));
+                    this.add(studPanel);
                     break;
                 case 4:
                     image = ImageIO.read(new File("src/main/resources/img/stat.jpg"));
