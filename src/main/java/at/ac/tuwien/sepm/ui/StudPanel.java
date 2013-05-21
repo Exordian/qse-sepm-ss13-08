@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @UI
-public class StudPanel extends JPanel{
-    private final Rectangle size = new Rectangle(67, 50, 1119, 639);
-    private Image image;
+public class StudPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
@@ -104,14 +102,6 @@ public class StudPanel extends JPanel{
             this.repaint();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (image != null) {
-            g.drawImage(image, (int)((size.getWidth()/2)-(image.getWidth(null)/2)), (int)(size.getHeight()/2-image.getHeight(null)/2), null);
         }
     }
 }

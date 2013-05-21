@@ -10,8 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @UI
-public class CalPanel extends JPanel {
-    private Image image;
+public class CalPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
@@ -21,7 +20,6 @@ public class CalPanel extends JPanel {
     private JButton importBtn;
     private JLabel month;
     private JComboBox semester;
-    private final Rectangle size = new Rectangle(67, 50, 1119, 639);
 
     public CalPanel() {
         this.setLayout(null);
@@ -210,14 +208,6 @@ public class CalPanel extends JPanel {
             } else {
                 //troll out loud
             }
-        }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (image != null) {
-            g.drawImage(image, (int)((size.getWidth()/2)-(image.getWidth(null)/2)), (int)(size.getHeight()/2-image.getHeight(null)/2), null);
         }
     }
 }
