@@ -26,3 +26,4 @@
 *.swp
 *.out
 .gradle
+desktop.ini
