@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.service.semesterPlaning.LVAUtil;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class LVATest {
+public class LVAUtilTest {
 
 	@Before
 	public void setUp(){
@@ -20,12 +21,12 @@ public class LVATest {
 	@Test
 	public void testIteratorHasNext(){
 		LVA lva = new LVA();
-		assertFalse(lva.iterator().hasNext());
+		assertFalse(LVAUtil.iterator(lva).hasNext());
 		ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();
 		times.add(new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06")));
 		lva.setTimes(times);
-		assertTrue(lva.iterator().hasNext());
-		assertFalse(lva.iterator(LVA.TIMES_EXAM).hasNext());
+		assertTrue(LVAUtil.iterator(lva).hasNext());
+		assertFalse(LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM).hasNext());
 	}
 	@Test
 	public void testIteratorExamTimes(){
@@ -41,8 +42,8 @@ public class LVATest {
 		
 		lva.setTimes(times1);
 		lva.setTimesUE(times2);
-		Iterator<TimeFrame> iter1 = lva.iterator(LVA.TIMES_EXAM);
-		Iterator<TimeFrame> iter2 = lva.iterator(LVA.TIMES_UE);
+		Iterator<TimeFrame> iter1 = LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM);
+		Iterator<TimeFrame> iter2 = LVAUtil.iterator(lva,LVAUtil.TIMES_UE);
 		assertFalse(iter1.hasNext());
 		assertTrue(iter2.hasNext());
 		assertTrue(iter2.next()==t1);
@@ -74,7 +75,7 @@ public class LVATest {
 		lva.setTimes(times1);
 		lva.setTimesUE(times2);
 		lva.setTimesExam(times3);
-		Iterator<TimeFrame> iter = lva.iterator();
+		Iterator<TimeFrame> iter = LVAUtil.iterator(lva);
 		assertTrue(iter.hasNext());
 		assertTrue(iter.next()==t2);
 		assertTrue(iter.hasNext());
@@ -131,17 +132,17 @@ public class LVATest {
 		
 		lva4.setTimesExam(times1);
 		
-		assertFalse(lva1.intersectAll(lva2));
-		assertFalse(lva2.intersectAll(lva1));
+		assertFalse(LVAUtil.intersectAll(lva1,lva2));
+		assertFalse(LVAUtil.intersectAll(lva2,lva1));
 		
-		assertTrue(lva1.intersectAll(lva3));
-		assertTrue(lva3.intersectAll(lva1));
+		assertTrue(LVAUtil.intersectAll(lva1,lva3));
+		assertTrue(LVAUtil.intersectAll(lva3,lva1));
 		
-		assertFalse(lva1.intersect(lva2,LVA.TIMES_UE));
-		assertFalse(lva2.intersect(lva1,LVA.TIMES_UE));
+		assertFalse(LVAUtil.intersect(lva1,lva2,LVAUtil.TIMES_UE));
+		assertFalse(LVAUtil.intersect(lva2,lva1,LVAUtil.TIMES_UE));
 		
-		assertFalse(lva3.intersect(lva4,LVA.TIMES_EXAM));
-		assertFalse(lva4.intersect(lva3,LVA.TIMES_EXAM));
+		assertFalse(LVAUtil.intersect(lva3,lva4,LVAUtil.TIMES_EXAM));
+		assertFalse(LVAUtil.intersect(lva4,lva3,LVAUtil.TIMES_EXAM));
 		//fail("Not yet implemented");
 	}
 

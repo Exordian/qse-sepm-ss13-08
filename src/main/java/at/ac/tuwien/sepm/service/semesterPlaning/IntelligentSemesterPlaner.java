@@ -20,7 +20,7 @@ public class IntelligentSemesterPlaner {
 		return singleton;
 	}
 	private IntelligentSemesterPlaner(){
-		
+
 	}*/
 	//private Persistance pers;
 	//public void setPersistance(Persistance pers){
@@ -40,9 +40,6 @@ public class IntelligentSemesterPlaner {
 				this.pool.add(lva);
 			}
 		}
-		
-		
-		
 	}
 	public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
 		tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
@@ -63,7 +60,7 @@ public class IntelligentSemesterPlaner {
 		for(int i=index;i<all.size();i++){
 			boolean intersect=false;
 			for(Integer j:chosen){
-				if(all.get(j).getLVA(year, sem).intersectAll(all.get(i).getLVA(year, sem))){
+				if(LVAUtil.intersectAll(all.get(j).getLVA(year, sem),all.get(i).getLVA(year, sem))){
 					intersect=true;
 					break;
 				}
@@ -82,11 +79,11 @@ public class IntelligentSemesterPlaner {
 	private void computeSolution(ArrayList<MetaLVA> all,ArrayList<Integer> chosen,float goalECTS) {
 		float ects=0;
 		for(Integer i:chosen){
-			ects+=all.get(i).getEcts();
+			ects+=all.get(i).getECTS();
 		}
 		float value=0;
 		for(Integer i:chosen){
-			value+=all.get(i).getEcts()*tree.getPriority(all.get(i))/ects;
+			value+=all.get(i).getECTS()*tree.getPriority(all.get(i))/ects;
 		}
 		value-=(goalECTS-ects)*(goalECTS-ects);
 		if(value>solutionValue){

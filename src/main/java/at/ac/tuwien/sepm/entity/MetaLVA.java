@@ -9,61 +9,28 @@ import java.util.List;
 
 
 public class MetaLVA {
-	public static final int NR=0;
-	public static final int NAME=1;
-	public static final int ECTS=2;
-	public static final int PRECURSOR=3;
-	public static final int TYPE=4;
-	public static final int HAS_EXERCISE=5;
-	public static final int PRIORITY=6;
-	public static final int SEMESTERS_OFFERED=7;
-	public static final int LVAS=8;
-	public static final int COMPLETED=9;
-	
-	private boolean[] isSet = new boolean[10];
-	
 	
 	
 	private String nr;
 	private String name;
-	private float ects;
+	private float ects=-1;
 	private ArrayList<MetaLVA> precursor = new ArrayList<MetaLVA>();
 	private LvaType type;
-	private boolean hasExercise;
-	private float priority;
+	//private boolean hasExercise;
+	private float priority=-1;
 	private Semester semestersOffered;
 	
 	private ArrayList<LVA> lvas;
 	private HashMap<Integer,LVA> lvasMap;
 	
 	private boolean completed;
-	
-	public MetaLVA(){
-	}
-	/**
-	 * setPrecursor must be called before calling addPrecursor
-	 * @param other the MetaLVA to add
-	 */
-	public void addPrecursor(MetaLVA other){
-		if(!isSet(this.PRECURSOR)){
-			throw new RuntimeException("setPrecursor() must be called before addPrecursor.");
-		}
-		precursor.add(other);
-	}
-	
-	public boolean isSet(int attributeID){
-		return isSet[attributeID];
-	}
-	public void unset(int attributeID){
-		isSet[attributeID]=false;
-	}
+
 	public String getNr() {
 		return nr;
 	}
 
 	public void setNr(String nr) {
 		this.nr = nr;
-		isSet[this.NR]=true;
 	}
 
 	public String getName() {
@@ -72,16 +39,14 @@ public class MetaLVA {
 
 	public void setName(String name) {
 		this.name = name;
-		isSet[this.NAME]=true;
 	}
 
-	public float getEcts() {
+	public float getECTS() {
 		return ects;
 	}
 
 	public void setECTS(float ects) {
 		this.ects = ects;
-		isSet[this.ECTS]=true;
 	}
 
 	public ArrayList<MetaLVA> getPrecursor() {
@@ -90,7 +55,6 @@ public class MetaLVA {
 
 	public void setPrecursor(List<MetaLVA> precursors) {
 		this.precursor = new ArrayList<MetaLVA>(precursors);
-		isSet[this.PRECURSOR]=true;
 	}
 
 	public LvaType getType() {
@@ -99,17 +63,15 @@ public class MetaLVA {
 
 	public void setType(LvaType type) {
 		this.type = type;
-		isSet[this.TYPE]=true;
 	}
 
-	public boolean hasExercise() {
+	/*public boolean hasExercise() {
 		return hasExercise;
 	}
 
 	public void setHasExercise(boolean hasExercise) {
 		this.hasExercise = hasExercise;
-		isSet[this.HAS_EXERCISE]=true;
-	}
+	}*/
 
 	public float getPriority() {
 		return priority;
@@ -117,29 +79,39 @@ public class MetaLVA {
 
 	public void setPriority(float priority) {
 		this.priority = priority;
-		isSet[PRIORITY]=true;
 	}
 
 	public ArrayList<LVA> getLVAs() {
 		return lvas;
 	}
 
+    /**
+     * also sets the lvas MetaLVA to this, if it is null.
+     * @param lvas the List of LVAs, which are part of this MetaLVA
+     */
 	public void setLVAs(List<LVA> lvas) {
 		this.lvas = new ArrayList<LVA>(lvas);
-		isSet[LVAS]=true;
-		lvasMap= new HashMap<Integer,LVA>();
+		lvasMap= new HashMap<Integer,LVA>(lvas.size());
 		for(LVA l:lvas){
 			int key=l.getYear()*2;
 			if(l.getSemester()==Semester.W){
 				key++;
 			}
 			lvasMap.put(key, l);
-			if(!l.isSet(LVA.METALVA)){
-				l.setMetaLVA(this);
-			}
+            if(l.getMetaLVA()==null){
+                l.setMetaLVA(this);
+            }
 		}
-		
 	}
+    /**
+     * also sets the lva MetaLVA to this, if it is null.
+     * @param lva the List of LVAs, which are part of this MetaLVA
+     */
+    public void setLVA(LVA lva) {
+        this.lvas = new ArrayList<LVA>();
+        lvas.add(lva);
+        setLVAs(lvas);
+    }
 	public LVA getLVA(int year, Semester sem){
 		int key=year*2;
 		if(sem==Semester.W){
@@ -154,37 +126,31 @@ public class MetaLVA {
 		}
 		return lvasMap.containsKey(key);
 	}
-	public void setLVA(LVA lva) {
-		ArrayList<LVA> temp = new ArrayList<LVA>(1);
-		temp.add(lva);
-		setLVAs(temp);
-	}
+
 	public Semester getSemestersOffered() {
 		return semestersOffered;
 	}
 	public void setSemestersOffered(Semester semestersOffered) {
 		this.semestersOffered = semestersOffered;
-		isSet[MetaLVA.SEMESTERS_OFFERED]=true;
 	}
 	public boolean isCompleted() {
 		return completed;
 	}
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
-		isSet[MetaLVA.COMPLETED]=true;
 	}
 	public String toString(){
 		String toReturn="<MetaLVA:";
-		if(isSet(MetaLVA.NR)){
+		if(nr!=null){
 			toReturn+=" nr:"+nr;
 		}
-		if(isSet(MetaLVA.NAME)){
+		if(name!=null){
 			toReturn+=" name:"+name;
 		}
-		if(isSet(MetaLVA.ECTS)){
+		if(ects!=-1){
 			toReturn+=" ects:"+ects;
 		}		
-		if(isSet(MetaLVA.PRIORITY)){
+		if(priority!=-1){
 			toReturn+=" priority:"+priority;
 		}
 		return toReturn+">";
