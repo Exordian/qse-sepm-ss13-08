@@ -1,10 +1,11 @@
-package at.ac.tuwien.sepm.entity;
+package at.ac.tuwien.sepm.service.semesterPlanning;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.semesterPlaning.LVAUtil;
 import org.joda.time.DateTime;
