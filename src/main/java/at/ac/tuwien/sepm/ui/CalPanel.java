@@ -14,7 +14,6 @@ public class CalPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
-    private JButton tab4;
     private JButton fwd;
     private JButton bwd;
     private JButton importBtn;
@@ -112,13 +111,11 @@ public class CalPanel extends StandardInsidePanel {
         tab1 = new JButton();
         tab2 = new JButton();
         tab3 = new JButton();
-        tab4 = new JButton();
 
         ArrayList<JButton> tabs = new ArrayList<JButton>();
         tabs.add(tab1);
         tabs.add(tab2);
         tabs.add(tab3);
-        tabs.add(tab4);
 
         tab1.setBounds(97,63,142,36);
         tab1.addActionListener(new ActionListener() {
@@ -138,7 +135,7 @@ public class CalPanel extends StandardInsidePanel {
             }
         });
 
-        tab3.setBounds(97+142*2,63,142,36);
+        tab3.setBounds(878,63,142,36);
         tab3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -147,16 +144,7 @@ public class CalPanel extends StandardInsidePanel {
             }
         });
 
-        tab4.setBounds(878,63,142,36);
-        tab4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                changeImage(4);
-                //todo
-            }
-        });
-
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
             tabs.get(i).setOpaque(false);
             tabs.get(i).setContentAreaFilled(false);
@@ -169,20 +157,16 @@ public class CalPanel extends StandardInsidePanel {
         try{
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(new File("src/main/resources/img/calt.png"));
-                    toggleComponents("show");
-                    break;
-                case 2:
                     image = ImageIO.read(new File("src/main/resources/img/calw.png"));
                     toggleComponents("show");
                     break;
-                case 3:
+                case 2:
                     image = ImageIO.read(new File("src/main/resources/img/calm.png"));
                     toggleComponents("show");
                     break;
-                case 4:
+                case 3:
                     image = ImageIO.read(new File("src/main/resources/img/cald.png"));
-                    toggleComponents("hide");
+                    toggleComponents("show");
                     break;
                 default:
                     break;
