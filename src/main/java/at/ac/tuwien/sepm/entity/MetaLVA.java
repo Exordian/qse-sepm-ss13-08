@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MetaLVA {
 	
-	
+	private Integer id;
 	private String nr;
 	private String name;
 	private float ects=-1;
@@ -25,7 +25,15 @@ public class MetaLVA {
 	
 	private boolean completed;
 
-	public String getNr() {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNr() {
 		return nr;
 	}
 
