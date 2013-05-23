@@ -4,12 +4,12 @@ import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,10 +19,11 @@ import java.util.List;
 public class DBDateDao extends DBBaseDao implements DateDao {
     @Override
     public void create(DateEntity toCreate) throws IOException, DataAccessException {
+        System.out.println("create(DateEntity toCreate): " + toCreate.toString());
         String stmt = "INSERT INTO Date (id,tag,name,description,isIntersectable,start,stop) " +
                 "VALUES (null,null,?,?,?,?,?)";
         Object[] args = new Object[] {toCreate.getName(), toCreate.getDescription(), toCreate.getIntersectable(),
-                toCreate.getStart(), toCreate.getStop()};
+                new Timestamp(toCreate.getStart().getMillis()), new Timestamp(toCreate.getStop().getMillis())};
 
         jdbcTemplate.update(stmt, args);
     }
@@ -39,18 +40,19 @@ public class DBDateDao extends DBBaseDao implements DateDao {
     public DateEntity readById(int id) throws DataAccessException {
         String stmt="SELECT * FROM date WHERE ID=?";
         Object[] args = new Object[] {new Integer(id)};
-
-        return jdbcTemplate.queryForObject(stmt, RowMappers.getDateRowMapper(), args);
+        try {
+            return jdbcTemplate.queryForObject(stmt, RowMappers.getDateRowMapper(), args);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
-    public ArrayList<DateEntity> readInTimeframe(DateTime from, DateTime till) throws DataAccessException {
-        String stmt=" SELECT * FROM date WHERE start>=? AND stop<=? ORDER BY start";
+    public List<DateEntity> readInTimeframe(DateTime from, DateTime till) throws DataAccessException {
+        String stmt=" SELECT * FROM date WHERE start>=? AND start<=? ORDER BY start";
         Object[] args = new Object[] {new Timestamp(from.getMillis()), new Timestamp(till.getMillis())};
 
-        List<DateEntity> result = jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), args);
-
-        return new ArrayList<DateEntity>(result);
+        return jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), args);
     }
 
     /*@Override

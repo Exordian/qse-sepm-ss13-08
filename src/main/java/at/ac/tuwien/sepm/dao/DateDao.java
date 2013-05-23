@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: MUTH Markus
@@ -16,11 +16,15 @@ import java.util.ArrayList;
 public interface DateDao {
 
     /**
-     * Store persistent a new Date.
+     * Store persistent a new Date. If the id of <code>toCreate</code> is set, it will be ignored.
      * @param toCreate a <code>DateEntity</code> containing all data to be stored persistent.
      * @throws java.io.IOException If the data in toCreate is invalid, f. e. if Strings are too long to store.
-     * @throws org.springframework.dao.DataAccessException If the date data could not be stored because any error
-     * occurred.
+     * @throws DataAccessException If the date data could not be stored because any error
+     * occurred. There is also thrown an DataAccessException  if there are values null, which must not be null, these
+     * are: start and stop.
+     * @throws NullPointerException If <code>toCreate == null</code>, <code>toCreate.getStart()==null</code> or
+     * <code>toCreate.getStop()==null</code>
+     *
      */
     public void create(DateEntity toCreate) throws IOException, DataAccessException;
 
@@ -35,21 +39,22 @@ public interface DateDao {
     /**
      * Read the date data which is identified by the specified id.
      * @param id the id of the date which should be read.
-     * @return a <code>DateEntity</code>  containing all data of the date.
-     * @throws org.springframework.dao.DataAccessException if the date data could not be read because any error occurred.
+     * @return a <code>DateEntity</code>  containing all data of the date and <code>null</code> if there is not date
+     * with matching id.
+     * @throws DataAccessException if the date data could not be read because any error occurred.
      */
     public DateEntity readById(int id) throws DataAccessException;
 
     /**
-     * Read all Dates within the specific time frame. The order is chronological, beginning with oldest date. If there
-     * are several dates at the same time, there is no defined order.
+     * Read all Dates where <code>getStart()>=from</code> and <code>getStart()<=till</code>.
      * @param from The start date and time. This moment is included to the search.
      * @param till The stop date and time. This moment is included to the search.
      * @return A <code>ArrayList<DateEntry></code> containing all dates within the specified time frame, or a empty list
-     * if there was no matching date found.
+     * if there was no matching date found. The order is chronological, beginning with oldest date. If there are several
+     * dates at the same time, there is no defined order.
      * @throws org.springframework.dao.DataAccessException If the date data could not be read because any error occurred.
      */
-    public ArrayList<DateEntity> readInTimeframe(DateTime from, DateTime till) throws DataAccessException;
+    public List<DateEntity> readInTimeframe(DateTime from, DateTime till) throws DataAccessException;
 
     /*
      * Read all Dates within the specific time frame. It's also possible to specify if the date should be intersectable
