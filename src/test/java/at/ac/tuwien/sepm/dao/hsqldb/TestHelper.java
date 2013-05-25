@@ -38,7 +38,7 @@ public class TestHelper extends DBBaseDao {
     static void drop() {
         System.out.print(NumberGenerator.get() + "TestHelper.drop() called ... jdbcTemplate==null?\t");
         System.out.println((jdbcTemplate==null) + "\n");
-        //JdbcTestUtils.executeSqlScript(jdbcTemplate, new FileSystemResource(PATH + "drop.sql"), false);
+        JdbcTestUtils.executeSqlScript(jdbcTemplate, new FileSystemResource(PATH + "drop.sql"), false);
     }
 
     static void create() {

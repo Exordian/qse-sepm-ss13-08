@@ -17,58 +17,59 @@ import java.util.List;
  */
 @Repository
 public class DBDateDao extends DBBaseDao implements DateDao {
+    private static final int MAX_LENGTH_NAME=200;
+    private static final int MAX_LENGTH_DESCRIPTION=200;
+
     @Override
-    public void create(DateEntity toCreate) throws IOException, DataAccessException {
-        System.out.println("create(DateEntity toCreate): " + toCreate.toString());
-        String stmt = "INSERT INTO Date (id,tag,name,description,isIntersectable,start,stop) " +
-                "VALUES (null,null,?,?,?,?,?)";
-        Object[] args = new Object[] {toCreate.getName(), toCreate.getDescription(), toCreate.getIntersectable(),
-                new Timestamp(toCreate.getStart().getMillis()), new Timestamp(toCreate.getStop().getMillis())};
+    public boolean create(DateEntity toCreate) throws IOException, DataAccessException {
+        if(toCreate == null) {
+            return false;
+        }
+        if(toCreate.getName()!=null && toCreate.getName().length()>MAX_LENGTH_NAME){
+            throw new IOException(ExceptionMessages.tooLongName(MAX_LENGTH_NAME));
+        }
+        if(toCreate.getDescription()!=null && toCreate.getDescription().length()>MAX_LENGTH_DESCRIPTION) {
+            throw new IOException(ExceptionMessages.tooLongDescription(MAX_LENGTH_DESCRIPTION));
+        }
 
+        String stmt = "INSERT INTO Date (id,tag,name,description,isIntersectable,start,stop) VALUES (null,null,?,?,?,?,?)";
+        Object[] args = new Object[]{toCreate.getName(), toCreate.getDescription(), (toCreate.getIntersectable() != null ? toCreate.getIntersectable() : false), new Timestamp(toCreate.getStart().getMillis()), new Timestamp(toCreate.getStop().getMillis())};
         jdbcTemplate.update(stmt, args);
-    }
-
-    /*@Override
-    public ArrayList<DateEntity> readAll() throws DataAccessException {
-        String stmt="SELECT * FROM date ORDER BY start";
-        List<DateEntity> result = jdbcTemplate.query(stmt, RowMappers.getDateRowMapper());
-
-        return new ArrayList<DateEntity>(result);
-    }*/
+        return true;
+    } /*@Override public ArrayList<DateEntity> readAll() throws DataAccessException { String stmt="SELECT * FROM date ORDER BY start"; List<DateEntity> result = jdbcTemplate.query(stmt, RowMappers.getDateRowMapper()); return new ArrayList<DateEntity>(result); }*/
 
     @Override
     public DateEntity readById(int id) throws DataAccessException {
-        String stmt="SELECT * FROM date WHERE ID=?";
-        Object[] args = new Object[] {new Integer(id)};
-        try {
-            return jdbcTemplate.queryForObject(stmt, RowMappers.getDateRowMapper(), args);
-        } catch (EmptyResultDataAccessException e) {
+        String stmt = "SELECT * FROM date WHERE ID=?";
+
+        if(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM date WHERE id=?", RowMappers.getIntegerRowMapper(), id) != 1){
             return null;
         }
+
+        return jdbcTemplate.queryForObject(stmt, RowMappers.getDateRowMapper(), id);
     }
 
     @Override
     public List<DateEntity> readInTimeframe(DateTime from, DateTime till) throws DataAccessException {
-        String stmt=" SELECT * FROM date WHERE start>=? AND start<=? ORDER BY start";
-        Object[] args = new Object[] {new Timestamp(from.getMillis()), new Timestamp(till.getMillis())};
-
+        String stmt = " SELECT * FROM date WHERE start>=? AND start<=? ORDER BY start";
+        Object[] args = new Object[]{new Timestamp(from.getMillis()), new Timestamp(till.getMillis())};
         return jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), args);
     }
 
-    /*@Override
-    public ArrayList<DateEntity> readIntersectableInTimeframe(DateTime from, DateTime till, boolean isIntersectable) throws DataAccessException {
-        String stmt=" SELECT * FROM date WHERE start>=? AND stop<=? AND isintersectable=? ORDER BY start";
-        Object[] args = new Object[] {new Timestamp(from.getMillis()), new Timestamp(till.getMillis()), new Boolean(isIntersectable)};
-
-        List<DateEntity> result = jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), args);
-
-        return new ArrayList<DateEntity>(result);
-    }*/
-
     @Override
     public boolean update(DateEntity toUpdate) throws IOException, DataAccessException {
+        if(toUpdate == null) {
+            return false;
+        }
+        if(toUpdate.getName()!=null && toUpdate.getName().length()>MAX_LENGTH_NAME){
+            throw new IOException(ExceptionMessages.tooLongName(MAX_LENGTH_NAME));
+        }
+        if(toUpdate.getDescription()!=null && toUpdate.getDescription().length()>MAX_LENGTH_DESCRIPTION) {
+            throw new IOException(ExceptionMessages.tooLongDescription(MAX_LENGTH_DESCRIPTION));
+        }
+
         String stmt = "SELECT COUNT(*) FROM date WHERE id=?";
-        if(jdbcTemplate.queryForObject(stmt, RowMappers.getIntegerRowMapper(), new Object[] {toUpdate.getId()}) == 0) {
+        if (jdbcTemplate.queryForObject(stmt, RowMappers.getIntegerRowMapper(), toUpdate.getId()) == 0) {
             return false;
         }
 
@@ -78,36 +79,41 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         String stmtUpdateStart = "UPDATE date SET start=? WHERE id=?";
         String stmtUpdateStop = "UPDATE date SET stop=? WHERE id=?";
 
-        if(toUpdate.getName() != null) {
-            jdbcTemplate.update(stmtUpdateName, new Object[] {toUpdate.getName(), toUpdate.getId()});
+        try {
+            jdbcTemplate.execute("SET AUTOCOMMIT FALSE");
+            if (toUpdate.getName() != null) {
+                jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
+            }
+            if (toUpdate.getDescription() != null) {
+                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+            }
+            if (toUpdate.getIntersectable() != null) {
+                jdbcTemplate.update(stmtUpdateIsIntersectable, toUpdate.getIntersectable(), toUpdate.getId());
+            }
+            if (toUpdate.getStart() != null) {
+                jdbcTemplate.update(stmtUpdateStart, new Timestamp(toUpdate.getStart().getMillis()), toUpdate.getId());
+            }
+            if (toUpdate.getStop() != null) {
+                jdbcTemplate.update(stmtUpdateStop,new Timestamp(toUpdate.getStop().getMillis()), toUpdate.getId());
+            }
+            jdbcTemplate.execute("COMMIT");
+            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
+        } catch (DataAccessException e) {
+            jdbcTemplate.execute("ROLLBACK;");
+            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
+            throw e;
         }
-        if(toUpdate.getDescription() != null) {
-            jdbcTemplate.update(stmtUpdateDescription, new Object[] {toUpdate.getDescription(), toUpdate.getId()});
-        }
-        if(toUpdate.getIntersectable() != null) {
-            jdbcTemplate.update(stmtUpdateIsIntersectable, new Object[] {toUpdate.getIntersectable(), toUpdate.getId()});
-        }
-        if(toUpdate.getStart() != null) {
-            jdbcTemplate.update(stmtUpdateStart, new Object[] {new Timestamp(toUpdate.getStart().getMillis()), toUpdate.getId()});
-        }
-        if(toUpdate.getStop() != null) {
-            jdbcTemplate.update(stmtUpdateStop, new Object[] {new Timestamp(toUpdate.getStop().getMillis()), toUpdate.getId()});
-        }
-
         return true;
     }
 
     @Override
     public boolean delete(int id) throws DataAccessException {
         String stmtCount = "SELECT COUNT(*) FROM date WHERE id=?";
-        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), new Object[] {new Integer(id)}) == 0) {
+        if (jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), id) == 0) {
             return false;
         }
 
-        String stmt = "DELETE FROM date WHERE id=?;";
-        Object[] args = new Object[] {new Integer(id)};
-
-        jdbcTemplate.update(stmt, args);
+        jdbcTemplate.update("DELETE FROM date WHERE id=?;", new Integer(id));
 
         return true;
     }

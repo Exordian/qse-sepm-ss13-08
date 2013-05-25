@@ -7,4 +7,15 @@ package at.ac.tuwien.sepm.dao.hsqldb;
  * Description of class "ExceptionMessages":
  */
 public class ExceptionMessages {
+    static String tooLongName(int i) {
+        return "Der Name ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongDescription(int i) {
+        return "Die Beschreibung ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongRoom(int i) {
+        return "Die Bezeichnung des Raumes ist zu lang (max. " + i + " Zeichen).";
+    }
 }

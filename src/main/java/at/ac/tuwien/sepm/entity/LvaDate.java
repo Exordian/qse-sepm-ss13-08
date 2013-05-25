@@ -114,4 +114,45 @@ public class LvaDate {
     public void setWasAttendant(Boolean wasAttendant) {
         this.wasAttendant = wasAttendant;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LvaDate lvaDate = (LvaDate) o;
+
+        if (attendanceRequired != null ? !attendanceRequired.equals(lvaDate.attendanceRequired) : lvaDate.attendanceRequired != null)
+            return false;
+        if (description != null ? !description.equals(lvaDate.description) : lvaDate.description != null) return false;
+        if (id != null ? !id.equals(lvaDate.id) : lvaDate.id != null) return false;
+        if (lva != null ? !lva.equals(lvaDate.lva) : lvaDate.lva != null) return false;
+        if (name != null ? !name.equals(lvaDate.name) : lvaDate.name != null) return false;
+        if (result != null ? !result.equals(lvaDate.result) : lvaDate.result != null) return false;
+        if (room != null ? !room.equals(lvaDate.room) : lvaDate.room != null) return false;
+        if (start != null ? !start.equals(lvaDate.start) : lvaDate.start != null) return false;
+        if (stop != null ? !stop.equals(lvaDate.stop) : lvaDate.stop != null) return false;
+        if (type != lvaDate.type) return false;
+        if (wasAttendant != null ? !wasAttendant.equals(lvaDate.wasAttendant) : lvaDate.wasAttendant != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "LvaDate{" +
+                "id=" + id +
+                ", lva=" + lva +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                ", room='" + room + '\'' +
+                ", result=" + result +
+                ", start=" + start +
+                ", stop=" + stop +
+                ", attendanceRequired=" + attendanceRequired +
+                ", wasAttendant=" + wasAttendant +
+                '}';
+    }
 }

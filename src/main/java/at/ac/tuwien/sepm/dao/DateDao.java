@@ -16,17 +16,19 @@ import java.util.List;
 public interface DateDao {
 
     /**
-     * Store persistent a new Date. If the id of <code>toCreate</code> is set, it will be ignored.
+     * Store persistent a new Date. If the id of <code>toCreate</code> is set, it will be ignored. If
+     * <code>toCreade.isIntersectable()</code> is undefined, the value will be stored as <code>false</code>.
      * @param toCreate a <code>DateEntity</code> containing all data to be stored persistent.
+     * @return <code>false</code> if <code>toCreate==null</code> and <code>true</code> if the data could be stored.
      * @throws java.io.IOException If the data in toCreate is invalid, f. e. if Strings are too long to store.
      * @throws DataAccessException If the date data could not be stored because any error
      * occurred. There is also thrown an DataAccessException  if there are values null, which must not be null, these
-     * are: start and stop.
-     * @throws NullPointerException If <code>toCreate == null</code>, <code>toCreate.getStart()==null</code> or
+     * are: lva.
+     * @throws NullPointerException If <code>toCreate.getStart()==null</code> or
      * <code>toCreate.getStop()==null</code>
      *
      */
-    public void create(DateEntity toCreate) throws IOException, DataAccessException;
+    public boolean create(DateEntity toCreate) throws IOException, DataAccessException;
 
     /*
      * Read all dates.
@@ -76,7 +78,7 @@ public interface DateDao {
      *                 <code>null</code> are included to the update statements. The date to be updated is identified by
      *                 the id, so this should not be null.
      * @return <code>true</code> if there was a date found and was successfully updated and <code>false</code> if there
-     * was no date with the specified id found.
+     * was no date with the specified id found or <code>toUpdate==null</code>.
      * @throws java.io.IOException IOException If the data in toCreate is invalid, f. e. if Strings are too long to
      * store.
      * @throws org.springframework.dao.DataAccessException DataAccessException If the date data could not be updated
