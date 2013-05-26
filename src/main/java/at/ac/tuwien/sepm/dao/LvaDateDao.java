@@ -19,7 +19,7 @@ import java.util.List;
 public interface LvaDateDao {
 
     /**
-     * Store a new lva date.
+     * Store a new lva date. If <code>getResult()==null</code>, it will be stored with 0.
      * @param toCreate the <code>LvaDate</code> containing the data to be stored.
      * @return <code>false</code> if <code>toCreate==null</code> and <code>true</code> if the data could be stored.
      * @throws IOException if the Strings <code>getRoom()</code>, <code>getDescription</code> or <code>getName()</code>
@@ -91,7 +91,8 @@ public interface LvaDateDao {
     //public ArrayList<LvaDate> readIntersectableInTimeframe(int year, boolean isWinterSemester, boolean attendanceRequired) throws DataAccessException;+
 
     /**
-     *
+     * Read all lva dates from the specifed lva. The order of the returned dates is chronological, beginning at the
+     * oldest one.
      * @param lvaId the id of the lva.
      * @return A <code>List<LvaDate></code> containing all stored data or a empty <code>List</code> if there was no lva
      * date from the specified lva found.
@@ -107,7 +108,8 @@ public interface LvaDateDao {
      * @throws DataAccessException If the lva date data could not be read because any error occurred.
      */
     /**
-     * Read all lva dates from the specified type and lva.
+     * Read all lva dates from the specified type and lva. The order of the returned dates is chronological, beginning
+     * at the oldest one.
      * @param lvaId the id of the lva.
      * @param type the type of the lva.
      * @return A <code>LvaDate</code> containing all stored data or <code>null</code> if there was no lva date from the

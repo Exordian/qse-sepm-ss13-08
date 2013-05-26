@@ -5,7 +5,6 @@ import org.joda.time.DateTime;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,9 +21,6 @@ public class DBDateDaoTest {
 
     @Autowired
     private DBDateDao dao;
-
-    @Autowired(required = true)
-    private TestHelper helper;
 
     @Before
     public void setUp() throws Exception {

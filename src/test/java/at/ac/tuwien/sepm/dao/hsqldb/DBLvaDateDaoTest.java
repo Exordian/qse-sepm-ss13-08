@@ -2,9 +2,7 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.service.LvaType;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +26,6 @@ public class DBLvaDateDaoTest {
 
     @Autowired
     private DBLvaDateDao dao;
-
-    @Autowired(required = true)
-    private TestHelper helper;
 
     @Before
     public void setUp() throws Exception {
@@ -60,7 +55,7 @@ public class DBLvaDateDaoTest {
     @Test
     public void testCreateNull() throws Exception {
         TestHelper.insert(1);
-        assert(dao.create(null)==false);
+        assert(!dao.create(null));
     }
 
     @Test(expected = IOException.class)
@@ -102,7 +97,6 @@ public class DBLvaDateDaoTest {
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
-
     }
 
     @Test(expected = IOException.class)
@@ -216,6 +210,9 @@ public class DBLvaDateDaoTest {
     public void testReadByLva() throws Exception {
         TestHelper.insert(0);
         List<LvaDate> l = dao.readByLva(0);
+        for(int i=0; i<l.size()-1; i++) {
+            assert(l.get(i).getStart().isBefore(l.get(i+1).getStart().getMillis()) || l.get(i).getStart().equals(l.get(i+1).getStart()));
+        }
         assert(l.size()==14);
     }
 
@@ -236,7 +233,6 @@ public class DBLvaDateDaoTest {
     @Test
     public void testUpdate() throws Exception {
         TestHelper.insert(2);
-        LvaDate d = dao.readById(0);
         LvaDate e = new LvaDate();
         e.setId(0);
         e.setLva(0);
@@ -249,7 +245,7 @@ public class DBLvaDateDaoTest {
         e.setAttendanceRequired(true);
         e.setWasAttendant(false);
         e.setResult(0);
-        assert(dao.update(e)==true);
+        assert(dao.update(e));
         assert(dao.readById(0).equals(e));
     }
 
@@ -269,19 +265,19 @@ public class DBLvaDateDaoTest {
         e.setAttendanceRequired(null);
         e.setWasAttendant(null);
         e.setResult(null);
-        assert(dao.update(e)==true);
+        assert(dao.update(e));
         assert(dao.readById(0).equals(d));
     }
 
     @Test
     public void testUpdateIdIsNull() throws Exception {
         TestHelper.insert(2);
-        assert(dao.update(new LvaDate())==false);
+        assert(!dao.update(new LvaDate()));
     }
 
     @Test
     public void testUpdateNull() throws Exception {
-        assert( dao.update(null)==false);
+        assert(!dao.update(null));
     }
 
     @Test(expected = IOException.class)
@@ -291,7 +287,6 @@ public class DBLvaDateDaoTest {
         for(int i=0; i<10; i++){
             s=s.concat(s);
         }
-        LvaDate d = dao.readById(0);
         LvaDate e = new LvaDate();
         e.setId(0);
         e.setLva(0);
@@ -314,7 +309,6 @@ public class DBLvaDateDaoTest {
         for(int i=0; i<10; i++){
             s=s.concat(s);
         }
-        LvaDate d = dao.readById(0);
         LvaDate e = new LvaDate();
         e.setId(0);
         e.setLva(0);
@@ -337,7 +331,6 @@ public class DBLvaDateDaoTest {
         for(int i=0; i<10; i++){
             s=s.concat(s);
         }
-        LvaDate d = dao.readById(0);
         LvaDate e = new LvaDate();
         e.setId(0);
         e.setLva(0);

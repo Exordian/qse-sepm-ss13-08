@@ -3,9 +3,7 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.service.LvaType;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -65,13 +63,13 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
 
     @Override
     public List<LvaDate> readByLva(int lvaId) throws DataAccessException {
-        String stmt = "SELECT * FROM lvadate WHERE lva=?";
+        String stmt = "SELECT * FROM lvadate WHERE lva=? ORDER BY start";
         return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), lvaId);
     }
 
     @Override
     public List<LvaDate> readByLvaAndType(int lvaId, LvaDateType type) throws DataAccessException {
-        String stmt = "SELECT * FROM lvadate WHERE lva=? AND type=?";
+        String stmt = "SELECT * FROM lvadate WHERE lva=? AND type=? ORDER BY start";
         return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), lvaId, type.ordinal());
     }
 
@@ -155,7 +153,7 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
     @Override
     public boolean delete(int id) throws DataAccessException {
         String stmtCount = "SELECT COUNT(*) FROM lvadate WHERE id=?";
-        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), new Object[] {new Integer(id)}) == 0) {
+        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), id) == 0) {
             return false;
         }
 

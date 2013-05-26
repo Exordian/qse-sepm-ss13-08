@@ -4,11 +4,9 @@ import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -17,6 +15,7 @@ import java.util.List;
  */
 @Repository
 public class DBDateDao extends DBBaseDao implements DateDao {
+
     private static final int MAX_LENGTH_NAME=200;
     private static final int MAX_LENGTH_DESCRIPTION=200;
 
@@ -36,7 +35,7 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         Object[] args = new Object[]{toCreate.getName(), toCreate.getDescription(), (toCreate.getIntersectable() != null ? toCreate.getIntersectable() : false), new Timestamp(toCreate.getStart().getMillis()), new Timestamp(toCreate.getStop().getMillis())};
         jdbcTemplate.update(stmt, args);
         return true;
-    } /*@Override public ArrayList<DateEntity> readAll() throws DataAccessException { String stmt="SELECT * FROM date ORDER BY start"; List<DateEntity> result = jdbcTemplate.query(stmt, RowMappers.getDateRowMapper()); return new ArrayList<DateEntity>(result); }*/
+    }
 
     @Override
     public DateEntity readById(int id) throws DataAccessException {
