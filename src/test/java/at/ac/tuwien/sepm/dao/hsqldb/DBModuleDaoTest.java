@@ -261,27 +261,16 @@ public class DBModuleDaoTest {
         assert(dao.readByName(null)==null);
     }
 
+    /**
+     * There is only tested if the amount of returned modules is correct, because the method <code>readByCurriculum()</code>
+     * calls internal the method <code>readById()</code>.
+     * @throws Exception
+     */
     @Test
     public void testReadByCurriculum() throws Exception {
         TestHelper.insert(0);
         HashMap<Module, Boolean> moduleMap = dao.readByCurriculum(0);
-        System.out.println("HasMap.size()=" + moduleMap.size());
         assert(moduleMap.size()==2);
-
-        Object[] moduleArray = moduleMap.keySet().toArray();
-        assert(moduleArray.length==2);
-        assert(moduleArray[0] instanceof Module);
-        assert(moduleArray[1] instanceof Module);
-        Module e1 = (Module)moduleArray[0];
-        Module e2 = (Module)moduleArray[1];
-
-        assert(e1.getId()==1);
-        assert(e1.getMetaLvas().size()==2);
-        assert(e1.getMetaLvas().get(0).getId()==2);
-        assert(e1.getMetaLvas().get(1).getId()==3);
-        assert(e2.getId()==3);
-        assert(e2.getMetaLvas().size()==1);
-        assert(e2.getMetaLvas().get(0).getId()==8);
     }
 
     @Test

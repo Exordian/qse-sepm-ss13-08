@@ -1,10 +1,7 @@
 package at.ac.tuwien.sepm.dao.hsqldb;
 
 /**
- * Author: MUTH Markus
- * Date: 5/24/13
- * Time: 1:37 AM
- * Description of class "ExceptionMessages":
+ * @author Markus MUTH
  */
 public class ExceptionMessages {
     static String tooLongName(int i) {
@@ -21,5 +18,13 @@ public class ExceptionMessages {
 
     static String tooLongLvaNumber(int i) {
         return "Die LVA-Nummer ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongStudyNumber(int i) {
+        return "Die Studien-Kennzahl ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongTitle(int i) {
+        return "Der Titel ist zu lang (max. " + i + " Zeichen).";
     }
 }

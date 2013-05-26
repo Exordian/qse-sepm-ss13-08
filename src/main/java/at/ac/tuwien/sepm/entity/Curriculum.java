@@ -87,4 +87,39 @@ public class Curriculum {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Curriculum that = (Curriculum) o;
+
+        if (academicTitle != null ? !academicTitle.equals(that.academicTitle) : that.academicTitle != null)
+            return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (ectsChoice != null ? !ectsChoice.equals(that.ectsChoice) : that.ectsChoice != null) return false;
+        if (ectsFree != null ? !ectsFree.equals(that.ectsFree) : that.ectsFree != null) return false;
+        if (ectsSoftskill != null ? !ectsSoftskill.equals(that.ectsSoftskill) : that.ectsSoftskill != null)
+            return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (studyNumber != null ? !studyNumber.equals(that.studyNumber) : that.studyNumber != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Curriculum{" +
+                "ectsSoftskill=" + ectsSoftskill +
+                ", id=" + id +
+                ", studyNumber='" + studyNumber + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", academicTitle='" + academicTitle + '\'' +
+                ", ectsChoice=" + ectsChoice +
+                ", ectsFree=" + ectsFree +
+                '}';
+    }
 }

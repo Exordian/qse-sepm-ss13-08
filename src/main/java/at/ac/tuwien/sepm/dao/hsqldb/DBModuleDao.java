@@ -29,9 +29,9 @@ public class DBModuleDao extends DBBaseDao implements ModuleDao {
         if(toCreate == null) {
             return false;
         } if(toCreate.getName()!=null && toCreate.getName().length()>MAX_LENGTH_NAME) {
-            throw new IOException(ExceptionMessages.tooLongLvaNumber(MAX_LENGTH_NAME));
+            throw new IOException(ExceptionMessages.tooLongName(MAX_LENGTH_NAME));
         } if(toCreate.getDescription()!=null && toCreate.getDescription().length()>MAX_LENGTH_DESCRIPTION) {
-            throw new IOException(ExceptionMessages.tooLongName(MAX_LENGTH_DESCRIPTION));
+            throw new IOException(ExceptionMessages.tooLongDescription(MAX_LENGTH_DESCRIPTION));
         }
 
         String stmt = "INSERT INTO Module (id,name,description,completeAll) VALUES (null,?,?,?)";

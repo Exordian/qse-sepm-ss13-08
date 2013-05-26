@@ -36,23 +36,23 @@ public class TestHelper extends DBBaseDao {
     }
     */
     static void drop() {
-        System.out.print(NumberGenerator.get() + "TestHelper.drop() called ... jdbcTemplate==null?\t");
-        System.out.println((jdbcTemplate==null) + "\n");
+        //System.out.print(NumberGenerator.get() + "TestHelper.drop() called ... jdbcTemplate==null?\t");
+        //System.out.println((jdbcTemplate==null) + "\n");
         JdbcTestUtils.executeSqlScript(jdbcTemplate, new FileSystemResource(PATH + "drop.sql"), false);
     }
 
     static void create() {
-        System.out.println(NumberGenerator.get() + "TestHelper.create() called ...");
+        //System.out.println(NumberGenerator.get() + "TestHelper.create() called ...");
         JdbcTestUtils.executeSqlScript(jdbcTemplate, new FileSystemResource(PATH + "create.sql"), false);
     }
 
     static void insert(int fileNumber) {
-        System.out.println(NumberGenerator.get() + "TestHelper.insert() called ...");
+        //System.out.println(NumberGenerator.get() + "TestHelper.insert() called ...");
         JdbcTestUtils.executeSqlScript(jdbcTemplate, new FileSystemResource(PATH + "insert" + fileNumber + ".sql"), false);
     }
 
     static void all(int fileNumber) {
-        System.out.println(NumberGenerator.get() + "TestHelper.all() called ...");
+        //System.out.println(NumberGenerator.get() + "TestHelper.all() called ...");
         drop();
         create();
         insert(fileNumber);
