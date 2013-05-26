@@ -15,14 +15,6 @@ public abstract class DBBaseDao {
     @Autowired(required = true)
     public void init(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-
-
-        try {
-            System.out.println(NumberGenerator.get() + dataSource.getConnection().toString());
-        } catch (SQLException e) {
-            System.out.println(NumberGenerator.get() + "any error with connection occurred");
-        }
-        System.out.println(NumberGenerator.get() + this.getClass() + ".init(...) called ...\n");
     }
 
     public JdbcTemplate getJdbcTemplate() {

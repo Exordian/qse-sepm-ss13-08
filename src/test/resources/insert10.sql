@@ -185,12 +185,6 @@ INSERT INTO Track(id,lva,name,description,start,stop) VALUES
 (null,4,'Präsentation vorbereiten','','2013-04-19 11:15:00.0','2013-04-19 23:00:00.0'),
 (null,4,'','','2013-04-20 20:16:00.0','2013-04-20 21:00:23.0');
 
-INSERT INTO TODO (id,lva,name,description,done) VALUES
-(null,1,'Skript Kaufen','Favoritenbstraße, Stiege 3, 3. Stock Zimmer H1234', false),
-(null,null,'ÖB-Beitrag einzahlen','Kontonummer 12341234, Bankleitzahl 12341234, Betrag 17,50 €', false),
-(null,null,'Ausgeborge Bücher zurückbringen','enliehen bis 24.05.2013', false),
-(null,0,'Prof. fragen was eine Detrminante ist','', true);
-
 INSERT INTO Tag (name) VALUES
 ('Freizeit'),
 ('Arbeit'),

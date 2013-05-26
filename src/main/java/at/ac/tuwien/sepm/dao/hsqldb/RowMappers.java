@@ -132,7 +132,7 @@ class RowMappers {
                 entity.setLva(lva);
 
                 entity.setName(rs.getString(3));
-                entity.setDescirption(rs.getString(4));
+                entity.setDescription(rs.getString(4));
                 entity.setDone(rs.getBoolean(5));
                 return entity;
             }
