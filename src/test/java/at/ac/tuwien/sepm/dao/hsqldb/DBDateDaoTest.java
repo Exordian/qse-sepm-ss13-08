@@ -17,8 +17,6 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-test.xml"})
 public class DBDateDaoTest {
-    // private static final String DELETE = "DELETE FROM curriculum;DELETE FROM date;DELETE FROM incurriculum;DELETE FROM lva;DELETE FROM lvadate;DELETE FROM metalva;DELETE FROM module;DELETE FROM predecessor;DELETE FROM tag;DELETE FROM to do;DELETE FROM track;";
-
     @Autowired
     private DBDateDao dao;
 

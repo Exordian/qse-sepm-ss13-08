@@ -25,14 +25,13 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
     private static final int MAX_LENGTH_NAME=200;
 
     @Autowired
-    DBLvaDao lvaDao;// = new DBLvaDao();
+    DBLvaDao lvaDao;
 
     @Override
     public boolean create(MetaLVA toCreate) throws IOException, DataAccessException {
         if(toCreate == null) {
             return false;
-        }
-        if(toCreate.getNr()!=null && toCreate.getNr().length()>MAX_LENGTH_NUMBER) {
+        } if(toCreate.getNr()!=null && toCreate.getNr().length()>MAX_LENGTH_NUMBER) {
             throw new IOException(ExceptionMessages.tooLongLvaNumber(MAX_LENGTH_NUMBER));
         } if(toCreate.getName()!=null && toCreate.getName().length()>MAX_LENGTH_NAME) {
             throw new IOException(ExceptionMessages.tooLongName(MAX_LENGTH_NAME));

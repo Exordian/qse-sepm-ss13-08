@@ -23,7 +23,7 @@ public interface MetaLvaDao {
      * as <code>Semester.UNKNOWN</code>.
      * @param toCreate Contains the data which should be saved. The value of the id and the predecessors are ignored.
      * @return <code>true</code>  if the lva could be created and <code>false</code> if there is already an existing
-     * meta lva with the same lva number.
+     * meta lva with the same lva number (lva number is unique) or <ocde>toCreate==null</ocde>..
      * @throws IOException  If the name of the lva number of the meta lva are too long to store.
      * @throws DataAccessException  If the data from toCreate could not be saved because any other error occurred.
      * @throws NullPointerException if <code>toCreate.getType()==null</code>.

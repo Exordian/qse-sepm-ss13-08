@@ -106,7 +106,7 @@ class RowMappers {
         };
     }
 
-    static RowMapper<Module> getModuleEntityRowMapper() {
+    static RowMapper<Module> getModuleRowMapper() {
         return new RowMapper<Module>() {
             @Override
             public Module mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -114,7 +114,7 @@ class RowMappers {
                 entity.setId(rs.getInt(1));
                 entity.setName(rs.getString(2));
                 entity.setDescription(rs.getString(3));
-                entity.setCompleteall(rs.getBoolean(5));
+                entity.setCompleteall(rs.getBoolean(4));
                 return entity;
             }
         };

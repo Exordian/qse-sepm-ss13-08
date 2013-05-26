@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.entity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Markus MUTH
@@ -10,13 +11,13 @@ public class Module {
     private String name;
     private String description;
     private Boolean completeall;
-    private ArrayList<MetaLVA> metaLvas;
+    private List<MetaLVA> metaLvas;
 
-    public ArrayList<MetaLVA> getMetaLvas() {
+    public List<MetaLVA> getMetaLvas() {
         return metaLvas;
     }
 
-    public void setMetaLvas(ArrayList<MetaLVA> metaLvas) {
+    public void setMetaLvas(List<MetaLVA> metaLvas) {
         this.metaLvas = metaLvas;
     }
 
@@ -58,5 +59,30 @@ public class Module {
 
     public void setCompleteall(Boolean completeall) {
         this.completeall = completeall;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Module module = (Module) o;
+
+        if (completeall != null ? !completeall.equals(module.completeall) : module.completeall != null) return false;
+        if (description != null ? !description.equals(module.description) : module.description != null) return false;
+        if (id != null ? !id.equals(module.id) : module.id != null) return false;
+        if (name != null ? !name.equals(module.name) : module.name != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Module{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", completeall=" + completeall +
+                '}';
     }
 }
