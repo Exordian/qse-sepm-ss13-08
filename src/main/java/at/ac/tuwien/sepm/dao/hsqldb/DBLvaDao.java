@@ -1,11 +1,14 @@
 package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.dao.LvaDao;
+import at.ac.tuwien.sepm.dao.LvaDateDao;
+import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +21,11 @@ import java.util.List;
 public class DBLvaDao extends DBBaseDao implements LvaDao {
     private static final int MAX_LENGTH_DESCRIPTION=500;
 
-    DBLvaDateDao lvaDateDao = new DBLvaDateDao();
+    @Autowired
+    DBLvaDateDao lvaDateDao;// = new DBLvaDateDao();
+
+    @Autowired
+    DBMetaLvaDao metaLvaDao;// = new DBMetaLvaDao();
 
     @Override
     public boolean create(LVA toCreate) throws IOException, DataAccessException {
@@ -52,7 +59,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         String stmt = "SELECT * FROM lva WHERE ID=?";
         LVA result = jdbcTemplate.queryForObject(stmt, RowMappers.getLvaRowMapper(), id);
 
-        // TODO set meta lva without lva and precursor.
+        result.setMetaLVA(metaLvaDao.readByIdWithoutLvaAndPrecursor(result.getMetaLVA().getId()));
 
         ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();
         ArrayList<String> rooms = new ArrayList<String>();
@@ -87,6 +94,22 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         result.setTimesExam(timesExam);
         result.setRoomsExam(roomsExam);
         result.setExamGrade(examGrade);
+
+        return result;
+    }
+
+    @Override
+    public List<LVA> readByMetaLva(int metaLvaId) throws DataAccessException {
+        if(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM lva WHERE metalva=?", RowMappers.getIntegerRowMapper(), metaLvaId) == 0){
+            return new ArrayList<LVA>();
+        }
+
+        String stmt = "SELECT * FROM lva WHERE metalva=?";
+        List<LVA> result = jdbcTemplate.query(stmt, RowMappers.getLvaRowMapper(), metaLvaId);
+
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, readById(result.get(i).getId()));
+        }
 
         return result;
     }

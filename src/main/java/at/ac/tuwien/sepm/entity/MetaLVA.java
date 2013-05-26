@@ -19,6 +19,7 @@ public class MetaLVA {
 	//private boolean hasExercise;
 	private float priority=-1;
 	private Semester semestersOffered;
+    private int module;
 	
 	private ArrayList<LVA> lvas;
 	private HashMap<Integer,LVA> lvasMap;
@@ -141,7 +142,16 @@ public class MetaLVA {
 	public void setSemestersOffered(Semester semestersOffered) {
 		this.semestersOffered = semestersOffered;
 	}
-	public boolean isCompleted() {
+
+    public int getModule() {
+        return module;
+    }
+
+    public void setModule(int module) {
+        this.module = module;
+    }
+
+    public boolean isCompleted() {
 		return completed;
 	}
 	public void setCompleted(boolean completed) {

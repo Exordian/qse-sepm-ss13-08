@@ -32,6 +32,16 @@ public interface LvaDao {
     public LVA readById(int id) throws DataAccessException;
 
     /**
+     * Read a lvas with the specified meta lva by its id. The the meta lva of the returned lva is except for the List <code>lva</code> and <code>precurso</code>
+     * completely returned.
+     * @param metaLvaId The id of the lva to be read.
+     * @return A list containing the completely filled LVA-objects or an empty list if there is no lva with the
+     * specified meta lva-
+     * @throws DataAccessException if the date data could not be read because any error occurred.
+     */
+    public List<LVA> readByMetaLva(int metaLvaId) throws DataAccessException;
+
+    /**
      * Read a lva by its id, the lva dates are not read. The MetaLVA is except for the List <code>ArrayList<LVA>lvas</code>
      * completely returned.
      * @param id The id of the lva to be read.

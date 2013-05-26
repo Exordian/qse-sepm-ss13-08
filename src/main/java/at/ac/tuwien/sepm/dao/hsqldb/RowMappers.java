@@ -99,7 +99,8 @@ class RowMappers {
                 entity.setSemestersOffered(Semester.values()[rs.getInt(4)]);
                 entity.setType(LvaType.values()[rs.getInt(5)]);
                 entity.setPriority(rs.getInt(6));
-                entity.setECTS((float) rs.getDouble(7));
+                entity.setECTS(rs.getFloat(7));
+                entity.setModule(rs.getInt(8));
                 return entity;
             }
         };

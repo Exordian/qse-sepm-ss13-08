@@ -18,4 +18,8 @@ public class ExceptionMessages {
     static String tooLongRoom(int i) {
         return "Die Bezeichnung des Raumes ist zu lang (max. " + i + " Zeichen).";
     }
+
+    static String tooLongLvaNumber(int i) {
+        return "Die LVA-Nummer ist zu lang (max. " + i + " Zeichen).";
+    }
 }

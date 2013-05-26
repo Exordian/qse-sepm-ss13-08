@@ -214,6 +214,23 @@ public class DBLvaDaoTest {
     }
 
     @Test
+    public void testReadByMetaLva() throws Exception {
+        TestHelper.insert(7);
+        List<LVA> l = dao.readByMetaLva(0);
+        assert(l.size()==4);
+        assert(l.get(0).getId()==10);
+        assert(l.get(1).getId()==2);
+        assert(l.get(2).getId()==1);
+        assert(l.get(3).getId()==0);
+    }
+
+    @Test
+    public void testReadByNotExistingMetaLva() throws Exception {
+        TestHelper.insert(0);
+        assert(dao.readByMetaLva(-1).size()==0);
+    }
+
+    @Test
     public void testReadByIdWithoutLvaDates() throws Exception {
         TestHelper.insert(0);
         LVA e = dao.readByIdWithoutLvaDates(2);
