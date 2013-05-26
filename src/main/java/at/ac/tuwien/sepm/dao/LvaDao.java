@@ -22,7 +22,8 @@ public interface LvaDao {
     public boolean create(LVA toCreate) throws IOException, DataAccessException;
 
     /**
-     * Read a lva by its id. The the meta lva of the returned lva is except for the List <code>ArrayList<LVA> lvas</code>
+     * Read a lva by its id. The the meta lva of the returned lva is except for the List <code>lva</code> and <code>precurso</code>
+     * completely returned.
      * completely returned.
      * @param id The id of the lva to be read.
      * @return A completely filled LVA-object or <code>null</code> if there is no lva with the specified id.

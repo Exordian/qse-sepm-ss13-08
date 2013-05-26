@@ -52,6 +52,8 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         String stmt = "SELECT * FROM lva WHERE ID=?";
         LVA result = jdbcTemplate.queryForObject(stmt, RowMappers.getLvaRowMapper(), id);
 
+        // TODO set meta lva without lva and precursor.
+
         ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();
         ArrayList<String> rooms = new ArrayList<String>();
 

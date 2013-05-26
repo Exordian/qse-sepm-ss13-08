@@ -96,3 +96,4 @@ public interface DateDao {
      */
     public boolean delete(int id) throws DataAccessException;
 }
+
