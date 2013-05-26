@@ -27,6 +27,7 @@ public class IntelligentSemesterPlaner {
 	//	this.pers=pers;
 	//}
 	public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
+        //System.out.println("setting pool: "+pool);
 		this.forced.clear();
 		this.pool.clear();
 		this.forced.addAll(forced);
@@ -40,6 +41,7 @@ public class IntelligentSemesterPlaner {
 				this.pool.add(lva);
 			}
 		}
+        //System.out.println("pool set: "+this.pool);
 	}
 	public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
 		tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
@@ -93,15 +95,15 @@ public class IntelligentSemesterPlaner {
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-			System.out.println("new Solution found: " +newSolution);
-			System.out.println("value: "+value);
+			//System.out.println("new Solution found: " +newSolution);
+			//System.out.println("value: "+value);
 		}else{
 			ArrayList<MetaLVA> newSolution = new ArrayList<MetaLVA>();
 			for(Integer i:chosen){
 				newSolution.add(all.get(i));
 			}
-			System.out.println("NO new Solution found: " +newSolution);
-			System.out.println("value: "+value);
+			//System.out.println("NO new Solution found: " +newSolution);
+			//System.out.println("value: "+value);
 		}
 	}
 	
