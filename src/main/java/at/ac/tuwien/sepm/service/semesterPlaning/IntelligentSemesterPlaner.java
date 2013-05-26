@@ -2,8 +2,6 @@ package at.ac.tuwien.sepm.service.semesterPlaning;
 
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.Semester;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,22 +11,24 @@ public class IntelligentSemesterPlaner {
 	private ArrayList<MetaLVA> forced = new ArrayList<MetaLVA>();
 	private ArrayList<MetaLVA> pool = new ArrayList<MetaLVA>();
 	private DependenceTree tree;
-    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+	
+	/*public static IntelligentSemesterPlaner singleton; 
+	public static IntelligentSemesterPlaner getPlaner(){
+		if (singleton==null){
+			singleton = new IntelligentSemesterPlaner();
+		}
+		return singleton;
+	}
+	private IntelligentSemesterPlaner(){
 
-
-    /**
-     * sets the LVAs which should be used during the calculation.
-     * @param forced these LVAs will be in the result anyway. It will not be tested, if these intersect each other,
-     *               but before adding LVAs to the solution, they will be tested on intersection.
-     * @param pool all LVAs, which should be considered for the solution. LVAs which are completed will not be considered
-     */
+	}*/
+	//private Persistance pers;
+	//public void setPersistance(Persistance pers){
+	//	this.pers=pers;
+	//}
 	public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
-        if(forced==null){
-            forced = new ArrayList<MetaLVA>(0);
-        }
-        if(pool==null){
-            pool = new ArrayList<MetaLVA>(0);
-        }
+        //System.out.println("setting pool: "+pool);
+		this.forced.clear();
 		this.pool.clear();
 		this.forced.addAll(forced);
 		for(MetaLVA lva:pool){
@@ -41,18 +41,8 @@ public class IntelligentSemesterPlaner {
 				this.pool.add(lva);
 			}
 		}
-        logger.debug("forced set: "+this.forced);
-        logger.debug("pool set: "+this.pool);
+        //System.out.println("pool set: "+this.pool);
 	}
-
-    /**
-     * Plans a semester.
-     * Important: setLVAs() must be called first! Otherwise the resulting list will be empty.
-     * @param goalECTS the desired ECTS for the semester
-     * @param year the year, for which a semester is to plan
-     * @param sem the semester (Semester.S OR Semester.W) which is to plan.
-     * @return a List with the result
-     */
 	public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
 		tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
 		ArrayList<MetaLVA> roots = tree.getRoots();
@@ -62,19 +52,9 @@ public class IntelligentSemesterPlaner {
 				toPlan.add(mLVA);
 			}
 		}
-        ArrayList chosen = new ArrayList<Integer>();
-        for(MetaLVA mLVA :forced){
-            if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
-                toPlan.add(mLVA);
-
-            }
-            chosen.add(toPlan.indexOf(mLVA));
-        }
-        computeSolution(toPlan,chosen,goalECTS);
-		recPlanning(toPlan,0,chosen,goalECTS,year,sem);
-		if(bestSolution!=null)
+		recPlanning(toPlan,0,new ArrayList<Integer>(),goalECTS,year,sem);
+		
 		return bestSolution;
-        return new ArrayList<MetaLVA>();
 	}
 	private ArrayList<MetaLVA> bestSolution=null;
 	private float solutionValue=Float.NEGATIVE_INFINITY;
@@ -115,15 +95,15 @@ public class IntelligentSemesterPlaner {
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-			logger.debug("new Solution found: " +newSolution+"\nsolution value: "+value);
+			//System.out.println("new Solution found: " +newSolution);
+			//System.out.println("value: "+value);
 		}else{
-            //active for detailed debugging
-			/*ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
+			ArrayList<MetaLVA> newSolution = new ArrayList<MetaLVA>();
 			for(Integer i:chosen){
-				toDiscard.add(all.get(i));
+				newSolution.add(all.get(i));
 			}
-			logger.debug("discarding set: " +toDiscard+"\nsolution value: "+value);
-			*/
+			//System.out.println("NO new Solution found: " +newSolution);
+			//System.out.println("value: "+value);
 		}
 	}
 	
