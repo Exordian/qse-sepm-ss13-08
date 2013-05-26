@@ -12,23 +12,21 @@ public class IntelligentSemesterPlaner {
 	private ArrayList<MetaLVA> pool = new ArrayList<MetaLVA>();
 	private DependenceTree tree;
 	
-	/*public static IntelligentSemesterPlaner singleton; 
-	public static IntelligentSemesterPlaner getPlaner(){
-		if (singleton==null){
-			singleton = new IntelligentSemesterPlaner();
-		}
-		return singleton;
-	}
-	private IntelligentSemesterPlaner(){
 
-	}*/
-	//private Persistance pers;
-	//public void setPersistance(Persistance pers){
-	//	this.pers=pers;
-	//}
+
+    /**
+     * sets the LVAs which should be used during the calculation.
+     * @param forced these LVAs will be in the result anyway. It will not be tested, if these intersect each other,
+     *               but before adding LVAs to the solution, they will be tested on intersection.
+     * @param pool all LVAs, which should be considered for the solution. LVAs which are completed will not be considered
+     */
 	public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
-        //System.out.println("setting pool: "+pool);
-		this.forced.clear();
+        if(forced==null){
+            forced = new ArrayList<MetaLVA>(0);
+        }
+        if(pool==null){
+            pool = new ArrayList<MetaLVA>(0);
+        }
 		this.pool.clear();
 		this.forced.addAll(forced);
 		for(MetaLVA lva:pool){
@@ -43,6 +41,15 @@ public class IntelligentSemesterPlaner {
 		}
         //System.out.println("pool set: "+this.pool);
 	}
+
+    /**
+     * Plans a semester.
+     * Important: setLVAs() must be called first! Otherwise the resulting list will be empty.
+     * @param goalECTS the desired ECTS for the semester
+     * @param year the year, for which a semester is to plan
+     * @param sem the semester (Semester.S OR Semester.W) which is to plan.
+     * @return a List with the result
+     */
 	public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
 		tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
 		ArrayList<MetaLVA> roots = tree.getRoots();
