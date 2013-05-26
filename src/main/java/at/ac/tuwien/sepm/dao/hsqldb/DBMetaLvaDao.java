@@ -125,6 +125,23 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
     }
 
     @Override
+    public List<MetaLVA> readUncompletedByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws DataAccessException {
+        if(!semester.equals(Semester.S) && !semester.equals(Semester.W)) {
+            return null;
+        }
+
+        List<LVA> lvas = lvaDao.readUncompletedByYearSemesterStudyProgress(year, semester, isInStudyProgress);
+        ArrayList<MetaLVA> result = new ArrayList<MetaLVA>(lvas.size());
+
+        for(int i=0; i<lvas.size(); i++) {
+            result.add(i, readById(lvas.get(i).getMetaLVA().getId()));
+            result.get(i).setLVA(lvas.get(i));
+        }
+
+        return result;
+    }
+
+    /*@Override
     public List<MetaLVA> readNotCompletedByYearSemesterStudProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException {
         if(!semester.equals(Semester.W) && !semester.equals(Semester.S)) {
             return null;
@@ -147,18 +164,7 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
         }
 
         return result;
-                /*
-
-        String stmt = "SELECT predecessor FROM predecessor WHERE successor=?";
-        List<Integer> l = jdbcTemplate.query(stmt, RowMappers.getIntegerRowMapper(), semester);
-        List<MetaLVA> result = new ArrayList<MetaLVA>();
-
-        for(Integer i : l) {
-            result.add(readByIdWithoutLvaAndPrecursor(i));
-        }
-
-        return result;   */
-    }
+    }*/
 
     @Override
     public boolean update(MetaLVA toUpdate) throws IOException, DataAccessException {

@@ -1,5 +1,8 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.ui.semesterPlanning.PlanningPanel;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -15,8 +18,10 @@ public class StudPanel extends StandardInsidePanel {
     private JButton tab2;
     private JButton tab3;
     private JButton tab4;
-
-    public StudPanel() {
+    private PlanningPanel planningPanel;
+    @Autowired
+    public StudPanel(PlanningPanel planningPanel) {
+        this.planningPanel = planningPanel;
         this.setLayout(null);
         this.setBounds(size);
         this.setOpaque(false);
@@ -41,16 +46,24 @@ public class StudPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
+                remove(planningPanel);
                 //todo
+                revalidate();
+                repaint();
             }
         });
 
         tab2.setBounds(41+160,30,160,40);
+        planningPanel.setBounds(size.x/4,size.y+100,size.width,size.height);
         tab2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                //todo
+                //todo remove(...)
+
+                add(planningPanel);
+                revalidate();
+                repaint();
             }
         });
 
@@ -59,7 +72,10 @@ public class StudPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
+                remove(planningPanel);
                 //todo
+                revalidate();
+                repaint();
             }
         });
 
@@ -68,7 +84,10 @@ public class StudPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(4);
+                remove(planningPanel);
                 //todo
+                revalidate();
+                repaint();
             }
         });
 

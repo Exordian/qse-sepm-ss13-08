@@ -42,6 +42,20 @@ public interface LvaDao {
     public List<LVA> readByMetaLva(int metaLvaId) throws DataAccessException;
 
     /**
+     * Return all lvas where no lva grouped by the meta lva exists, which is already completed (1<=grade<=4), the lva is
+     * in the specified year and semester and the lva is included to the study progress or not.
+     * The returned lvas contain all related lva dates.
+     * @param year The year
+     * @param semester The semester. <code>semester</code> must be <code>Semester.S</code> or <code>Semester.W</code>
+     * @param isInStudyProgress <code>true</code> if the returned list should contain meta lvas which are included to
+     *                          the study progress, <code>false</code> otherwise.
+     * @return A list containing all matching lvas or an empty list if there was no match.
+     * @throws DataAccessException If the data could not be read because any error occurred.
+     * @throws NullPointerException If <code>semester==null</code>.
+     */
+    public List<LVA> readUncompletedByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
+
+    /**
      * Read a lva by its id, the lva dates are not read. The MetaLVA is except for the List <code>ArrayList<LVA>lvas</code>
      * completely returned.
      * @param id The id of the lva to be read.
@@ -60,7 +74,7 @@ public interface LvaDao {
      */
     public List<LVA> readByYearAndSemester(int year, boolean isWinterSemester) throws DataAccessException;
 
-    /**
+    /*
      * Return all lvas from the specified year and semester where the grade is undefined or 5 and which are in study
      * progress or not. For every meta lva and year and semester can only exist one lva, so there is maximum 1 lva for
      * each meta lva returned.
@@ -72,7 +86,7 @@ public interface LvaDao {
      * @throws DataAccessException If the date data could not be read because any error occurred.
      * @throws NullPointerException If <code>semester==null</code>.
      */
-    public List<LVA> readNotCompletedByYearSemesterStudyProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException;
+    //public List<LVA> readNotCompletedByYearSemesterStudyProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException;
 
     /*
      * Read all lvas which are included to the study progress.

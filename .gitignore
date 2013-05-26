@@ -20,11 +20,17 @@
 *.project
 *.settings
 
+# database
+mydb.*
+
 ## generic files to ignore
 *~
 *.lock
+*.lck
 *.DS_Store
 *.swp
 *.out
 .gradle
+
+
 desktop.ini
