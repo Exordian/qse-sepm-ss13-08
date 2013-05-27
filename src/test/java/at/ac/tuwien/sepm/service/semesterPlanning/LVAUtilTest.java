@@ -19,10 +19,6 @@ public class LVAUtilTest {
 	@Before
 	public void setUp(){
 	}
-
-    /**
-     * tests if the hasNext() of the Iterator works as expected.
-     */
 	@Test
 	public void testIteratorHasNext(){
 		LVA lva = new LVA();
@@ -33,10 +29,6 @@ public class LVAUtilTest {
 		assertTrue(LVAUtil.iterator(lva).hasNext());
 		assertFalse(LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM).hasNext());
 	}
-
-    /**
-     * tests the iterator on the examTimes
-     */
 	@Test
 	public void testIteratorExamTimes(){
 		LVA lva = new LVA();
@@ -58,10 +50,6 @@ public class LVAUtilTest {
 		assertTrue(iter2.next()==t1);
 		assertFalse(iter2.hasNext());
 	}
-
-    /**
-     * test if the Iterator works correctly on all times
-     */
 	@Test
 	public void testIteratorAllTimes(){
 		LVA lva = new LVA();
