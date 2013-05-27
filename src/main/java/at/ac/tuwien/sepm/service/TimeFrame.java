@@ -6,15 +6,9 @@ import org.joda.time.DateTime;
 public class TimeFrame {
 	private final DateTime from;
 	private final DateTime to;
-
-    /**
-     * creates a new TimeFrame, from two DateTime object
-     * @param from the first date for this TimeFrame. must lie before "to".
-     * @param to the second date for this TimeFrame. must lie after "from".
-     */
 	public TimeFrame(DateTime from,DateTime to){
 		if(from.isAfter(to)){
-			throw new RuntimeException("\"from\" must lie before \"to\"!");
+			throw new RuntimeException("\"from\" must lie befor \"to\"!");
 		}
 		this.from = from;
 		this.to=to;
