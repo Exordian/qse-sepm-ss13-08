@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Author: MUTH Markus
- * Date: 5/26/13
- * Time: 5:05 PM
- * Description of class "DBTodoDaoTest":
+ * @author Markus MUTH
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-test.xml"})
@@ -71,7 +68,7 @@ public class DBTodoDaoTest {
         e0.setDescription("Favoritenbstraße, Stiege 3, 3. Stock Zimmer H1234");
         e0.setDone(false);
 
-        assert(dao.create(e0));
+        dao.create(e0);
     }
 
     @Test(expected = IOException.class)
@@ -92,7 +89,7 @@ public class DBTodoDaoTest {
         e0.setDescription(s);
         e0.setDone(false);
 
-        assert(dao.create(e0));
+        dao.create(e0);
     }
 
     @Test

@@ -341,10 +341,6 @@ public class DBDateDaoTest {
         dao.create(e0);
         dao.create(e1);
         dao.delete(0);
-        //System.out.println(e0);
-        //System.out.println(e1);
-        //System.out.println(dao.readById(0));
-        //System.out.println(dao.readById(1));
         assert(dao.readById(0) == null);
         assert(dao.readById(1).equals(e1));
     }

@@ -1,10 +1,8 @@
 package at.ac.tuwien.sepm.dao.hsqldb;
 
-import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.TimeFrame;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -195,7 +193,6 @@ public class DBMetaLvaDaoTest {
     public void testReadById() throws Exception {
         TestHelper.insert(0);
         MetaLVA e0 = dao.readById(0);
-        System.out.println(e0);
         assert(e0.getId()==0);
         assert(e0.getNr().equals("104.265"));
         assert(e0.getName().equals("Algebra und Diskrete Mathematik für Informatik und Wirtschaftsinformatik"));
@@ -205,10 +202,6 @@ public class DBMetaLvaDaoTest {
         assert(e0.getECTS()==4);
 
         assert(e0.getLVAs().size()==1);
-        System.out.println(e0.getLVAs().get(0).toString());
-        for(TimeFrame d : e0.getLVAs().get(0).getTimes()) {
-            System.out.println(d);
-        }
         assert(e0.getLVAs().get(0).getTimes().size()==12);
         assert(e0.getLVAs().get(0).getTimesExam().size()==2);
         assert(e0.getLVAs().get(0).getTimesUE().size()==0);

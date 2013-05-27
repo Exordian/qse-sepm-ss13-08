@@ -72,7 +72,6 @@ public class DBModuleDaoTest {
             s=s.concat(s);
         }
 
-        System.out.println("s.length() = " + s.length());
         Module e0 = new Module();
         e0.setId(1234);
         e0.setName(s);
@@ -97,7 +96,6 @@ public class DBModuleDaoTest {
             s=s.concat(s);
         }
 
-        System.out.println("s.length() = " + s.length());
         Module e0 = new Module();
         e0.setId(1234);
         e0.setName("Algebra und Diskrete Mathematik");
@@ -122,7 +120,6 @@ public class DBModuleDaoTest {
             s=s.concat(s);
         }
 
-        System.out.println("s.length() = " + s.length());
         Module e0 = new Module();
         e0.setId(1234);
         e0.setName(null);
@@ -147,7 +144,6 @@ public class DBModuleDaoTest {
             s=s.concat(s);
         }
 
-        System.out.println("s.length() = " + s.length());
         Module e0 = new Module();
         e0.setId(1234);
         e0.setName("Algebra und Diskrete Mathematik");

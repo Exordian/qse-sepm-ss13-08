@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Author: MUTH Markus
- * Date: 5/25/13
- * Time: 11:36 AM
- * Description of class "DBLvaDateDaoTest":
+ * @author Markus MUTH
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-test.xml"})
@@ -65,7 +62,6 @@ public class DBLvaDateDaoTest {
         for(int i=0; i<10; i++){
             s=s.concat(s);
         }
-        System.out.println("############## " + s.length());
         LvaDate e = new LvaDate();
         e.setLva(0);
         e.setName(s);

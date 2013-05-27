@@ -167,24 +167,6 @@ INSERT INTO LVADate (id,lva,name,description,type,room,result,start,stop,attenda
 
 (null,7,'Studieneingangsgespräch','da MUSS ich hingehen ... nicht vergessen!!!!!!!!!',1,'muss ich noch nachschauen',null,'2013-02-14 18:00:00.0','2013-02-14 19:00:00.0',TRUE,TRUE);
 
-INSERT INTO Track(id,lva,name,description,start,stop) VALUES
-(null,1,'Übung machen','qertbe fg','2013-04-05 11:01:00.0','2013-04-05 20:00:00.0'),
-(null,1,'Übung machen','- küp34i ü0poekas','2013-04-06 12:02:00.0','2013-04-06 21:00:00.0'),
-(null,1,'Übung','Beispiele 23, 25, 27, 31, 45','2013-04-07 13:03:00.0','2013-04-07 17:00:00.0'),
-(null,2,'Lernen','','2013-04-08 14:04:00.0','2013-04-08 14:50:45.0'),
-(null,2,null,'asdfasdf','2013-04-09 15:05:00.0','2013-04-09 17:00:00.0'),
-(null,2,'Programmieraufgabe','','2013-04-10 16:06:00.0','2013-04-10 23:00:00.0'),
-(null,2,'Studenvorbereitung',null,'2013-04-11 17:07:00.0','2013-04-11 19:00:31.0'),
-(null,3,null,'','2013-04-14 20:10:00.0','2013-04-14 22:00:23.0'),
-(null,3,'Übung machen','','2013-04-15 18:11:00.0','2013-04-15 20:00:00.0'),
-(null,3,'','','2013-04-16 14:12:00.0','2013-04-16 23:00:00.0'),
-(null,3,'Übung machen','asdf','2013-04-17 23:13:00.0','2013-04-18 05:00:00.0'),
-(null,4,'Übung machen','asd sadf asdf sdf ','2013-04-18 10:14:00.0','2013-04-18 11:00:56.0'),
-(null,2,'Übung machen',null,'2013-04-13 19:09:00.0','2013-04-13 23:00:00.0'),
-(null,4,'Präsentation vorbereiten','','2013-04-19 11:15:00.0','2013-04-19 23:00:00.0'),
-(null,2,'Gruppenlernen','','2013-04-12 18:08:00.0','2013-04-12 19:00:00.0'),
-(null,4,'','','2013-04-20 20:16:00.0','2013-04-20 21:00:23.0');
-
 INSERT INTO TODO (id,lva,name,description,done) VALUES
 (null,1,'Skript Kaufen','Favoritenbstraße, Stiege 3, 3. Stock Zimmer H1234', false),
 (null,null,'ÖB-Beitrag einzahlen','Kontonummer 12341234, Bankleitzahl 12341234, Betrag 17,50 €', false),
