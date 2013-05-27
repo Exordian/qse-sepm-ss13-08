@@ -28,11 +28,11 @@ INSERT INTO Predecessor (predecessor,successor) VALUES
 
 INSERT INTO LVA (id,metaLva,year,isWinterSemester,description,grade,inStudyProgress) VALUES
 (null,0,2013,FALSE,'Hier steht dann die Beschreibung zu Algebra und Diskrete Mathematik für Wirtschaftsinformatik',0,FALSE),
-(null,1,2013,FALSE,'Hier steht dann die Beschreibung zu Algebra und Diskrete Mathematik für Wirtschaftsinformatik',0,FALSE),
+(null,1,2013,FALSE,'Hier steht dann die Beschreibung zu Algebra und Diskrete Mathematik für Wirtschaftsinformatik',0,TRUE),
 (null,2,2013,FALSE,'Hier steht dann die Beschreibung zu Algorithmen und Datenstrukturen 1',0,FALSE),
-(null,3,2013,FALSE,'Hier steht dann die Beschreibung zu Algorithmen und Datenstrukturen 2',0,FALSE),
-(null,4,2013,FALSE,'Hier steht dann die Beschreibung zu Technikpsychologie und Technikpsychologie',0,FALSE),
-(null,5,2013,FALSE,'Hier steht dann die Beschreibung zu Forschungsmethoden',0,FALSE),
+(null,3,2013,FALSE,'Hier steht dann die Beschreibung zu Algorithmen und Datenstrukturen 2',0,TRUE),
+(null,4,2013,FALSE,'Hier steht dann die Beschreibung zu Technikpsychologie und Technikpsychologie',0,TRUE),
+(null,5,2013,FALSE,'Hier steht dann die Beschreibung zu Forschungsmethoden',0,TRUE),
 (null,7,2013,FALSE,'Hier steht dann die Beschreibung zu Softskills für TechnikerInnen',0,FALSE),
 (null,8,2013,FALSE,'Hier steht dann die Beschreibung zu Studieneingangsgespräch',0,FALSE);
 
@@ -213,7 +213,4 @@ INSERT INTO Date (id,tag,name,description,isIntersectable,start,stop) VALUES
 (null,'Arbeit','Arbeit',null,FALSE,'2013-06-04 08:30:00.0','2013-06-04 18:00:00.0'),
 (null,'Arbeit','Arbeit',null,FALSE,'2013-06-05 08:30:00.0','2013-06-05 18:00:00.0'),
 (null,'Arbeit','Arbeit',null,FALSE,'2013-06-05 08:30:00.0','2013-06-06 18:00:00.0'),
-(null,'Arbeit','Arbeit',null,FALSE,'2013-11-04 08:30:00.0','2013-11-04 18:00:00.0'),
-(null,'Arbeit','Arbeit',null,FALSE,'2013-11-05 08:30:00.0','2013-11-05 18:00:00.0'),
-(null,'Arbeit','Arbeit',null,FALSE,'2013-11-05 08:30:00.0','2013-11-06 18:00:00.0'),
 (null,'Arbeit','Arbeit',null,FALSE,'2013-06-05 08:30:00.0','2013-06-07 18:00:00.0');

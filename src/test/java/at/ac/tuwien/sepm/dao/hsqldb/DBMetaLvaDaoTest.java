@@ -291,6 +291,58 @@ public class DBMetaLvaDaoTest {
     }
 
     @Test
+    public void readNotCompletedByYearSemesterStudProgress() throws Exception {
+        TestHelper.insert(12);
+        List<MetaLVA> l0 = dao.readNotCompletedByYearSemesterStudProgress(2013, Semester.S, true);
+        List<MetaLVA> l1 = dao.readNotCompletedByYearSemesterStudProgress(2013, Semester.S, false);
+        assert(l0.size()==4);
+        assert(l1.size()==4);
+        assert(l0.get(0).getId()==1);
+        assert(l0.get(1).getId()==3);
+        assert(l0.get(2).getId()==4);
+        assert(l0.get(3).getId()==5);
+        assert(l1.get(0).getId()==0);
+        assert(l1.get(1).getId()==2);
+        assert(l1.get(2).getId()==7);
+        assert(l1.get(3).getId()==8);
+        assert(l0.get(0).getLVAs().size()==1);
+        assert(l0.get(1).getLVAs().size()==1);
+        assert(l0.get(2).getLVAs().size()==1);
+        assert(l0.get(3).getLVAs().size()==1);
+        assert(l0.get(0).getLVAs().get(0).getId()==1);
+        assert(l0.get(1).getLVAs().get(0).getId()==3);
+        assert(l0.get(2).getLVAs().get(0).getId()==4);
+        assert(l0.get(3).getLVAs().get(0).getId()==5);
+        assert(l1.get(0).getLVAs().size()==1);
+        assert(l1.get(1).getLVAs().size()==1);
+        assert(l1.get(2).getLVAs().size()==1);
+        assert(l1.get(3).getLVAs().size()==1);
+        assert(l1.get(0).getLVAs().get(0).getId()==0);
+        assert(l1.get(1).getLVAs().get(0).getId()==2);
+        assert(l1.get(2).getLVAs().get(0).getId()==6);
+        assert(l1.get(3).getLVAs().get(0).getId()==7);
+    }
+
+    @Test
+    public void readNotCompletedByNotExistingYearSemesterStudProgress() throws Exception {
+        TestHelper.insert(12);
+        assert(dao.readNotCompletedByYearSemesterStudProgress(-1, Semester.S, true).size()==0);
+
+    }
+
+    @Test
+    public void readNotCompletedByYearNotExistingSemesterStudProgress() throws Exception {
+        TestHelper.insert(12);
+        assert(dao.readNotCompletedByYearSemesterStudProgress(2013, Semester.UNKNOWN, true)== null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void readNotCompletedByYearSemesterIsNullStudProgress() throws Exception {
+        TestHelper.insert(12);
+        dao.readNotCompletedByYearSemesterStudProgress(2013, null, true);
+    }
+
+    @Test
     public void testUpdate() throws Exception {
         TestHelper.insert(0);
         MetaLVA e0 = new MetaLVA();

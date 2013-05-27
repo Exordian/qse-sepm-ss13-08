@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.dao.hsqldb;
 
-import at.ac.tuwien.sepm.dao.LvaDao;
 import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
@@ -104,9 +103,7 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
         }
 
         String stmt="SELECT * FROM metalva WHERE id=?";
-        MetaLVA result = jdbcTemplate.queryForObject(stmt, RowMappers.getMetaLvaRowMapper(), id);
-
-        return result;
+        return jdbcTemplate.queryForObject(stmt, RowMappers.getMetaLvaRowMapper(), id);
     }
 
     @Override
@@ -125,6 +122,42 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
         result.setPrecursor(readAllPredecessors(result.getId()));
 
         return result;
+    }
+
+    @Override
+    public List<MetaLVA> readNotCompletedByYearSemesterStudProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException {
+        if(!semester.equals(Semester.W) && !semester.equals(Semester.S)) {
+            return null;
+        }
+
+        List<LVA> lva = lvaDao.readNotCompletedByYearSemesterStudyProgress(year, semester, inStudyProgress);
+
+        if (lva.size()==0) {
+            return new ArrayList<MetaLVA>();
+        }
+
+        ArrayList<MetaLVA> result = new ArrayList<MetaLVA>();
+
+        for(LVA l : lva) {
+            MetaLVA m = readById(l.getMetaLVA().getId());
+            ArrayList<LVA> a = new ArrayList<LVA>();
+            a.add(l);
+            m.setLVAs(a);
+            result.add(m);
+        }
+
+        return result;
+                /*
+
+        String stmt = "SELECT predecessor FROM predecessor WHERE successor=?";
+        List<Integer> l = jdbcTemplate.query(stmt, RowMappers.getIntegerRowMapper(), semester);
+        List<MetaLVA> result = new ArrayList<MetaLVA>();
+
+        for(Integer i : l) {
+            result.add(readByIdWithoutLvaAndPrecursor(i));
+        }
+
+        return result;   */
     }
 
     @Override
