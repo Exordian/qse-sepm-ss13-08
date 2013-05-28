@@ -25,7 +25,7 @@ public class PropsPanel extends StandardInsidePanel {
         JLabel title = new JLabel("Eigenschaften");
         title.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+3, (int)(size.getHeight()/2-image.getHeight(null)/2)-42,225,45);
         title.setForeground(Color.WHITE);
-        title.setFont(new Font("SansSerif", Font.PLAIN, 35));
+        title.setFont(standardTitleFont);
         this.add(title);
     }
 }

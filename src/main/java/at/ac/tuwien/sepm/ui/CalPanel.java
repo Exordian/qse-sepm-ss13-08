@@ -40,11 +40,11 @@ public class CalPanel extends StandardInsidePanel {
         month = new JLabel("SEPTEMBER 2012");
         month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 305, 30);
         month.setForeground(Color.WHITE);
-        month.setFont(new Font("SansSerif", Font.PLAIN, 35));
+        month.setFont(standardTitleFont);
 
         semester = new JComboBox();
         semester.setBounds((int)(month.getBounds().getX()+month.getBounds().getWidth()), (int)(size.getHeight()/2-image.getHeight(null)/2)-20, 90, 20);
-        semester.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        semester.setFont(standardButtonFont);
         semester.addItem("WS2011");
         semester.addItem("SS2011");
         semester.addItem("WS2012");
@@ -57,7 +57,7 @@ public class CalPanel extends StandardInsidePanel {
     private void createImportButton() {
         importBtn = new JButton("Importieren");
         importBtn.setBounds(910, 581, 110, 38);
-        importBtn.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        importBtn.setFont(standardButtonFont);
         importBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
