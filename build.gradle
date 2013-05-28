@@ -53,3 +53,15 @@ jacocoTestReport {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.6'
 }
+
+
+task dbmanager(type: JavaExec) {
+    classpath = configurations.compile 
+    main = "org.hsqldb.util.DatabaseManagerSwing"
+}
+
+task dbserver(type: JavaExec) {
+    classpath = configurations.compile
+    main = "org.hsqldb.Server"
+    args = ['-database.0', 'file:./.db', '-dbname.0', 'xdb']
+}
