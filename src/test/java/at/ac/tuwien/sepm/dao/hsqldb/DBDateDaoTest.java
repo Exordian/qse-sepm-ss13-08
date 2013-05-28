@@ -244,10 +244,8 @@ public class DBDateDaoTest {
         TestHelper.insert(0);
         LVA e0 = dao.readNotIntersectableByYearSemester(2013, Semester.S);
         LVA e1 = dao.readNotIntersectableByYearSemester(2013, Semester.W);
-
-        System.out.println("e1.getTimes().size() = " + e1.getTimes().size());
         assert(e0.getTimes().size()==11);
-        assert(e1.getTimes().size()==3);
+        assert(e1.getTimes().size()==2);
     }
 
     @Test

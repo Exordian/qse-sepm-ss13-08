@@ -18,7 +18,7 @@ INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module) VALUE
 (null,'187.298','Forschungsmethoden',2,1,0,3,2),
 (null,'280.239','EDV-Vertragsrecht',1,0,0,1.5,2),
 (null,'181.208','Softskills für TechnikerInnen',2,1,0,3,2),
-(null,'195.039','Studieneingangsgespräch',2,2,'0','0.2','3');
+(null,'195.039','Studieneingangsgespräch',2,2,0,0.2,3);
 
 INSERT INTO Predecessor (predecessor,successor) VALUES
 (8,2),
@@ -27,14 +27,14 @@ INSERT INTO Predecessor (predecessor,successor) VALUES
 (8,1);
 
 INSERT INTO LVA (id,metaLva,year,isWinterSemester,description,grade,inStudyProgress) VALUES
-(null,0,2013,FALSE,'Hier steht dann die Beschreibung zu Algebra und Diskrete Mathematik für Wirtschaftsinformatik',0,FALSE),
-(null,1,2013,FALSE,'Hier steht dann die Beschreibung zu Algebra und Diskrete Mathematik für Wirtschaftsinformatik',0,FALSE),
+(null,0,2013,FALSE,'Hier steht dann die Beschreibung zu Algebra und Diskrete Mathematik für Wirtschaftsinformatik',0,TRUE),
+(null,1,2013,FALSE,'Hier steht dann die Beschreibung zu Algebra und Diskrete Mathematik für Wirtschaftsinformatik',0,TRUE),
 (null,2,2013,FALSE,'Hier steht dann die Beschreibung zu Algorithmen und Datenstrukturen 1',0,FALSE),
-(null,3,2013,FALSE,'Hier steht dann die Beschreibung zu Algorithmen und Datenstrukturen 2',0,FALSE),
+(null,3,2013,FALSE,'Hier steht dann die Beschreibung zu Algorithmen und Datenstrukturen 2',0,TRUE),
 (null,4,2013,FALSE,'Hier steht dann die Beschreibung zu Technikpsychologie und Technikpsychologie',0,FALSE),
 (null,5,2013,FALSE,'Hier steht dann die Beschreibung zu Forschungsmethoden',0,FALSE),
 (null,7,2013,FALSE,'Hier steht dann die Beschreibung zu Softskills für TechnikerInnen',0,FALSE),
-(null,8,2013,FALSE,'Hier steht dann die Beschreibung zu Studieneingangsgespräch',0,FALSE);
+(null,8,2013,FALSE,'Hier steht dann die Beschreibung zu Studieneingangsgespräch',0,TRUE);
 
 INSERT INTO InCurriculum (curriculum,module,obligatory) VALUES
 (0,3,TRUE),
@@ -214,6 +214,6 @@ INSERT INTO Date (id,tag,name,description,isIntersectable,start,stop) VALUES
 (null,'Arbeit','Arbeit',null,FALSE,'2013-06-05 08:30:00.0','2013-06-05 18:00:00.0'),
 (null,'Arbeit','Arbeit',null,FALSE,'2013-06-05 08:30:00.0','2013-06-06 18:00:00.0'),
 (null,'Arbeit','Arbeit',null,FALSE,'2013-11-04 08:30:00.0','2013-11-04 18:00:00.0'),
-(null,'Arbeit','Arbeit',null,TRUE,'2013-11-05 08:30:00.0','2013-11-05 18:00:00.0'),
+(null,'Arbeit','Arbeit',null,FALSE,'2013-11-05 08:30:00.0','2013-11-05 18:00:00.0'),
 (null,'Arbeit','Arbeit',null,FALSE,'2013-11-05 08:30:00.0','2013-11-06 18:00:00.0'),
 (null,'Arbeit','Arbeit',null,FALSE,'2013-06-05 08:30:00.0','2013-06-07 18:00:00.0');

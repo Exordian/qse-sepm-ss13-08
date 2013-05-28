@@ -82,6 +82,20 @@ public interface MetaLvaDao {
     public MetaLVA readByLvaNumber(String lvaNumber) throws DataAccessException;
 
     /**
+     * Return all meta lvas, which have no completed lva, have no lva in the specified year and semester and where the
+     * perhaps existing lva from the specified year and semester is included to the study progress or not.
+     * @param year The year.
+     * @param semester The semester. Must be <code>Semester.S</code> of <code>Semester.W</code>.
+     * @param isInStudyProgress <code>true</code> if the returned list should only contain meta lvas which have actual
+     *                          lvas which are included to the study progress and <code>false</code>  otherwise.
+     * @return A list containing all matching meta lvas, a emtpy list if there was no match and <code>null</code> if
+     * <code>!semester.equals(Semester.S) && !semester.equals(Semester.W)</code>.
+     * @throws DataAccessException If the data could not be read because any other error occurred.
+     * @throws NullPointerException If <code>semester==null</code>.
+     */
+    public List<MetaLVA> readUncompletedByYearSemesterStudyProgress (int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
+
+    /*
      * Read all meta lvas which have a lva in the specified year and semester and which is either included to study
      * progress or not. The meta lva from the returned lvas from the returned meta lvas does only contain their id, but
      * does contain all lva dates.
@@ -95,7 +109,7 @@ public interface MetaLvaDao {
      * @throws DataAccessException  the data could not be read because any other error occurred.
      * @throws NullPointerException If <code>semester==null</code>.
      */
-    public List<MetaLVA> readNotCompletedByYearSemesterStudProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException;
+    //public List<MetaLVA> readNotCompletedByYearSemesterStudProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException;
 
     /**
      * Update the meta lvanumber,name, semester, type, priority, ects and module. The meta lva is identified by the id.
