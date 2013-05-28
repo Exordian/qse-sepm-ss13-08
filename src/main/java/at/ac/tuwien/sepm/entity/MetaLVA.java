@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MetaLVA {
 	
-	
+	private Integer id;
 	private String nr;
 	private String name;
 	private float ects=-1;
@@ -19,13 +19,22 @@ public class MetaLVA {
 	//private boolean hasExercise;
 	private float priority=-1;
 	private Semester semestersOffered;
+    private int module;
 	
 	private ArrayList<LVA> lvas;
 	private HashMap<Integer,LVA> lvasMap;
 	
 	private boolean completed;
 
-	public String getNr() {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNr() {
 		return nr;
 	}
 
@@ -133,7 +142,16 @@ public class MetaLVA {
 	public void setSemestersOffered(Semester semestersOffered) {
 		this.semestersOffered = semestersOffered;
 	}
-	public boolean isCompleted() {
+
+    public int getModule() {
+        return module;
+    }
+
+    public void setModule(int module) {
+        this.module = module;
+    }
+
+    public boolean isCompleted() {
 		return completed;
 	}
 	public void setCompleted(boolean completed) {

@@ -7,7 +7,7 @@ public class Todo {
     private Integer id;
     private LVA lva;
     private String name;
-    private String descirption;
+    private String description;
     private Boolean done;
 
     public Integer getId() {
@@ -34,12 +34,12 @@ public class Todo {
         this.name = name;
     }
 
-    public String getDescirption() {
-        return descirption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescirption(String descirption) {
-        this.descirption = descirption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Boolean getDone() {
@@ -48,5 +48,20 @@ public class Todo {
 
     public void setDone(Boolean done) {
         this.done = done;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Todo todo = (Todo) o;
+
+        if (description != null ? !description.equals(todo.description) : todo.description != null) return false;
+        if (done != null ? !done.equals(todo.done) : todo.done != null) return false;
+        if (id != null ? !id.equals(todo.id) : todo.id != null) return false;
+        if (name != null ? !name.equals(todo.name) : todo.name != null) return false;
+
+        return true;
     }
 }

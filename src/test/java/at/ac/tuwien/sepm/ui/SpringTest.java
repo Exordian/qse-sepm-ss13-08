@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.dao.LvaDao;
+import at.ac.tuwien.sepm.dao.OLD_LvaDao_FROM_JAKOB;
 import at.ac.tuwien.sepm.service.TissService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ public class SpringTest {
     private TissService tissService;
 
     @Autowired
-    private LvaDao lvaDao;
+    private OLD_LvaDao_FROM_JAKOB lvaDao;
 
     @Test
     public void testTest() throws Exception {

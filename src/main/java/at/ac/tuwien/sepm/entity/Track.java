@@ -68,4 +68,19 @@ public class Track {
     public void setStop(DateTime stop) {
         this.stop = stop;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Track track = (Track) o;
+
+        if (description != null ? !description.equals(track.description) : track.description != null) return false;
+        if (id != null ? !id.equals(track.id) : track.id != null) return false;
+        if (name != null ? !name.equals(track.name) : track.name != null) return false;
+        if (start != null ? !start.equals(track.start) : track.start != null) return false;
+        return !(stop != null ? !stop.equals(track.stop) : track.stop != null);
+
+    }
 }

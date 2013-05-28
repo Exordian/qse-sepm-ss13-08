@@ -68,4 +68,34 @@ public class DateEntity {
     public void setStop(DateTime stop) {
         this.stop = stop;
     }
+
+    @Override
+    public String toString() {
+        return "DateEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", isIntersectable=" + isIntersectable +
+                ", start=" + start +
+                ", stop=" + stop +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DateEntity that = (DateEntity) o;
+
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (isIntersectable != null ? !isIntersectable.equals(that.isIntersectable) : that.isIntersectable != null)
+            return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (start != null ? !start.equals(that.start) : that.start != null) return false;
+        if (stop != null ? !stop.equals(that.stop) : that.stop != null) return false;
+
+        return true;
+    }
 }
