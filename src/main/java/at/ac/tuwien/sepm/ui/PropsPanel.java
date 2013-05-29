@@ -14,7 +14,7 @@ public class PropsPanel extends StandardInsidePanel {
         this.setOpaque(false);
 
         try {
-            image = ImageIO.read(new File("src/main/resources/img/plainpanel.png"));
+            image = ImageIO.read(ClassLoader.getSystemResource("img/plainpanel.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

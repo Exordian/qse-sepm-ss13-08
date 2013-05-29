@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ui;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -23,6 +25,8 @@ public class BGPanel extends JPanel {
     private JPanel propsPanel;
     private Image image;
 
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+
     @Autowired
     public BGPanel(CalPanel calPanel, StudPanel studPanel, PropsPanel propsPanel) {
         this.setLayout(null);
@@ -32,6 +36,7 @@ public class BGPanel extends JPanel {
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
+        log.info("Background Panel initialized.");
     }
 
     @Override
@@ -53,18 +58,18 @@ public class BGPanel extends JPanel {
             removeAddedPanels();
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(new File("src/main/resources/img/cal.jpg"));
+                      image = ImageIO.read(ClassLoader.getSystemResource("img/cal.jpg"));
                     this.add(calPanel);
                     break;
                 case 2:
-                    image = ImageIO.read(new File("src/main/resources/img/tra.jpg"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/tra.jpg"));
                     break;
                 case 3:
-                    image = ImageIO.read(new File("src/main/resources/img/stud.jpg"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/stud.jpg"));
                     this.add(studPanel);
                     break;
                 case 4:
-                    image = ImageIO.read(new File("src/main/resources/img/stat.jpg"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/stat.jpg"));
                     break;
                 default:
                     break;

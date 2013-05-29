@@ -157,16 +157,16 @@ public class CalPanel extends StandardInsidePanel {
         try{
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(new File("src/main/resources/img/calw.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/calw.png"));
                     toggleComponents("show");
                     break;
                 case 2:
-                    image = ImageIO.read(new File("src/main/resources/img/calm.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/calm.png"));
                     toggleComponents("show");
                     break;
                 case 3:
-                    image = ImageIO.read(new File("src/main/resources/img/cald.png"));
-                    toggleComponents("show");
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/cald.png"));
+                    toggleComponents("hide");
                     break;
                 default:
                     break;

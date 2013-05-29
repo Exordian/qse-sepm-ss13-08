@@ -26,14 +26,69 @@ public class DateServiceTest {
         validDateEntity.setStop(new DateTime(2002, 2, 2, 2, 2));
     }
 
+    @Test(expected = ServiceException.class)
+    public void testCreateDateINVALID() throws Exception {
+        dateService.createDate(null);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testUpdateDateINVALID() throws Exception {
+        dateService.updateDate(null);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testDeleteDateINVALID() throws Exception {
+        dateService.deleteDate(-1);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testReadDateByIdINVALID() throws Exception {
+        dateService.readDateById(-1);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testReadDateInTimeframeINVALID() throws Exception {
+        dateService.readDateInTimeframe(null, null);
+    }
+
     @Test
     public void testValidateDateEntityVALID() throws Exception {
         dateService.validateDateEntity(validDateEntity);
     }
 
     @Test(expected = ServiceException.class)
-    public void testValidateDateEntityINVALID() throws Exception {
+    public void testValidateDateEntityINVALIDid() throws Exception {
         validDateEntity.setId(-1);
+        dateService.validateDateEntity(validDateEntity);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testValidateDateEntityINVALIDname() throws Exception {
+        validDateEntity.setName(null);
+        dateService.validateDateEntity(validDateEntity);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testValidateDateEntityINVALIDdescription() throws Exception {
+        validDateEntity.setDescription(null);
+        dateService.validateDateEntity(validDateEntity);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testValidateDateEntityINVALIDintersectable() throws Exception {
+        validDateEntity.setIntersectable(null);
+        dateService.validateDateEntity(validDateEntity);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testValidateDateEntityINVALIstart() throws Exception {
+        validDateEntity.setStart(null);
+        dateService.validateDateEntity(validDateEntity);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testValidateDateEntityINVALIDstop() throws Exception {
+        validDateEntity.setStop(null);
         dateService.validateDateEntity(validDateEntity);
     }
 
