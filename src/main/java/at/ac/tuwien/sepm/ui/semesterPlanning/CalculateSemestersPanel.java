@@ -40,6 +40,8 @@ public class CalculateSemestersPanel extends ChainedPanel{
         t.start(waiting);
     }
 
+
+
     public void setLVAs(ArrayList<MetaLVA> lvas){
         this.lvas = lvas;
         remove(pleaseWait);
