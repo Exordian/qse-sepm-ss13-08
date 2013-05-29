@@ -4,6 +4,7 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -54,8 +55,9 @@ class RowMappers {
                 entity.setName(rs.getString(3));
                 entity.setDescription(rs.getString(4));
                 entity.setIntersectable(rs.getBoolean(5));
-                entity.setStart(timestampToDateTimeConverter(rs.getTimestamp(6)));
-                entity.setStop(timestampToDateTimeConverter(rs.getTimestamp(7)));
+                entity.setTime(new TimeFrame(timestampToDateTimeConverter(rs.getTimestamp(6)), timestampToDateTimeConverter(rs.getTimestamp(7))));
+                //entity.setStart(timestampToDateTimeConverter(rs.getTimestamp(6)));
+                //entity.setStop(timestampToDateTimeConverter(rs.getTimestamp(7)));
                 return entity;
             }
         };
@@ -79,8 +81,9 @@ class RowMappers {
                 entity.setType(LvaDateType.values()[rs.getInt(5)]);
                 entity.setRoom(rs.getString(6));
                 entity.setResult(rs.getInt(7));
-                entity.setStart(timestampToDateTimeConverter(rs.getTimestamp(8)));
-                entity.setStop(timestampToDateTimeConverter(rs.getTimestamp(9)));
+                entity.setTime(new TimeFrame(timestampToDateTimeConverter(rs.getTimestamp(8)), timestampToDateTimeConverter(rs.getTimestamp(9))));
+                //entity.setStart(timestampToDateTimeConverter(rs.getTimestamp(8)));
+                //entity.setStop(timestampToDateTimeConverter(rs.getTimestamp(9)));
                 entity.setAttendanceRequired(rs.getBoolean(10));
                 entity.setWasAttendant(rs.getBoolean(11));
                 return entity;

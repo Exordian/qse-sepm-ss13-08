@@ -2,9 +2,11 @@ package at.ac.tuwien.sepm.ui;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,10 +25,22 @@ public class CalPanel extends StandardInsidePanel {
     private JLabel month;
     private JComboBox semester;
 
+
+
+    static DefaultTableModel mtblCalendar; //Table model
+    static JScrollPane stblCalendar; //The scrollpane
+    static JPanel pnlCalendar;
+    static JTable tblCalendar;
+
+    private CalPanelMonth calPanelMonth;
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
-    public CalPanel() {
+    @Autowired
+    public CalPanel(CalPanelMonth calPanelMonth) {
         init();
+
+        this.calPanelMonth=calPanelMonth;
+
         createTabButtons();
         createNavButtons();
         createImportButton();
@@ -125,16 +139,26 @@ public class CalPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
+                remove(calPanelMonth);
+
                 //todo
+                revalidate();
+                repaint();
+
             }
         });
 
         tab2.setBounds(97+142,63,142,36);
+        calPanelMonth.setBounds(size);
         tab2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                //todo
+                //todo remove
+
+                add(calPanelMonth);
+                revalidate();
+                repaint();
             }
         });
 
@@ -144,6 +168,9 @@ public class CalPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
                 //todo
+
+                revalidate();
+                repaint();
             }
         });
 

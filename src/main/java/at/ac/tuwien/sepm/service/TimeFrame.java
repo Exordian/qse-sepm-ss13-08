@@ -7,6 +7,15 @@ public class TimeFrame {
 	private final DateTime from;
 	private final DateTime to;
 
+    /*
+    public void setFrom(DateTime from) {
+        this.from=from;
+    }
+
+    public void setTo(DateTime to) {
+        this.to=to;
+    }
+    */
     /**
      * creates a new TimeFrame, from two DateTime object
      * @param from the first date for this TimeFrame. must lie before "to".
@@ -99,4 +108,16 @@ public class TimeFrame {
 		return "<TimeFrame: from:"+from+", to:"+to+">";
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TimeFrame timeFrame = (TimeFrame) o;
+
+        if (from != null ? !from.equals(timeFrame.from) : timeFrame.from != null) return false;
+        if (to != null ? !to.equals(timeFrame.to) : timeFrame.to != null) return false;
+
+        return true;
+    }
 }

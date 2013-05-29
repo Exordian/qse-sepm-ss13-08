@@ -190,12 +190,12 @@ public class DBModuleDaoTest {
         assert(e1.getMetaLvas().get(1).getLVAs().size()==1);
         assert(e1.getMetaLvas().get(0).getLVAs().get(0).getId()==0);
         assert(e1.getMetaLvas().get(1).getLVAs().get(0).getId()==1);
-        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getTimes().size()==12);
-        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getTimesUE().size()==0);
-        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getTimesExam().size()==2);
-        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getTimes().size()==0);
-        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getTimesUE().size()==12);
-        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getTimesExam().size()==0);
+        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getLectures().size()==12);
+        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getExercises().size()==0);
+        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getExams().size()==2);
+        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getLectures().size()==0);
+        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getExercises().size()==12);
+        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getExams().size()==0);
     }
 
     @Test
@@ -236,12 +236,12 @@ public class DBModuleDaoTest {
         assert(e1.getMetaLvas().get(1).getLVAs().size()==1);
         assert(e1.getMetaLvas().get(0).getLVAs().get(0).getId()==0);
         assert(e1.getMetaLvas().get(1).getLVAs().get(0).getId()==1);
-        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getTimes().size()==12);
-        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getTimesUE().size()==0);
-        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getTimesExam().size()==2);
-        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getTimes().size()==0);
-        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getTimesUE().size()==12);
-        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getTimesExam().size()==0);
+        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getLectures().size()==12);
+        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getExercises().size()==0);
+        assert(e1.getMetaLvas().get(0).getLVAs().get(0).getExams().size()==2);
+        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getLectures().size()==0);
+        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getExercises().size()==12);
+        assert(e1.getMetaLvas().get(1).getLVAs().get(0).getExams().size()==0);
 
     }
 

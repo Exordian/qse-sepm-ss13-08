@@ -9,7 +9,6 @@ import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.semesterPlaning.LVAUtil;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +28,7 @@ public class LVAUtilTest {
 		assertFalse(LVAUtil.iterator(lva).hasNext());
 		ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();
 		times.add(new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06")));
-		lva.setTimes(times);
+		lva.setLectures(times);
 		assertTrue(LVAUtil.iterator(lva).hasNext());
 		assertFalse(LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM).hasNext());
 	}
@@ -49,8 +48,8 @@ public class LVAUtilTest {
 		TimeFrame t1=new TimeFrame(new DateTime("2000-01-25"),new DateTime("2000-01-26"));
 		times2.add(t1);
 		
-		lva.setTimes(times1);
-		lva.setTimesUE(times2);
+		lva.setLectures(times1);
+		lva.setExercises(times2);
 		Iterator<TimeFrame> iter1 = LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM);
 		Iterator<TimeFrame> iter2 = LVAUtil.iterator(lva,LVAUtil.TIMES_UE);
 		assertFalse(iter1.hasNext());
@@ -85,9 +84,9 @@ public class LVAUtilTest {
 		TimeFrame t5=new TimeFrame(new DateTime("2000-01-20"),new DateTime("2000-01-21"));
 		times3.add(t5);
 		
-		lva.setTimes(times1);
-		lva.setTimesUE(times2);
-		lva.setTimesExam(times3);
+		lva.setLectures(times1);
+		lva.setExercises(times2);
+		lva.setExams(times3);
 		Iterator<TimeFrame> iter = LVAUtil.iterator(lva);
 		assertTrue(iter.hasNext());
 		assertTrue(iter.next()==t2);
@@ -134,16 +133,16 @@ public class LVAUtilTest {
 		
 		times5.add(new TimeFrame(new DateTime("2000-02-04"),new DateTime("2000-02-06")));
 		
-		lva1.setTimes(times1);
-		lva1.setTimesUE(times4);
+		lva1.setLectures(times1);
+		lva1.setExercises(times4);
 		
-		lva2.setTimesUE(times5);
-		lva2.setTimes(times2);
+		lva2.setExercises(times5);
+		lva2.setLectures(times2);
 		
-		lva3.setTimes(times3);
-		lva3.setTimesExam(times5);
+		lva3.setLectures(times3);
+		lva3.setExams(times5);
 		
-		lva4.setTimesExam(times1);
+		lva4.setExams(times1);
 		
 		assertFalse(LVAUtil.intersectAll(lva1,lva2));
 		assertFalse(LVAUtil.intersectAll(lva2,lva1));

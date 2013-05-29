@@ -123,29 +123,20 @@ public class DBTrackDao extends DBBaseDao implements TrackDao {
         String stmtUpdateStart = "UPDATE track SET start=? WHERE id=?";
         String stmtUpdateStop = "UPDATE track SET stop=? WHERE id=?";
 
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE;");
-            if(toUpdate.getLva() != null) {
-                jdbcTemplate.update(stmtUpdateLva, toUpdate.getLva().getId(), toUpdate.getId());
-            }
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
-            }
-            if(toUpdate.getDescription() != null) {
-                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
-            }
-            if(toUpdate.getStart() != null) {
-                jdbcTemplate.update(stmtUpdateStart, new Timestamp(toUpdate.getStart().getMillis()), toUpdate.getId());
-            }
-            if(toUpdate.getStop() != null) {
-                jdbcTemplate.update(stmtUpdateStop, new Timestamp(toUpdate.getStop().getMillis()), toUpdate.getId());
-            }
-            jdbcTemplate.execute("COMMIT;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE;");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+        if(toUpdate.getLva() != null) {
+            jdbcTemplate.update(stmtUpdateLva, toUpdate.getLva().getId(), toUpdate.getId());
+        }
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
+        }
+        if(toUpdate.getDescription() != null) {
+            jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+        }
+        if(toUpdate.getStart() != null) {
+            jdbcTemplate.update(stmtUpdateStart, new Timestamp(toUpdate.getStart().getMillis()), toUpdate.getId());
+        }
+        if(toUpdate.getStop() != null) {
+            jdbcTemplate.update(stmtUpdateStop, new Timestamp(toUpdate.getStop().getMillis()), toUpdate.getId());
         }
 
         return true;

@@ -1,11 +1,12 @@
 package at.ac.tuwien.sepm.entity;
 
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 
 /**
  * @author Markus MUTH
  */
-public class LvaDate {
+public class LvaDate implements Date {
 
     private Integer id;
     private Integer lva;
@@ -14,8 +15,9 @@ public class LvaDate {
     private LvaDateType type;
     private String room;
     private Integer result;
-    private DateTime start;
-    private DateTime stop;
+    //private DateTime start;
+    //private DateTime stop;
+    private TimeFrame time;
     private Boolean attendanceRequired;
     private Boolean wasAttendant;
 
@@ -75,6 +77,7 @@ public class LvaDate {
         this.result = result;
     }
 
+    /*
     public DateTime getStart() {
         return start;
     }
@@ -97,6 +100,33 @@ public class LvaDate {
 
     public void setStop(DateTime stop) {
         this.stop = stop;
+    }
+    */
+
+    public TimeFrame getTime() {
+        return time;
+    }
+
+    public void setTime(TimeFrame time) {
+        this.time = time;
+    }
+    /*
+    public void setStart(DateTime start) {
+        this.time.setFrom(start);
+    }
+    */
+    @Override
+    public DateTime getStart() {
+        return time.from();
+    }
+    /*
+    public void setStop(DateTime stop) {
+        this.time.setFrom(stop);
+    }
+    */
+    @Override
+    public DateTime getStop() {
+        return time.to();
     }
 
     public Boolean getAttendanceRequired() {
@@ -130,8 +160,8 @@ public class LvaDate {
         if (name != null ? !name.equals(lvaDate.name) : lvaDate.name != null) return false;
         if (result != null ? !result.equals(lvaDate.result) : lvaDate.result != null) return false;
         if (room != null ? !room.equals(lvaDate.room) : lvaDate.room != null) return false;
-        if (start != null ? !start.equals(lvaDate.start) : lvaDate.start != null) return false;
-        if (stop != null ? !stop.equals(lvaDate.stop) : lvaDate.stop != null) return false;
+        if (time != null ? !time.equals(lvaDate.time) : lvaDate.time != null) return false;
+        //if (stop != null ? !stop.equals(lvaDate.stop) : lvaDate.stop != null) return false;
         if (type != lvaDate.type) return false;
         if (wasAttendant != null ? !wasAttendant.equals(lvaDate.wasAttendant) : lvaDate.wasAttendant != null)
             return false;
@@ -149,8 +179,8 @@ public class LvaDate {
                 ", type=" + type +
                 ", room='" + room + '\'' +
                 ", result=" + result +
-                ", start=" + start +
-                ", stop=" + stop +
+                ", start=" + time.from() +
+                ", stop=" + time.to() +
                 ", attendanceRequired=" + attendanceRequired +
                 ", wasAttendant=" + wasAttendant +
                 '}';

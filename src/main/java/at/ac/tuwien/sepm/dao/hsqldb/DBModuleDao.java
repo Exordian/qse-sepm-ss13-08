@@ -127,23 +127,14 @@ public class DBModuleDao extends DBBaseDao implements ModuleDao {
         String stmtUpdateDescription = "UPDATE module SET description=? WHERE id=?";
         String stmtUpdateCompleteAll = "UPDATE module SET completeall=? WHERE id=?";
 
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE;");
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
-            }
-            if(toUpdate.getDescription() != null) {
-                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
-            }
-            if(toUpdate.getCompleteall() != null) {
-                jdbcTemplate.update(stmtUpdateCompleteAll, toUpdate.getCompleteall(), toUpdate.getId());
-            }
-            jdbcTemplate.execute("COMMIT;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE;");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
+        }
+        if(toUpdate.getDescription() != null) {
+            jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+        }
+        if(toUpdate.getCompleteall() != null) {
+            jdbcTemplate.update(stmtUpdateCompleteAll, toUpdate.getCompleteall(), toUpdate.getId());
         }
 
         return true;

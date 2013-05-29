@@ -19,7 +19,8 @@ import java.util.List;
 public interface LvaDateDao {
 
     /**
-     * Store a new lva date. If <code>getResult()==null</code>, it will be stored with 0.
+     * Store a new lva date. If <code>getResult()==null</code>, it will be stored with 0. Only the stop() date will be
+     * observed, the start-date will be ignored.
      * @param toCreate the <code>LvaDate</code> containing the data to be stored.
      * @return <code>false</code> if <code>toCreate==null</code> and <code>true</code> if the data could be stored.
      * @throws IOException if the Strings <code>getRoom()</code>, <code>getDescription</code> or <code>getName()</code>
@@ -34,8 +35,9 @@ public interface LvaDateDao {
     /**
      * Read the lva date data which is identified by the specified id.
      * @param id the id of the lva date which should be read.
-     * @return a <code>DateEntity</code>  containing all data of the lva date.
-     * @throws org.springframework.dao.DataAccessException if the lva date data could not be read because any error occurred.
+     * @return a <code>DateEntity</code>  containing all data of the lva date. Or <code>null</code> if there was no
+     * lva date with the specified id found.
+     * @throws DataAccessException if the lva date data could not be read because any error occurred.
      */
     public LvaDate readById(int id) throws DataAccessException;
 

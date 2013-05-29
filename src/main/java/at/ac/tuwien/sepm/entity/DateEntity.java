@@ -1,17 +1,19 @@
 package at.ac.tuwien.sepm.entity;
 
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 
 /**
  * @author Markus MUTH
  */
-public class DateEntity {
+public class DateEntity implements Date {
     private Integer id;
     private String name;
     private String description;
     private Boolean isIntersectable;
-    private DateTime start;
-    private DateTime stop;
+    //private DateTime start;
+    //private DateTime stop;
+    private TimeFrame time;
 
     public Integer getId() {
         return id;
@@ -45,6 +47,7 @@ public class DateEntity {
         isIntersectable = intersectable;
     }
 
+    /*
     public DateTime getStart() {
         return start;
     }
@@ -68,6 +71,36 @@ public class DateEntity {
     public void setStop(DateTime stop) {
         this.stop = stop;
     }
+    */
+
+    public TimeFrame getTime() {
+        return time;
+    }
+
+    public void setTime(TimeFrame time) {
+        this.time = time;
+    }
+
+    /*
+    public void setStart(DateTime start) {
+        this.time.setFrom(start);
+    }
+    */
+
+    @Override
+    public DateTime getStart() {
+        return time.from();
+    }
+
+    /*
+    public void setStop(DateTime stop) {
+        time.setTo(stop);
+    }
+    */
+    @Override
+    public DateTime getStop() {
+        return time.from();
+    }
 
     @Override
     public String toString() {
@@ -76,8 +109,8 @@ public class DateEntity {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", isIntersectable=" + isIntersectable +
-                ", start=" + start +
-                ", stop=" + stop +
+                ", start=" + time.to() +
+                ", stop=" + time.from() +
                 '}';
     }
 
@@ -93,8 +126,8 @@ public class DateEntity {
         if (isIntersectable != null ? !isIntersectable.equals(that.isIntersectable) : that.isIntersectable != null)
             return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (start != null ? !start.equals(that.start) : that.start != null) return false;
-        if (stop != null ? !stop.equals(that.stop) : that.stop != null) return false;
+        if (time.to() != null ? !time.to().equals(that.time.to()) : that.time.to() != null) return false;
+        if (time.from() != null ? !time.from().equals(that.time.from()) : that.time.from() != null) return false;
 
         return true;
     }

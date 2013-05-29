@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.service.semesterPlaning;
 
+import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LVA;
+import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -157,14 +159,14 @@ public class LVAUtil {
     }
     private static class TimeIterator implements Iterator<TimeFrame>{
         private LVA lva;
-        ArrayList<Iterator<TimeFrame>> allIter= new ArrayList<Iterator<TimeFrame>>();
-        ArrayList<TimeFrame> allLastFrames = new ArrayList<TimeFrame>();
+        ArrayList<Iterator<LvaDate>> allIter= new ArrayList<Iterator<LvaDate>>();
+        ArrayList<LvaDateDao> allLastFrames = new ArrayList<LvaDateDao>();
         Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
         public TimeIterator(LVA lva,List<Integer> consideredTimesA){
             this.lva = lva;
-            ArrayList<TimeFrame> times = lva.getTimes();
-            ArrayList<TimeFrame> timesUE = lva.getTimesUE();
-            ArrayList<TimeFrame> timesExam = lva.getTimesExam();
+            ArrayList<LvaDate> times = lva.getLectures();
+            ArrayList<TimeFrame> timesUE = lva.getExercises();
+            ArrayList<TimeFrame> timesExam = lva.getExams();
             if(times!=null && consideredTimesA.contains(TIMES)){
                 allIter.add(times.iterator());
             }
@@ -174,7 +176,7 @@ public class LVAUtil {
             if(timesExam!=null && consideredTimesA.contains(TIMES_EXAM)){
                 allIter.add(timesExam.iterator());
             }
-            for(Iterator<TimeFrame> iter:allIter){
+            for(Iterator<LvaDate> iter:allIter){
                 if(iter.hasNext()){
                     allLastFrames.add(iter.next());
                 }else{
@@ -184,7 +186,7 @@ public class LVAUtil {
         }
         @Override
         public boolean hasNext() {
-            for(TimeFrame frame: allLastFrames){
+            for(LvaDateDao frame: allLastFrames){
                 if(frame!=null){
                     return true;
                 }
@@ -194,11 +196,11 @@ public class LVAUtil {
 
         @Override
         public TimeFrame next() {
-            TimeFrame firstFrame=null;
+            LvaDateDao firstFrame=null;
             boolean change=true;
             while(change){
                 change=false;
-                for(TimeFrame frame: allLastFrames){
+                for(LvaDateDao frame: allLastFrames){
                     if(firstFrame==null){
                         firstFrame=frame;
                     }else{

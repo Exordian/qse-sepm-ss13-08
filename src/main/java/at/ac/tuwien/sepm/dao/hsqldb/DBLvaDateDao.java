@@ -11,10 +11,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * Author: MUTH Markus
- * Date: 5/25/13
- * Time: 11:19 AM
- * Description of class "DBLvaDateDao":
+ * @author Markus MUTH
  */
 @Repository
 public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
@@ -41,9 +38,14 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
                 "(id,lva,name,description,type,room,result,start,stop,attendanceRequired,wasAttendant) VALUES" +
                 "(null,?,?,?,?,?,?,?,?,?,?)";
 
+        Timestamp start = new Timestamp(toCreate.getTime().from().getMillis());
+        if(toCreate.getType().equals(LvaDateType.DEADLINE)) {
+            start = new Timestamp(toCreate.getTime().to().getMillis());
+        }
+
         Object[] args = new Object[] {toCreate.getLva(), toCreate.getName(), toCreate.getDescription(),
                 toCreate.getType().ordinal(), toCreate.getRoom(), toCreate.getResult(),
-                new Timestamp(toCreate.getStart().getMillis()), new Timestamp(toCreate.getStop().getMillis()),
+                start, new Timestamp(toCreate.getTime().to().getMillis()),
                 toCreate.getAttendanceRequired(), toCreate.getWasAttendant()};
 
         jdbcTemplate.update(stmt, args);
@@ -107,44 +109,39 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
         String stmtUpdateAttendanceRequired = "UPDATE lvadate SET attendancerequired=? WHERE id=?";
         String stmtUpdateWasAttendant = "UPDATE lvadate SET wasattendant=? WHERE id=?";
 
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE");
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateLva, toUpdate.getLva(), toUpdate.getId());
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateLva, toUpdate.getLva(), toUpdate.getId());
+        }
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateName,toUpdate.getName(), toUpdate.getId());
+        }
+        if(toUpdate.getDescription() != null) {
+            jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+        }
+        if(toUpdate.getType() != null) {
+            jdbcTemplate.update(stmtUpdateType, toUpdate.getType().ordinal(), toUpdate.getId());
+        }
+        if(toUpdate.getRoom() != null) {
+            jdbcTemplate.update(stmtUpdateRoom, toUpdate.getRoom(), toUpdate.getId());
+        }
+        if(toUpdate.getResult() != null) {
+            jdbcTemplate.update(stmtUpdateResult, toUpdate.getResult(), toUpdate.getId());
+        }
+        if(toUpdate.getTime() != null && toUpdate.getTime().from() != null) {
+            Timestamp start = new Timestamp(toUpdate.getTime().from().getMillis());
+            if(toUpdate.getType().equals(LvaDateType.DEADLINE)) {
+                start = new Timestamp(toUpdate.getTime().to().getMillis());
             }
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateName,toUpdate.getName(), toUpdate.getId());
-            }
-            if(toUpdate.getDescription() != null) {
-                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
-            }
-            if(toUpdate.getType() != null) {
-                jdbcTemplate.update(stmtUpdateType, toUpdate.getType().ordinal(), toUpdate.getId());
-            }
-            if(toUpdate.getRoom() != null) {
-                jdbcTemplate.update(stmtUpdateRoom, toUpdate.getRoom(), toUpdate.getId());
-            }
-            if(toUpdate.getResult() != null) {
-                jdbcTemplate.update(stmtUpdateResult, toUpdate.getResult(), toUpdate.getId());
-            }
-            if(toUpdate.getStart() != null) {
-                jdbcTemplate.update(stmtUpdateStart, new Timestamp(toUpdate.getStart().getMillis()), toUpdate.getId());
-            }
-            if(toUpdate.getStop() != null) {
-                jdbcTemplate.update(stmtUpdateStop, new Timestamp(toUpdate.getStop().getMillis()), toUpdate.getId());
-            }
-            if(toUpdate.getAttendanceRequired() != null) {
-                jdbcTemplate.update(stmtUpdateAttendanceRequired, toUpdate.getAttendanceRequired(), toUpdate.getId());
-            }
-            if(toUpdate.getWasAttendant() != null) {
-                jdbcTemplate.update(stmtUpdateWasAttendant, toUpdate.getWasAttendant(), toUpdate.getId());
-            }
-            jdbcTemplate.execute("COMMIT");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+            jdbcTemplate.update(stmtUpdateStart, start, toUpdate.getId());
+        }
+        if(toUpdate.getTime() != null && toUpdate.getTime().to() != null) {
+            jdbcTemplate.update(stmtUpdateStop, new Timestamp(toUpdate.getTime().to().getMillis()), toUpdate.getId());
+        }
+        if(toUpdate.getAttendanceRequired() != null) {
+            jdbcTemplate.update(stmtUpdateAttendanceRequired, toUpdate.getAttendanceRequired(), toUpdate.getId());
+        }
+        if(toUpdate.getWasAttendant() != null) {
+            jdbcTemplate.update(stmtUpdateWasAttendant, toUpdate.getWasAttendant(), toUpdate.getId());
         }
 
         return true;

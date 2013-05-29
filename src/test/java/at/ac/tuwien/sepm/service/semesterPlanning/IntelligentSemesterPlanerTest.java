@@ -10,7 +10,6 @@ import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.semesterPlaning.IntelligentSemesterPlaner;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -74,7 +73,7 @@ public class IntelligentSemesterPlanerTest {
         times0.add(new TimeFrame(new DateTime(2013,05,14,8,0,0),new DateTime(2013,05,14,10,0,0)));
         times0.add(new TimeFrame(new DateTime(2013,05,15,8,0,0),new DateTime(2013,05,15,10,0,0)));
         times0.add(new TimeFrame(new DateTime(2013,05,16,8,0,0),new DateTime(2013,05,16,10,0,0)));
-        lva0.setTimes(times0);
+        lva0.setLectures(times0);
         lva0.setYear(2013);
         lva0.setSemester(Semester.S);
         mLVA0.setLVA(lva0);
@@ -87,7 +86,7 @@ public class IntelligentSemesterPlanerTest {
         ArrayList<TimeFrame> times1 = new ArrayList<TimeFrame>();
         times1.add(new TimeFrame(new DateTime(2013,05,13,14,0,0),new DateTime(2013,05,13,18,0,0)));
         times1.add(new TimeFrame(new DateTime(2013,05,16,12,0,0),new DateTime(2013,05,16,14,0,0)));
-        lva1.setTimes(times1);
+        lva1.setLectures(times1);
         lva1.setYear(2013);
         lva1.setSemester(Semester.S);
         mLVA1.setLVA(lva1);
@@ -100,7 +99,7 @@ public class IntelligentSemesterPlanerTest {
         ArrayList<TimeFrame> times2 = new ArrayList<TimeFrame>();
         times2.add(new TimeFrame(new DateTime(2013,05,14,12,0,0),new DateTime(2013,05,14,16,0,0)));
         times2.add(new TimeFrame(new DateTime(2013,05,17,16,0,0),new DateTime(2013,05,17,18,0,0)));
-        lva2.setTimes(times2);
+        lva2.setLectures(times2);
         lva2.setYear(2013);
         lva2.setSemester(Semester.S);
         mLVA2.setLVA(lva2);
@@ -112,7 +111,7 @@ public class IntelligentSemesterPlanerTest {
         mLVA3.setCompleted(false);
         ArrayList<TimeFrame> times3 = new ArrayList<TimeFrame>();
         times3.add(new TimeFrame(new DateTime(2013,05,16,12,0,0),new DateTime(2013,05,16,16,0,0)));
-        lva3.setTimes(times3);
+        lva3.setLectures(times3);
         lva3.setYear(2013);
         lva3.setSemester(Semester.S);
         mLVA3.setLVA(lva3);
@@ -124,7 +123,7 @@ public class IntelligentSemesterPlanerTest {
         mLVA4.setCompleted(false);
         ArrayList<TimeFrame> times4 = new ArrayList<TimeFrame>();
         times4.add(new TimeFrame(new DateTime(2013,05,15,8,0,0),new DateTime(2013,05,15,10,0,0)));
-        lva4.setTimes(times4);
+        lva4.setLectures(times4);
         lva4.setYear(2013);
         lva4.setSemester(Semester.S);
         mLVA4.setLVA(lva4);
@@ -136,7 +135,7 @@ public class IntelligentSemesterPlanerTest {
         mLVA5.setCompleted(false);
         ArrayList<TimeFrame> times5 = new ArrayList<TimeFrame>();
         times5.add(new TimeFrame(new DateTime(2013,05,17,10,0,0),new DateTime(2013,05,17,18,0,0)));
-        lva5.setTimes(times5);
+        lva5.setLectures(times5);
         lva5.setYear(2013);
         lva5.setSemester(Semester.S);
         mLVA5.setLVA(lva5);
