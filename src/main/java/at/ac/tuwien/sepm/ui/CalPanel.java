@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ui;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +21,11 @@ public class CalPanel extends StandardInsidePanel {
     private JButton importBtn;
     private JLabel month;
     private JComboBox semester;
+    private TodoPanel todoPanel;
 
-    public CalPanel() {
+    @Autowired
+    public CalPanel(TodoPanel todoPanel) {
+        this.todoPanel = todoPanel;
         this.setLayout(null);
         this.setBounds(size);
         this.setOpaque(false);
@@ -52,6 +57,7 @@ public class CalPanel extends StandardInsidePanel {
 
         this.add(month);
         this.add(semester);
+        this.add(todoPanel);
     }
 
     private void createImportButton() {
@@ -122,6 +128,7 @@ public class CalPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
+                todoPanel.setVisible(false);
                 //todo
             }
         });
@@ -131,6 +138,7 @@ public class CalPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
+                todoPanel.setVisible(false);
                 //todo
             }
         });
@@ -140,7 +148,7 @@ public class CalPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
-                //todo
+                todoPanel.setVisible(true);
             }
         });
 
