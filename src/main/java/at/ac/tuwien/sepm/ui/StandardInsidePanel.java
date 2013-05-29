@@ -27,9 +27,9 @@ public abstract class StandardInsidePanel extends JPanel {
 
     private void loadFonts() {
         try {
-            standardTitleFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("src/main/resources/segeoui.ttf"))).deriveFont(35f);
-            standardTextFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("src/main/resources/segeoui.ttf"))).deriveFont(15f);
-            standardButtonFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("src/main/resources/segeoui.ttf"))).deriveFont(13f);
+            standardTitleFont = Font.createFont(Font.TRUETYPE_FONT, ClassLoader.getSystemResource("segeoui.ttf").openStream()).deriveFont(Font.PLAIN, 35.0f);
+            standardTextFont = Font.createFont(Font.TRUETYPE_FONT, ClassLoader.getSystemResource("segeoui.ttf").openStream()).deriveFont(Font.PLAIN, 15.0f);
+            standardButtonFont = Font.createFont(Font.TRUETYPE_FONT, ClassLoader.getSystemResource("segeoui.ttf").openStream()).deriveFont(Font.PLAIN, 13.0f);
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {

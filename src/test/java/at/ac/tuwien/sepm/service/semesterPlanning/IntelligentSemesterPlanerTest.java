@@ -12,9 +12,10 @@ import at.ac.tuwien.sepm.service.semesterPlaning.IntelligentSemesterPlaner;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-
+@Ignore
 public class IntelligentSemesterPlanerTest {
 	private MetaLVA mLVA0;
 	private LVA lva0;
