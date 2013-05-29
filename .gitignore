@@ -20,6 +20,9 @@
 *.project
 *.settings
 
+# database
+mydb.*
+
 ## generic files to ignore
 *~
 *.lock
@@ -29,4 +32,5 @@
 *.out
 .gradle
 
-mydb.logdesktop.ini
+
+desktop.ini
