@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ui;
 
+//import at.ac.tuwien.sepm.dao.OLD_LvaDao_FROM_JAKOB;
+import at.ac.tuwien.sepm.service.TissService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,6 +20,6 @@ public class SpringTest {
     @Test
     public void testTest() throws Exception {
         //System.out.println(iTissService.test());
-     //   lvaDao.test();
+       // lvaDao.test();
     }
 }

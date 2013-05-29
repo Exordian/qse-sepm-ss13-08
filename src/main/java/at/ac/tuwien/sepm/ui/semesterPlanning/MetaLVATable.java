@@ -14,17 +14,21 @@ import java.util.ArrayList;
 public class MetaLVATable extends JTable{
     ArrayList<MetaLVA> lvas;
     public MetaLVATable(ArrayList<MetaLVA> lvas){
-        super(new String[][]{{"1","2",""},{"3","4",""},{"5","6",""},{"7","8",""}},new String[]{"Nr","Name","ECTS"});
+        super(new String[][]{{}},new String[]{"Nr","Name","ECTS"});
         this.lvas = lvas;
-        DefaultTableModel model = new DefaultTableModel(new String[]{"Nr","Name","ECTS"},0);
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Nr","Typ","Name","ECTS"},0);
         setModel(model);
         for(MetaLVA lva: lvas){
-            model.addRow(new String[]{lva.getNr(),lva.getName(),""+lva.getECTS()});
+            model.addRow(new String[]{lva.getNr(),lva.getType().toString(),lva.getName(),""+lva.getECTS()});
         }
-        getColumnModel().getColumn(0).setMinWidth(45);
-        getColumnModel().getColumn(0).setMaxWidth(45);
-        getColumnModel().getColumn(1).setWidth(50);
-        getColumnModel().getColumn(2).setPreferredWidth(10);
+        getColumnModel().getColumn(0).setMinWidth(60);
+        getColumnModel().getColumn(0).setMaxWidth(60);
+
+        getColumnModel().getColumn(1).setMinWidth(30);
+        getColumnModel().getColumn(1).setMaxWidth(30);
+        getColumnModel().getColumn(2).setMinWidth(420);
+        getColumnModel().getColumn(2).setMaxWidth(420);
+        getColumnModel().getColumn(3).setPreferredWidth(10);
 
         //setPreferredSize(new Dimension(50,100));
 

@@ -157,21 +157,38 @@ public class MetaLVA {
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
-	public String toString(){
-		String toReturn="<MetaLVA:";
-		if(nr!=null){
-			toReturn+=" nr:"+nr;
-		}
-		if(name!=null){
-			toReturn+=" name:"+name;
-		}
-		if(ects!=-1){
-			toReturn+=" ects:"+ects;
-		}		
-		if(priority!=-1){
-			toReturn+=" priority:"+priority;
-		}
-		return toReturn+">";
-	}
+    public String toString(){
+        String toReturn="<MetaLVA:";
+        if(nr!=null){
+            toReturn+=" nr:"+nr;
+        }
+        if(name!=null){
+            toReturn+=" name:"+name;
+        }
+        if(ects!=-1){
+            toReturn+=" ects:"+ects;
+        }
+        if(priority!=-1){
+            toReturn+=" priority:"+priority;
+        }
+        return toReturn+">";
+    }
+    public String toShortString(){
+        String toReturn="<MetaLVA:";
+        if(nr!=null){
+            toReturn+=" nr:.."+nr.substring(4);
+        }
+        if(name!=null){
+            if(name.length()>15){
+                toReturn+=" name:"+name.substring(0,15)+"..";
+            }else{
+                toReturn+=" name:"+name;
+            }
+        }
+        if(priority!=-1){
+            toReturn+=" prio:"+priority;
+        }
+        return toReturn+">";
+    }
 
 }

@@ -1,15 +1,19 @@
 package at.ac.tuwien.sepm.ui.semesterPlanning;
 
+import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBLvaDao;
+import at.ac.tuwien.sepm.dao.hsqldb.DBMetaLvaDao;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: Georg Plaz
@@ -18,24 +22,32 @@ public class FirstPanel extends ChainedPanel   {
 
 
     @Autowired
-    private DBLvaDao lvaDAO;
+    DBMetaLvaDao metaLVADAO;
 
-    JTextField desiredECTSText = new JTextField("30");
-    JCheckBox IntersectVOCheck = new JCheckBox();
-    JTextField yearText = new JTextField("2013");
-    JComboBox  semesterDrop = new JComboBox (new String[]{"Winter","Sommer"});
-    JTextField simulatedWaiting = new JTextField("4");
+    private JTextField desiredECTSText = new JTextField("30");
+    private JCheckBox IntersectVOCheck = new JCheckBox();
+    private JTextField yearText = new JTextField("2013");
+    private JComboBox  semesterDrop = new JComboBox (new String[]{"Winter","Sommer"});
+    private JTextField simulatedWaiting = new JTextField("2");
 
-    JButton next = new JButton("next");
-    JPanel settings = new JPanel();
-    JPanel settingsLabels = new JPanel();
-    JPanel settingsInputs = new JPanel();
+    private JButton next = new JButton("next");
+    private JPanel settings = new JPanel();
+    private JPanel settingsLabels = new JPanel();
+    private JPanel settingsInputs = new JPanel();
 
-    JPanel advancedSettings;
-    JPanel advancedsettingsLabels = new JPanel();
-    JPanel advancedsettingsInputs = new JPanel();
+    private JPanel advancedSettings;
+    private JPanel advancedsettingsLabels = new JPanel();
+    private JPanel advancedsettingsInputs = new JPanel();
     public FirstPanel(PlanningPanel mum){
         super(mum);
+
+        final ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                metaLVADAO = (DBMetaLvaDao) ctx.getBean("DBMetaLvaDao");
+            }
+        });
 
         settings.setBackground(new Color(0,0,0,0));
         add(settings);
@@ -99,8 +111,10 @@ public class FirstPanel extends ChainedPanel   {
             public void actionPerformed(ActionEvent e) {
                 //DirtyTestHelper d= new DirtyTestHelper();
                 //d.setUp();
-                ArrayList<MetaLVA> forced = new ArrayList<MetaLVA>(0);//d.getForced();
-                ArrayList<MetaLVA> pool = new ArrayList<MetaLVA>(0);//d.getPool();
+                List<MetaLVA> forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(2013, Semester.S, true);
+                List<MetaLVA> pool = metaLVADAO.readUncompletedByYearSemesterStudyProgress(2013,Semester.S,false);
+                //.add(pool.get(1));
+
                 float ects = Float.parseFloat(desiredECTSText.getText());
                 boolean voIntersect =  IntersectVOCheck.isSelected();
                 int year = Integer.parseInt(yearText.getText());
@@ -109,7 +123,9 @@ public class FirstPanel extends ChainedPanel   {
                     sem = Semester.W;
                 }
                 long waiting = (long)(Float.parseFloat(simulatedWaiting.getText())*1000);
-                next(new WaitingPanel(forced, pool, ects, voIntersect, year, sem, waiting));
+                WaitingPanel w = new WaitingPanel(forced, pool, ects, voIntersect, year, sem, waiting);
+                next(w);
+                w.startThreads();
             }
         });
     }
