@@ -30,9 +30,14 @@ public class FirstPanel extends ChainedPanel   {
     JPanel settings = new JPanel();
     JPanel settingsLabels = new JPanel();
     JPanel settingsInputs = new JPanel();
+
+    JPanel advancedSettings;
+    JPanel advancedsettingsLabels = new JPanel();
+    JPanel advancedsettingsInputs = new JPanel();
     public FirstPanel(PlanningPanel mum){
         super(mum);
 
+        settings.setBackground(new Color(0,0,0,0));
         add(settings);
         settings.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -92,10 +97,10 @@ public class FirstPanel extends ChainedPanel   {
         next.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DirtyTestHelper d= new DirtyTestHelper();
-                d.setUp();
-                ArrayList<MetaLVA> forced = d.getForced();
-                ArrayList<MetaLVA> pool = d.getPool();
+                //DirtyTestHelper d= new DirtyTestHelper();
+                //d.setUp();
+                ArrayList<MetaLVA> forced = new ArrayList<MetaLVA>(0);//d.getForced();
+                ArrayList<MetaLVA> pool = new ArrayList<MetaLVA>(0);//d.getPool();
                 float ects = Float.parseFloat(desiredECTSText.getText());
                 boolean voIntersect =  IntersectVOCheck.isSelected();
                 int year = Integer.parseInt(yearText.getText());
@@ -104,7 +109,7 @@ public class FirstPanel extends ChainedPanel   {
                     sem = Semester.W;
                 }
                 long waiting = (long)(Float.parseFloat(simulatedWaiting.getText())*1000);
-                setNext(new CalculateSemestersPanel(forced, pool, ects, voIntersect,year,sem,waiting));
+                next(new WaitingPanel(forced, pool, ects, voIntersect, year, sem, waiting));
             }
         });
     }
