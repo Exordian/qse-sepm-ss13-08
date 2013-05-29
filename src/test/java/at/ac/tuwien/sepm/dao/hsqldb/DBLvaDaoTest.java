@@ -71,7 +71,7 @@ public class DBLvaDaoTest {
         assert(l0.getSemester().equals(Semester.S));
         assert(l0.getDescription().equals("Description0"));
         assert(l0.getGrade()==0);
-        assert(l0.isInStudyProgress()==true);assert(l0.getId()==0);
+        assert(l0.isInStudyProgress());assert(l0.getId()==0);
 
         assert(l1.getId()==1);
         assert(l1.getMetaLVA().getId()==4);
@@ -79,7 +79,7 @@ public class DBLvaDaoTest {
         assert(l1.getSemester().equals(Semester.W));
         assert(l1.getDescription().equals("Description1"));
         assert(l1.getGrade()==1);
-        assert(l1.isInStudyProgress()==false);
+        assert(!l1.isInStudyProgress());
     }
 
     @Test(expected = IOException.class)
@@ -256,6 +256,57 @@ public class DBLvaDaoTest {
         assert(dao.readByIdWithoutLvaDates(-1)==null);
     }
 
+    /**
+     * The method <code>reaUncompletedByYearSemesterStudyProgress()</code> calls internal the method
+     * <code>readById()</code>, so there is only tested if the id and the amount of returned lvas is correct, and not if
+     * the returned lvas itself are correct. The correctness of the method <code>readById()</code> is tested in its own
+     * test methods.
+     */
+    @Test
+    public void testReadUncompletedByYearSemesterStudyProgress() throws Exception {
+        TestHelper.insert(14);
+
+        List<LVA> l0 = dao.readUncompletedByYearSemesterStudyProgress(2013, Semester.S, true);
+        List<LVA> l1 = dao.readUncompletedByYearSemesterStudyProgress(2013, Semester.S, false);
+
+        assert(l0.size()==2);
+        assert(l1.size()==3);
+
+        assert(l0.get(0).getId()==10);
+        assert(l0.get(1).getId()==11);
+
+        assert(l1.get(0).getId()==9);
+        assert(l1.get(1).getId()==12);
+        assert(l1.get(2).getId()==15);
+    }
+
+    @Test
+    public void testReadUncompletedByNotExistingYearSemesterStudyProgress() throws Exception {
+        TestHelper.insert(14);
+        assert(dao.readUncompletedByYearSemesterStudyProgress(2000, Semester.S, true).size()==0);
+    }
+
+    @Test
+    public void testReadUncompletedByYearInvalidSemesterStudyProgress() throws Exception {
+        TestHelper.insert(14);
+        assert(dao.readUncompletedByYearSemesterStudyProgress(2013, Semester.UNKNOWN, true)==null);
+        assert(dao.readUncompletedByYearSemesterStudyProgress(2013, Semester.W_S, true)==null);
+        assert(dao.readUncompletedByYearSemesterStudyProgress(2013, Semester.S, true)!=null);
+        assert(dao.readUncompletedByYearSemesterStudyProgress(2013, Semester.W, true)!=null);
+    }
+
+    @Test
+    public void testReadUncompletedByYearNotExistingSemesterStudyProgress() throws Exception {
+        TestHelper.insert(14);
+        assert(dao.readUncompletedByYearSemesterStudyProgress(2013, Semester.W, true).size()==0);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testReadUncompletedByYearSemesterIsNullStudyProgress() throws Exception {
+        TestHelper.insert(14);
+        dao.readUncompletedByYearSemesterStudyProgress(2013, null, true);
+    }
+
     /*
     @Test
     public void testReadByName() throws Exception {
@@ -288,7 +339,6 @@ public class DBLvaDaoTest {
      * The method <code>readByYearSemester()</code> calls internal the method <code>readById()</code>, so there is only
      * tested if the amount of returned lvas is correct, and not if the returned lvas itself are correct. The correctness
      * of the method <code>readById()</code> is tested in its own test methods.
-     * @throws Exception
      */
     @Test
     public void testReadByYearSemester() throws Exception {
@@ -297,6 +347,45 @@ public class DBLvaDaoTest {
         assert(list.size()==8);
     }
 
+    /*
+     * The method <code>readNotCompletedByYearSemesterStudyProgress</code> calls internal the method <code>readById()</code>
+     * in <code>LVA</code>, so here is only tested if the ids of the returned lvas are correct.
+     */
+    /*@Test
+    public void readNotCompletedByYearSemesterStudProgress() throws Exception {
+        TestHelper.insert(12);
+        List<LVA> l0 = dao.readNotCompletedByYearSemesterStudyProgress(2013, Semester.S, true);
+        List<LVA> l1 = dao.readNotCompletedByYearSemesterStudyProgress(2013, Semester.S, false);
+        assert(l0.size()==4);
+        assert(l1.size()==4);
+        assert(l0.get(0).getId()==1);
+        assert(l0.get(1).getId()==3);
+        assert(l0.get(2).getId()==4);
+        assert(l0.get(3).getId()==5);
+        assert(l1.get(0).getId()==0);
+        assert(l1.get(1).getId()==2);
+        assert(l1.get(2).getId()==6);
+        assert(l1.get(3).getId()==7);
+    }
+
+    @Test
+    public void readNotCompletedByNotExistingYearSemesterStudProgress() throws Exception {
+        TestHelper.insert(12);
+        assert(dao.readNotCompletedByYearSemesterStudyProgress(-1, Semester.S, true).size()==0);
+
+    }
+
+    @Test
+    public void readNotCompletedByYearNotExistingSemesterStudProgress() throws Exception {
+        TestHelper.insert(12);
+        assert(dao.readNotCompletedByYearSemesterStudyProgress(2013, Semester.UNKNOWN, true)==null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void readNotCompletedByYearSemesterIsNullStudProgress() throws Exception {
+        TestHelper.insert(12);
+        dao.readNotCompletedByYearSemesterStudyProgress(2013, null, true);
+    }*/
 
     @Test
     public void testUpdate() throws Exception {
@@ -323,7 +412,7 @@ public class DBLvaDaoTest {
         assert(l0.getSemester().equals(Semester.W));
         assert(l0.getDescription().equals("asdf"));
         assert(l0.getGrade()==5);
-        assert(l0.isInStudyProgress()==false);
+        assert(!l0.isInStudyProgress());
     }
 
     @Test(expected = IOException.class)

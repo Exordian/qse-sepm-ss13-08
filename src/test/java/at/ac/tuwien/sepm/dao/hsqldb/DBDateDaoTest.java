@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.entity.LVA;
+import at.ac.tuwien.sepm.service.Semester;
 import org.joda.time.DateTime;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -186,7 +188,7 @@ public class DBDateDaoTest {
     }
 
     @Test
-    public void testReadInTimeframeWhichDoesNotContainDtes() throws Exception {
+    public void testReadInTimeframeWhichDoesNotContainDates() throws Exception {
         DateEntity e0 = new DateEntity();
         e0.setId(0);
         e0.setName("Name0");
@@ -235,6 +237,33 @@ public class DBDateDaoTest {
 
         List<DateEntity> l = dao.readInTimeframe(new DateTime(2000, 4, 17, 1, 13, 0), new DateTime(2000, 4, 19, 1, 13, 0));
         assert(l.size()==0);
+    }
+
+    @Test
+    public void testReadNotIntersectableByYearSemester() throws Exception {
+        TestHelper.insert(0);
+        LVA e0 = dao.readNotIntersectableByYearSemester(2013, Semester.S);
+        LVA e1 = dao.readNotIntersectableByYearSemester(2013, Semester.W);
+        assert(e0.getTimes().size()==11);
+        assert(e1.getTimes().size()==2);
+    }
+
+    @Test
+    public void testReadNotIntersectableByNotExistingYearSemester() throws Exception {
+        TestHelper.insert(0);
+        assert(dao.readNotIntersectableByYearSemester(-1,Semester.S).getTimes().size()==0);
+    }
+
+    @Test
+    public void testReadNotIntersectableByYearNotExistingSemester() throws Exception {
+        TestHelper.insert(0);
+        assert(dao.readNotIntersectableByYearSemester(2013, Semester.UNKNOWN)==null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testReadNotIntersectableByYearSemesterIsNull() throws Exception {
+        TestHelper.insert(0);
+        dao.readNotIntersectableByYearSemester(2013,null);
     }
 
     @Test

@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.dao;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.entity.LVA;
+import at.ac.tuwien.sepm.service.Semester;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 
@@ -48,15 +50,28 @@ public interface DateDao {
     public DateEntity readById(int id) throws DataAccessException;
 
     /**
-     * Read all Dates where <code>getStart()>=from</code> and <code>getStart()<=till</code>.
+     * Read all dates where the start date between <code>from</code> and <code>till</code>.
      * @param from The start date and time. This moment is included to the search.
      * @param till The stop date and time. This moment is included to the search.
-     * @return A <code>ArrayList<DateEntry></code> containing all dates within the specified time frame, or a empty list
+     * @return A <code>List<DateEntry></code> containing all dates within the specified time frame, or a empty list
      * if there was no matching date found. The order is chronological, beginning with oldest date. If there are several
      * dates at the same time, there is no defined order.
      * @throws org.springframework.dao.DataAccessException If the date data could not be read because any error occurred.
      */
     public List<DateEntity> readInTimeframe(DateTime from, DateTime till) throws DataAccessException;
+
+    /**
+     * Read all not intersectable dates which are in the specified year and semester. A winter semester starts on 1.
+     * October and ends on 31. January, a summer semester starts on 1. March and ends on 30. June.
+     * @param year The year.
+     * @param semester The semester. Should be <code>Semester.S</code> or <code>Semester.W</code>.
+     * @return A <code>List<LVA></code> where all dates are stored as TimeFrame into the field <code>times</code>. If
+     * there was no date in the specified year and semester found <code>times.size()==0</code>. If
+     * <code>!semester.equals(Semester.S) && !semester.equals(Semester.W)</code> there will be returned <code>null</code>.
+     * @throws DataAccessException If the date data could not be read because any error occurred.
+     * @throws NullPointerException If <code>semester==null</code>.
+     */
+    public LVA readNotIntersectableByYearSemester(int year, Semester semester) throws DataAccessException, NullPointerException;
 
     /*
      * Read all Dates within the specific time frame. It's also possible to specify if the date should be intersectable

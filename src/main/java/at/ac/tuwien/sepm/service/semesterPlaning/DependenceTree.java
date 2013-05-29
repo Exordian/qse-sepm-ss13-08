@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.service.semesterPlaning;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,21 +21,22 @@ public class DependenceTree implements Iterable<MetaLVA>{
 	ArrayList<Node> leaves= new ArrayList<Node>();
 	HashMap<Integer,Node> nodes;
 	ArrayList<Node> nodesList;
-	
+    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+    
 	public DependenceTree(List<MetaLVA> lvas){
 		nodesList = new ArrayList<Node>();
 		nodes = new HashMap<Integer,Node>(lvas.size()+(int)(lvas.size()*0.2));
 		for(MetaLVA lva: lvas){
 			Node tempNode =new Node(lva);
-			nodes.put(new Integer(lva.getNr()), tempNode);
+			nodes.put(new Integer(lva.getNr().replace(".","")), tempNode);
 			nodesList.add(tempNode);
 		}
 		for(MetaLVA lva: lvas){
-			Node tempNode=nodes.get(new Integer(lva.getNr()));
-			ArrayList<MetaLVA> tempPres =tempNode.getLVA().getPrecursor();
+			Node tempNode=nodes.get(new Integer(lva.getNr().replace(".","")));
+			List<MetaLVA> tempPres =tempNode.getLVA().getPrecursor();
 			for(MetaLVA pre : tempPres){
-				if(nodes.containsKey(new Integer(pre.getNr()))){
-					tempNode.addChild(nodes.get(new Integer(pre.getNr())));
+				if(nodes.containsKey(new Integer(pre.getNr().replace(".","")))){
+					tempNode.addChild(nodes.get(new Integer(pre.getNr().replace(".", ""))));
 				}
 			}
 			if(tempNode.getChildren().isEmpty()){
@@ -41,7 +44,7 @@ public class DependenceTree implements Iterable<MetaLVA>{
 			}
 		} 	
 		for(MetaLVA lva: lvas){
-			Node tempNode=nodes.get(new Integer(lva.getNr()));
+			Node tempNode=nodes.get(new Integer(lva.getNr().replace(".", "")));
 			if(tempNode.getParents().isEmpty()){
 				leaves.add(tempNode);
 			}
@@ -70,12 +73,12 @@ public class DependenceTree implements Iterable<MetaLVA>{
 	}
 	public void changePriorityBySemester(float delta){
 		for(Node n:nodesList){
-			System.out.println(n.getLVA());
+			logger.debug(n.getLVA());
 			n.changePriorityBySemester(delta);
 		}
 	}
 	public float getPriority(MetaLVA lva){
-		return nodes.get(new Integer(lva.getNr())).getPriority();
+		return nodes.get(new Integer(lva.getNr().replace(".", ""))).getPriority();
 	}
 	private class Node implements Comparable<Node>{
 		MetaLVA lva;

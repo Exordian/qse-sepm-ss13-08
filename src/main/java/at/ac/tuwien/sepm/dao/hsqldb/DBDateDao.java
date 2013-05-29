@@ -2,12 +2,16 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.entity.LVA;
+import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,6 +57,37 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         String stmt = " SELECT * FROM date WHERE start>=? AND start<=? ORDER BY start";
         Object[] args = new Object[]{new Timestamp(from.getMillis()), new Timestamp(till.getMillis())};
         return jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), args);
+    }
+
+    @Override
+    public LVA readNotIntersectableByYearSemester(int year, Semester semester) throws DataAccessException, NullPointerException {
+        int monthStart=3;
+        int monthEnd=6;
+        int dayEnd=30;
+        int yearEnd=year;
+        if(semester.equals(Semester.W)) {
+            monthStart=10;
+            monthEnd=1;
+            dayEnd=31;
+            yearEnd++;
+        } else if(!semester.equals(Semester.S)) {
+            return null;
+        }
+
+        DateTime start = new DateTime(year, monthStart, 1, 0, 0, 0, 0);
+        DateTime stop = new DateTime(yearEnd, monthEnd, dayEnd, 23, 59, 59, 999);
+
+        String stmt = " SELECT * FROM date WHERE isintersectable=FALSE AND start>=? AND start<=? ORDER BY start";
+        List<DateEntity> dates = jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), new Timestamp(start.getMillis()), new Timestamp(stop.getMillis()));
+
+        LVA result = new LVA();
+        ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();
+        for(DateEntity d : dates) {
+            times.add(new TimeFrame(d.getStart(), d.getStop()));
+        }
+        result.setTimes(times);
+
+        return result;
     }
 
     @Override

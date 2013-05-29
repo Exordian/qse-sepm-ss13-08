@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.dao.LvaDao;
-import at.ac.tuwien.sepm.dao.LvaDateDao;
-import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
@@ -13,7 +11,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,6 +112,38 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
     }
 
     @Override
+    public List<LVA> readUncompletedByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws DataAccessException {
+        boolean s=true;
+        if(semester.equals(Semester.S)) {
+            s=false;
+        } else if(!semester.equals(Semester.W)) {
+            return null;
+        }
+
+        String stmtCount = "SELECT COUNT(*) FROM lva WHERE " +
+                "metalva NOT IN (SELECT metalva FROM lva WHERE grade BETWEEN 1 AND 4) " +
+                "AND year=? " +
+                "AND iswintersemester=? " +
+                "AND instudyprogress=?";
+        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), year, s, isInStudyProgress) == 0) {
+            return new ArrayList<LVA>();
+        }
+
+        String stmt = "SELECT * FROM lva WHERE " +
+                "metalva NOT IN (SELECT metalva FROM lva WHERE grade BETWEEN 1 AND 4) " +
+                "AND year=? " +
+                "AND iswintersemester=? " +
+                "AND instudyprogress=?";
+        List<LVA> result = jdbcTemplate.query(stmt, RowMappers.getLvaRowMapper(), year, s, isInStudyProgress);
+
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, readById(result.get(i).getId()));
+        }
+
+        return result;
+    }
+
+    @Override
     public LVA readByIdWithoutLvaDates(int id) throws DataAccessException {
         if(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM date WHERE id=?", RowMappers.getIntegerRowMapper(), id) != 1){
             return null;
@@ -139,6 +168,29 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
 
         return result;
     }
+
+    /*@Override
+    public List<LVA> readNotCompletedByYearSemesterStudyProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException {
+        boolean s = true;
+        if(semester.equals(Semester.S)) {
+            s = false;
+        } else if(!semester.equals(Semester.W))  {
+            return null;
+        }
+
+        String stmt = "SELECT * FROM lva WHERE year=? AND iswintersemester=? AND instudyprogress=? AND grade IN (0,5)";
+        List<LVA> result = jdbcTemplate.query(stmt, RowMappers.getLvaRowMapper(), year, s, inStudyProgress);
+
+        if(result.size()==0) {
+            return new ArrayList<LVA>();
+        }
+
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, this.readById(result.get(i).getId()));
+        }
+
+        return result;
+    }*/
 
     @Override
     public boolean update(LVA toUpdate) throws IOException, DataAccessException {

@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.dao;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.Semester;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -80,6 +80,36 @@ public interface MetaLvaDao {
      * @throws DataAccessException If the meta lva data could not be read because any error occured
      */
     public MetaLVA readByLvaNumber(String lvaNumber) throws DataAccessException;
+
+    /**
+     * Return all meta lvas, which have no completed lva, have no lva in the specified year and semester and where the
+     * perhaps existing lva from the specified year and semester is included to the study progress or not.
+     * @param year The year.
+     * @param semester The semester. Must be <code>Semester.S</code> of <code>Semester.W</code>.
+     * @param isInStudyProgress <code>true</code> if the returned list should only contain meta lvas which have actual
+     *                          lvas which are included to the study progress and <code>false</code>  otherwise.
+     * @return A list containing all matching meta lvas, a emtpy list if there was no match and <code>null</code> if
+     * <code>!semester.equals(Semester.S) && !semester.equals(Semester.W)</code>.
+     * @throws DataAccessException If the data could not be read because any other error occurred.
+     * @throws NullPointerException If <code>semester==null</code>.
+     */
+    public List<MetaLVA> readUncompletedByYearSemesterStudyProgress (int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
+
+    /*
+     * Read all meta lvas which have a lva in the specified year and semester and which is either included to study
+     * progress or not. The meta lva from the returned lvas from the returned meta lvas does only contain their id, but
+     * does contain all lva dates.
+     * @param year The year.
+     * @param semester The semester.
+     * @param inStudyProgress <code>true</code> if the perhaps containing lva should be included to the study progress
+     *                        and <code>false</code> otherwise.
+     * @return A list containing all meta lvas, which have an lva in the specified year and semester and are included to
+     * the study progress or not, a empty list if there was no matching meta lva found and null if
+     * <code>!semester.equals(Semester.S) && !semester.equals(Semester.W)</code>.
+     * @throws DataAccessException  the data could not be read because any other error occurred.
+     * @throws NullPointerException If <code>semester==null</code>.
+     */
+    //public List<MetaLVA> readNotCompletedByYearSemesterStudProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException;
 
     /**
      * Update the meta lvanumber,name, semester, type, priority, ects and module. The meta lva is identified by the id.
