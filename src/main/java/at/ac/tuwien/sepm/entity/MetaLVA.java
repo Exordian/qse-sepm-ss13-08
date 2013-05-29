@@ -58,7 +58,7 @@ public class MetaLVA {
 		this.ects = ects;
 	}
 
-	public ArrayList<MetaLVA> getPrecursor() {
+	public List<MetaLVA> getPrecursor() {
 		return precursor;
 	}
 
@@ -90,7 +90,7 @@ public class MetaLVA {
 		this.priority = priority;
 	}
 
-	public ArrayList<LVA> getLVAs() {
+	public List<LVA> getLVAs() {
 		return lvas;
 	}
 

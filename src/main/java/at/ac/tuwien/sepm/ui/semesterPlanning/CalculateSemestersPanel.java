@@ -3,55 +3,59 @@ package at.ac.tuwien.sepm.ui.semesterPlanning;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.semesterPlaning.IntelligentSemesterPlaner;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: Georg Plaz
  */
-public class CalculateSemestersPanel extends ChainedPanel{
+public class WaitingPanel extends ChainedPanel{
     private IntelligentSemesterPlaner planer = new IntelligentSemesterPlaner();
     private ArrayList<MetaLVA> lvas;
-    private MetaLVATable table;
+    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     //private static final String pleaseWait= "Bitte warten!\n\n Verstrichene Zeit:";
     private JTextArea pleaseWait = new JTextArea();
     //private JTextArea pleaseWait = new JTextArea("Verstrichene Wartezeit: !");
     private JButton backButton = new JButton("zurueck");
-    private int secCounter;
+    private int secCounter=0;
 
-    public CalculateSemestersPanel(ArrayList<MetaLVA> forced, ArrayList<MetaLVA> pool, float goalECTS, boolean voIntersect, int year, Semester sem, long waiting) {
+    public WaitingPanel(List<MetaLVA> forced, List<MetaLVA> pool, float goalECTS, boolean voIntersect, int year, Semester sem, long waiting) {
         add(pleaseWait);
         pleaseWait.setEditable(false);
         CalculateSemesterThread t= new CalculateSemesterThread(forced, pool, goalECTS, voIntersect,year,sem);
+        TimeCounter counter = new TimeCounter();
+        registerThread(counter);
+        registerThread(t);
 
         add(backButton);
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                back();
+                backAndKill();
             }
         });
-        TimeCounter counter = new TimeCounter();
-        counter.start();
-        t.start(waiting);
+        t.setWaiting(waiting);
+
     }
+    public void startThreads(){
+        for(Thread t:getThreads()){
+            t.start();
+        }
+        //t.start(waiting);
+        //EventQueue.invokeLater(counter);
 
-
-
+        //EventQueue.invokeLater(t);
+    }
     public void setLVAs(ArrayList<MetaLVA> lvas){
-        this.lvas = lvas;
-        remove(pleaseWait);
-        JScrollPane p = new JScrollPane();
-        MetaLVATable t = new MetaLVATable(lvas);
-        //setPreferredSize(t.getPreferredSize());
-        JScrollPane pane = new JScrollPane(t);
-        pane.setPreferredSize(new Dimension(200,200));
-        add(pane);
-        revalidate();
+
+        replace(new ShowSemester(lvas));
     }
     public class CalculateSemesterThread extends Thread{
         private IntelligentSemesterPlaner planer = new IntelligentSemesterPlaner();
@@ -59,7 +63,10 @@ public class CalculateSemestersPanel extends ChainedPanel{
         private Semester sem;
         private int year;
         private long simulatedWaitingTime=3000;
-        public CalculateSemesterThread(ArrayList<MetaLVA> forced, ArrayList<MetaLVA> pool,float goalECTS,boolean voIntersect, int year, Semester sem){
+        public void setWaiting(long simulatedWaitingTime){
+            this.simulatedWaitingTime = simulatedWaitingTime;
+        }
+        public CalculateSemesterThread(List<MetaLVA> forced, List<MetaLVA> pool,float goalECTS,boolean voIntersect, int year, Semester sem){
             planer.setLVAs(forced, pool);
             this.goalECTS = goalECTS;
             this.sem=sem;
@@ -73,28 +80,36 @@ public class CalculateSemestersPanel extends ChainedPanel{
         public void run() {
 
             ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, year, sem);
-            System.out.println("solution: "+solution);
+            logger.debug("solution: "+solution);
             try {
-                System.out.println("sleeping for: "+simulatedWaitingTime);
+                logger.debug("sleeping for: " + simulatedWaitingTime);
                 sleep(simulatedWaitingTime);
             } catch (InterruptedException ignore) { //simulating long calculation
             }
-            CalculateSemestersPanel.this.setLVAs(solution);
+            setLVAs(solution);
 
         }
     }
     public class TimeCounter extends Thread{
-
+        boolean running = true;
 
         @Override
         public void run() {
-            while(lvas==null){
-                pleaseWait.setText("Bitte warten!\nDie Berechnung kann einige\nSekunden in Anspruch nehmen.\n\nVerstrichene Zeit: "+(secCounter++)+" Sekunden.");
+            while(lvas==null &&running){
+                String toDisplay = "Bitte warten!\nDie Berechnung kann einige\nSekunden in Anspruch nehmen.\n\nVerstrichene Zeit: "+(secCounter++)+" Sekunden.";
+                logger.debug("display to user: \n"+toDisplay);
+                pleaseWait.setText(toDisplay);
                 try {
                     this.sleep(1000);
                 } catch (InterruptedException ignore) {
+                    break;
                 }
             }
+        }
+        @Override
+        public void interrupt(){
+            running=false;
+            super.interrupt();
         }
     }
 

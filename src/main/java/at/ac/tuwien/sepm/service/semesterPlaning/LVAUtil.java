@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.service.semesterPlaning;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,6 +21,7 @@ public class LVAUtil {
     /** This constant serves as an identifier for the Exam-Dates associated with this LVA.*/
     public static final int TIMES_EXAM =2;
 
+    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     /**
      * This methods will provide an Iterator, which returns all TimeFrames saved for the given LVA, for the given types. Since they are
      * inserted in order, they will also be returned in order.
@@ -140,11 +143,11 @@ public class LVAUtil {
 			while(index1 < times.size() && index2 < b.times.size()){
 				if(times.get(index1).after(b.times.get(index2))){
 					index2++;
-					System.out.println("index2++");
+					logger.debug("index2++");
 				}else if(b.times.get(index2).after(times.get(index1))){
 					index1++;
 
-					System.out.println("index1++");
+					logger.debug("index1++");
 				}else{
 					return true;
 				}
@@ -156,27 +159,23 @@ public class LVAUtil {
         private LVA lva;
         ArrayList<Iterator<TimeFrame>> allIter= new ArrayList<Iterator<TimeFrame>>();
         ArrayList<TimeFrame> allLastFrames = new ArrayList<TimeFrame>();
-
+        Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
         public TimeIterator(LVA lva,List<Integer> consideredTimesA){
             this.lva = lva;
             ArrayList<TimeFrame> times = lva.getTimes();
             ArrayList<TimeFrame> timesUE = lva.getTimesUE();
             ArrayList<TimeFrame> timesExam = lva.getTimesExam();
             if(times!=null && consideredTimesA.contains(TIMES)){
-                //System.out.println("debug0.0: "+times.size());
                 allIter.add(times.iterator());
             }
             if(timesUE!=null && consideredTimesA.contains(TIMES_UE)){
-                //System.out.println("debug0.1: "+timesUE.size());
                 allIter.add(timesUE.iterator());
             }
             if(timesExam!=null && consideredTimesA.contains(TIMES_EXAM)){
-                //System.out.println("debug0.2: "+timesExam.size());
                 allIter.add(timesExam.iterator());
             }
             for(Iterator<TimeFrame> iter:allIter){
                 if(iter.hasNext()){
-                    //System.out.println("iter==null: "+iter==null);
                     allLastFrames.add(iter.next());
                 }else{
                     allLastFrames.add(null);
@@ -185,9 +184,7 @@ public class LVAUtil {
         }
         @Override
         public boolean hasNext() {
-            //System.out.println("debug2");
             for(TimeFrame frame: allLastFrames){
-                //System.out.println("  debug2.0: "+iter.hasNext());
                 if(frame!=null){
                     return true;
                 }
@@ -218,13 +215,12 @@ public class LVAUtil {
             }else{
                 allLastFrames.set(index, null);
             }
-            //System.out.println("debug: "+firstFrame);
             return firstFrame;
         }
 
         @Override
         public void remove() {
-            // TODO Auto-generated method stub
+            //do nothing
 
         }
 

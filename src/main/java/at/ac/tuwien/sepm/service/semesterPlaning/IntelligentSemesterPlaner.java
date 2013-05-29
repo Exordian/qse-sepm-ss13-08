@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.service.semesterPlaning;
 
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.Semester;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,7 @@ public class IntelligentSemesterPlaner {
 	private ArrayList<MetaLVA> forced = new ArrayList<MetaLVA>();
 	private ArrayList<MetaLVA> pool = new ArrayList<MetaLVA>();
 	private DependenceTree tree;
-	
+    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
 
     /**
@@ -39,7 +41,8 @@ public class IntelligentSemesterPlaner {
 				this.pool.add(lva);
 			}
 		}
-        //System.out.println("pool set: "+this.pool);
+        logger.debug("forced set: "+this.forced);
+        logger.debug("pool set: "+this.pool);
 	}
 
     /**
@@ -59,9 +62,19 @@ public class IntelligentSemesterPlaner {
 				toPlan.add(mLVA);
 			}
 		}
-		recPlanning(toPlan,0,new ArrayList<Integer>(),goalECTS,year,sem);
-		
+        ArrayList chosen = new ArrayList<Integer>();
+        for(MetaLVA mLVA :forced){
+            if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
+                toPlan.add(mLVA);
+
+            }
+            chosen.add(toPlan.indexOf(mLVA));
+        }
+        computeSolution(toPlan,chosen,goalECTS);
+		recPlanning(toPlan,0,chosen,goalECTS,year,sem);
+		if(bestSolution!=null)
 		return bestSolution;
+        return new ArrayList<MetaLVA>();
 	}
 	private ArrayList<MetaLVA> bestSolution=null;
 	private float solutionValue=Float.NEGATIVE_INFINITY;
@@ -102,15 +115,15 @@ public class IntelligentSemesterPlaner {
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-			//System.out.println("new Solution found: " +newSolution);
-			//System.out.println("value: "+value);
+			logger.debug("new Solution found: " +newSolution+"\nsolution value: "+value);
 		}else{
-			ArrayList<MetaLVA> newSolution = new ArrayList<MetaLVA>();
+            //active for detailed debugging
+			/*ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
 			for(Integer i:chosen){
-				newSolution.add(all.get(i));
+				toDiscard.add(all.get(i));
 			}
-			//System.out.println("NO new Solution found: " +newSolution);
-			//System.out.println("value: "+value);
+			logger.debug("discarding set: " +toDiscard+"\nsolution value: "+value);
+			*/
 		}
 	}
 	
