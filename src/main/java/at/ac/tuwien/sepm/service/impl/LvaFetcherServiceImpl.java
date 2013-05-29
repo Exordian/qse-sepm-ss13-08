@@ -5,11 +5,14 @@ import at.ac.tuwien.sepm.exception.ServiceException;
 import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,10 +21,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class LvaFetcherServiceImpl implements LvaFetcherService {
+
+    private static Logger log = LogManager.getLogger(LvaFetcherServiceImpl.class);
 
     //@Value("${timeout}")
     private static int timeout = 10000;
@@ -65,17 +71,16 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                     cur.setName(lvaDesc.text());
                     curriculums.add(cur);
                     if(recursive) {
-                        // TODO: wtf is dis map?
-                        List<Module> lm = getModules(cur.getStudyNumber());
-                        if(lm != null) {
-                            HashMap<Module, Boolean> moduleBooleanMap = new HashMap<>();
-                            for(Module m : lm)
-                                moduleBooleanMap.put(m, true);
-                            cur.setModules(moduleBooleanMap);
+                        if(cur.getStudyNumber() != null && !cur.getStudyNumber().isEmpty()) {
+                            List<Module> lm = getModules(cur.getStudyNumber());
+                            if(lm != null) {
+                                HashMap<Module, Boolean> moduleBooleanMap = new HashMap<>();
+                                for(Module m : lm)
+                                    moduleBooleanMap.put(m, true);
+                                cur.setModules(moduleBooleanMap);
+                            }
                         }
                     }
-                    //String href = lvaDesc.attr("href");
-//                    getModules(BASE_URL + href);
                 }
             }
             return curriculums;
@@ -101,6 +106,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
         }
     }
 
+
     private static final String CURRICULUM_SEMESTER_LINK = "&semester=CURRENT";
     private static final String CURRICULUM_TABLE = "table#nodeTable tbody tr";
     private static final String CURRICULUM_TABLE_ELEMENTS = ".nodeTable-level-2, .nodeTable-level-3, .nodeTable-level-4";
@@ -109,17 +115,25 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
     private static final String CURRICULUM_TABLE_MODULE_LVA_CLASS_KEY = ".courseKey";
 
 
-
     @Override
     public List<Module> getModules(String studyNumber) throws ServiceException {
         return getModules(studyNumber, false);
     }
 
+    private String getCurrentSemester() {
+        return String.valueOf(DateTime.now().getYear()) + ((DateTime.now().getMonthOfYear() < 6)? "S":"W");
+    }
+
     @Override
     public List<Module> getModules(String studyNumber, boolean recursive) throws ServiceException {
+        return getModules(studyNumber, recursive, getCurrentSemester());
+    }
+
+    @Override
+    public List<Module> getModules(String studyNumber, boolean recursive, String semester) throws ServiceException {
         try {
             if(studyNumber == null || studyNumber.isEmpty())
-                return null;
+                throw new ServiceException("invalid study number");
             List<Module> moduleList = new ArrayList<>();
             URL studyUrl = new URL(getUrlForCurriculumByStudyNumber(studyNumber)+CURRICULUM_SEMESTER_LINK);
             Document curriculumDoc = Jsoup.parse(studyUrl, timeout);
@@ -131,20 +145,18 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                 if(e.attr("class").trim().equals(CURRICULUM_TABLE_MODULE_NAME_CLASS)) {
                     lastModule = new Module();
                     lastModule.setName(e.text());
+                    log.info("Start new Module: " + lastModule.toString());
                     moduleList.add(lastModule);
-//                } else if(recursive && e.attr("class").trim().startsWith("nodeTable-level-3")) {
-//                    System.out.println("Meta LVA: " + e.text());
                 } else if(recursive && e.attr("class").trim().startsWith(CURRICULUM_TABLE_MODULE_LVA_CLASS)) {
                     if(lastModule != null) {
                         if(lastModule.getMetaLvas() == null)
                             lastModule.setMetaLvas(new ArrayList<MetaLVA>());
-                        lastModule.getMetaLvas().add(getLva(e.select(CURRICULUM_TABLE_MODULE_LVA_CLASS_KEY).text().split(" ", 2)[0], "2013S")); // TODO Semester select + default curr semester
+                        MetaLVA lva = getLva(e.select(CURRICULUM_TABLE_MODULE_LVA_CLASS_KEY).text().split(" ", 2)[0], semester);
+                        log.info("Add LVA " + lva.toString() + " to Module " + lastModule.toString());
+                        lastModule.getMetaLvas().add(lva);
                     } else
-                        ; // TODO Log here
+                        log.warn("LVA without Module: " + e.text());
                     // TODO: catalog softskills etc - nested modules ?
-                    //System.out.println("LVA: " + e.text());
-                    //if(!e.select("a").attr("href").isEmpty())
-                    //    getLVA(BASE_URL + e.select("a").attr("href"));
                 }
             }
             return moduleList;
@@ -160,6 +172,8 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
     private static final String LVA_CONTENT_HEAD = "h1";
     private static final String LVA_CONTENT_SUBHEAD = "div#subHeader";
 
+    private static final String REGEX_SINGLE_DATE = "^(\\d)+\\.(\\d)+\\.(\\d)+$";
+
     private String flattenLvaNr(String lvaNr) {
         return lvaNr.replace(".", "").replace(" ", "");
     }
@@ -167,6 +181,10 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
     @Override
     public MetaLVA getLva(String lvaNr, String semester) throws ServiceException {
         try {
+            if(lvaNr == null)
+                throw new ServiceException("invalid lva nr");
+            if(semester == null)
+                throw new ServiceException("invalid semester");
             MetaLVA metaLVA = new MetaLVA();
             URL lvaUrl = new URL(BASE_URL + String.format(LVA_LINK, flattenLvaNr(lvaNr), semester));
             Document lvaDoc = Jsoup.parse(lvaUrl, timeout);
@@ -181,42 +199,119 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             List<LVA> lvaList = new ArrayList<>();
             lvaList.add(lva);
             metaLVA.setLVAs(lvaList);
-            lva.setYear(Integer.parseInt(subhead[0].trim().substring(0, subhead[0].trim().length()-1)));
+            lva.setYear(Integer.parseInt(subhead[0].trim().substring(0, subhead[0].trim().length() - 1)));
             lva.setSemester(Semester.valueOf(String.valueOf(subhead[0].charAt(4))));
-            //String semesterHours = subhead[2].trim().substring(0, subhead[2].length()-2); // kick h
+            try {
+                lva.setGoals(lvaContent.select("h2:contains(Ziele der Lehrveranstaltung)").first().nextElementSibling().text());
+            } catch (NullPointerException ex) {
+                log.info("LVA: " + metaLVA.getName() + " no goals found");
+            }
+            try {
+                lva.setContent(lvaContent.select("h2:contains(Inhalt der Lehrveranstaltung)").first().nextElementSibling().text());
+            } catch (NullPointerException ex) {
+                log.info("LVA: " + metaLVA.getName() + " no content found");
+            }
+            try {
+                lva.setAdditionalInfo1(lvaContent.select("h2:contains(Weitere Informationen)").first().nextElementSibling().text());
+            } catch (NullPointerException ex) {
+                log.info("LVA: " + metaLVA.getName() + " no additional infos1 found");
+            }
+            try {
+                lva.setInstitute(lvaContent.select("h2:contains(Institut)").first().nextElementSibling().text());
+            } catch (NullPointerException ex) {
+                log.info("LVA: " + metaLVA.getName() + " no institute found");
+            }
+            try {
+                lva.setPerformanceRecord(lvaContent.select("h2:contains(Leistungsnachweis)").first().nextElementSibling().text());
+            } catch (NullPointerException ex) {
+                log.info("LVA: " + metaLVA.getName() + " no performance record found");
+            }
+            try {
+                lva.setAdditionalInfo2(lvaContent.select("h2:contains(Weitere Informationen)").get(1).nextElementSibling().text());
+            } catch (NullPointerException ex) {
+                log.info("LVA: " + metaLVA.getName() + " no additional infos2 found");
+            } catch (IndexOutOfBoundsException ex) {
+                log.info("LVA: " + metaLVA.getName() + " no additional infos2 found");
+            }
+            try {
+                Elements elements = lvaContent.select("h2:contains(Vortragende)").first().nextElementSibling().select("li");
+                ArrayList<String> lec = new ArrayList<>();
+                for(Element element : elements) {
+                    lec.add(element.text());
+                }
+                lva.setLecturer(lec);
+            } catch (NullPointerException ex) {
+                log.info("LVA: " + metaLVA.getName() + " no institute found");
+            }
             try {
                 Elements lvaDateTable = lvaContent.select("h2:contains(LVA Termine)").first().nextElementSibling().select("tbody tr");
                 for(Element e : lvaDateTable) {
-                    LvaDate lvaDate = new LvaDate();
                     Elements elem = e.select("td");
-                    // TODO: -> Date Entity Matching
-                    String day = elem.get(0).text();
-                    String time = elem.get(1).text();
-                    String date = elem.get(2).text();
-                    String room = elem.get(3).text();
-                    String roomLink = elem.get(3).select("a").attr("href");
-                    String desc = elem.get(4).text();
-                    //System.out.println("LVA Date: "+day+" "+time+" "+date+" "+room+" "+roomLink+ " "+ desc);
+                    String[] time = elem.get(1).text().split(" - ");
+                    String[] date = elem.get(2).text().split(" - ");
+                    if(Pattern.compile(REGEX_SINGLE_DATE).matcher(date[0]).find()) {
+                        LvaDate lvaDate = new LvaDate();
+                        lvaDate.setType(LvaDateType.LECTURE);
+                        lvaDate.setStart(DateTime.parse(date[0] + " " + time[0],
+                            DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")));
+                        lvaDate.setStop(DateTime.parse(date[0] + " " + time[1],
+                                DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")));
+                        lvaDate.setRoom(elem.get(3).text());
+                        //String roomLink = elem.get(3).select("a").attr("href");
+                        lvaDate.setDescription(elem.get(4).text());
+                        log.info("Added new Date to LVA " + metaLVA.getName());
+                        // TODO: Add to LVA ?!
+                    } else {
+                        DateTime startTimeDay = DateTime.parse(date[0] + " " + time[0],
+                                DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
+                        DateTime endTimeDay = DateTime.parse(date[0] + " " + time[1],
+                                DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
+                        DateTime endTime = DateTime.parse(date[1] + " " + time[1],
+                                DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
+                        do {
+                            LvaDate lvaDate = new LvaDate();
+                            lvaDate.setType(LvaDateType.LECTURE);
+                            lvaDate.setRoom(elem.get(3).text());
+                            lvaDate.setDescription(elem.get(4).text());
+                            lvaDate.setStop(startTimeDay);
+                            lvaDate.setStart(endTimeDay);
+                            log.info("Added new Date to LVA " + metaLVA.getName());
+                            // TODO: Add to LVA ?!
+                            startTimeDay = startTimeDay.plusDays(7);
+                            endTimeDay = endTimeDay.plusDays(7);
+                        } while(startTimeDay.isBefore(endTime));
+                    }
                 }
-            } catch (NullPointerException ex) { /* no LVA Dates */ }
+            } catch (NullPointerException ex) {
+                log.info("LVA " + metaLVA.getName() + " has no dates");
+            }
             try {
                 Elements lvaTestTable = lvaContent.select("h2:contains(Prüfungen)").first().nextElementSibling().select("tbody tr");
                 for(Element e : lvaTestTable) {
                     Elements elem = e.select("td");
-                    // TODO: -> Date Entity Matching
-                    String day = elem.get(0).text();
-                    String time = elem.get(1).text();
-                    String date = elem.get(2).text();
-                    String room = elem.get(3).text();
-                    String roomLink = elem.get(3).select("a").attr("href");
-                    String mode = elem.get(4).text();
-                    String registerDeadline = elem.get(5).text();
-                    String register = elem.get(6).text();
-                    String desc = elem.get(7).text();
-                    //System.out.println("LVA Test: "+day+" "+time+" "+date+" "+room+" "+roomLink+ " " + mode+ " "+ registerDeadline + " " + register+ " "+ desc);
+                    String[] time = elem.get(1).text().split(" - ");
+                    String[] date = elem.get(2).text().split(" - ");
+                    //String mode = elem.get(4).text();
+                    //String registerDeadline = elem.get(5).text();
+                    //String register = elem.get(6).text();
+                    LvaDate lvaDate = new LvaDate();
+                    lvaDate.setType(LvaDateType.LECTURE);
+                    if(time[0].trim().equals("-"))
+                        time = new String[] {"07:00", "20:00"};
+                    lvaDate.setStart(DateTime.parse(date[0] + " " + time[0],
+                            DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")));
+                    lvaDate.setStop(DateTime.parse(date[0] + " " + time[1],
+                            DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")));
+                    lvaDate.setRoom(elem.get(3).text());
+                    //String roomLink = elem.get(3).select("a").attr("href");
+                    lvaDate.setDescription(elem.get(7).text());
+                    log.info("Added new Date to LVA " + metaLVA.getName());
+                    // TODO: Add to LVA ?!
                 }
-            } catch (NullPointerException ex) { /* no tests */ }
-
+            } catch (NullPointerException ex) {
+                log.info("LVA " + metaLVA.getName() + " has no exams");
+            }
+            log.info("Got LVA: " + lva.toString());
             return metaLVA;
         } catch (IOException e) {
             throw new ServiceException(e);

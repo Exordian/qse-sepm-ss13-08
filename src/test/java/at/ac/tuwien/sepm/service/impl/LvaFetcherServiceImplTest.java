@@ -68,6 +68,11 @@ public class LvaFetcherServiceImplTest {
         List<Module> moduleList = lvaFetcherService.getModules("033 111");
     }
 
+    @Test(expected = ServiceException.class)
+    public void testGetLvaNULL() throws Exception {
+        lvaFetcherService.getLva(null, null);
+    }
+
     @Test
     public void testGetLvaOOP() throws Exception {
         MetaLVA lva = lvaFetcherService.getLva("185.A01", "2012W");
@@ -80,6 +85,15 @@ public class LvaFetcherServiceImplTest {
         LVA realLva = lva.getLVAs().get(0);
         Assert.isTrue(realLva.getSemester().equals(Semester.W));
         Assert.isTrue(realLva.getYear() == 2012);
+        Assert.isTrue(realLva.getGoals().startsWith("Fachliche und methodische"));
+        Assert.isTrue(realLva.getContent().startsWith("Überblick über das objektorientierte"));
+        Assert.isTrue(realLva.getAdditionalInfo1().startsWith("Webseite Siehe http"));
+        Assert.isTrue(realLva.getAdditionalInfo2().startsWith("Homepage der Lehrveranstaltung"));
+        Assert.isTrue(realLva.getInstitute().startsWith("E185"));
+        Assert.isTrue(realLva.getPerformanceRecord().startsWith("Beurteilung der Lösung"));
+        Assert.isTrue(realLva.getLecturer().size() == 2);
+        Assert.isTrue(realLva.getLecturer().get(0).startsWith("Puntigam"));
+        // TODO: LVADate Test, requires LvaDate in Lva
     }
 
     @Test(expected = ServiceException.class)

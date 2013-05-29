@@ -41,6 +41,16 @@ public interface LvaFetcherService {
     List<Module> getModules(String studyNumber, boolean recursive) throws ServiceException;
 
     /**
+     * Get all Modules from an external Service
+     * @param studyNumber study number valid format: '123 123'
+     * @param recursive if true, fetch lva's too
+     * @param semester semester like "2012W" if not current semester
+     * @return List of Modules
+     * @throws ServiceException if study number could not be loaded
+     */
+    List<Module> getModules(String studyNumber, boolean recursive, String semester) throws ServiceException;
+
+    /**
      * Get all MetaLVA incl LVA from an external Service
      * @param lvaNr study number valid format: '123.123' '123 123' '123123'
      * @param semester in format '2012W'
