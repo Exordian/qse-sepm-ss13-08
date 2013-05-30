@@ -128,4 +128,14 @@ public class DBTodoDao extends DBBaseDao implements TodoDao {
 
         return true;
     }
+
+    @Override
+    public List<Todo> getAllTodos() throws DataAccessException {
+        String query = "SELECT * FROM todo";
+        List<Todo> result = jdbcTemplate.query(query, RowMappers.getTodoRowMapper());
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, readById(result.get(i).getId()));
+        }
+        return result;
+    }
 }

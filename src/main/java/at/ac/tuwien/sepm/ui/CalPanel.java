@@ -26,6 +26,7 @@ public class CalPanel extends StandardInsidePanel {
     @Autowired
     public CalPanel(TodoPanel todoPanel) {
         this.todoPanel = todoPanel;
+        todoPanel.setVisible(false);
         this.setLayout(null);
         this.setBounds(size);
         this.setOpaque(false);
@@ -144,6 +145,7 @@ public class CalPanel extends StandardInsidePanel {
         });
 
         tab3.setBounds(878,63,142,36);
+        todoPanel.setBounds(110,110,900,450);
         tab3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

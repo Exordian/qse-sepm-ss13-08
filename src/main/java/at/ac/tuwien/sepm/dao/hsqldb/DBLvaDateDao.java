@@ -162,4 +162,14 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
 
         return true;
     }
+
+    @Override
+    public List<LvaDate> getAllDeadlines() throws DataAccessException {
+        String query = "SELECT * FROM lvadate WHERE type = 3";
+        List<LvaDate> result = jdbcTemplate.query(query, RowMappers.getLvaDateRowMapper());
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, readById(result.get(i).getId()));
+        }
+        return result;
+    }
 }

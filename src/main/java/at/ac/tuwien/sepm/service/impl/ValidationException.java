@@ -6,6 +6,10 @@ public class ValidationException extends Exception {
         super();
     }
 
+    public ValidationException(String msg) {
+        super(msg);
+    }
+
     public ValidationException(String message, Throwable cause) {
         super(message, cause);    //To change body of overridden methods use File | Settings | File Templates.
     }

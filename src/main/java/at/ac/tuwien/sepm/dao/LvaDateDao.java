@@ -138,4 +138,11 @@ public interface LvaDateDao {
      * @throws org.springframework.dao.DataAccessException DataAccessException If the lva date data could not be deleted because any error occurred.
      */
     public boolean delete(int id) throws DataAccessException;
+
+    /**
+     * return all deadlines which are currently in database
+     * @return all deadlines
+     * @throws DataAccessException if data could not be read
+     */
+    public List<LvaDate> getAllDeadlines() throws DataAccessException;
 }
