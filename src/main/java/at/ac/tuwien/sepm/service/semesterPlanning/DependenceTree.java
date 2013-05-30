@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.service.semesterPlaning;
+package at.ac.tuwien.sepm.service.semesterPlanning;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 

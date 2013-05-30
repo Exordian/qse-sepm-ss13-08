@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.service.semesterPlaning;
+package at.ac.tuwien.sepm.service.semesterPlanning;
 
 import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LVA;

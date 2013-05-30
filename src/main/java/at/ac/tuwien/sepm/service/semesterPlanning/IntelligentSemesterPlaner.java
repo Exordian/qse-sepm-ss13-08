@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.service.semesterPlaning;
+package at.ac.tuwien.sepm.service.semesterPlanning;
 
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.Semester;
