@@ -22,9 +22,7 @@ public class StudPanel extends StandardInsidePanel {
     @Autowired
     public StudPanel(PlanningPanel planningPanel) {
         this.planningPanel = planningPanel;
-        this.setLayout(null);
-        this.setBounds(size);
-        this.setOpaque(false);
+        init();
         changeImage(1);
         createTabButtons();
     }

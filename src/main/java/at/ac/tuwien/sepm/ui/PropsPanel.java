@@ -16,9 +16,7 @@ public class PropsPanel extends StandardInsidePanel {
     private BGPanel bgPanel;
 
     public PropsPanel() {
-        this.setLayout(null);
-        this.setBounds(size);
-        this.setOpaque(false);
+        init();
 
         try {
             image = ImageIO.read(ClassLoader.getSystemResource("img/plainpanel.png"));

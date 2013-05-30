@@ -1,5 +1,8 @@
 package at.ac.tuwien.sepm.ui;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -20,10 +23,10 @@ public class CalPanel extends StandardInsidePanel {
     private JLabel month;
     private JComboBox semester;
 
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+
     public CalPanel() {
-        this.setLayout(null);
-        this.setBounds(size);
-        this.setOpaque(false);
+        init();
         createTabButtons();
         createNavButtons();
         createImportButton();
@@ -38,7 +41,7 @@ public class CalPanel extends StandardInsidePanel {
 
     private void createTop() {
         month = new JLabel("SEPTEMBER 2012");
-        month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 305, 30);
+        month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 290, 30);
         month.setForeground(Color.WHITE);
         month.setFont(standardTitleFont);
 
