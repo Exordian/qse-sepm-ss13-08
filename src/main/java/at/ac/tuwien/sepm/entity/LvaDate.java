@@ -21,6 +21,13 @@ public class LvaDate implements Date {
     private Boolean attendanceRequired;
     private Boolean wasAttendant;
 
+    public LvaDate(){
+    }
+
+    public LvaDate(TimeFrame time){
+        setTime(time);
+    }
+
     public Integer getId() {
         return id;
     }

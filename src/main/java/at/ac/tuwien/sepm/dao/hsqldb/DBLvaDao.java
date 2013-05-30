@@ -93,6 +93,10 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         result.setRoomsExam(roomsExam);
         result.setExamGrade(examGrade);
         */
+        result.setLectures(lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.LECTURE));
+        result.setExams(lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.EXAM));
+        result.setExercises(lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.EXERCISE));
+        result.setDeadlines(lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.DEADLINE));
 
         return result;
     }

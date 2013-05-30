@@ -31,7 +31,7 @@ public class LVAUtil {
      * @param consideredTimes The Kinds of TimeFrames which should be considered when iterating. See constants in this class.
      * @return an Iterator, which provides TimeFrames of the given types
      */
-    public static Iterator<TimeFrame> iterator(LVA lva,List<Integer> consideredTimes){
+    public static Iterator<LvaDate> iterator(LVA lva,List<Integer> consideredTimes){
         return new TimeIterator(lva,consideredTimes);
     }
     /**
@@ -41,7 +41,7 @@ public class LVAUtil {
      * @param timeID The Kind of TimeFrames which should be considered when iterating. See constants in this class.
      * @return an Iterator, which provides TimeFrames of the given type
      */
-    public static Iterator<TimeFrame> iterator(LVA lva,int timeID){
+    public static Iterator<LvaDate> iterator(LVA lva,int timeID){
         ArrayList<Integer> timeIDs = new ArrayList<Integer>();
         timeIDs.add(timeID);
         return new TimeIterator(lva,timeIDs);
@@ -52,7 +52,7 @@ public class LVAUtil {
      * @param lva the LVA which containes the TimeFrames.
      * @return an Iterator, which provides TimeFrames of the given type
      */
-    public static Iterator<TimeFrame> iterator(LVA lva){
+    public static Iterator<LvaDate> iterator(LVA lva){
         ArrayList<Integer> timeIDs = new ArrayList<Integer>();
         timeIDs.add(TIMES);
         timeIDs.add(TIMES_UE);
@@ -109,22 +109,22 @@ public class LVAUtil {
      * @return
      */
     public static boolean intersect(LVA a,LVA b,int secondsBetween, List<Integer> consideredTimesA,List<Integer> consideredTimesB){
-        Iterator<TimeFrame> iterA = iterator(a,consideredTimesA);
-        Iterator<TimeFrame> iterB = iterator(b,consideredTimesB);
+        Iterator<LvaDate> iterA = iterator(a,consideredTimesA);
+        Iterator<LvaDate> iterB = iterator(b,consideredTimesB);
 
 
-        TimeFrame tfA;
-        TimeFrame tfB;
+        LvaDate tfA;
+        LvaDate tfB;
         if(iterA.hasNext()&&iterB.hasNext()){
             tfA=iterA.next();
             tfB=iterB.next();
             while(true){
-                if(tfA.after(tfB,secondsBetween)){
+                if(tfA.getTime().after(tfB.getTime(),secondsBetween)){
                     if(!iterB.hasNext()){
                         return false;
                     }
                     tfB=iterB.next();
-                }else if(tfA.before(tfB,secondsBetween)){
+                }else if(tfA.getTime().before(tfB.getTime(),secondsBetween)){
                     if(!iterA.hasNext()){
                         return false;
                     }
@@ -157,16 +157,16 @@ public class LVAUtil {
 		}*/
         return false;
     }
-    private static class TimeIterator implements Iterator<TimeFrame>{
+    private static class TimeIterator implements Iterator<LvaDate>{
         private LVA lva;
         ArrayList<Iterator<LvaDate>> allIter= new ArrayList<Iterator<LvaDate>>();
-        ArrayList<LvaDateDao> allLastFrames = new ArrayList<LvaDateDao>();
+        ArrayList<LvaDate> allLastFrames = new ArrayList<LvaDate>();
         Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
         public TimeIterator(LVA lva,List<Integer> consideredTimesA){
             this.lva = lva;
             ArrayList<LvaDate> times = lva.getLectures();
-            ArrayList<TimeFrame> timesUE = lva.getExercises();
-            ArrayList<TimeFrame> timesExam = lva.getExams();
+            ArrayList<LvaDate> timesUE = lva.getExercises();
+            ArrayList<LvaDate> timesExam = lva.getExams();
             if(times!=null && consideredTimesA.contains(TIMES)){
                 allIter.add(times.iterator());
             }
@@ -186,7 +186,7 @@ public class LVAUtil {
         }
         @Override
         public boolean hasNext() {
-            for(LvaDateDao frame: allLastFrames){
+            for(LvaDate frame: allLastFrames){
                 if(frame!=null){
                     return true;
                 }
@@ -195,16 +195,16 @@ public class LVAUtil {
         }
 
         @Override
-        public TimeFrame next() {
-            LvaDateDao firstFrame=null;
+        public LvaDate next() {
+            LvaDate firstFrame=null;
             boolean change=true;
             while(change){
                 change=false;
-                for(LvaDateDao frame: allLastFrames){
+                for(LvaDate frame: allLastFrames){
                     if(firstFrame==null){
                         firstFrame=frame;
                     }else{
-                        if(frame!=null && frame.from().isBefore(firstFrame.from())){
+                        if(frame!=null && frame.getTime().from().isBefore(firstFrame.getTime().from())){
                             change=true;
                             firstFrame = frame;
                         }

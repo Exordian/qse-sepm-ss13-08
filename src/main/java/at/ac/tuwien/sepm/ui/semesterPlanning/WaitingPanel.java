@@ -1,13 +1,13 @@
 package at.ac.tuwien.sepm.ui.semesterPlanning;
 
+import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.semesterPlaning.IntelligentSemesterPlaner;
+import at.ac.tuwien.sepm.service.semesterPlanning.IntelligentSemesterPlaner;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -27,6 +27,15 @@ public class WaitingPanel extends ChainedPanel{
     private int secCounter=0;
 
     public WaitingPanel(List<MetaLVA> forced, List<MetaLVA> pool, float goalECTS, boolean voIntersect, int year, Semester sem, long waiting) {
+        for(MetaLVA m:pool){
+            logger.debug("lva: "+m);
+            logger.debug("isNull: "+(m.getLVA(year,sem)==null));
+            logger.debug("isNull: "+(m.getLVA(year,sem).getLectures()==null));
+            logger.debug("size: "+m.getLVA(year,sem).getLectures().size());
+            for(LvaDate d:m.getLVA(year,sem).getLectures()){
+                logger.debug("\tdate: "+d.getTime());
+            }
+        }
         add(pleaseWait);
         pleaseWait.setEditable(false);
         CalculateSemesterThread t= new CalculateSemesterThread(forced, pool, goalECTS, voIntersect,year,sem);
