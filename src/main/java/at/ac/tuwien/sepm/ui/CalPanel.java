@@ -1,7 +1,12 @@
 package at.ac.tuwien.sepm.ui;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,10 +25,22 @@ public class CalPanel extends StandardInsidePanel {
     private JLabel month;
     private JComboBox semester;
 
-    public CalPanel() {
-        this.setLayout(null);
-        this.setBounds(size);
-        this.setOpaque(false);
+
+
+    static DefaultTableModel mtblCalendar; //Table model
+    static JScrollPane stblCalendar; //The scrollpane
+    static JPanel pnlCalendar;
+    static JTable tblCalendar;
+
+    private CalPanelMonth calPanelMonth;
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+
+    @Autowired
+    public CalPanel(CalPanelMonth calPanelMonth) {
+        init();
+
+        this.calPanelMonth=calPanelMonth;
+
         createTabButtons();
         createNavButtons();
         createImportButton();
@@ -38,7 +55,7 @@ public class CalPanel extends StandardInsidePanel {
 
     private void createTop() {
         month = new JLabel("SEPTEMBER 2012");
-        month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 305, 30);
+        month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 290, 30);
         month.setForeground(Color.WHITE);
         month.setFont(standardTitleFont);
 
@@ -122,16 +139,26 @@ public class CalPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
+                remove(calPanelMonth);
+
                 //todo
+                revalidate();
+                repaint();
+
             }
         });
 
         tab2.setBounds(97+142,63,142,36);
+        calPanelMonth.setBounds(size);
         tab2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                //todo
+                //todo remove
+
+                add(calPanelMonth);
+                revalidate();
+                repaint();
             }
         });
 
@@ -141,6 +168,9 @@ public class CalPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
                 //todo
+
+                revalidate();
+                repaint();
             }
         });
 
@@ -157,16 +187,16 @@ public class CalPanel extends StandardInsidePanel {
         try{
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(new File("src/main/resources/img/calw.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/calw.png"));
                     toggleComponents("show");
                     break;
                 case 2:
-                    image = ImageIO.read(new File("src/main/resources/img/calm.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/calm.png"));
                     toggleComponents("show");
                     break;
                 case 3:
-                    image = ImageIO.read(new File("src/main/resources/img/cald.png"));
-                    toggleComponents("show");
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/cald.png"));
+                    toggleComponents("hide");
                     break;
                 default:
                     break;

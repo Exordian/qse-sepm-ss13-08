@@ -202,9 +202,9 @@ public class DBMetaLvaDaoTest {
         assert(e0.getECTS()==4);
 
         assert(e0.getLVAs().size()==1);
-        assert(e0.getLVAs().get(0).getTimes().size()==12);
-        assert(e0.getLVAs().get(0).getTimesExam().size()==2);
-        assert(e0.getLVAs().get(0).getTimesUE().size()==0);
+        assert(e0.getLVAs().get(0).getLectures().size()==12);
+        assert(e0.getLVAs().get(0).getExams().size()==2);
+        assert(e0.getLVAs().get(0).getExercises().size()==0);
 
         assert(e0.getPrecursor().size()==1);
         assert(e0.getPrecursor().get(0).getId()==8);
@@ -258,9 +258,9 @@ public class DBMetaLvaDaoTest {
         assert(e0.getECTS()==4);
 
         assert(e0.getLVAs().size()==1);
-        assert(e0.getLVAs().get(0).getTimes().size()==12);
-        assert(e0.getLVAs().get(0).getTimesExam().size()==2);
-        assert(e0.getLVAs().get(0).getTimesUE().size()==0);
+        assert(e0.getLVAs().get(0).getLectures().size()==12);
+        assert(e0.getLVAs().get(0).getExams().size()==2);
+        assert(e0.getLVAs().get(0).getExercises().size()==0);
 
         assert(e0.getPrecursor().size()==1);
         assert(e0.getPrecursor().get(0).getId()==8);

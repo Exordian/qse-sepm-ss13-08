@@ -13,10 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Author: MUTH Markus
- * Date: 5/26/13
- * Time: 7:17 AM
- * Description of class "DBMetaLvaDao":
+ * @author Markus MUTH
  */
 @Repository
 public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
@@ -194,30 +191,22 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
         String stmtUpdateEcts = "UPDATE metalva SET ects=? WHERE id=?;";
         String stmtUpdateModule= "UPDATE metalva SET module=? WHERE id=?;";
 
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE");
-            if(toUpdate.getNr() != null) {
-                jdbcTemplate.update(stmtUpdateLvaNumber, toUpdate.getNr(), toUpdate.getId());
-            }
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
-            }
-            if(toUpdate.getSemestersOffered() != null) {
-                jdbcTemplate.update(stmtUpdateSemester, toUpdate.getSemestersOffered().ordinal(), toUpdate.getId());
-            }
-            if(toUpdate.getType() != null) {
-                jdbcTemplate.update(stmtUpdateType, toUpdate.getType().ordinal(), toUpdate.getId());
-            }
-            jdbcTemplate.update(stmtUpdatePriority, toUpdate.getPriority(), toUpdate.getId());
-            jdbcTemplate.update(stmtUpdateEcts, toUpdate.getECTS(), toUpdate.getId());
-            jdbcTemplate.update(stmtUpdateModule, toUpdate.getModule(), toUpdate.getId());
-            jdbcTemplate.execute("COMMIT");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+        if(toUpdate.getNr() != null) {
+            jdbcTemplate.update(stmtUpdateLvaNumber, toUpdate.getNr(), toUpdate.getId());
         }
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
+        }
+        if(toUpdate.getSemestersOffered() != null) {
+            jdbcTemplate.update(stmtUpdateSemester, toUpdate.getSemestersOffered().ordinal(), toUpdate.getId());
+        }
+        if(toUpdate.getType() != null) {
+            jdbcTemplate.update(stmtUpdateType, toUpdate.getType().ordinal(), toUpdate.getId());
+        }
+        jdbcTemplate.update(stmtUpdatePriority, toUpdate.getPriority(), toUpdate.getId());
+        jdbcTemplate.update(stmtUpdateEcts, toUpdate.getECTS(), toUpdate.getId());
+        jdbcTemplate.update(stmtUpdateModule, toUpdate.getModule(), toUpdate.getId());
+
         return true;
     }
 

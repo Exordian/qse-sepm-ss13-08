@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.semesterPlanning;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.ui.MetaLVADisplayPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,9 +25,9 @@ public class ShowSemester extends ChainedPanel{
                 backAndKill();
             }
         });
-        JScrollPane pane = new JScrollPane(table);
-        pane.setPreferredSize(new Dimension(550,200));
-        add(pane);
+        //JScrollPane pane = new JScrollPane(table);
+        //pane.setPreferredSize(new Dimension(550,200));
+        add(new MetaLVADisplayPanel(lvas,550,200));
         //revalidate();
         //repaint();
 

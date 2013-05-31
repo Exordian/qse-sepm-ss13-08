@@ -92,28 +92,18 @@ public class DBTodoDao extends DBBaseDao implements TodoDao {
         String stmtUpdateDescription = "UPDATE todo SET description=? WHERE id=?";
         String stmtUpdateDone = "UPDATE todo SET done=? WHERE id=?";
 
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE;");
-            if(toUpdate.getLva() != null) {
-                jdbcTemplate.update(stmtUpdateLva, toUpdate.getLva().getId(), toUpdate.getId());
-            }
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
-            }
-            if(toUpdate.getDescription() != null) {
-                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
-            }
-            if(toUpdate.getDone() != null) {
-                jdbcTemplate.update(stmtUpdateDone, toUpdate.getDone(), toUpdate.getId());
-            }
-            jdbcTemplate.execute("COMMIT;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE;");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+        if(toUpdate.getLva() != null) {
+            jdbcTemplate.update(stmtUpdateLva, toUpdate.getLva().getId(), toUpdate.getId());
         }
-
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
+        }
+        if(toUpdate.getDescription() != null) {
+            jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+        }
+        if(toUpdate.getDone() != null) {
+            jdbcTemplate.update(stmtUpdateDone, toUpdate.getDone(), toUpdate.getId());
+        }
         return true;
     }
 

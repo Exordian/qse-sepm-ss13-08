@@ -1,9 +1,9 @@
 package at.ac.tuwien.sepm.entity;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
 
@@ -32,20 +32,21 @@ public class LVA {
     private String language;
 
 
-	private ArrayList<TimeFrame> times;
-	private ArrayList<String> rooms;
-	private ArrayList<String> lecturer;
+	private ArrayList<LvaDate> lectures;
+	//private ArrayList<String> rooms;
+	//private ArrayList<String> lecturer;
 	
-	private ArrayList<TimeFrame> timesUE;
-	private ArrayList<String> roomsUE;
-	private String exerciseInstructor;
+	private ArrayList<LvaDate> exercises;
+	//private ArrayList<String> roomsUE;
+	//private String exerciseInstructor;
 	
-	private ArrayList<TimeFrame> timesExam;
-	private ArrayList<String> roomsExam;
-	private ArrayList<Integer> examGrade;
+	private ArrayList<LvaDate> exams;
+	//private ArrayList<String> roomsExam;
+	//private ArrayList<Integer> examGrade;
 
+    private ArrayList<LvaDate> deadlines;
 
-	public MetaLVA getMetaLVA() {
+    public MetaLVA getMetaLVA() {
 		return metaLVA;
 	}
 	/**
@@ -79,13 +80,14 @@ public class LVA {
 	public void setSemester(Semester semester) {
 		this.semester = semester;
 	}
-	public ArrayList<TimeFrame> getTimes() {
-		return times;
+	public ArrayList<LvaDate> getLectures() {
+		return lectures;
 	}
-	public void setTimes(List<TimeFrame> times) {
-		this.times = new ArrayList<TimeFrame>(times);
+	public void setLectures(List<LvaDate> lectures) {
+		this.lectures = new ArrayList<LvaDate>(lectures);
 	}
-	public ArrayList<String> getRooms() {
+	/*
+    public ArrayList<String> getRooms() {
 		return rooms;
 	}
 
@@ -116,15 +118,15 @@ public class LVA {
 	public void setExerciseInstructor(String exerciseInstructor) {
 		this.exerciseInstructor = exerciseInstructor;
 	}
-
-	public ArrayList<TimeFrame> getTimesExam() {
-		return timesExam;
+    */
+	public ArrayList<LvaDate> getExams() {
+		return exams;
 	}
 
-	public void setTimesExam(List<TimeFrame> timesExam) {
-		this.timesExam = new ArrayList<TimeFrame>(timesExam);
+	public void setExams(List<LvaDate> exams) {
+		this.exams = new ArrayList<LvaDate>(exams);
 	}
-
+    /*
 	public ArrayList<String> getRoomsExam() {
 		return roomsExam;
 	}
@@ -140,6 +142,14 @@ public class LVA {
 	public void setExamGrade(List<Integer> examGrade) {
 		this.examGrade = new ArrayList<Integer>(examGrade);
 	}
+    */
+    public List<LvaDate> getDeadlines() {
+        return deadlines;
+    }
+
+    public void setDeadlines(List<LvaDate> deadlines) {
+        this.deadlines = new ArrayList<LvaDate>(deadlines);
+    }
 
     public int getId() {
         return id;
@@ -213,12 +223,12 @@ public class LVA {
         this.goals = goals;
     }
 
-    public ArrayList<TimeFrame> getTimesUE() {
-        return timesUE;
+    public ArrayList<LvaDate> getExercises() {
+        return exercises;
     }
 
-    public void setTimesUE(ArrayList<TimeFrame> timesUE) {
-        this.timesUE = timesUE;
+    public void setExercises(List<LvaDate> exercises) {
+        this.exercises = new ArrayList<LvaDate>(exercises);
     }
 
 

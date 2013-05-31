@@ -176,7 +176,11 @@ public class MetaLVA {
     public String toShortString(){
         String toReturn="<MetaLVA:";
         if(nr!=null){
-            toReturn+=" nr:.."+nr.substring(4);
+            if(nr.length()>3){
+                toReturn+=" nr:"+nr.substring(4)+"..";
+            }else{
+                toReturn+=" nr:"+nr;
+            }
         }
         if(name!=null){
             if(name.length()>15){

@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LVA;
+import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
@@ -36,7 +37,7 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         }
 
         String stmt = "INSERT INTO Date (id,tag,name,description,isIntersectable,start,stop) VALUES (null,null,?,?,?,?,?)";
-        Object[] args = new Object[]{toCreate.getName(), toCreate.getDescription(), (toCreate.getIntersectable() != null ? toCreate.getIntersectable() : false), new Timestamp(toCreate.getStart().getMillis()), new Timestamp(toCreate.getStop().getMillis())};
+        Object[] args = new Object[]{toCreate.getName(), toCreate.getDescription(), (toCreate.getIntersectable() != null ? toCreate.getIntersectable() : false), new Timestamp(toCreate.getTime().from().getMillis()), new Timestamp(toCreate.getTime().to().getMillis())};
         jdbcTemplate.update(stmt, args);
         return true;
     }
@@ -81,11 +82,21 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         List<DateEntity> dates = jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), new Timestamp(start.getMillis()), new Timestamp(stop.getMillis()));
 
         LVA result = new LVA();
+        ArrayList<LvaDate> lvaDates = new ArrayList<LvaDate>();
+        for(DateEntity d : dates) {
+            LvaDate l = new LvaDate();
+            l.setTime(d.getTime());
+            lvaDates.add(l);
+        }
+        result.setLectures(lvaDates);
+
+        /*
         ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();
         for(DateEntity d : dates) {
-            times.add(new TimeFrame(d.getStart(), d.getStop()));
+            times.add(d.getTime());
         }
-        result.setTimes(times);
+        result.setLectures(times);
+        */
 
         return result;
     }
@@ -113,30 +124,22 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         String stmtUpdateStart = "UPDATE date SET start=? WHERE id=?";
         String stmtUpdateStop = "UPDATE date SET stop=? WHERE id=?";
 
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE");
-            if (toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
-            }
-            if (toUpdate.getDescription() != null) {
-                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
-            }
-            if (toUpdate.getIntersectable() != null) {
-                jdbcTemplate.update(stmtUpdateIsIntersectable, toUpdate.getIntersectable(), toUpdate.getId());
-            }
-            if (toUpdate.getStart() != null) {
-                jdbcTemplate.update(stmtUpdateStart, new Timestamp(toUpdate.getStart().getMillis()), toUpdate.getId());
-            }
-            if (toUpdate.getStop() != null) {
-                jdbcTemplate.update(stmtUpdateStop,new Timestamp(toUpdate.getStop().getMillis()), toUpdate.getId());
-            }
-            jdbcTemplate.execute("COMMIT");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+        if (toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
         }
+        if (toUpdate.getDescription() != null) {
+            jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+        }
+        if (toUpdate.getIntersectable() != null) {
+            jdbcTemplate.update(stmtUpdateIsIntersectable, toUpdate.getIntersectable(), toUpdate.getId());
+        }
+        if (toUpdate.getTime() != null && toUpdate.getTime().from() != null) {
+            jdbcTemplate.update(stmtUpdateStart, new Timestamp(toUpdate.getTime().from().getMillis()), toUpdate.getId());
+        }
+        if (toUpdate.getTime() != null && toUpdate.getTime().to() != null) {
+            jdbcTemplate.update(stmtUpdateStop,new Timestamp(toUpdate.getTime().to().getMillis()), toUpdate.getId());
+        };
+
         return true;
     }
 

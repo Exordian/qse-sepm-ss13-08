@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ui;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -22,16 +24,21 @@ public class BGPanel extends JPanel {
     private JPanel studPanel;
     private JPanel propsPanel;
     private Image image;
+    private Component lastComponent;
+
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
     public BGPanel(CalPanel calPanel, StudPanel studPanel, PropsPanel propsPanel) {
         this.setLayout(null);
         this.calPanel = calPanel;
         this.propsPanel = propsPanel;
+        propsPanel.setBgPanel(this);
         this.studPanel = studPanel;
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
+        log.info("Background Panel initialized.");
     }
 
     @Override
@@ -48,23 +55,32 @@ public class BGPanel extends JPanel {
         this.remove(studPanel);
     }
 
+    private void addPanel(Component c) {
+        this.add(c);
+        lastComponent = c;
+    }
+
+    public void showLastComponent() {
+        this.add(lastComponent);
+    }
+
     private void changeImage(int nmb) {
         try{
             removeAddedPanels();
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(new File("src/main/resources/img/cal.jpg"));
-                    this.add(calPanel);
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/cal.jpg"));
+                    this.addPanel(calPanel);
                     break;
                 case 2:
-                    image = ImageIO.read(new File("src/main/resources/img/tra.jpg"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/tra.jpg"));
                     break;
                 case 3:
-                    image = ImageIO.read(new File("src/main/resources/img/stud.jpg"));
-                    this.add(studPanel);
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/stud.jpg"));
+                    this.addPanel(studPanel);
                     break;
                 case 4:
-                    image = ImageIO.read(new File("src/main/resources/img/stat.jpg"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/stat.jpg"));
                     break;
                 default:
                     break;
@@ -86,6 +102,7 @@ public class BGPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 removeAddedPanels();
+                propsPanel.setVisible(true);
                 BGPanel.this.add(propsPanel);
                 BGPanel.this.repaint();
             }
