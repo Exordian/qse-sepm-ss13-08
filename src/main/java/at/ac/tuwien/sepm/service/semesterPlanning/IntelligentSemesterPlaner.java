@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.service.semesterPlanning;
 
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.semesterPlaning.DependenceTree;
+import at.ac.tuwien.sepm.service.semesterPlaning.LVAUtil;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -110,7 +112,7 @@ public class IntelligentSemesterPlaner {
         for(int i=0;i<lva.size();i++){
             intersecting[i] = new boolean[lva.size()-i];
             for(int j=i;j<lva.size();j++){
-                intersecting[i][j-i]=LVAUtil.intersectAll(lva.get(i).getLVA(year, sem),lva.get(j).getLVA(year, sem));
+                intersecting[i][j-i]= LVAUtil.intersectAll(lva.get(i).getLVA(year, sem), lva.get(j).getLVA(year, sem));
                 if(intersecting[i][j-i]){
                     debug+="1 ";
                 }else{
