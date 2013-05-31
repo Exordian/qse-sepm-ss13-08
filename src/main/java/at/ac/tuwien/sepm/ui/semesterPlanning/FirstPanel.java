@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.ui.semesterPlanning;
 
-import at.ac.tuwien.sepm.dao.MetaLvaDao;
-import at.ac.tuwien.sepm.dao.hsqldb.DBLvaDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBMetaLvaDao;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
@@ -24,20 +22,53 @@ public class FirstPanel extends ChainedPanel   {
     @Autowired
     DBMetaLvaDao metaLVADAO;
 
+    private JPanel settings = new JPanel();
+    // < basic settings >
+    private JPanel basicSettings = new JPanel(new GridBagLayout());
+
+    private JLabel desiredECTSTextLabel = new JLabel("Gewünschte ECTS:");
     private JTextField desiredECTSText = new JTextField("30");
-    private JCheckBox IntersectVOCheck = new JCheckBox();
+
+    private JLabel yearTextLabel = new JLabel("Jahr:");
     private JTextField yearText = new JTextField("2013");
+
+    private JLabel semesterDropLabel = new JLabel("Semester:");
     private JComboBox  semesterDrop = new JComboBox (new String[]{"Winter","Sommer"});
+
+    // </ basic settings >
+
+    // < advanced settings >
+
+    private JButton showAdvancedOptions = new JButton("Erweiterte Optionen");
+
+    private JPanel advancedSettings= new JPanel(new GridBagLayout());
+
+    private JLabel intersectVOCheckLabel = new JLabel("Überprüfe Vorlesungstermine auf Überschneidungen:");
+    private JCheckBox intersectVOCheck = new JCheckBox();
+
+    private JLabel intersectUECheckLabel = new JLabel("Überprüfe Übungstermine auf Überschneidungen:");
+    private JCheckBox intersectUECheck = new JCheckBox();
+
+    private JLabel intersectExamCheckLabel = new JLabel("Überprüfe Prüfungstermine auf Überschneidungen:");
+    private JCheckBox intersectExamCheck = new JCheckBox();
+
+    private JLabel intersectCustomCheckLabel = new JLabel("Überprüfe selbst erstellte Termine auf Überschneidungen:");
+    private JCheckBox intersectCustomCheck = new JCheckBox();
+
+    private JLabel timeBetweenLabel = new JLabel("Zeit zwischen Terminen:");
+    private JComboBox timeBetween= new JComboBox(new String[]{"exakte Zeiten verwenden","Termine dürfen sich überschneiden","Zwischen Terminen Zeit erzwingen"});
+
+    private String[] timeBetweenTextLabelStrings= new String[]{"","Zeit um die sich Termine schneiden dürfen:","Zeit die zwischen zwei Terminen liegen muss:"};
+    private JLabel timeBetweenTextLabel = new JLabel(timeBetweenTextLabelStrings[0]);
+    private JTextField timeBetweenText = new JTextField("0");
+
+    private JLabel simulatedWaitingLabel = new JLabel("//simulierte Wartezeit");
     private JTextField simulatedWaiting = new JTextField("2");
 
-    private JButton next = new JButton("next");
-    private JPanel settings = new JPanel();
-    private JPanel settingsLabels = new JPanel();
-    private JPanel settingsInputs = new JPanel();
+    // </ advanced settings >
 
-    private JPanel advancedSettings;
-    private JPanel advancedsettingsLabels = new JPanel();
-    private JPanel advancedsettingsInputs = new JPanel();
+    private JButton next = new JButton("next");
+
     public FirstPanel(PlanningPanel mum){
         super(mum);
 
@@ -49,61 +80,118 @@ public class FirstPanel extends ChainedPanel   {
             }
         });
 
-        settings.setBackground(new Color(0,0,0,0));
+        settings.setBackground(new Color(0, 0, 0, 0));
+
         add(settings);
-        settings.setLayout(new GridBagLayout());
+        settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
+        settings.add(basicSettings);
+        settings.add(advancedSettings);
+        advancedSettings.setVisible(false);
+
+
+
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.VERTICAL;
-        c.anchor = GridBagConstraints.EAST;
-        c.gridx=0;
+        
         c.ipadx=10;
-
+        // < basic settings >
+        c.anchor = GridBagConstraints.EAST;
+        
+        //labels
+        c.gridx=0;
+        
         c.gridy=0;
-        settings.add(new JLabel("gewünschte ECTS:"),c);
-        c.gridy=1;
-        settings.add(new JLabel("Vorlesungstermine überschneiden:"),c);
-        c.gridy=2;
-        settings.add(new JLabel("Jahr:"),c);
-        c.gridy=3;
-        settings.add(new JLabel("Semester:"),c);
-        c.gridy=4;
-        settings.add(new JLabel("//Simulierte Wartezeit:"),c);
-
-        c.gridx=1;
+        basicSettings.add(desiredECTSTextLabel);
+        c.gridy++;
+        basicSettings.add(yearTextLabel, c);
+        c.gridy++;
+        basicSettings.add(semesterDropLabel, c);
+        
+        //inputs
+        c.gridx++;
         c.anchor = GridBagConstraints.WEST;
 
         c.gridy=0;
-        settings.add(desiredECTSText,c);
-        c.gridy=1;
-        settings.add(IntersectVOCheck,c);
-        IntersectVOCheck.setEnabled(false);
-        c.gridy=2;
-        settings.add(yearText,c);
-        c.gridy=3;
-        settings.add(semesterDrop,c);
-        c.gridy=4;
-        settings.add(simulatedWaiting,c);
-        semesterDrop.setSelectedIndex(1);
-/*
-        //settingsLabels.setLayout(new BoxLayout(settingsLabels, BoxLayout.Y_AXIS));
-        //settingsInputs.setLayout(new BoxLayout(settingsInputs, BoxLayout.Y_AXIS));
-       /* settingsLabels.setLayout(new GridLayout(1,99));
-        settingsInputs.setLayout(new GridLayout(1,99));
-
-        //.add(settingsLabels);
-            settingsLabels.add(new JLabel("gewünschte ECTS:"));
-            settingsLabels.add(new JLabel("Vorlesungstermine überschneiden:"));
-            settingsLabels.add(new JLabel("Jahr:"));
-            settingsLabels.add(new JLabel("Semester:"));
-        //settings.add(settingsInputs);
-            settingsInputs.add(desiredECTSText);
-            settingsInputs.add(IntersectVOCheck);
-            settingsInputs.add(yearText);
-            settingsInputs.add(semesterDrop);
-            semesterDrop.setSelectedIndex(1);
-
-             */
+        basicSettings.add(desiredECTSText,c);
+        c.gridy++;
+        basicSettings.add(yearText, c);
+        c.gridy++;
+        basicSettings.add(semesterDrop, c);
+        c.gridy++;
+        basicSettings.add(showAdvancedOptions, c);
         desiredECTSText.setPreferredSize(new Dimension(30,20));
+        showAdvancedOptions.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(advancedSettings.isVisible()){
+                    advancedSettings.setVisible(false);
+                }else{
+                    advancedSettings.setVisible(true);
+                }
+                //todo graphics bug..
+                //getParent().revalidate();
+                //getParent().repaint();
+            }
+        });
+
+        // </ basic settings >
+
+        // < advanced settings >
+        
+        //labels
+        c.anchor = GridBagConstraints.EAST;
+        c.gridx=0;
+
+        c.gridy=0;
+        advancedSettings.add(intersectVOCheckLabel, c);
+        c.gridy++;
+        advancedSettings.add(intersectUECheckLabel, c);
+        c.gridy++;
+        advancedSettings.add(intersectExamCheckLabel, c);
+        c.gridy++;
+        advancedSettings.add(intersectCustomCheckLabel, c);
+        c.gridy++;
+        advancedSettings.add(timeBetweenLabel, c);
+        c.gridy++;
+        advancedSettings.add(timeBetweenTextLabel, c);
+
+        //inputs
+        c.anchor = GridBagConstraints.WEST;
+        c.gridx++;
+
+        c.gridy=0;
+        advancedSettings.add(intersectVOCheck, c);
+        c.gridy++;
+        advancedSettings.add(intersectUECheck, c);
+        c.gridy++;
+        advancedSettings.add(intersectExamCheck, c);
+        c.gridy++;
+        advancedSettings.add(intersectCustomCheck, c);
+        c.gridy++;
+        advancedSettings.add(timeBetween, c);
+        c.gridy++;
+        advancedSettings.add(timeBetweenText, c);
+        timeBetween.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = timeBetween.getSelectedIndex();
+                switch(index){
+                    case 0:
+                        timeBetweenText.setEnabled(false);
+                        break;
+                    case 1:
+                    case 2:
+                        timeBetweenText.setEnabled(true);
+                        break;
+                }
+                timeBetweenTextLabel.setText(timeBetweenTextLabelStrings[index]);
+            }
+        });
+        timeBetween.setSelectedIndex(0);
+
+        // </ advanced settings >
+        
+
         add(next);
 
         next.addActionListener(new ActionListener() {
@@ -114,16 +202,16 @@ public class FirstPanel extends ChainedPanel   {
                 List<MetaLVA> forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(2013, Semester.S, true);
                 List<MetaLVA> pool = metaLVADAO.readUncompletedByYearSemesterStudyProgress(2013,Semester.S,false);
                 //.add(pool.get(1));
-
+                
                 float ects = Float.parseFloat(desiredECTSText.getText());
-                boolean voIntersect =  IntersectVOCheck.isSelected();
+                boolean vointersect =  intersectVOCheck.isSelected();
                 int year = Integer.parseInt(yearText.getText());
                 Semester sem = Semester.S;
                 if(semesterDrop.getSelectedIndex()==0){
                     sem = Semester.W;
                 }
                 long waiting = (long)(Float.parseFloat(simulatedWaiting.getText())*1000);
-                WaitingPanel w = new WaitingPanel(forced, pool, ects, voIntersect, year, sem, waiting);
+                WaitingPanel w = new WaitingPanel(forced, pool, ects, vointersect, year, sem, waiting);
                 next(w);
                 w.startThreads();
             }
