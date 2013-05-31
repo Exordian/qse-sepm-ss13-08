@@ -12,7 +12,9 @@ import java.io.IOException;
 @UI
 public abstract class StandardInsidePanel extends JPanel {
     protected Image image;
-    protected final Rectangle size = new Rectangle(67, 50, 1119, 639);
+    protected final Rectangle size = new Rectangle(67, 50, 1119, 639);  //x, y, width and height
+    protected final Rectangle whiteSpaceCalendar = new Rectangle(903, 459); //only width and height
+    protected final Rectangle whiteSpaceStud = new Rectangle(1014, 517);  //only width and height
     protected Font standardTitleFont;
     protected Font standardTextFont;
     protected Font standardButtonFont;
