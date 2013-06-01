@@ -1,11 +1,9 @@
-package at.ac.tuwien.sepm.ui.semesterPlanning;
+package at.ac.tuwien.sepm.ui.semesterPlanningOLD;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import java.awt.*;
 import java.util.ArrayList;
 
 /**

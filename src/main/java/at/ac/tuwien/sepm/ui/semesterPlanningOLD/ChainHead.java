@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.semesterPlanning;
+package at.ac.tuwien.sepm.ui.semesterPlanningOLD;
 
 /**
  * Author: Georg Plaz

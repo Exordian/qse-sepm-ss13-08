@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.semesterPlanning;
+package at.ac.tuwien.sepm.ui.semesterPlanningOLD;
 
 import at.ac.tuwien.sepm.dao.hsqldb.DBMetaLvaDao;
 import at.ac.tuwien.sepm.entity.MetaLVA;
@@ -70,6 +70,7 @@ public class FirstPanel extends ChainedPanel   {
 
     public FirstPanel(PlanningPanel mum){
         super(mum);
+        this.setBackground(new Color(0,0,0,0));
 
         final ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         EventQueue.invokeLater(new Runnable() {
@@ -79,10 +80,9 @@ public class FirstPanel extends ChainedPanel   {
             }
         });
 
-        settings.setBackground(new Color(0, 0, 0, 0));
-
         add(settings);
-        settings.setLayout(new BoxLayout(settings,BoxLayout.Y_AXIS));
+        settings.setBackground(new Color(0,0,0,0));
+        settings.setLayout(null);
         settings.add(basicSettings);
         settings.add(advancedSettings);
         advancedSettings.setVisible(false);

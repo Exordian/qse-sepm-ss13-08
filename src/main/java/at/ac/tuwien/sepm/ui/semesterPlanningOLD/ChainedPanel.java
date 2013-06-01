@@ -1,10 +1,8 @@
-package at.ac.tuwien.sepm.ui.semesterPlanning;
+package at.ac.tuwien.sepm.ui.semesterPlanningOLD;
 
 import org.apache.log4j.LogManager;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class ChainedPanel extends JPanel {
     private org.apache.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
     public ChainedPanel() {
-        logger.info("entering class: "+this.getClass().getSimpleName());
+        logger.info("entering class: " + this.getClass().getSimpleName());
     }
 
     public ChainedPanel(ChainHead head){
@@ -32,7 +30,7 @@ public class ChainedPanel extends JPanel {
         if(this.nextPanel!=null){
             this.nextPanel.kill();
         }
-        if(alive){
+        if(alive) {
             this.nextPanel=nextPanel;
             nextPanel.prevPanel = this;
             nextPanel.head = head;

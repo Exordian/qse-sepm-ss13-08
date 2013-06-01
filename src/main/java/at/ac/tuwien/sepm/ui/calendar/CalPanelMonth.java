@@ -20,10 +20,10 @@ public class CalPanelMonth extends StandardInsidePanel {
         layout = new MigLayout("", "1[]1[]1[]1", "1[]");
 
         setSize((int)whiteSpaceCalendar.getWidth(),(int)whiteSpaceCalendar.getHeight());
-        setLocation(39, 58);
+        setLocation(CalStartCoordinateOfWhiteSpace);
         this.setLayout(layout);
         this.setVisible(true);
-        this.setBackground(Color.BLACK);
+        //this.setBackground(Color.BLACK);
         initPanel();
         this.repaint();
         this.revalidate();

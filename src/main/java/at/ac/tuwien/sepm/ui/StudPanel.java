@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.ui.semesterPlanning.PlanningPanel;
+import at.ac.tuwien.sepm.ui.verlauf.planen.PlanPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -18,9 +17,10 @@ public class StudPanel extends StandardInsidePanel {
     private JButton tab2;
     private JButton tab3;
     private JButton tab4;
-    private PlanningPanel planningPanel;
+    private PlanPanel planningPanel;
+
     @Autowired
-    public StudPanel(PlanningPanel planningPanel) {
+    public StudPanel(PlanPanel planningPanel) {
         this.planningPanel = planningPanel;
         init();
         changeImage(1);
@@ -52,7 +52,6 @@ public class StudPanel extends StandardInsidePanel {
         });
 
         tab2.setBounds(41+160,30,160,40);
-        planningPanel.setBounds(size.x/4,size.y+100,size.width,size.height);
         tab2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

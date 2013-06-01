@@ -14,6 +14,6 @@
     <context:component-scan base-package="at.ac.tuwien.sepm.dao"/>
     <context:component-scan base-package="at.ac.tuwien.sepm.service.impl"/>
     <context:component-scan base-package="at.ac.tuwien.sepm.ui"/>
-    <context:component-scan base-package="at.ac.tuwien.sepm.ui.semesterPlanning"/>
+    <context:component-scan base-package="at.ac.tuwien.sepm.ui.semesterPlanningOLD"/>
 
 </beans>

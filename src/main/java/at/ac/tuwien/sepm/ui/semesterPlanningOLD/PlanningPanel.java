@@ -1,24 +1,22 @@
-package at.ac.tuwien.sepm.ui.semesterPlanning;
+package at.ac.tuwien.sepm.ui.semesterPlanningOLD;
 
-import at.ac.tuwien.sepm.ui.semesterPlanning.FirstPanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.logging.Logger;
 
 /**
  * Author: Georg Plaz
  */
 @UI
-public class PlanningPanel extends JPanel implements ChainHead{
+public class PlanningPanel extends at.ac.tuwien.sepm.ui.StandardInsidePanel implements ChainHead{
     public JPanel content = new FirstPanel(this);
     org.apache.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     public PlanningPanel(){
+        loadFonts();
         add(content);
-        setBackground(new Color(0,0,0,0));
+        setBackground(new Color(0, 0, 0, 0));
     }
 
     @Override
