@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.kalender;
 
 import at.ac.tuwien.sepm.service.ServiceException;
+//import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
@@ -47,7 +48,7 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
     public void initPanel () {
         int width=903;
         int height=459;
-        this.maxDateLabels = 5;
+        maxDateLabels = 5;
         initWeekNames(width, height);
         initDayPanels();
         setDays();

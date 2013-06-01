@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui.kalender;
 
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,16 +14,29 @@ import javax.swing.*;
  * To change this template use File | Settings | File Templates.
  */
 @UI
-public class CalWeekGenerator extends JPanel {
-    private CalPanelMonth calPanelMonth;
+public class CalWeekGenerator extends JPanel implements CalendarInterface {
+    private CalPanelWeek calPanelWeek;
 
     @Autowired
-    public CalWeekGenerator(CalPanelMonth calPanelMonth) {
-
-        //todo calpanelmonth austauschen mit calpanelweek
-        this.calPanelMonth=calPanelMonth;
+    public CalWeekGenerator(CalPanelWeek calPanelWeek) {
+        this.calPanelWeek=calPanelWeek;
         this.setLayout(null);
         this.setOpaque(false);
-        this.add(calPanelMonth);
+        this.add(calPanelWeek);
+    }
+
+    @Override
+    public void semester() {
+        calPanelWeek.semester();
+    }
+
+    @Override
+    public String next() throws ServiceException {
+        return calPanelWeek.next();
+    }
+
+    @Override
+    public String last() throws ServiceException {
+        return calPanelWeek.last();
     }
 }
