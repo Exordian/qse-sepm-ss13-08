@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.ui.verlauf.planen;
 
+import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.ui.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 
@@ -8,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,10 +21,11 @@ import java.awt.event.ActionListener;
  */
 @UI
 public class PlanPanel extends StandardInsidePanel {
-
-    private Rectangle outputPlane = new Rectangle(483,12,519,494);
-
+    private Rectangle outputPlane = new Rectangle(483,12,521,496);
+    private MetaLVADisplayPanel pane;
+    private ArrayList<MetaLVA> lvas;
     private JButton next;
+
     // < basic settings >
     private JLabel desiredECTSTextLabel;
     private JTextField desiredECTSText;
@@ -58,11 +62,17 @@ public class PlanPanel extends StandardInsidePanel {
         initTextAndLabels();
         toggleAdvanced();
         initNextButton();
+        initLVAPane();
     }
 
      /*-----------------------RIGHT SIDE  PLAN ANZEIGEN-------------------*/
 
-
+    private void initLVAPane() {
+        lvas = new ArrayList<MetaLVA>();
+        pane = new MetaLVADisplayPanel(lvas, (int)outputPlane.getWidth(), (int)outputPlane.getHeight());
+        pane.setBounds(outputPlane);
+        this.add(pane);
+    }
 
 
     /*-----------------------LEFT SIDE  PLANEN-------------------*/
