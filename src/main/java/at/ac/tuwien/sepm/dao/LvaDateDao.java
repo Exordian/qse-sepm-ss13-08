@@ -2,12 +2,10 @@ package at.ac.tuwien.sepm.dao;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.service.LvaType;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,6 +99,16 @@ public interface LvaDateDao {
      * @throws DataAccessException If the lva date data could not be read because any error occurred.
      */
     public List<LvaDate> readByLva(int lvaId) throws DataAccessException;
+
+    /**
+     * Read all lva dates which start at or after <code>from</code> or stop at or before <code>till</code>.
+     * @param date The date of the day where the dates should be returned.
+     * @return A <code>List<DateEntry></code> containing all dates within the specified time frame, or a empty list
+     * if there was no matching date found. The order is chronological, beginning with oldest date. If there are several
+     * dates at the same time, there is no defined order.
+     * @throws DataAccessException If the date data could not be read because any error occurred.
+     */
+    public List<LvaDate> readByDay(DateTime date) throws DataAccessException;
 
     /**
      * Read all lva dates from the specified lva.
