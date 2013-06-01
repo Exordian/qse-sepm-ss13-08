@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.verlauf;
 
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+import at.ac.tuwien.sepm.ui.UI;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,5 +10,6 @@ import at.ac.tuwien.sepm.ui.StandardInsidePanel;
  * Time: 19:23
  * To change this template use File | Settings | File Templates.
  */
+@UI
 public class ExportPanel extends StandardInsidePanel {
 }

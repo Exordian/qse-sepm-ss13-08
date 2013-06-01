@@ -250,7 +250,7 @@ public class PlanPanel extends StandardInsidePanel {
         timeBetweenTextLabel.setVisible(false);
         this.add(timeBetweenTextLabel);
 
-        //todo fix anzeige bug
+        //todo fix anzeige bug von timeBetweenText
         timeBetweenText = new JTextField("0");
         timeBetweenText.setBounds(timeBetweenTextLabel.getX()+timeBetweenTextLabel.getWidth(), timeBetweenTextLabel.getY(), 21, textHeight);
         timeBetweenText.setVisible(false);

@@ -45,13 +45,8 @@ public class CalendarPanel extends StandardInsidePanel {
         createTabButtons();
         createNavButtons();
         createImportButton();
-        createCalendar();
         changeImage(1);
         createTop();
-    }
-
-    private void createCalendar() {
-        //todo
     }
 
     private void createTop() {
@@ -79,7 +74,7 @@ public class CalendarPanel extends StandardInsidePanel {
         importBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo
+                //todo import button
             }
         });
 
@@ -105,7 +100,7 @@ public class CalendarPanel extends StandardInsidePanel {
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo
+                //todo backward button
             }
         });
 
@@ -117,7 +112,7 @@ public class CalendarPanel extends StandardInsidePanel {
         fwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo
+                //todo forward button
             }
         });
 
@@ -141,8 +136,7 @@ public class CalendarPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
                 remove(calPanelMonth);
-
-                //todo
+                //todo isnert day panel
                 revalidate();
                 repaint();
 
@@ -155,8 +149,7 @@ public class CalendarPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                //todo remove
-
+                //todo remove other panels
                 add(calPanelMonth);
                 calPanelMonth.revalidate();
                 calPanelMonth.repaint();
@@ -168,7 +161,7 @@ public class CalendarPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
-                //todo
+                //todo insert deadline panel
                 remove(calPanelMonth);
                 revalidate();
                 repaint();

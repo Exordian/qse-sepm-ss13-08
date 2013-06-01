@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.ui.verlauf.ExportPanel;
 import at.ac.tuwien.sepm.ui.verlauf.PlanPanel;
+import at.ac.tuwien.sepm.ui.verlauf.StudienplanPanel;
+import at.ac.tuwien.sepm.ui.verlauf.ViewPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -18,10 +21,16 @@ public class StudiesPanel extends StandardInsidePanel {
     private JButton tab3;
     private JButton tab4;
     private PlanPanel planningPanel;
+    private ExportPanel exportPanel;
+    private StudienplanPanel studienplanPanel;
+    private ViewPanel viewPanel;
 
     @Autowired
-    public StudiesPanel(PlanPanel planningPanel) {
+    public StudiesPanel(PlanPanel planningPanel, ExportPanel exportPanel, StudienplanPanel studienplanPanel, ViewPanel viewPanel) {
         this.planningPanel = planningPanel;
+        this.exportPanel = exportPanel;
+        this.studienplanPanel = studienplanPanel;
+        this.viewPanel = viewPanel;
         init();
         changeImage(1);
         createTabButtons();
@@ -45,7 +54,9 @@ public class StudiesPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
                 remove(planningPanel);
-                //todo
+                remove(exportPanel);
+                remove(studienplanPanel);
+                add(viewPanel);
                 revalidate();
                 repaint();
             }
@@ -56,8 +67,9 @@ public class StudiesPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                //todo remove(...)
-
+                remove(exportPanel);
+                remove(studienplanPanel);
+                remove(viewPanel);
                 add(planningPanel);
                 revalidate();
                 repaint();
@@ -69,8 +81,10 @@ public class StudiesPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
+                add(exportPanel);
+                remove(studienplanPanel);
+                remove(viewPanel);
                 remove(planningPanel);
-                //todo
                 revalidate();
                 repaint();
             }
@@ -81,8 +95,10 @@ public class StudiesPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(4);
+                remove(exportPanel);
+                add(studienplanPanel);
+                remove(viewPanel);
                 remove(planningPanel);
-                //todo
                 revalidate();
                 repaint();
             }

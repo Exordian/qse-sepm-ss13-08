@@ -23,6 +23,8 @@ public abstract class StandardInsidePanel extends JPanel {
     protected Font standardTitleFont;
     protected Font standardTextFont;
     protected Font standardButtonFont;
+    protected Font calendarDaysFont;
+    protected Font calendarDatesFont;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -40,6 +42,8 @@ public abstract class StandardInsidePanel extends JPanel {
             standardTitleFont = temp.deriveFont(35f);
             standardTextFont = temp.deriveFont(17f);
             standardButtonFont = temp.deriveFont(14f);
+            calendarDatesFont =  temp.deriveFont(10f);
+            calendarDaysFont =  temp.deriveFont(Font.BOLD, 12f);
             log.info("Font wurde geladen.");
         } catch (FontFormatException e) {
             log.info("Probleme beim Font laden.");

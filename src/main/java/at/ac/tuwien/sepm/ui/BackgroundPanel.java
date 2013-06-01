@@ -126,7 +126,6 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
-                //todo
             }
         });
 
@@ -135,7 +134,6 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                //todo
             }
         });
 
@@ -144,7 +142,6 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
-                //todo
             }
         });
 
@@ -153,7 +150,6 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(4);
-                //todo
             }
         });
 

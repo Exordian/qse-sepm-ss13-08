@@ -1,15 +1,17 @@
-package at.ac.tuwien.sepm.ui.verlauf;
+package at.ac.tuwien.sepm.ui.kalender;
 
-import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Flo
  * Date: 01.06.13
- * Time: 19:23
+ * Time: 19:58
  * To change this template use File | Settings | File Templates.
  */
 @UI
-public class ViewPanel extends StandardInsidePanel {
+public interface CalendarInterface {
+    public void semester();
+    public void next();
+    public void last();
 }
