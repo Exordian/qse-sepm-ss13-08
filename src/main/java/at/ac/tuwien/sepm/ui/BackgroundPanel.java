@@ -1,7 +1,12 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.entity.LvaDate;
+import at.ac.tuwien.sepm.entity.LvaDateType;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -22,22 +27,75 @@ public class BackgroundPanel extends JPanel {
     private JPanel calPanel;
     private JPanel studPanel;
     private JPanel propsPanel;
+    private ViewDate viewDate;
+    private ViewLVA viewLVA;
     private Image image;
     private Component lastComponent;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLVA viewLVA) {
         this.setLayout(null);
         this.calPanel = calPanel;
         this.propsPanel = propsPanel;
         propsPanel.setBgPanel(this);
         this.studPanel = studPanel;
+        this.viewDate = viewDate;
+        viewDate.setBgPanel(this);
+        this.viewLVA=viewLVA;
+        viewLVA.setBgPanel(this);
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
+
+        /*test*/
+        JButton testViewDate = new JButton("view lva");
+        testViewDate.setBounds(500, 630, 110, 38);
+        testViewDate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                /*DateEntity dateEntity = new DateEntity();
+                dateEntity.setName("Testname");
+                dateEntity.setIntersectable(true);
+                dateEntity.setDescription("this is a description for test this is a description for test this\nis a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test");
+                dateEntity.setId(2);
+                dateEntity.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
+                viewDate(dateEntity);*/
+
+                LvaDate lvaDate = new LvaDate();
+                lvaDate.setName("test name");
+                lvaDate.setDescription("test description");
+                lvaDate.setId(2);
+                lvaDate.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
+                lvaDate.setAttendanceRequired(true);
+                lvaDate.setLva(20);
+                lvaDate.setRoom("test room");
+                lvaDate.setType(LvaDateType.LECTURE);
+                lvaDate.setWasAttendant(false);
+                viewLvaDate(lvaDate);
+            }
+        });
+        this.add(testViewDate);
+        /*test*/
+
         log.info("Background Panel initialized.");
+    }
+
+    public void viewDate(DateEntity dateEntity) {
+        removeAddedPanels();
+        viewDate.setDateEntity(dateEntity);
+        viewDate.setVisible(true);
+        this.add(viewDate);
+        this.repaint();
+    }
+
+    public void viewLvaDate(LvaDate lvaDate) {
+        removeAddedPanels();
+        viewLVA.setLVADateEntity(lvaDate);
+        viewLVA.setVisible(true);
+        this.add(viewLVA);
+        this.repaint();
     }
 
     @Override
@@ -52,6 +110,8 @@ public class BackgroundPanel extends JPanel {
         this.remove(propsPanel);
         this.remove(calPanel);
         this.remove(studPanel);
+        this.remove(viewDate);
+        this.remove(viewLVA);
     }
 
     private void addPanel(Component c) {

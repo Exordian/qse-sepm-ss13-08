@@ -34,11 +34,7 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
 
     public PropertiesPanel() {
         init();
-        try {
-            image = ImageIO.read(ClassLoader.getSystemResource("img/plainpanel.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        addImage();
         addTitle("Einstellungen");
         addReturnButton();
         addContent();

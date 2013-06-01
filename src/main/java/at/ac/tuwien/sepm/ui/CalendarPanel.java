@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.ui.kalender.CalMonthGenerator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -77,7 +80,6 @@ public class CalendarPanel extends StandardInsidePanel {
                 //todo import button
             }
         });
-
         this.add(importBtn);
     }
 

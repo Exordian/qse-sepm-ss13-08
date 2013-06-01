@@ -20,6 +20,14 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
 
     protected Rectangle simpleWhiteSpace = new Rectangle(98, 64, 922, 509);  //white space in simple inside panel
 
+    protected void addImage() {
+        try {
+            image = ImageIO.read(ClassLoader.getSystemResource("img/plainpanel.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void addReturnButton() {
         retButton = new JButton();
         retButton.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2)), (int)(size.getHeight()/2-image.getHeight(null)/2)-33, 25, 25);
