@@ -28,7 +28,7 @@ public class BackgroundPanel extends JPanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiessPanel propsPanel) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel) {
         this.setLayout(null);
         this.calPanel = calPanel;
         this.propsPanel = propsPanel;

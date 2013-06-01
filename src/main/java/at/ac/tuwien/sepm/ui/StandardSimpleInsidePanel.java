@@ -7,24 +7,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-@UI
-public class PropertiessPanel extends StandardInsidePanel {
-    private JButton retButton;
-    private BackgroundPanel bgPanel;
+/**
+ * Created with IntelliJ IDEA.
+ * User: Flo
+ * Date: 01.06.13
+ * Time: 20:29
+ * To change this template use File | Settings | File Templates.
+ */
+public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
+    protected JButton retButton;
+    protected BackgroundPanel bgPanel;
 
-    public PropertiessPanel() {
-        init();
+    protected Rectangle simpleWhiteSpace = new Rectangle(98, 64, 922, 509);  //white space in simple inside panel
 
-        try {
-            image = ImageIO.read(ClassLoader.getSystemResource("img/plainpanel.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        addTitle();
-        addReturnButton();
-    }
-
-    private void addReturnButton() {
+    protected void addReturnButton() {
         retButton = new JButton();
         retButton.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2)), (int)(size.getHeight()/2-image.getHeight(null)/2)-33, 25, 25);
 
@@ -38,7 +34,7 @@ public class PropertiessPanel extends StandardInsidePanel {
         retButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                PropertiessPanel.this.setVisible(false);
+                setVisible(false);
                 bgPanel.showLastComponent();
             }
         });
@@ -49,8 +45,8 @@ public class PropertiessPanel extends StandardInsidePanel {
         this.add(retButton);
     }
 
-    private void addTitle() {
-        JLabel title = new JLabel("Eigenschaften");
+    protected void addTitle(String s) {
+        JLabel title = new JLabel(s);
         title.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+35, (int)(size.getHeight()/2-image.getHeight(null)/2)-42,257,45);
         title.setForeground(Color.WHITE);
         title.setFont(standardTitleFont);
