@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.kalender.CalMonthGenerator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -14,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 @UI
 public class CalendarPanel extends StandardInsidePanel {
@@ -50,7 +53,7 @@ public class CalendarPanel extends StandardInsidePanel {
     }
 
     private void createTop() {
-        month = new JLabel("SEPTEMBER 2012");
+        month = new JLabel((DateTime.now().monthOfYear().getAsText(Locale.GERMANY) + " " + DateTime.now().getYear()).toUpperCase());
         month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 290, 30);
         month.setForeground(Color.WHITE);
         month.setFont(standardTitleFont);
@@ -100,7 +103,12 @@ public class CalendarPanel extends StandardInsidePanel {
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo backward button
+                try {
+                    month.setText(calPanelMonth.last().toUpperCase());
+                } catch (ServiceException e) {
+                    // TODO
+                    month.setText("ERROR");
+                }
             }
         });
 
@@ -112,7 +120,12 @@ public class CalendarPanel extends StandardInsidePanel {
         fwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo forward button
+                try {
+                    month.setText(calPanelMonth.next().toUpperCase());
+                } catch (ServiceException e) {
+                    // TODO
+                    month.setText("ERROR");
+                }
             }
         });
 
