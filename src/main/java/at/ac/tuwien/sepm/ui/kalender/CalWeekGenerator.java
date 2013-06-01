@@ -1,7 +1,6 @@
-package at.ac.tuwien.sepm.ui.calendar;
+package at.ac.tuwien.sepm.ui.kalender;
 
 import at.ac.tuwien.sepm.ui.UI;
-import at.ac.tuwien.sepm.ui.calendar.CalPanelMonth;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -14,15 +13,13 @@ import javax.swing.*;
  * To change this template use File | Settings | File Templates.
  */
 @UI
-public class CalMonthGenerator extends JPanel {
+public class CalWeekGenerator extends JPanel {
     private CalPanelMonth calPanelMonth;
 
     @Autowired
-    public CalMonthGenerator(CalPanelMonth calPanelMonth) {
+    public CalWeekGenerator(CalPanelMonth calPanelMonth) {
 
-        //braucht man, damit man den kalender frei verschieben kann
-        //das verschieben passiert dann in calpanelmonth
-        //das muss bei der wochenansicht auch so gemacht werden
+        //todo calpanelmonth austauschen mit calpanelweek
         this.calPanelMonth=calPanelMonth;
         this.setLayout(null);
         this.setOpaque(false);

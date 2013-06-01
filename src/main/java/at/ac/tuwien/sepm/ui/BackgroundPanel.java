@@ -9,12 +9,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 @UI
-public class BGPanel extends JPanel {
+public class BackgroundPanel extends JPanel {
     private JButton properties;
     private JButton tab1;
     private JButton tab2;
@@ -29,7 +28,7 @@ public class BGPanel extends JPanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BGPanel(CalPanel calPanel, StudPanel studPanel, PropsPanel propsPanel) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiessPanel propsPanel) {
         this.setLayout(null);
         this.calPanel = calPanel;
         this.propsPanel = propsPanel;
@@ -103,8 +102,8 @@ public class BGPanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 removeAddedPanels();
                 propsPanel.setVisible(true);
-                BGPanel.this.add(propsPanel);
-                BGPanel.this.repaint();
+                BackgroundPanel.this.add(propsPanel);
+                BackgroundPanel.this.repaint();
             }
         });
         this.add(properties);

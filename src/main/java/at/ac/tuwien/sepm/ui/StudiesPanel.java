@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.ui.verlauf.planen.PlanPanel;
+import at.ac.tuwien.sepm.ui.verlauf.PlanPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @UI
-public class StudPanel extends StandardInsidePanel {
+public class StudiesPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
@@ -20,7 +20,7 @@ public class StudPanel extends StandardInsidePanel {
     private PlanPanel planningPanel;
 
     @Autowired
-    public StudPanel(PlanPanel planningPanel) {
+    public StudiesPanel(PlanPanel planningPanel) {
         this.planningPanel = planningPanel;
         init();
         changeImage(1);

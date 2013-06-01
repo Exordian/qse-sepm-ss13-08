@@ -1,8 +1,8 @@
-package at.ac.tuwien.sepm.ui.verlauf.planen;
+package at.ac.tuwien.sepm.ui.verlauf;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.ui.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 

@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.ui.semesterPlanningOLD;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.ui.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

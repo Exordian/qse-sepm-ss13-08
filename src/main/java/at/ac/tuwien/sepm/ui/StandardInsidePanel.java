@@ -14,8 +14,8 @@ public abstract class StandardInsidePanel extends JPanel {
     protected Image image;
     protected final Rectangle size = new Rectangle(67, 50, 1119, 639);  //x, y, width and height of panel (von oben links im tab bis unten rechts im tab)
 
-    protected final Rectangle whiteSpaceCalendar = new Rectangle(903, 459); //only width and height of whitespace
-    protected final Point CalStartCoordinateOfWhiteSpace = new Point(40, 57);  //x, y of cal whitespace
+    protected final Rectangle whiteSpaceCalendar = new Rectangle(904, 460); //only width and height of whitespace
+    protected final Point CalStartCoordinateOfWhiteSpace = new Point(39, 57);  //x, y of cal whitespace
 
     protected final Rectangle whiteSpaceStud = new Rectangle(1014, 517);  //only width and height of whitespace
     protected final Point StudStartCoordinateOfWhiteSpace = new Point(51, 79); //x, y of stud whitespace

@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.ui.calendar.CalMonthGenerator;
+import at.ac.tuwien.sepm.ui.kalender.CalMonthGenerator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @UI
-public class CalPanel extends StandardInsidePanel {
+public class CalendarPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
@@ -37,7 +37,7 @@ public class CalPanel extends StandardInsidePanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public CalPanel(CalMonthGenerator calPanelMonth) {
+    public CalendarPanel(CalMonthGenerator calPanelMonth) {
         init();
 
         this.calPanelMonth=calPanelMonth;

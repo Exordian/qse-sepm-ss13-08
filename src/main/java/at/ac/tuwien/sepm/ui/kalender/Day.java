@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.calendar;
+package at.ac.tuwien.sepm.ui.kalender;
 
 /**
  * Author: MUTH Markus

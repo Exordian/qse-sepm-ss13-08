@@ -1,21 +1,18 @@
 package at.ac.tuwien.sepm.ui;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 
 @UI
-public class PropsPanel extends StandardInsidePanel {
+public class PropertiessPanel extends StandardInsidePanel {
     private JButton retButton;
-    private BGPanel bgPanel;
+    private BackgroundPanel bgPanel;
 
-    public PropsPanel() {
+    public PropertiessPanel() {
         init();
 
         try {
@@ -41,7 +38,7 @@ public class PropsPanel extends StandardInsidePanel {
         retButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                PropsPanel.this.setVisible(false);
+                PropertiessPanel.this.setVisible(false);
                 bgPanel.showLastComponent();
             }
         });
@@ -60,7 +57,7 @@ public class PropsPanel extends StandardInsidePanel {
         this.add(title);
     }
 
-    public void setBgPanel(BGPanel bgPanel) {
+    public void setBgPanel(BackgroundPanel bgPanel) {
         this.bgPanel=bgPanel;
     }
 }
