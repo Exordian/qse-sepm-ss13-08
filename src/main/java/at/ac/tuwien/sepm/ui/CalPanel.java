@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.ui.calendar.CalMonthGenerator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,11 @@ public class CalPanel extends StandardInsidePanel {
     static JPanel pnlCalendar;
     static JTable tblCalendar;
 
-    private CalPanelMonth calPanelMonth;
+    private CalMonthGenerator calPanelMonth;
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public CalPanel(CalPanelMonth calPanelMonth) {
+    public CalPanel(CalMonthGenerator calPanelMonth) {
         init();
 
         this.calPanelMonth=calPanelMonth;
@@ -157,8 +158,8 @@ public class CalPanel extends StandardInsidePanel {
                 //todo remove
 
                 add(calPanelMonth);
-                revalidate();
-                repaint();
+                calPanelMonth.revalidate();
+                calPanelMonth.repaint();
             }
         });
 
@@ -168,7 +169,7 @@ public class CalPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
                 //todo
-
+                remove(calPanelMonth);
                 revalidate();
                 repaint();
             }

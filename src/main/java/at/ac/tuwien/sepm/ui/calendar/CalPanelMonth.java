@@ -1,5 +1,7 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.calendar;
 
+import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -9,19 +11,16 @@ import java.awt.*;
  * @author Markus MUTH
  */
 @UI
-public class CalPanelMonth extends JPanel{
+public class CalPanelMonth extends StandardInsidePanel {
     private JPanel[] dom = new JPanel[35];
     private int dow = Day.WEDNESDAY.ordinal();
     private MigLayout layout;
 
-    public CalPanelMonth()
-    {
+    public CalPanelMonth() {
         layout = new MigLayout("", "1[]1[]1[]1", "1[]");
 
-        setSize(1000, 500);
-        //this.getContentPane().setMinimumSize(new Dimension(805,800));
-        setLocation(300, 300);
-        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize((int)whiteSpaceCalendar.getWidth(),(int)whiteSpaceCalendar.getHeight());
+        setLocation(39, 58);
         this.setLayout(layout);
         this.setVisible(true);
         this.setBackground(Color.BLACK);

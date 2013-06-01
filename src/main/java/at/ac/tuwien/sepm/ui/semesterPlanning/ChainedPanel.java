@@ -18,13 +18,16 @@ public class ChainedPanel extends JPanel {
     private boolean alive = true;
     private ArrayList<Thread> allThreads = new ArrayList<Thread>();
     private org.apache.log4j.Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
-    public ChainedPanel(){
-        logger.debug("entering class: "+this.getClass().getSimpleName());
+
+    public ChainedPanel() {
+        logger.info("entering class: "+this.getClass().getSimpleName());
     }
+
     public ChainedPanel(ChainHead head){
         this.head=head;
-        setBackground(new Color(0,0,0,0));
+        //setBackground(new Color(0,0,0,0));
     }
+
     public void setNext(ChainedPanel nextPanel){
         if(this.nextPanel!=null){
             this.nextPanel.kill();
@@ -37,6 +40,7 @@ public class ChainedPanel extends JPanel {
         //revalidate();
         //repaint();
     }
+
     public void next(){
         if(alive){
             head.setTo(nextPanel);

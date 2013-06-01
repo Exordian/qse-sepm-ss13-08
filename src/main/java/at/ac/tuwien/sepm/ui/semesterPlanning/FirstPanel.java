@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class FirstPanel extends ChainedPanel   {
 
-
     @Autowired
     DBMetaLvaDao metaLVADAO;
 
@@ -128,9 +127,7 @@ public class FirstPanel extends ChainedPanel   {
                 }else{
                     advancedSettings.setVisible(true);
                 }
-                //todo graphics bug..
-                //getParent().revalidate();
-                //getParent().repaint();
+                getParent().getParent().repaint();
             }
         });
 
@@ -217,5 +214,4 @@ public class FirstPanel extends ChainedPanel   {
             }
         });
     }
-
 }

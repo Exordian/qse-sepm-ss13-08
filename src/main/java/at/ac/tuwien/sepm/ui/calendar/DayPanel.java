@@ -1,7 +1,5 @@
-package at.ac.tuwien.sepm.ui.semesterPlanning;
+package at.ac.tuwien.sepm.ui.calendar;
 
-import at.ac.tuwien.sepm.entity.Date;
-import at.ac.tuwien.sepm.ui.DateLabel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -21,7 +19,6 @@ public class DayPanel extends JPanel {
     public DayPanel () {
         super(new MigLayout());
         dates = new ArrayList<DateLabel>();
-
     }
 
     public void addDateLabel(DateLabel date) {
