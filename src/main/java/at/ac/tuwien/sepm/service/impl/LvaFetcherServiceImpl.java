@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.entity.*;
-import at.ac.tuwien.sepm.exception.ServiceException;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
@@ -17,12 +17,10 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service

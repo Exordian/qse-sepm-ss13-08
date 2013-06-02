@@ -3,7 +3,7 @@ package at.ac.tuwien.sepm.service;
 import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
-import at.ac.tuwien.sepm.exception.ServiceException;
+import at.ac.tuwien.sepm.service.ServiceException;
 
 import java.util.List;
 
