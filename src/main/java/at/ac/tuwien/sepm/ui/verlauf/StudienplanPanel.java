@@ -32,13 +32,10 @@ public class StudienplanPanel extends StandardInsidePanel {
     @Autowired
     protected CreateCurriculumService service;
 
-    @Autowired
-    protected DBCurriculumDao curriculumDao;
+    private static final int MAX_INFO_LENGTH = 18;
 
     private JPanel panel;
-    //private JButton baddmlva;
     private JButton baddcurr;
-    //private JButton baddmod;
     private JButton bcreate;
     private JTable tmodule;
     private DefaultTableModel mmodule;
@@ -47,19 +44,28 @@ public class StudienplanPanel extends StandardInsidePanel {
     private DefaultComboBoxModel<CurriculumComboBoxItem> mcurr;
     private JLabel ldesc;
 
+    private JPanel infop;
+    private JLabel numberl;
+    private JLabel namel;
+    private JLabel descriptionl;
+    private JLabel titlel;
+    private JLabel ectscl;
+    private JLabel ectsfl;
+    private JLabel ectssl;
+
+    private JLabel numberInfol;
+    private JLabel nameInfol;
+    private JLabel descriptionInfol;
+    private JLabel titleInfol;
+    private JLabel ectscInfol;
+    private JLabel ectsfInfol;
+    private JLabel ectssInfol;
+
     public StudienplanPanel() {
-        this.setLayout(null);
+        this.setLayout(new MigLayout());
         this.setOpaque(false);
         loadFonts();
         setBounds((int)StudStartCoordinateOfWhiteSpace.getX(), (int)StudStartCoordinateOfWhiteSpace.getY(),(int)whiteSpaceStud.getWidth(),(int)whiteSpaceStud.getHeight());
-        /*initPanel();
-        initAddMetaLvaButton();
-        initAddCurriculumButton();
-        initAddModuleButton();
-        initCurriculumComboBox();
-        initModuleTable();
-        initButtonCreate();
-        placeComponents();*/
         revalidate();
         repaint();
     }
@@ -67,16 +73,85 @@ public class StudienplanPanel extends StandardInsidePanel {
     public void placeComponents() {
         this.add(panel);
         panel.add(baddcurr);
-        //panel.add(baddmod);
-        //panel.add(baddmlva);
         panel.add(ccurr, "wrap");
         panel.add(spane, "span, wrap");
         panel.add(bcreate);
+        infop.add(numberl);
+        infop.add(numberInfol, "wrap");
+        infop.add(namel);
+        infop.add(nameInfol, "wrap");
+        infop.add(descriptionl);
+        infop.add(descriptionInfol, "wrap");
+        infop.add(titlel);
+        infop.add(titleInfol, "wrap");
+        infop.add(ectscl);
+        infop.add(ectscInfol, "wrap");
+        infop.add(ectsfl);
+        infop.add(ectsfInfol, "wrap");
+        infop.add(ectssl);
+        infop.add(ectssInfol, "wrap");
+        this.add(infop);
     }
 
-    public void initDesc() {
-        this.ldesc=new JLabel();
-        ldesc.setFont(standardTextFont);
+    public void initInfoPanel() {
+        infop = new JPanel(new MigLayout());
+        infop.setLayout(new MigLayout());
+        infop.setBounds(whiteSpaceStud);
+        infop.setBackground(Color.WHITE);
+        numberl = new JLabel("Studienkennzahl: ");
+        namel = new JLabel("Name: ");
+        descriptionl = new JLabel("Beschreibung: ");
+        titlel = new JLabel("Akademischer Titel: ");
+        ectscl = new JLabel("Wahl-ECTS: ");
+        ectsfl = new JLabel("Frei-ECTS: ");
+        ectssl = new JLabel("SoftSkill-ECTS: ");
+        numberInfol = new JLabel();
+        nameInfol = new JLabel();
+        descriptionInfol = new JLabel();
+        titleInfol = new JLabel();
+        ectscInfol = new JLabel();
+        ectsfInfol = new JLabel();
+        ectssInfol = new JLabel();
+
+        numberl.setFont(standardTextFont);
+        namel.setFont(standardTextFont);
+        descriptionl.setFont(standardTextFont);
+        titlel.setFont(standardTextFont);
+        ectscl.setFont(standardTextFont);
+        ectsfl.setFont(standardTextFont);
+        ectssl.setFont(standardTextFont);
+
+        numberInfol.setFont(standardTextFont);
+        nameInfol.setFont(standardTextFont);
+        descriptionInfol.setFont(standardTextFont);
+        titleInfol.setFont(standardTextFont);
+        ectscInfol.setFont(standardTextFont);
+        ectsfInfol.setFont(standardTextFont);
+        ectssInfol.setFont(standardTextFont);
+
+        setInfoLabels();
+    }
+
+    private void setInfoLabels() {
+        if(ccurr.getSelectedItem()==null) {
+            return;
+        }
+        Curriculum c = ((CurriculumComboBoxItem) ccurr.getSelectedItem()).get();
+        numberInfol.setText(prepareString(c.getStudyNumber()));
+        nameInfol.setText(prepareString(c.getName()));
+        descriptionInfol.setText(prepareString(c.getDescription()));
+        titleInfol.setText(prepareString(c.getAcademicTitle()));
+        ectscInfol.setText(prepareString("" + c.getEctsChoice()));
+        ectsfInfol.setText(prepareString("" + c.getEctsFree()));
+        ectssInfol.setText(prepareString("" + c.getEctsSoftskill()));
+    }
+
+    private String prepareString(String s) {
+        if(s.length() > MAX_INFO_LENGTH) {
+            s=s.substring(0,17) + "...";
+        }
+
+        return s;
     }
 
     public void initButtonCreate() {
@@ -88,38 +163,39 @@ public class StudienplanPanel extends StandardInsidePanel {
             @Transactional
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int cid = ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get().getId();
-                    HashMap<Module, Boolean> mMap = service.readModuleByCurriculum(cid);
-                    Set<Module> mSet = mMap.keySet();
-                    HashMap<Integer, Module> mids = new HashMap<Integer, Module>();
+                    if (ccurr.getSelectedItem() != null) {
+                        int cid = ((CurriculumComboBoxItem) ccurr.getSelectedItem()).get().getId();
+                        HashMap<Module, Boolean> mMap = service.readModuleByCurriculum(cid);
+                        Set<Module> mSet = mMap.keySet();
+                        HashMap<Integer, Module> mids = new HashMap<Integer, Module>();
 
-                    for(Module m : mSet) {
-                        mids.put(m.getId(), m);
-                    }
+                        for (Module m : mSet) {
+                            mids.put(m.getId(), m);
+                        }
 
-                    int rows = mmodule.getRowCount();
-                    for(int i=0; i<rows; i++) {
-                        int mid = (Integer)mmodule.getValueAt(i,1);
-                        if((Boolean) (mmodule.getValueAt(i, 0))){ // Das Modul wurde ausgewählt
-                            if(mids.get(mid) == null) { // das modul wird neu aufgenommen
-                                service.addModuleToCurriculum(mid, cid, (Boolean) (mmodule.getValueAt(i, 3)));
-                            } else { // das modul ist schon drinnen
-                                if(mMap.get(mids.get(mid)).booleanValue() != ((Boolean)mmodule.getValueAt(i,3)).booleanValue()){ // Es wird upgedated
-                                    service.deleteModuleFromCurriculum(mid, cid);
-                                    service.addModuleToCurriculum(mid, cid, (Boolean)(mmodule.getValueAt(i,3)));
+                        int rows = mmodule.getRowCount();
+                        for (int i = 0; i < rows; i++) {
+                            int mid = (Integer) mmodule.getValueAt(i, 1);
+                            if ((Boolean) (mmodule.getValueAt(i, 0))) { // Das Modul wurde ausgewählt
+                                if (mids.get(mid) == null) { // das modul wird neu aufgenommen
+                                    service.addModuleToCurriculum(mid, cid, (Boolean) (mmodule.getValueAt(i, 3)));
+                                } else { // das modul ist schon drinnen
+                                    if (mMap.get(mids.get(mid)).booleanValue() != ((Boolean) mmodule.getValueAt(i, 3)).booleanValue()) { // Es wird upgedated
+                                        service.deleteModuleFromCurriculum(mid, cid);
+                                        service.addModuleToCurriculum(mid, cid, (Boolean) (mmodule.getValueAt(i, 3)));
+                                    }
                                 }
-                            }
-                        } else { // Das modul wurde nicht ausgewählt
-                            if(mids.get(mid) != null) { // das modul war vorher im studienplan und wird gelöscht
-                                service.deleteModuleFromCurriculum(mid, cid);
+                            } else { // Das modul wurde nicht ausgewählt
+                                if (mids.get(mid) != null) { // das modul war vorher im studienplan und wird gelöscht
+                                    service.deleteModuleFromCurriculum(mid, cid);
+                                }
                             }
                         }
                     }
-
                 } catch (ServiceException e1) {
-                    //new ErrorWindow(e1.getMessage());
-                    //return;
-                    new JOptionPane(e1.getMessage());
+                    e1.printStackTrace();
+                    // JOptionPane.showMessageDialog(new JFrame(), e1.getMessage());
+                    return;
                 }
                 fillTable();
             }
@@ -130,7 +206,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         mcurr = new DefaultComboBoxModel<CurriculumComboBoxItem>();
         ccurr = new JComboBox(mcurr);
         ccurr.setFont(standardButtonFont);
-        refreshCurriculumComboBox();
+        fillCurriculumComboBox();
     }
 
     public void initCurriculumComboBoxActionListener() {
@@ -138,37 +214,20 @@ public class StudienplanPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fillTable();
+                setInfoLabels();
             }
         });
     }
 
-    public void refreshCurriculumComboBox() {
-       /* Curriculum c0 = new Curriculum();
-        Curriculum c1 = new Curriculum();
-        Curriculum c2 = new Curriculum();
-
-        c0.setId(0);
-        c1.setId(1);
-        c2.setId(2);
-
-        c0.setStudyNumber("033 533");
-        c1.setStudyNumber("033 534");
-        c2.setStudyNumber("033 535"); */
-
+    public void fillCurriculumComboBox() {
         List<Curriculum> l = new ArrayList<Curriculum>();
-         /*
-        l.add(c0);
-        l.add(c1);
-        l.add(c2);
-               */
-        /*
+
         try {
             l = service.readAllCurriculum();
         } catch (ServiceException e) {
-            new ErrorWindow(e.getMessage());
-            e.printStackTrace();
+            // JOptionPane.showMessageDialog(new JFrame(), e.getMessage());
+            return;
         }
-        */
 
         mcurr.removeAllElements();
 
@@ -180,24 +239,9 @@ public class StudienplanPanel extends StandardInsidePanel {
     public void initPanel() {
         panel = new JPanel();
         panel.setLayout(new MigLayout());
-        //panel.setBounds(this.getBounds().x - 51, this.getBounds().y - 78, (int) this.getBounds().getWidth(), (int) this.getBounds().getHeight() - 1);
         panel.setBounds(whiteSpaceStud);
         panel.setBackground(Color.WHITE);
     }
-
-    /*
-    public void initAddMetaLvaButton () {
-        baddmlva = new JButton();
-        baddmlva.setText("LVA erstellen");
-        baddmlva.setFont(standardButtonFont);
-        baddmlva.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new AddMetaLvaFrame();
-            }
-        });
-    }
-    */
 
     public void initAddCurriculumButton () {
         baddcurr = new JButton();
@@ -211,21 +255,8 @@ public class StudienplanPanel extends StandardInsidePanel {
         });
     }
 
-    /*
-    public void initAddModuleButton () {
-        baddmod = new JButton();
-        baddmod.setText("Modul erstellen");
-        baddmod.setFont(standardButtonFont);
-        baddmod.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new AddModuleFrame();
-            }
-        });
-    }
-    */
     public void initModuleTable() {
-        String[] head = new String[]{"", "ID", "Name", "Pflichtmodul", "Beschreibung"};
+        String[] head = new String[]{"Enthalten", "ID", "Name", "Pflichtmodul", "Beschreibung"};
         mmodule = new DefaultTableModel(head, 0);
         tmodule = new JTable(mmodule) {
             @Override
@@ -248,51 +279,19 @@ public class StudienplanPanel extends StandardInsidePanel {
         };
         spane = new JScrollPane(tmodule);
         spane.setBackground(Color.WHITE);
+        spane.setMinimumSize(new Dimension(650, 400));
 
         fillTable();
     }
 
     public void fillTable() {
-       /* Module m0 = new Module();
-        Module m1 = new Module();
-        Module m2 = new Module();
-        Module m3 = new Module();
-
-        m0.setId(0);
-        m1.setId(1);
-        m2.setId(2);
-        m3.setId(3);
-
-        m0.setName("Name 0");
-        m1.setName("Name 1");
-        m2.setName("Name 2");
-        m3.setName("Name 3");
-
-        m0.setCompleteall(true);
-        m1.setCompleteall(false);
-        m2.setCompleteall(false);
-        m3.setCompleteall(true);
-
-        m0.setDescription("asdfasdfasdf");
-        m1.setDescription("asdfasdfasdf");
-        m2.setDescription("asdfasdfasdf");
-        m3.setDescription("asdfasdfasdf");  */
 
         List<Module> list = new ArrayList<Module>();
-        /*
-
-        list.add(m0);
-        list.add(m1);
-        list.add(m2);
-        list.add(m3);
-
-
-        // TO DO implement this  */
         try {
             list = service.readAllModules();
         } catch (ServiceException e) {
-            // TO DO do something useful
-            // e.printStackTrace();
+            //JOptionPane.showMessageDialog(new JFrame(), e.getMessage());
+            return;
         }
 
         if(ccurr.getSelectedItem()!=null){
@@ -302,33 +301,33 @@ public class StudienplanPanel extends StandardInsidePanel {
             try {
                 mMap = service.readModuleByCurriculum(cid);
             } catch (ServiceException e) {
-                //new ErrorWindow(e.getMessage());
-                //e.printStackTrace();
-                new JOptionPane(e.getMessage());
+                //JOptionPane.showMessageDialog(new JFrame(), e.getMessage());
                 return;
             }
 
             Set<Module> mSet = mMap.keySet();
+            HashMap<Integer, Module> midsMap = new HashMap<Integer, Module>();
             Set<Integer> mids = new HashSet<Integer>();
 
             for(Module m : mSet) {
                 mids.add(m.getId());
+                midsMap.put(m.getId(), m);
             }
 
             clearTable();
 
             for(Module m : list) {
                 if(mids.contains(m.getId())) {
-                    mmodule.addRow(createTableRow(true, m));
+                    mmodule.addRow(createTableRow(true, mMap.get(midsMap.get(m.getId())), m));
                 } else {
-                    mmodule.addRow(createTableRow(false, m));
+                    mmodule.addRow(createTableRow(false, false, m));
                 }
             }
         }
     }
 
-    private Object[] createTableRow (Boolean b, Module m) {
-        return new Object[]{b, m.getId(), m.getName(), m.getCompleteall(), m.getDescription()};
+    private Object[] createTableRow (Boolean incurriculum, Boolean obligatory, Module m) {
+        return new Object[]{incurriculum, m.getId(), m.getName(), obligatory, m.getDescription()};
     }
 
     private void clearTable() {
@@ -350,90 +349,6 @@ public class StudienplanPanel extends StandardInsidePanel {
         }
 
     }
-
-    /*private class AddModuleFrame extends JFrame {
-        private JPanel panel;
-        private JLabel lname;
-        private JLabel ldescription;
-        private JLabel lcompletea;
-        private JTextField tname;
-        private JTextField tdescription;
-        private JComboBox<Boolean> ccompletea;
-        private JRadioButton rtrue;
-        private JRadioButton rfalse;
-        private ButtonGroup group;
-        private JButton bok;
-
-        public AddModuleFrame () {
-            super("Studienplan erstellen");
-            this.setFont(standardTitleFont);
-            this.setVisible(false);
-            panel = new JPanel(new MigLayout());
-            this.add(panel);
-            init();
-            placeComponents();
-            this.setLocation(500,500);
-            this.setMinimumSize(panel.getSize());
-            this.pack();
-            this.revalidate();
-            this.repaint();
-            this.setVisible(true);
-        }
-
-        private void init () {
-            lname = new JLabel("Name: ");
-            ldescription = new JLabel("Beschreibung: ");
-            lcompletea = new JLabel("Muss das Modul komplett absolviert werden?");
-
-            lname.setFont(standardTextFont);
-            ldescription.setFont(standardTextFont);
-            lcompletea.setFont(standardTextFont);
-
-            tname = new JTextField();
-            tdescription = new JTextField();
-
-            tname.setFont(standardTextFont);
-            tdescription.setFont(standardTextFont);
-
-            tname.setMinimumSize(new Dimension(225, (int)tname.getSize().getHeight()));
-            tdescription.setMinimumSize(new Dimension(225, (int)tdescription.getSize().getHeight()));
-
-            rtrue = new JRadioButton();
-            rfalse = new JRadioButton();
-
-            rtrue.setText("Ja");
-            rfalse.setText("Nein");
-
-            rtrue.setFont(standardTextFont);
-            rfalse.setFont(standardTextFont);
-
-            group = new ButtonGroup();
-            group.add(rtrue);
-            group.add(rfalse);
-
-            bok = new JButton("OK");
-            bok.setFont(standardButtonFont);
-            bok.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // TO DO call the add module lva service
-                }
-            });
-
-        }
-
-        private void placeComponents() {
-            panel.add(lname);
-            panel.add(tname, "wrap");
-            panel.add(ldescription);
-            panel.add(tdescription, "wrap");
-            panel.add(lcompletea, "span 2, wrap");
-            panel.add(rtrue, "wrap");
-            panel.add(rfalse, "wrap");
-            panel.add(bok);
-        }
-    }
-    */
 
     private class AddCurriculumFrame extends JFrame {
         private JPanel panel;
@@ -527,63 +442,45 @@ public class StudienplanPanel extends StandardInsidePanel {
                     Integer s;
 
                     if(number==null || number.equals("")) {
-                        //new ErrorWindow("Bitte geben Sie eine Studienkennzahl an.");
-                        //return;
-                        new JOptionPane("Bitte geben Sie eine Studienkennzahl an.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie eine Studienkennzahl an.");
                         return;
                     }
                     if(name==null || name.equals("")) {
-                        //new ErrorWindow("Bitte geben Sie einen Namen an.");
-                        //return;
-                        new JOptionPane("Bitte geben Sie einen Namen an.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie einen Namen an.");
                         return;
                     }
                     if(title==null || title.equals("")) {
-                        //new ErrorWindow("Bitte geben Sie den akademischen Titel an.");
-                        //return;
-                        new JOptionPane("Bitte geben Sie den akademischen Titel an.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie den akademischen Titel an.");
                         return;
                     }
                     if(ectsc==null) {
-                        //new ErrorWindow("Bitte geben Sie die Wahl-ECTS-Punkte an.");
-                        //return;
-                        new JOptionPane("Bitte geben Sie die Wahl-ECTS-Punkte an.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie die Wahl-ECTS-Punkte an.");
                         return;
                     }
                     if(ectsf==null) {
-                        //new ErrorWindow("Bitte geben Sie die Frei-ECTS-Punkte an.");
-                        //return;
-                        new JOptionPane("Bitte geben Sie die Frei-ECTS-Punkte an.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie die Frei-ECTS-Punkte an.");
                         return;
                     }
                     if(ectss==null) {
-                        //new ErrorWindow("Bitte geben Sie die SoftSkill-ECTS-Punkte an.");
-                        //return;
-                        new JOptionPane("Bitte geben Sie die SoftSkill-ECTS-Punkte an.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie die SoftSkill-ECTS-Punkte an.");
                         return;
                     }
                     try {
                         c = Integer.parseInt(ectsc);
                     } catch (NumberFormatException e1) {
-                        //new ErrorWindow("Die angegebenen Wahl-ECTS-Punkte sind keine gültige zahl.");
-                        //return;
-                        new JOptionPane("Die angegebenen Wahl-ECTS-Punkte sind keine gültige zahl.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Die angegebenen Wahl-ECTS-Punkte sind keine gültige zahl.");
                         return;
                     }
                     try {
                         f = Integer.parseInt(ectsf);
                     } catch (NumberFormatException e1) {
-                        //new ErrorWindow("Die angegebenen Frei-ECTS-Punkte sind keine gültige zahl.");
-                        //return;
-                        new JOptionPane("Die angegebenen Frei-ECTS-Punkte sind keine gültige zahl.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Die angegebenen Frei-ECTS-Punkte sind keine gültige zahl.");
                         return;
                     }
                     try {
                         s = Integer.parseInt(ectss);
                     } catch (NumberFormatException e1) {
-                        //new ErrorWindow("Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.");
-                        //return;
-                        new JOptionPane("Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.");
+                        JOptionPane.showMessageDialog(new JFrame(), "Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.");
                         return;
                     }
 
@@ -599,10 +496,11 @@ public class StudienplanPanel extends StandardInsidePanel {
                     try {
                         service.createCurriculum(curriculum);
                     } catch (ServiceException e1) {
-                        //new ErrorWindow(e1.getMessage());
-                        new JOptionPane(e1.getMessage());
+                        JOptionPane.showMessageDialog(new JFrame(), e1.getMessage());
                     }
 
+                    fillCurriculumComboBox();
+                    dispose();
                 }
             });
         }
@@ -625,6 +523,90 @@ public class StudienplanPanel extends StandardInsidePanel {
             panel.add(bok);
         }
     }
+
+    /*private class AddModuleFrame extends JFrame {
+        private JPanel panel;
+        private JLabel lname;
+        private JLabel ldescription;
+        private JLabel lcompletea;
+        private JTextField tname;
+        private JTextField tdescription;
+        private JComboBox<Boolean> ccompletea;
+        private JRadioButton rtrue;
+        private JRadioButton rfalse;
+        private ButtonGroup group;
+        private JButton bok;
+
+        public AddModuleFrame () {
+            super("Studienplan erstellen");
+            this.setFont(standardTitleFont);
+            this.setVisible(false);
+            panel = new JPanel(new MigLayout());
+            this.add(panel);
+            init();
+            placeComponents();
+            this.setLocation(500,500);
+            this.setMinimumSize(panel.getSize());
+            this.pack();
+            this.revalidate();
+            this.repaint();
+            this.setVisible(true);
+        }
+
+        private void init () {
+            lname = new JLabel("Name: ");
+            ldescription = new JLabel("Beschreibung: ");
+            lcompletea = new JLabel("Muss das Modul komplett absolviert werden?");
+
+            lname.setFont(standardTextFont);
+            ldescription.setFont(standardTextFont);
+            lcompletea.setFont(standardTextFont);
+
+            tname = new JTextField();
+            tdescription = new JTextField();
+
+            tname.setFont(standardTextFont);
+            tdescription.setFont(standardTextFont);
+
+            tname.setMinimumSize(new Dimension(225, (int)tname.getSize().getHeight()));
+            tdescription.setMinimumSize(new Dimension(225, (int)tdescription.getSize().getHeight()));
+
+            rtrue = new JRadioButton();
+            rfalse = new JRadioButton();
+
+            rtrue.setText("Ja");
+            rfalse.setText("Nein");
+
+            rtrue.setFont(standardTextFont);
+            rfalse.setFont(standardTextFont);
+
+            group = new ButtonGroup();
+            group.add(rtrue);
+            group.add(rfalse);
+
+            bok = new JButton("OK");
+            bok.setFont(standardButtonFont);
+            bok.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // TO DO call the add module lva service
+                }
+            });
+
+        }
+
+        private void placeComponents() {
+            panel.add(lname);
+            panel.add(tname, "wrap");
+            panel.add(ldescription);
+            panel.add(tdescription, "wrap");
+            panel.add(lcompletea, "span 2, wrap");
+            panel.add(rtrue, "wrap");
+            panel.add(rfalse, "wrap");
+            panel.add(bok);
+        }
+    }
+    */
     /*
     private class AddMetaLvaFrame extends JFrame {
         private JPanel panel;

@@ -21,6 +21,9 @@ public class DBTodoDao extends DBBaseDao implements TodoDao {
     @Autowired
     DBLvaDao lvaDao;
 
+    @Autowired
+    DBMetaLvaDao metaLvaDao;
+
     @Override
     public boolean create(Todo toCreate) throws IOException, DataAccessException {
         if(toCreate == null) {
@@ -117,5 +120,16 @@ public class DBTodoDao extends DBBaseDao implements TodoDao {
         jdbcTemplate.update(stmt, id);
 
         return true;
+    }
+
+    @Override
+    public List<Todo> getAllTodos() throws DataAccessException {
+        String query = "SELECT * FROM todo";
+        List<Todo> result = jdbcTemplate.query(query, RowMappers.getTodoRowMapper());
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, readById(result.get(i).getId()));
+            result.get(i).getLva().setMetaLVA(metaLvaDao.readById(result.get(i).getLva().getMetaLVA().getId()));
+        }
+        return result;
     }
 }

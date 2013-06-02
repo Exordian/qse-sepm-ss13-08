@@ -18,32 +18,32 @@ import org.junit.Test;
 
 @Ignore
 public class IntelligentSemesterPlanerTest {
-	private MetaLVA mLVA0;
-	private LVA lva0;
-	private MetaLVA mLVA1;
-	private LVA lva1;
-	private MetaLVA mLVA2;
-	private LVA lva2;
-	private MetaLVA mLVA3;
-	private LVA lva3;
-	private MetaLVA mLVA4;
-	private LVA lva4;
-	private MetaLVA mLVA5;
-	private LVA lva5;
-	ArrayList<MetaLVA> pool;
+    private MetaLVA mLVA0;
+    private LVA lva0;
+    private MetaLVA mLVA1;
+    private LVA lva1;
+    private MetaLVA mLVA2;
+    private LVA lva2;
+    private MetaLVA mLVA3;
+    private LVA lva3;
+    private MetaLVA mLVA4;
+    private LVA lva4;
+    private MetaLVA mLVA5;
+    private LVA lva5;
+    ArrayList<MetaLVA> pool;
 
 
     /**
      * performs a simple test, if the planned semester is not empty
      */
-	@Test
-	public void test() {
-		IntelligentSemesterPlaner planer = new IntelligentSemesterPlaner();
-		//System.out.println(pool);
-		planer.setLVAs(new ArrayList<MetaLVA>(), pool);
-		//System.out.println(planer.planSemester(20,2013, Semester.S));
+    @Test
+    public void test() {
+        IntelligentSemesterPlaner planer = new IntelligentSemesterPlaner();
+        //System.out.println(pool);
+        planer.setLVAs(new ArrayList<MetaLVA>(), pool);
+        //System.out.println(planer.planSemester(20,2013, Semester.S));
         assertFalse(planer.planSemester(20,2013, Semester.S).isEmpty());
-	}
+    }
     /**
      * sets up a bunch of MetaLVAs and LVAs, so the Planner can be tested.
      * @throws Exception

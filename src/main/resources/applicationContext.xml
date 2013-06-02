@@ -5,7 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 
-    <context:property-placeholder location="jdbc.properties"/>
+    <context:property-placeholder location="jdbc.properties" order="1" ignore-unresolvable="false"/>
+    <context:property-placeholder location="lvafetcher.properties" order="2" ignore-unresolvable="false"/>
     <import resource="applicationContext-context.xml" />
     <import resource="applicationContext-db.xml" />
 </beans>

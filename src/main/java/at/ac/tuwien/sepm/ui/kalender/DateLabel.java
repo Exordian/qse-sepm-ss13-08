@@ -9,8 +9,7 @@ import org.joda.time.DateTime;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 /**
  * @author Markus MUTH
@@ -73,13 +72,104 @@ public class DateLabel extends JLabel{
         public void mousePressed(MouseEvent e) {}
 
         @Override
-        public void mouseReleased(MouseEvent e) {}
+        public void mouseReleased(MouseEvent e) {
+            if(e.getButton()==3) {
+                PopUpMenu menu = new PopUpMenu();
+                menu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
 
         @Override
         public void mouseEntered(MouseEvent e) {}
 
         @Override
         public void mouseExited(MouseEvent e) {}
+    }
+
+    private class PopUpMenu extends JPopupMenu {
+        private JMenuItem show;
+        private JMenuItem delete;
+        private JMenuItem attendance;
+        private JMenuItem share;
+
+        public PopUpMenu(){
+            show = new JMenuItem("Anzeigen");
+            delete = new JMenuItem("Löschen");
+            attendance = new JMenuItem("Anwesenheit");
+            share = new JMenuItem("Share");
+            add(show);
+            add(delete);
+            add(attendance);
+            add(share);
+            addActionListeners();
+        }
+
+        private void addActionListeners() {
+            show.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    // TODO implement this
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+                @Override
+                public void mouseExited(MouseEvent e) {}
+            });
+            delete.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    // TODO implement this
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+                @Override
+                public void mouseExited(MouseEvent e) {}
+            });
+            attendance.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    // TODO implement this
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+                @Override
+                public void mouseExited(MouseEvent e) {}
+            });
+            share.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    // TODO implement this
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+                @Override
+                public void mouseExited(MouseEvent e) {}
+            });
+        }
     }
 
     private static class UpdateDateFrameFactory extends JFrame {

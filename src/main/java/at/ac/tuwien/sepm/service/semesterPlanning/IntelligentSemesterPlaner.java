@@ -12,9 +12,9 @@ import java.util.List;
 
 
 public class IntelligentSemesterPlaner {
-	private ArrayList<MetaLVA> forced = new ArrayList<MetaLVA>();
-	private ArrayList<MetaLVA> pool = new ArrayList<MetaLVA>();
-	private DependenceTree tree;
+    private ArrayList<MetaLVA> forced = new ArrayList<MetaLVA>();
+    private ArrayList<MetaLVA> pool = new ArrayList<MetaLVA>();
+    private DependenceTree tree;
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private boolean[][] intersecting;
 
@@ -25,28 +25,28 @@ public class IntelligentSemesterPlaner {
      *               but before adding LVAs to the solution, they will be tested on intersection.
      * @param pool all LVAs, which should be considered for the solution. LVAs which are completed will not be considered
      */
-	public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
+    public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
         if(forced==null){
             forced = new ArrayList<MetaLVA>(0);
         }
         if(pool==null){
             pool = new ArrayList<MetaLVA>(0);
         }
-		this.pool.clear();
-		this.forced.addAll(forced);
-		for(MetaLVA lva:pool){
-			if(!lva.isCompleted()){
-				this.pool.add(lva);
-			}
-		}
-		for(MetaLVA lva:forced){
-			if(!this.pool.contains(lva)){
-				this.pool.add(lva);
-			}
-		}
+        this.pool.clear();
+        this.forced.addAll(forced);
+        for(MetaLVA lva:pool){
+            if(!lva.isCompleted()){
+                this.pool.add(lva);
+            }
+        }
+        for(MetaLVA lva:forced){
+            if(!this.pool.contains(lva)){
+                this.pool.add(lva);
+            }
+        }
         logger.debug("forced set: "+this.forced);
         logger.debug("pool set: "+this.pool);
-	}
+    }
 
     /**
      * Plans a semester.
@@ -56,15 +56,15 @@ public class IntelligentSemesterPlaner {
      * @param sem the semester (Semester.S OR Semester.W) which is to plan.
      * @return a List with the result
      */
-	public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
-		tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
-		ArrayList<MetaLVA> roots = tree.getRoots();
-		ArrayList<MetaLVA> toPlan = new ArrayList<MetaLVA>(roots.size());
-		for(MetaLVA mLVA :roots){
-			if(mLVA.containsLVA(year, sem)){
-				toPlan.add(mLVA);
-			}
-		}
+    public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
+        tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
+        ArrayList<MetaLVA> roots = tree.getRoots();
+        ArrayList<MetaLVA> toPlan = new ArrayList<MetaLVA>(roots.size());
+        for(MetaLVA mLVA :roots){
+            if(mLVA.containsLVA(year, sem)){
+                toPlan.add(mLVA);
+            }
+        }
         ArrayList chosen = new ArrayList<Integer>();
         for(MetaLVA mLVA :forced){
             if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
@@ -75,37 +75,37 @@ public class IntelligentSemesterPlaner {
         }
         computeSolution(toPlan,chosen,goalECTS);
         intersectAll(toPlan,year,sem);
-		recPlanning(toPlan,0,chosen,goalECTS,0,year,sem);
-		if(bestSolution!=null)
-		return bestSolution;
+        recPlanning(toPlan,0,chosen,goalECTS,0,year,sem);
+        if(bestSolution!=null)
+        return bestSolution;
         return new ArrayList<MetaLVA>();
-	}
-	private ArrayList<MetaLVA> bestSolution=null;
-	private float solutionValue=Float.NEGATIVE_INFINITY;
-	private void recPlanning(ArrayList<MetaLVA> all,int index,ArrayList<Integer> chosen,float goalECTS,float actualECTS,int year, Semester sem){
-		for(int i=index;i<all.size();i++){
-			boolean intersect=false;
+    }
+    private ArrayList<MetaLVA> bestSolution=null;
+    private float solutionValue=Float.NEGATIVE_INFINITY;
+    private void recPlanning(ArrayList<MetaLVA> all,int index,ArrayList<Integer> chosen,float goalECTS,float actualECTS,int year, Semester sem){
+        for(int i=index;i<all.size();i++){
+            boolean intersect=false;
             int lastJ=-1;
-			for(Integer j:chosen){
-				if(intersect(i,j)){
-					intersect=true;
+            for(Integer j:chosen){
+                if(intersect(i,j)){
+                    intersect=true;
                     lastJ=j;
-					break;
-				}
-			}
-			if(!intersect){
-				chosen.add(i);
-				
-				computeSolution(all,chosen,goalECTS);
+                    break;
+                }
+            }
+            if(!intersect){
+                chosen.add(i);
+                
+                computeSolution(all,chosen,goalECTS);
 
-				recPlanning(all,i+1,chosen, goalECTS,actualECTS+all.get(i).getECTS(),year,sem);
-				
-				chosen.remove(chosen.size()-1);
-			}else{
+                recPlanning(all,i+1,chosen, goalECTS,actualECTS+all.get(i).getECTS(),year,sem);
+                
+                chosen.remove(chosen.size()-1);
+            }else{
                 logger.debug("intersecting: "+all.get(lastJ).toShortString()+" with: "+all.get(i).toShortString());
             }
-		}
-	}
+        }
+    }
     private void intersectAll(List<MetaLVA> lva,int year, Semester sem){
         String debug="";
         intersecting = new boolean[lva.size()][];
@@ -141,33 +141,33 @@ public class IntelligentSemesterPlaner {
         }
         return intersecting[a][b-a];
     }
-	private void computeSolution(ArrayList<MetaLVA> all,ArrayList<Integer> chosen,float goalECTS) {
-		float ects=0;
-		for(Integer i:chosen){
-			ects+=all.get(i).getECTS();
-		}
-		float value=0;
-		for(Integer i:chosen){
-			value+=all.get(i).getECTS()*tree.getPriority(all.get(i))/ects;
-		}
-		value-=Math.pow(Math.abs(goalECTS-ects),1.5);
-		if(value>solutionValue){
-			ArrayList<MetaLVA> newSolution = new ArrayList<MetaLVA>();
-			for(Integer i:chosen){
-				newSolution.add(all.get(i));
-			}
-			bestSolution=newSolution;
-			solutionValue=value;
-			logger.debug("new Solution found: " +newSolution+"\nsolution value: "+value);
-		}else{
+    private void computeSolution(ArrayList<MetaLVA> all,ArrayList<Integer> chosen,float goalECTS) {
+        float ects=0;
+        for(Integer i:chosen){
+            ects+=all.get(i).getECTS();
+        }
+        float value=0;
+        for(Integer i:chosen){
+            value+=all.get(i).getECTS()*tree.getPriority(all.get(i))/ects;
+        }
+        value-=Math.pow(Math.abs(goalECTS-ects),1.5);
+        if(value>solutionValue){
+            ArrayList<MetaLVA> newSolution = new ArrayList<MetaLVA>();
+            for(Integer i:chosen){
+                newSolution.add(all.get(i));
+            }
+            bestSolution=newSolution;
+            solutionValue=value;
+            logger.debug("new Solution found: " +newSolution+"\nsolution value: "+value);
+        }else{
             //active for detailed debugging
-			ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
-			for(Integer i:chosen){
-				toDiscard.add(all.get(i));
-			}
-			logger.debug("discarding set: " +toDiscard+"\nsolution value: "+value);
+            ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
+            for(Integer i:chosen){
+                toDiscard.add(all.get(i));
+            }
+            logger.debug("discarding set: " +toDiscard+"\nsolution value: "+value);
 
-		}
-	}
-	
+        }
+    }
+    
 }

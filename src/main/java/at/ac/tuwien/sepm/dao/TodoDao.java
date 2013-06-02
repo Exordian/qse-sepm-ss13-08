@@ -56,4 +56,11 @@ public interface TodoDao {
      * @throws DataAccessException If the data could not be deleted because any error occurred.
      */
     public boolean delete(int id) throws DataAccessException;
+
+    /**
+     * returns all todos which are currently in the database
+     * @return all todos in database
+     * @throws DataAccessException if the data could not be read
+     */
+    public List<Todo> getAllTodos() throws DataAccessException;
 }
