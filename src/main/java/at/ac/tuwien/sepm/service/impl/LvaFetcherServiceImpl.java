@@ -108,6 +108,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
     private static final String CURRICULUM_TABLE_MODULE_NAME_CLASS = "nodeTable-level-2";
     private static final String CURRICULUM_TABLE_MODULE_LVA_CLASS = "nodeTable-level-4";
     private static final String CURRICULUM_TABLE_MODULE_LVA_CLASS_KEY = ".courseKey";
+    private static final String CURRICULUM_TABLE_MODULE_CATALOG_INDICATOR = "Katalog";
 
 
     @Override
@@ -116,7 +117,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
     }
 
     private String getCurrentSemester() {
-        return String.valueOf(DateTime.now().getYear()) + ((DateTime.now().getMonthOfYear() < 6)? "S":"W");
+        return String.valueOf(DateTime.now().getYear()) + ((DateTime.now().getMonthOfYear() < 8)? "S":"W");
     }
 
     @Override
@@ -138,10 +139,14 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             Module lastModule = null;
             for(Element e : lvaTable.select(CURRICULUM_TABLE_ELEMENTS)) {
                 if(e.attr("class").trim().equals(CURRICULUM_TABLE_MODULE_NAME_CLASS)) {
-                    lastModule = new Module();
-                    lastModule.setName(e.text());
-                    log.info("Start new Module: " + lastModule.toString());
-                    moduleList.add(lastModule);
+                    if(e.text().startsWith(CURRICULUM_TABLE_MODULE_CATALOG_INDICATOR)) {
+                        lastModule.setMetaLvas(getCatalogByUrl(e.select("a").attr("href"), semester));
+                    } else {
+                        lastModule = new Module();
+                        lastModule.setName(e.text());
+                        log.info("Start new Module: " + lastModule.toString());
+                        moduleList.add(lastModule);
+                    }
                 } else if(recursive && e.attr("class").trim().startsWith(CURRICULUM_TABLE_MODULE_LVA_CLASS)) {
                     if(lastModule != null) {
                         if(lastModule.getMetaLvas() == null)
@@ -151,13 +156,27 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                         lastModule.getMetaLvas().add(lva);
                     } else
                         log.warn("LVA without Module: " + e.text());
-                    // TODO: catalog softskills etc - nested modules ?
                 }
             }
             return moduleList;
         } catch (IOException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private static final String URL_ADD_CURRENT_SEMESTER  = "&semester=CURRENT";
+
+    private List<MetaLVA> getCatalogByUrl(String url, String semester) throws IOException, ServiceException {
+        ArrayList<MetaLVA> metaLVAs = new ArrayList<>();
+        URL studyUrl = new URL(BASE_URL+url+URL_ADD_CURRENT_SEMESTER);
+        Document curriculumDoc = Jsoup.parse(studyUrl, timeout);
+
+        Elements lvaKeys = curriculumDoc.select(CURRICULUM_TABLE_MODULE_LVA_CLASS_KEY);
+        for(Element lva : lvaKeys) {
+            metaLVAs.add(getLva(flattenLvaNr(lva.text().split(" ")[0]), semester));
+        }
+
+        return metaLVAs;
     }
 
     private static final String LVA_LINK = "/course/courseDetails.xhtml?courseNr=%s&semester=%s";
