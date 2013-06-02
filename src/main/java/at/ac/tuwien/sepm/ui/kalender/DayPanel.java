@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class DayPanel extends JPanel {
         this.tmdl = new TooMuchDatesLabel();
         this.tmdl.setFont(new Font("Arial", Font.PLAIN, 10));
         this.maxDateLabels=maxDateLabels;
+        this.addMouseListeners();
     }
 
     /*
@@ -91,6 +93,18 @@ public class DayPanel extends JPanel {
         return dates;
     }
 
+    private void addMouseListeners(){
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if(e.getButton()==3) {
+                    PopUpMenu menu = new PopUpMenu();
+                    menu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+    }
+
     private class TooMuchDatesLabel extends JLabel {
         public TooMuchDatesLabel () {
             setText("");
@@ -138,6 +152,54 @@ public class DayPanel extends JPanel {
             this.revalidate();
             this.repaint();
             this.setVisible(true);
+        }
+    }
+
+    private class PopUpMenu extends JPopupMenu {
+        private JMenuItem newDate;
+        private JMenuItem free;
+
+        public PopUpMenu(){
+            newDate = new JMenuItem("Neuer Termin");
+            free = new JMenuItem("Als freien Tag markieren");
+            add(newDate);
+            add(free);
+            addActionListeners();
+        }
+
+        private void addActionListeners() {
+            newDate.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    // TODO implement this
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+                @Override
+                public void mouseExited(MouseEvent e) {}
+            });
+            free.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    // TODO implement this
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+                @Override
+                public void mouseExited(MouseEvent e) {}
+            });
         }
     }
 }
