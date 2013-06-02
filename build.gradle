@@ -26,6 +26,7 @@ dependencies {
 
     /* Calendar */
     compile 'joda-time:joda-time:2.2'
+    compile 'com.toedter:jcalendar:1.3.2'
 
     /* UI */
     compile 'com.miglayout:miglayout:3.7.4'
