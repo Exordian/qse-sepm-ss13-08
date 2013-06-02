@@ -39,16 +39,18 @@ public class CalendarPanel extends StandardInsidePanel {
     private CalMonthGenerator calPanelMonth;
     private CalWeekGenerator calPanelWeek;
     private CalendarInterface activeView;
+    private TodoPanel todoPanel;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek) {
+    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel) {
         init();
 
         this.calPanelMonth=calPanelMonth;
         this.calPanelWeek=calPanelWeek;
         this.activeView=calPanelWeek;
+        this.todoPanel=todoPanel;
 
         add(calPanelWeek);
 
@@ -75,6 +77,7 @@ public class CalendarPanel extends StandardInsidePanel {
 
         this.add(month);
         this.add(semester);
+        this.add(todoPanel);
     }
 
     private void createImportButton() {
@@ -158,6 +161,7 @@ public class CalendarPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
                 remove(calPanelMonth);
+                remove(todoPanel);
                 add(calPanelWeek);
                 activeView = calPanelWeek;
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
@@ -183,6 +187,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 changeImage(2);
                 //todo remove other panels
                 remove(calPanelWeek);
+                remove(todoPanel);
                 add(calPanelMonth);
                 activeView = calPanelMonth;
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
@@ -199,13 +204,14 @@ public class CalendarPanel extends StandardInsidePanel {
         });
 
         tab3.setBounds(878,63,142,36);
+        todoPanel.setBounds(110,110,900,450);
         tab3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
-                //todo insert deadline panel
                 remove(calPanelMonth);
                 remove(calPanelWeek);
+                add(todoPanel);
                 revalidate();
                 repaint();
             }
@@ -224,16 +230,16 @@ public class CalendarPanel extends StandardInsidePanel {
         try{
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/calw.png"));
+                    image = ImageIO.read(new File("src/main/resources/img/calw.png"));
                     toggleComponents("show");
                     break;
                 case 2:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/calm.png"));
+                    image = ImageIO.read(new File("src/main/resources/img/calm.png"));
                     toggleComponents("show");
                     break;
                 case 3:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/cald.png"));
-                    toggleComponents("hide");
+                    image = ImageIO.read(new File("src/main/resources/img/cald.png"));
+                    toggleComponents("show");
                     break;
                 default:
                     break;

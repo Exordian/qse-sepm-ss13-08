@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.MetaLva;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.ui.UI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * Author: Lena Lenz
  */
+@UI
 public class MetaLVATable extends JTable{
     List<MetaLVA> lvas;
     int[] colWidth = new int[]{60,30,420,40};
@@ -19,10 +21,12 @@ public class MetaLVATable extends JTable{
         init(width);
     }
     public MetaLVATable(List<MetaLVA> lvas,int width){
+        this.lvas = lvas;
         init(width);
         setMetaLVAs(lvas);
     }
     public MetaLVATable(List<MetaLVA> lvas){
+        this.lvas = lvas;
         init(this.width);
         setMetaLVAs(lvas);
     }
@@ -50,8 +54,19 @@ public class MetaLVATable extends JTable{
             model.addRow(new String[]{lva.getNr(),lva.getType().toString(),lva.getName(),""+lva.getECTS()});
         }
     }
+
+    public void refreshMetaLVAs(List<MetaLVA> list) {
+        model.setRowCount(0);
+        this.setMetaLVAs(list);
+    }
+
     public MetaLVA getSelectedMetaLVA(){
         return lvas.get(getSelectedRow());
+    }
+
+    public void removeSelectedMetaLVA() {
+        lvas.remove(getSelectedRow());
+        model.removeRow(getSelectedRow());
     }
 }
 
