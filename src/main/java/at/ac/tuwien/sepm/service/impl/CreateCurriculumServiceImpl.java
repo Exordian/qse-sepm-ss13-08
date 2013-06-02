@@ -1,5 +1,8 @@
 package at.ac.tuwien.sepm.service.impl;
 
+import at.ac.tuwien.sepm.dao.CurriculumDao;
+import at.ac.tuwien.sepm.dao.MetaLvaDao;
+import at.ac.tuwien.sepm.dao.ModuleDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBCurriculumDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBMetaLvaDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBModuleDao;
@@ -10,9 +13,11 @@ import at.ac.tuwien.sepm.service.CreateCurriculumService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -30,7 +35,7 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
     DBMetaLvaDao metaLvaDao;
 
     public Module readModuleById(int id) throws ServiceException {
-        try {
+       try {
             return moduleDao.readById(id);
         } catch (DataAccessException e) {
             throw new ServiceException("Das Modul konnte nicht gelesen werden.", e);
@@ -39,10 +44,10 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
 
     @Override
     public Module readModuleByName(String name) throws ServiceException {
-        try {
+       try {
             return moduleDao.readByName(name);
         } catch (DataAccessException e) {
-            throw new ServiceException("Das Modul konnte nicht gelesen werden.", e);
+            throw new ServiceException("Das Modudl konnte nicht gelesen werden.", e);
         }
     }
 
@@ -55,10 +60,37 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
     }
 
     public List<Curriculum> readAllCurriculum() throws ServiceException {
-        try {
+         try {
             return curriculumDao.readAll();
         } catch (DataAccessException e) {
             throw new ServiceException("Die Curricula konnten nicht gelesen werden.", e);
+        }
+    }
+
+    @Override
+    public HashMap<Module, Boolean> readModuleByCurriculum(int id) throws ServiceException {
+        try {
+            return moduleDao.readByCurriculum(id);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Die Daten konnten nicht gelesen werden.", e);
+        }
+    }
+
+    @Override
+    public boolean addModuleToCurriculum(int moduleId, int curriculumId, boolean obligatory) throws ServiceException {
+        try {
+            return moduleDao.addToCurriculum(moduleId, curriculumId, obligatory);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Die Daten konnten nicht gespeichert werden.", e);
+        }
+    }
+
+    @Override
+    public boolean deleteModuleFromCurriculum(int moduleId, int curriculumId) throws ServiceException {
+        try {
+            return moduleDao.deleteFromCurriculum(moduleId, curriculumId);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Die Daten konnten nicht gelesen werden.", e);
         }
     }
 

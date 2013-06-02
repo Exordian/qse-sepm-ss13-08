@@ -31,6 +31,19 @@ public class StudiesPanel extends StandardInsidePanel {
         this.exportPanel = exportPanel;
         this.studienplanPanel = studienplanPanel;
         this.viewPanel = viewPanel;
+
+        this.studienplanPanel.initPanel();
+        //this.studienplanPanel.initAddMetaLvaButton();
+        this.studienplanPanel.initAddCurriculumButton();
+        //this.studienplanPanel.initAddModuleButton();
+        this.studienplanPanel.initCurriculumComboBox();
+        this.studienplanPanel.initModuleTable();
+        this.studienplanPanel.initButtonCreate();
+        this.studienplanPanel.placeComponents();
+        this.studienplanPanel.revalidate();
+        this.studienplanPanel.repaint();
+        this.studienplanPanel.initCurriculumComboBoxActionListener();
+
         init();
         changeImage(1);
         createTabButtons();

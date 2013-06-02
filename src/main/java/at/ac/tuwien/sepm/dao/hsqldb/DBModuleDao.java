@@ -112,6 +112,39 @@ public class DBModuleDao extends DBBaseDao implements ModuleDao {
 
     @Override
     public boolean addToCurriculum(int moduleId, int curriculumId, boolean obligatory) throws DataAccessException {
+
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+        System.out.println("\tDELETE FROM CURRICULUM: mid=" + moduleId + " cid=" + curriculumId + " obl=" + obligatory);
+
         String stmt = "INSERT INTO incurriculum (curriculum,module,obligatory) VALUES (?,?,?)";
         jdbcTemplate.update(stmt, curriculumId, moduleId, obligatory);
         return true;
