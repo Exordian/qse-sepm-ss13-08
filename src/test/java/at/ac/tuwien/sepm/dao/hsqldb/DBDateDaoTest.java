@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -35,8 +36,9 @@ public class DBDateDaoTest {
         e.setName("Name0");
         e.setDescription("Description0");
         e.setIntersectable(true);
-        e.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0), new DateTime(2013, 4, 16, 15, 13, 0)));
+        //e.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
+        //e.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
 
         assert(dao.create(e));
         e.setId(0);
@@ -54,8 +56,7 @@ public class DBDateDaoTest {
         e.setName(s);
         e.setDescription("Description0");
         e.setIntersectable(true);
-        e.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0), new DateTime(2013, 4, 16, 15, 13, 0)));
 
         dao.create(e);
         e.setId(0);
@@ -73,8 +74,7 @@ public class DBDateDaoTest {
         e.setName("Name0");
         e.setDescription(s);
         e.setIntersectable(true);
-        e.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0), (new DateTime(2013, 4, 16, 15, 13, 0))));
 
         dao.create(e);
         e.setId(0);
@@ -93,8 +93,7 @@ public class DBDateDaoTest {
         e.setName("Name0");
         e.setDescription("Description0");
         e.setIntersectable(true);
-        e.setStart(null);
-        e.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e.setTime(new TimeFrame(null, new DateTime(2013, 4, 16, 15, 13, 0)));
         dao.create(e);
     }
 
@@ -105,8 +104,9 @@ public class DBDateDaoTest {
         e.setName("Name0");
         e.setDescription("Description0");
         e.setIntersectable(true);
-        e.setStart(new DateTime(2013, 4, 16, 15, 13, 0));
-        e.setStop(null);
+        e.setTime(new TimeFrame(new DateTime(2013, 4, 16, 15, 13, 0), null));
+        //e.setStart(new DateTime(2013, 4, 16, 15, 13, 0));
+        //e.setStop(null);
         dao.create(e);
     }
 
@@ -117,8 +117,9 @@ public class DBDateDaoTest {
         e.setName("Name0");
         e.setDescription("Description0");
         e.setIntersectable(true);
-        e.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0),new DateTime(2013, 4, 16, 15, 13, 0)));
+        //e.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
+        //e.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
         dao.create(e);
         assert(e.equals(dao.readById(0)));
     }
@@ -136,40 +137,45 @@ public class DBDateDaoTest {
         e0.setName("Name0");
         e0.setDescription("Description0");
         e0.setIntersectable(true);
-        e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e0.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0), new DateTime(2013, 4, 16, 15, 13, 0)));
+        //e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
+        //e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
 
         DateEntity e1 = new DateEntity();
         e1.setId(1);
         e1.setName("Name1");
         e1.setDescription("Description1");
         e1.setIntersectable(true);
-        e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
-        e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
+        e1.setTime(new TimeFrame(new DateTime(2013, 4, 17, 1, 13, 0),new DateTime(2013, 4, 17, 15, 13, 0)));
+        //e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
+        //e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
 
         DateEntity e2 = new DateEntity();
         e2.setId(2);
         e2.setName("Name2");
         e2.setDescription("Description2");
         e2.setIntersectable(null);
-        e2.setStart(new DateTime(2013, 4, 18, 1, 13, 0));
-        e2.setStop(new DateTime(2013, 4, 30, 15, 13, 0));
+        e2.setTime(new TimeFrame(new DateTime(2013, 4, 18, 1, 13, 0),new DateTime(2013, 4, 30, 15, 13, 0)));
+        //e2.setStart(new DateTime(2013, 4, 18, 1, 13, 0));
+        //e2.setStop(new DateTime(2013, 4, 30, 15, 13, 0));
 
         DateEntity e3 = new DateEntity();
         e3.setId(3);
         e3.setName("Name3");
         e3.setDescription("Description3");
         e3.setIntersectable(false);
-        e3.setStart(new DateTime(2013, 4, 19, 1, 13, 0));
-        e3.setStop(new DateTime(2013, 4, 19, 15, 13, 0));
+        e3.setTime(new TimeFrame(new DateTime(2013, 4, 19, 1, 13, 0),new DateTime(2013, 4, 19, 15, 13, 0)));
+        //e3.setStart(new DateTime(2013, 4, 19, 1, 13, 0));
+        //e3.setStop(new DateTime(2013, 4, 19, 15, 13, 0));
 
         DateEntity e4 = new DateEntity();
         e4.setId(4);
         e4.setName("Name4");
         e4.setDescription("Description4");
         e4.setIntersectable(false);
-        e4.setStart(new DateTime(2013, 4, 20, 1, 13, 0));
-        e4.setStop(new DateTime(2013, 4, 20, 15, 13, 0));
+        e4.setTime(new TimeFrame(new DateTime(2013, 4, 20, 1, 13, 0),new DateTime(2013, 4, 20, 15, 13, 0)));
+        //e4.setStart(new DateTime(2013, 4, 20, 1, 13, 0));
+        //e4.setStop(new DateTime(2013, 4, 20, 15, 13, 0));
 
         dao.create(e0);
         dao.create(e1);
@@ -194,40 +200,45 @@ public class DBDateDaoTest {
         e0.setName("Name0");
         e0.setDescription("Description0");
         e0.setIntersectable(true);
-        e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e0.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0),new DateTime(2013, 4, 16, 15, 13, 0)));
+        //e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
+        //e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
 
         DateEntity e1 = new DateEntity();
         e1.setId(1);
         e1.setName("Name1");
         e1.setDescription("Description1");
         e1.setIntersectable(true);
-        e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
-        e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
+        e1.setTime(new TimeFrame(new DateTime(2013, 4, 17, 1, 13, 0),new DateTime(2013, 4, 17, 15, 13, 0)));
+        //e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
+        //e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
 
         DateEntity e2 = new DateEntity();
         e2.setId(2);
         e2.setName("Name2");
         e2.setDescription("Description2");
         e2.setIntersectable(null);
-        e2.setStart(new DateTime(2013, 4, 18, 1, 13, 0));
-        e2.setStop(new DateTime(2013, 4, 30, 15, 13, 0));
+        e2.setTime(new TimeFrame(new DateTime(2013, 4, 18, 1, 13, 0),new DateTime(2013, 4, 30, 15, 13, 0)));
+        //e2.setStart(new DateTime(2013, 4, 18, 1, 13, 0));
+        //e2.setStop(new DateTime(2013, 4, 30, 15, 13, 0));
 
         DateEntity e3 = new DateEntity();
         e3.setId(3);
         e3.setName("Name3");
         e3.setDescription("Description3");
         e3.setIntersectable(false);
-        e3.setStart(new DateTime(2013, 4, 19, 1, 13, 0));
-        e3.setStop(new DateTime(2013, 4, 19, 15, 13, 0));
+        e3.setTime(new TimeFrame(new DateTime(2013, 4, 19, 1, 13, 0),new DateTime(2013, 4, 19, 15, 13, 0)));
+        //e3.setStart(new DateTime(2013, 4, 19, 1, 13, 0));
+        //e3.setStop(new DateTime(2013, 4, 19, 15, 13, 0));
 
         DateEntity e4 = new DateEntity();
         e4.setId(4);
         e4.setName("Name4");
         e4.setDescription("Description4");
         e4.setIntersectable(false);
-        e4.setStart(new DateTime(2013, 4, 20, 1, 13, 0));
-        e4.setStop(new DateTime(2013, 4, 20, 15, 13, 0));
+        e4.setTime(new TimeFrame(new DateTime(2013, 4, 20, 1, 13, 0),new DateTime(2013, 4, 20, 15, 13, 0)));
+        //e4.setStart(new DateTime(2013, 4, 20, 1, 13, 0));
+        //e4.setStop(new DateTime(2013, 4, 20, 15, 13, 0));
 
         dao.create(e0);
         dao.create(e1);
@@ -244,14 +255,14 @@ public class DBDateDaoTest {
         TestHelper.insert(0);
         LVA e0 = dao.readNotIntersectableByYearSemester(2013, Semester.S);
         LVA e1 = dao.readNotIntersectableByYearSemester(2013, Semester.W);
-        assert(e0.getTimes().size()==11);
-        assert(e1.getTimes().size()==2);
+        assert(e0.getLectures().size()==11);
+        assert(e1.getLectures().size()==2);
     }
 
     @Test
     public void testReadNotIntersectableByNotExistingYearSemester() throws Exception {
         TestHelper.insert(0);
-        assert(dao.readNotIntersectableByYearSemester(-1,Semester.S).getTimes().size()==0);
+        assert(dao.readNotIntersectableByYearSemester(-1,Semester.S).getLectures().size()==0);
     }
 
     @Test
@@ -273,16 +284,18 @@ public class DBDateDaoTest {
         e0.setName("Name0");
         e0.setDescription("Description0");
         e0.setIntersectable(true);
-        e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e0.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0),new DateTime(2013, 4, 16, 15, 13, 0)));
+        //e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
+        //e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
 
         DateEntity e1 = new DateEntity();
         e1.setId(0);
         e1.setName("New Name #################################");
         e1.setDescription("New Description");
         e1.setIntersectable(false);
-        e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
-        e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
+        e1.setTime(new TimeFrame(new DateTime(2013, 4, 17, 1, 13, 0),new DateTime(2013, 4, 17, 15, 13, 0)));
+        //e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
+        //e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
 
         dao.create(e0);
         dao.update(e1);
@@ -302,16 +315,18 @@ public class DBDateDaoTest {
         e0.setName("Name0");
         e0.setDescription("Description0");
         e0.setIntersectable(true);
-        e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e0.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0),new DateTime(2013, 4, 16, 15, 13, 0)));
+        //e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
+        //e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
 
         DateEntity e1 = new DateEntity();
         e1.setId(0);
         e1.setName(s);
         e1.setDescription("New Description");
         e1.setIntersectable(false);
-        e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
-        e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
+        e1.setTime(new TimeFrame(new DateTime(2013, 4, 17, 1, 13, 0),new DateTime(2013, 4, 17, 15, 13, 0)));
+        //e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
+        //e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
 
         dao.create(e0);
         dao.update(e1);
@@ -329,16 +344,18 @@ public class DBDateDaoTest {
         e0.setName("Name0");
         e0.setDescription("Description0");
         e0.setIntersectable(true);
-        e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e0.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0),new DateTime(2013, 4, 16, 15, 13, 0)));
+        //e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
+        //e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
 
         DateEntity e1 = new DateEntity();
         e1.setId(0);
         e1.setName("New Name---------------");
         e1.setDescription(s);
         e1.setIntersectable(false);
-        e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
-        e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
+        e1.setTime(new TimeFrame(new DateTime(2013, 4, 17, 1, 13, 0),new DateTime(2013, 4, 17, 15, 13, 0)));
+        //e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
+        //e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
 
         dao.create(e0);
         dao.update(e1);
@@ -356,16 +373,18 @@ public class DBDateDaoTest {
         e0.setName("Name0");
         e0.setDescription("Description0");
         e0.setIntersectable(true);
-        e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
-        e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
+        e0.setTime(new TimeFrame(new DateTime(2013, 4, 16, 1, 13, 0),new DateTime(2013, 4, 16, 15, 13, 0)));
+        //e0.setStart(new DateTime(2013, 4, 16, 1, 13, 0));
+        //e0.setStop(new DateTime(2013, 4, 16, 15, 13, 0));
 
         DateEntity e1 = new DateEntity();
         e1.setId(1);
         e1.setName("Name1");
         e1.setDescription("Description1");
         e1.setIntersectable(false);
-        e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
-        e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
+        e1.setTime(new TimeFrame(new DateTime(2013, 4, 17, 1, 13, 0),new DateTime(2013, 4, 17, 15, 13, 0)));
+        //e1.setStart(new DateTime(2013, 4, 17, 1, 13, 0));
+        //e1.setStop(new DateTime(2013, 4, 17, 15, 13, 0));
 
         dao.create(e0);
         dao.create(e1);
@@ -377,5 +396,34 @@ public class DBDateDaoTest {
     @Test
     public void testDeleteNotExistingId() throws Exception {
         assert(!dao.delete(-1));
+    }
+
+    @Test
+    public void testReadByDay() throws Exception {
+        TestHelper.insert(15);
+        List<DateEntity> l = dao.readByDay(new DateTime(2014, 5, 2, 4, 4, 4, 4));
+        System.out.println(l.size());
+        assert(l.size()==6);
+        assert(l.get(0).getId()==30);
+        assert(l.get(1).getId()==25);
+        assert(l.get(2).getId()==27);
+        assert(l.get(3).getId()==28);
+        assert(l.get(4).getId()==26);
+        assert(l.get(5).getId()==29);
+        for(int i=0; i<l.size()-1; i++) {
+            assert(l.get(i).getStart().isBefore(l.get(i+1).getStart()));
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testReadByDayIsNull() throws Exception {
+        TestHelper.insert(15);
+        dao.readByDay(null);
+    }
+
+    @Test
+    public void testReadByDayWithoutDates() throws Exception {
+        TestHelper.insert(15);
+        assert(dao.readByDay(new DateTime(1990, 1, 1, 1, 1, 1, 1)).size()==0);
     }
 }

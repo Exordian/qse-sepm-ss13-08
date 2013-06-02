@@ -177,13 +177,13 @@ public class DBLvaDaoTest {
         assert(!e.isInStudyProgress());
         assert(e.getGrade()==0);
 
-        assert(e.getTimes().size()==18);
-        assert(e.getRooms().size()==18);
-        assert(e.getTimesUE().size()==4);
-        assert(e.getRoomsUE().size()==4);
-        assert(e.getTimesExam().size()==3);
-        assert(e.getRoomsExam().size()==3);
-        assert(e.getExamGrade().size()==3);
+        assert(e.getLectures().size()==18);
+        //assert(e.getRooms().size()==18);
+        assert(e.getExercises().size()==4);
+        //assert(e.getRoomsUE().size()==4);
+        assert(e.getExams().size()==3);
+        //assert(e.getRoomsExam().size()==3);
+        //assert(e.getExamGrade().size()==3);
     }
 
     @Test
@@ -198,13 +198,13 @@ public class DBLvaDaoTest {
         assert(!e.isInStudyProgress());
         assert(e.getGrade()==0);
 
-        assert(e.getTimes().size()==18);
-        assert(e.getRooms().size()==18);
-        assert(e.getTimesUE().size()==4);
-        assert(e.getRoomsUE().size()==4);
-        assert(e.getTimesExam().size()==3);
-        assert(e.getRoomsExam().size()==3);
-        assert(e.getExamGrade().size()==3);
+        assert(e.getLectures().size()==18);
+        //assert(e.getRooms().size()==18);
+        assert(e.getExercises().size()==4);
+        //assert(e.getRoomsUE().size()==4);
+        assert(e.getExams().size()==3);
+        //assert(e.getRoomsExam().size()==3);
+        //assert(e.getExamGrade().size()==3);
     }
 
     @Test
@@ -241,13 +241,13 @@ public class DBLvaDaoTest {
         assert(e.getDescription().equals("Hier steht dann die Beschreibung zu Algorithmen und Datenstrukturen 1"));
         assert(!e.isInStudyProgress());
         assert(e.getGrade()==0);
-        assert(e.getTimes()==null);
-        assert(e.getRooms()==null);
-        assert(e.getTimesUE()==null);
-        assert(e.getRoomsUE()==null);
-        assert(e.getTimesExam()==null);
-        assert(e.getRoomsExam()==null);
-        assert(e.getExamGrade()==null);
+        assert(e.getLectures()==null);
+        //assert(e.getRooms()==null);
+        assert(e.getExercises()==null);
+        //assert(e.getRoomsUE()==null);
+        assert(e.getExams()==null);
+        //assert(e.getRoomsExam()==null);
+        //assert(e.getExamGrade()==null);
     }
 
     @Test
@@ -319,11 +319,11 @@ public class DBLvaDaoTest {
         assert(e.getDescription().equals("Hier steht dann die Beschreibung zu Algorithmen und Datenstrukturen 1"));
         assert(!e.isInStudyProgress());
         assert(e.getGrade()==0);
-        assert(e.getTimes().size()==18);
+        assert(e.getLectures().size()==18);
         assert(e.getRooms().size()==18);
-        assert(e.getTimesUE().size()==4);
+        assert(e.getExercises().size()==4);
         assert(e.getRoomsUE().size()==4);
-        assert(e.getTimesExam().size()==3);
+        assert(e.getExams().size()==3);
         assert(e.getRoomsExam().size()==3);
         assert(e.getExamGrade().size()==3);
     }*/

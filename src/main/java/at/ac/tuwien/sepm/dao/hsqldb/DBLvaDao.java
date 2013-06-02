@@ -58,6 +58,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
 
         result.setMetaLVA(metaLvaDao.readByIdWithoutLvaAndPrecursor(result.getMetaLVA().getId()));
 
+        /*
         ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();
         ArrayList<String> rooms = new ArrayList<String>();
 
@@ -69,28 +70,33 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         ArrayList<Integer> examGrade = new ArrayList<Integer>();
 
         for(LvaDate l : lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.LECTURE)) {
-            times.add(new TimeFrame(l.getStart(), l.getStop()));
+            times.add(l.getTime());
             rooms.add(l.getRoom());
         }
 
         for(LvaDate l : lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.EXERCISE)) {
-            timesUE.add(new TimeFrame(l.getStart(), l.getStop()));
+            timesUE.add(l.getTime());
             roomsUE.add(l.getRoom());
         }
 
         for(LvaDate l : lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.EXAM)) {
-            timesExam.add(new TimeFrame(l.getStart(), l.getStop()));
+            timesExam.add(l.getTime());
             roomsExam.add(l.getRoom());
             examGrade.add(l.getResult());
         }
 
-        result.setTimes(times);
+        result.setLectures(times);
         result.setRooms(rooms);
-        result.setTimesUE(timesUE);
+        result.setExercises(timesUE);
         result.setRoomsUE(roomsUE);
-        result.setTimesExam(timesExam);
+        result.setExams(timesExam);
         result.setRoomsExam(roomsExam);
         result.setExamGrade(examGrade);
+        */
+        result.setLectures(lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.LECTURE));
+        result.setExams(lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.EXAM));
+        result.setExercises(lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.EXERCISE));
+        result.setDeadlines(lvaDateDao.readByLvaAndType(result.getId(), LvaDateType.DEADLINE));
 
         return result;
     }
@@ -213,29 +219,21 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         String stmtUpdateGrade = "UPDATE lva SET grade=? WHERE id=?";
         String stmtUpdateInStudyProgress = "UPDATE lva SET instudyprogress=? WHERE id=?";
 
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE");
-            if (toUpdate.getMetaLVA() != null && toUpdate.getMetaLVA().getId() != null) {
-                jdbcTemplate.update(stmtUpdateMetaLva, toUpdate.getMetaLVA().getId(), toUpdate.getId());
-            } if (toUpdate.getSemester() != null) {
-                if(toUpdate.getSemester().equals(Semester.S)) {
-                    jdbcTemplate.update(stmtUpdateIsWinterSemester, false, toUpdate.getId());
-                } else {
-                    jdbcTemplate.update(stmtUpdateIsWinterSemester, true, toUpdate.getId());
-                }
-            } if (toUpdate.getDescription() != null) {
-                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+        if (toUpdate.getMetaLVA() != null && toUpdate.getMetaLVA().getId() != null) {
+            jdbcTemplate.update(stmtUpdateMetaLva, toUpdate.getMetaLVA().getId(), toUpdate.getId());
+        } if (toUpdate.getSemester() != null) {
+            if(toUpdate.getSemester().equals(Semester.S)) {
+                jdbcTemplate.update(stmtUpdateIsWinterSemester, false, toUpdate.getId());
+            } else {
+                jdbcTemplate.update(stmtUpdateIsWinterSemester, true, toUpdate.getId());
             }
-            jdbcTemplate.update(stmtUpdateYear, toUpdate.getYear(), toUpdate.getId());
-            jdbcTemplate.update(stmtUpdateGrade, toUpdate.getGrade(), toUpdate.getId());
-            jdbcTemplate.update(stmtUpdateInStudyProgress, toUpdate.isInStudyProgress(), toUpdate.getId());
-            jdbcTemplate.execute("COMMIT");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+        } if (toUpdate.getDescription() != null) {
+            jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
         }
+        jdbcTemplate.update(stmtUpdateYear, toUpdate.getYear(), toUpdate.getId());
+        jdbcTemplate.update(stmtUpdateGrade, toUpdate.getGrade(), toUpdate.getId());
+        jdbcTemplate.update(stmtUpdateInStudyProgress, toUpdate.isInStudyProgress(), toUpdate.getId());
+
         return true;
     }
 }

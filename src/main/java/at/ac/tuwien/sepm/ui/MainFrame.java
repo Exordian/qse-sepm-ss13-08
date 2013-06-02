@@ -7,10 +7,10 @@ import java.awt.*;
 
 @UI
 public class MainFrame extends JFrame {
-    private BGPanel bgPanel;
+    private BackgroundPanel bgPanel;
 
     @Autowired
-    public MainFrame(BGPanel bgPanel) {
+    public MainFrame(BackgroundPanel bgPanel) {
         super("Studiums Manager");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.bgPanel = bgPanel;

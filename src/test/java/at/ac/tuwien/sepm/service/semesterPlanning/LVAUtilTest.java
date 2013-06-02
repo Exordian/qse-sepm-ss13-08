@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import at.ac.tuwien.sepm.entity.LVA;
+import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.TimeFrame;
-import at.ac.tuwien.sepm.service.semesterPlaning.LVAUtil;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,9 +26,12 @@ public class LVAUtilTest {
 	public void testIteratorHasNext(){
 		LVA lva = new LVA();
 		assertFalse(LVAUtil.iterator(lva).hasNext());
-		ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();
-		times.add(new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06")));
-		lva.setTimes(times);
+		ArrayList<LvaDate> times = new ArrayList<LvaDate>();
+		
+        LvaDate date = new LvaDate();
+        date.setTime(new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06")));
+        times.add(date);
+		lva.setLectures(times);
 		assertTrue(LVAUtil.iterator(lva).hasNext());
 		assertFalse(LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM).hasNext());
 	}
@@ -40,22 +42,23 @@ public class LVAUtilTest {
 	@Test
 	public void testIteratorExamTimes(){
 		LVA lva = new LVA();
-		ArrayList<TimeFrame> times1 = new ArrayList<TimeFrame>();
-		ArrayList<TimeFrame> times2 = new ArrayList<TimeFrame>();
+		ArrayList<LvaDate> dates1 = new ArrayList<LvaDate>();
+		ArrayList<LvaDate> dates2 = new ArrayList<LvaDate>();
+
+        LvaDate date1 = new LvaDate();
+        date1.setTime(new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06")));
+		dates1.add(date1);
+        LvaDate date2 = new LvaDate();
+        date2.setTime(new TimeFrame(new DateTime("2000-01-25"),new DateTime("2000-01-26")));
+		dates2.add(date2);
 		
-		
-		TimeFrame t0=new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06"));
-		times1.add(t0);
-		TimeFrame t1=new TimeFrame(new DateTime("2000-01-25"),new DateTime("2000-01-26"));
-		times2.add(t1);
-		
-		lva.setTimes(times1);
-		lva.setTimesUE(times2);
-		Iterator<TimeFrame> iter1 = LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM);
-		Iterator<TimeFrame> iter2 = LVAUtil.iterator(lva,LVAUtil.TIMES_UE);
+		lva.setLectures(dates1);
+		lva.setExercises(dates2);
+		Iterator<LvaDate> iter1 = LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM);
+		Iterator<LvaDate> iter2 = LVAUtil.iterator(lva,LVAUtil.TIMES_UE);
 		assertFalse(iter1.hasNext());
 		assertTrue(iter2.hasNext());
-		assertTrue(iter2.next()==t1);
+		assertTrue(iter2.next()==date2);
 		assertFalse(iter2.hasNext());
 	}
 
@@ -65,42 +68,49 @@ public class LVAUtilTest {
 	@Test
 	public void testIteratorAllTimes(){
 		LVA lva = new LVA();
-		ArrayList<TimeFrame> times1 = new ArrayList<TimeFrame>();
-		ArrayList<TimeFrame> times2 = new ArrayList<TimeFrame>();
-		ArrayList<TimeFrame> times3 = new ArrayList<TimeFrame>();
+		ArrayList<LvaDate> dates1 = new ArrayList<LvaDate>();
+		ArrayList<LvaDate> dates2 = new ArrayList<LvaDate>();
+		ArrayList<LvaDate> dates3 = new ArrayList<LvaDate>();
+
+
+        LvaDate date0 = new LvaDate();
+        date0.setTime(new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06")));
+		dates1.add(date0);
+
+        LvaDate date1 = new LvaDate();
+        date1.setTime(new TimeFrame(new DateTime("2000-01-25"),new DateTime("2000-01-26")));
+		dates1.add(date1);
+
+		LvaDate date2 = new LvaDate();
+        date2.setTime(new TimeFrame(new DateTime("2000-01-01"),new DateTime("2000-01-05")));
+		dates2.add(date2);
+        LvaDate date3 = new LvaDate();
+        date3.setTime(new TimeFrame(new DateTime("2000-01-10"),new DateTime("2000-01-13")));
+		dates2.add(date3);
+
+        LvaDate date4 = new LvaDate();
+        date4.setTime(new TimeFrame(new DateTime("2000-01-07"),new DateTime("2000-01-16")));
+		dates3.add(date4);
+        LvaDate date5 = new LvaDate();
+        date5.setTime(new TimeFrame(new DateTime("2000-01-20"),new DateTime("2000-01-21")));
+		dates3.add(date5);
 		
-		
-		TimeFrame t0=new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06"));
-		times1.add(t0);
-		TimeFrame t1=new TimeFrame(new DateTime("2000-01-25"),new DateTime("2000-01-26"));
-		times1.add(t1);
-		
-		TimeFrame t2=new TimeFrame(new DateTime("2000-01-01"),new DateTime("2000-01-05"));
-		times2.add(t2);
-		TimeFrame t3=new TimeFrame(new DateTime("2000-01-10"),new DateTime("2000-01-13"));
-		times2.add(t3);
-		
-		TimeFrame t4=new TimeFrame(new DateTime("2000-01-07"),new DateTime("2000-01-16"));
-		times3.add(t4);
-		TimeFrame t5=new TimeFrame(new DateTime("2000-01-20"),new DateTime("2000-01-21"));
-		times3.add(t5);
-		
-		lva.setTimes(times1);
-		lva.setTimesUE(times2);
-		lva.setTimesExam(times3);
-		Iterator<TimeFrame> iter = LVAUtil.iterator(lva);
+		lva.setLectures(dates1);
+		lva.setExercises(dates2);
+		lva.setExams(dates3);
+		Iterator<LvaDate> iter = LVAUtil.iterator(lva);
 		assertTrue(iter.hasNext());
-		assertTrue(iter.next()==t2);
+		assertTrue(iter.next()==date2);
 		assertTrue(iter.hasNext());
-		assertTrue(iter.next()==t0);
+		assertTrue(iter.next()==date0);
 		assertTrue(iter.hasNext());
-		assertTrue(iter.next()==t4);
+		assertTrue(iter.next()==date4);
 		assertTrue(iter.hasNext());
-		assertTrue(iter.next()==t3);
+		assertTrue(iter.next()==date3);
 		assertTrue(iter.hasNext());
-		assertTrue(iter.next()==t5);
+		assertTrue(iter.next()==date5);
 		assertTrue(iter.hasNext());
-		assertTrue(iter.next()==t1);
+		assertTrue(iter.next()==date1);
 		assertFalse(iter.hasNext());
 	}
 	/**
@@ -113,37 +123,37 @@ public class LVAUtilTest {
 		LVA lva3 = new LVA();
 		LVA lva4 = new LVA();
 		
-		ArrayList<TimeFrame> times1 = new ArrayList<TimeFrame>();
-		ArrayList<TimeFrame> times2 = new ArrayList<TimeFrame>();
-		ArrayList<TimeFrame> times3 = new ArrayList<TimeFrame>();
-		ArrayList<TimeFrame> times4 = new ArrayList<TimeFrame>();
-		ArrayList<TimeFrame> times5 = new ArrayList<TimeFrame>();
+		ArrayList<LvaDate> dates1 = new ArrayList<LvaDate>();
+		ArrayList<LvaDate> dates2 = new ArrayList<LvaDate>();
+		ArrayList<LvaDate> dates3 = new ArrayList<LvaDate>();
+		ArrayList<LvaDate> dates4 = new ArrayList<LvaDate>();
+		ArrayList<LvaDate> dates5 = new ArrayList<LvaDate>();
+
+		dates1.add(new LvaDate(new TimeFrame(new DateTime("2000-01-01"),new DateTime("2000-01-03"))));
+		dates1.add(new LvaDate(new TimeFrame(new DateTime("2000-01-07"),new DateTime("2000-01-09"))));
+		dates1.add(new LvaDate(new TimeFrame(new DateTime("2000-01-14"),new DateTime("2000-01-15"))));
 		
-		times1.add(new TimeFrame(new DateTime("2000-01-01"),new DateTime("2000-01-03")));
-		times1.add(new TimeFrame(new DateTime("2000-01-07"),new DateTime("2000-01-09")));
-		times1.add(new TimeFrame(new DateTime("2000-01-14"),new DateTime("2000-01-15")));
+		dates2.add(new LvaDate(new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06"))));
+		dates2.add(new LvaDate(new TimeFrame(new DateTime("2000-01-10"),new DateTime("2000-01-13"))));
 		
-		times2.add(new TimeFrame(new DateTime("2000-01-04"),new DateTime("2000-01-06")));
-		times2.add(new TimeFrame(new DateTime("2000-01-10"),new DateTime("2000-01-13")));
+		dates3.add(new LvaDate(new TimeFrame(new DateTime("2000-01-14"),new DateTime("2000-01-16"))));
+		dates3.add(new LvaDate(new TimeFrame(new DateTime("2000-01-20"),new DateTime("2000-01-21"))));
 		
-		times3.add(new TimeFrame(new DateTime("2000-01-14"),new DateTime("2000-01-16")));
-		times3.add(new TimeFrame(new DateTime("2000-01-20"),new DateTime("2000-01-21")));
+		dates4.add(new LvaDate(new TimeFrame(new DateTime("2000-02-01"),new DateTime("2000-02-03"))));
+		dates4.add(new LvaDate(new TimeFrame(new DateTime("2000-02-07"),new DateTime("2000-02-09"))));
 		
-		times4.add(new TimeFrame(new DateTime("2000-02-01"),new DateTime("2000-02-03")));
-		times4.add(new TimeFrame(new DateTime("2000-02-07"),new DateTime("2000-02-09")));
+		dates5.add(new LvaDate(new TimeFrame(new DateTime("2000-02-04"),new DateTime("2000-02-06"))));
 		
-		times5.add(new TimeFrame(new DateTime("2000-02-04"),new DateTime("2000-02-06")));
+		lva1.setLectures(dates1);
+		lva1.setExercises(dates4);
 		
-		lva1.setTimes(times1);
-		lva1.setTimesUE(times4);
+		lva2.setExercises(dates5);
+		lva2.setLectures(dates2);
 		
-		lva2.setTimesUE(times5);
-		lva2.setTimes(times2);
+		lva3.setLectures(dates3);
+		lva3.setExams(dates5);
 		
-		lva3.setTimes(times3);
-		lva3.setTimesExam(times5);
-		
-		lva4.setTimesExam(times1);
+		lva4.setExams(dates1);
 		
 		assertFalse(LVAUtil.intersectAll(lva1,lva2));
 		assertFalse(LVAUtil.intersectAll(lva2,lva1));
@@ -153,10 +163,9 @@ public class LVAUtilTest {
 		
 		assertFalse(LVAUtil.intersect(lva1,lva2,LVAUtil.TIMES_UE));
 		assertFalse(LVAUtil.intersect(lva2,lva1,LVAUtil.TIMES_UE));
-		
+
 		assertFalse(LVAUtil.intersect(lva3,lva4,LVAUtil.TIMES_EXAM));
 		assertFalse(LVAUtil.intersect(lva4,lva3,LVAUtil.TIMES_EXAM));
-		//fail("Not yet implemented");
 	}
 
 }

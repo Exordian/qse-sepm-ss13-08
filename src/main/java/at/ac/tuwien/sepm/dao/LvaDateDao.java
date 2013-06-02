@@ -2,12 +2,10 @@ package at.ac.tuwien.sepm.dao;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.service.LvaType;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +17,8 @@ import java.util.List;
 public interface LvaDateDao {
 
     /**
-     * Store a new lva date. If <code>getResult()==null</code>, it will be stored with 0.
+     * Store a new lva date. If <code>getResult()==null</code>, it will be stored with 0. Only the stop() date will be
+     * observed, the start-date will be ignored.
      * @param toCreate the <code>LvaDate</code> containing the data to be stored.
      * @return <code>false</code> if <code>toCreate==null</code> and <code>true</code> if the data could be stored.
      * @throws IOException if the Strings <code>getRoom()</code>, <code>getDescription</code> or <code>getName()</code>
@@ -34,8 +33,9 @@ public interface LvaDateDao {
     /**
      * Read the lva date data which is identified by the specified id.
      * @param id the id of the lva date which should be read.
-     * @return a <code>DateEntity</code>  containing all data of the lva date.
-     * @throws org.springframework.dao.DataAccessException if the lva date data could not be read because any error occurred.
+     * @return a <code>DateEntity</code>  containing all data of the lva date. Or <code>null</code> if there was no
+     * lva date with the specified id found.
+     * @throws DataAccessException if the lva date data could not be read because any error occurred.
      */
     public LvaDate readById(int id) throws DataAccessException;
 
@@ -99,6 +99,16 @@ public interface LvaDateDao {
      * @throws DataAccessException If the lva date data could not be read because any error occurred.
      */
     public List<LvaDate> readByLva(int lvaId) throws DataAccessException;
+
+    /**
+     * Read all lva dates which start at or after <code>from</code> or stop at or before <code>till</code>.
+     * @param date The date of the day where the dates should be returned.
+     * @return A <code>List<DateEntry></code> containing all dates within the specified time frame, or a empty list
+     * if there was no matching date found. The order is chronological, beginning with oldest date. If there are several
+     * dates at the same time, there is no defined order.
+     * @throws DataAccessException If the date data could not be read because any error occurred.
+     */
+    public List<LvaDate> readByDay(DateTime date) throws DataAccessException;
 
     /**
      * Read all lva dates from the specified lva.

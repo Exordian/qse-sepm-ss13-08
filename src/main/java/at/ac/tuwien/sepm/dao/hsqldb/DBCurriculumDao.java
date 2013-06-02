@@ -98,35 +98,27 @@ public class DBCurriculumDao extends DBBaseDao implements CurriculumDao {
         String stmtUpdateEctsChoice = "UPDATE curriculum SET ectschoice=? WHERE id=?";
         String stmtUpdateEctsFree = "UPDATE curriculum SET ectsfree=? WHERE id=?";
         String stmtUpdateEctsSoftSkill = "UPDATE curriculum SET ectssoftskill=? WHERE id=?";
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE;");
-            if(toUpdate.getStudyNumber() != null) {
-                jdbcTemplate.update(stmtUpdateStudynumber, toUpdate.getStudyNumber(), toUpdate.getId());
-            }
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
-            }
-            if(toUpdate.getDescription() != null) {
-                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
-            }
-            if(toUpdate.getAcademicTitle() != null) {
-                jdbcTemplate.update(stmtUpdateAcademicTitle, toUpdate.getAcademicTitle(), toUpdate.getId());
-            }
-            if(toUpdate.getEctsChoice() != null) {
-                jdbcTemplate.update(stmtUpdateEctsChoice, toUpdate.getEctsChoice(), toUpdate.getId());
-            }
-            if(toUpdate.getEctsFree() != null) {
-                jdbcTemplate.update(stmtUpdateEctsFree, toUpdate.getEctsFree(), toUpdate.getId());
-            }
-            if(toUpdate.getEctsSoftskill() != null) {
-                jdbcTemplate.update(stmtUpdateEctsSoftSkill, toUpdate.getEctsSoftskill(), toUpdate.getId());
-            }
-            jdbcTemplate.execute("COMMIT;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE;");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK;");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+
+        if(toUpdate.getStudyNumber() != null) {
+            jdbcTemplate.update(stmtUpdateStudynumber, toUpdate.getStudyNumber(), toUpdate.getId());
+        }
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateName, toUpdate.getName(), toUpdate.getId());
+        }
+        if(toUpdate.getDescription() != null) {
+            jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+        }
+        if(toUpdate.getAcademicTitle() != null) {
+            jdbcTemplate.update(stmtUpdateAcademicTitle, toUpdate.getAcademicTitle(), toUpdate.getId());
+        }
+        if(toUpdate.getEctsChoice() != null) {
+            jdbcTemplate.update(stmtUpdateEctsChoice, toUpdate.getEctsChoice(), toUpdate.getId());
+        }
+        if(toUpdate.getEctsFree() != null) {
+            jdbcTemplate.update(stmtUpdateEctsFree, toUpdate.getEctsFree(), toUpdate.getId());
+        }
+        if(toUpdate.getEctsSoftskill() != null) {
+            jdbcTemplate.update(stmtUpdateEctsSoftSkill, toUpdate.getEctsSoftskill(), toUpdate.getId());
         }
 
         return true;

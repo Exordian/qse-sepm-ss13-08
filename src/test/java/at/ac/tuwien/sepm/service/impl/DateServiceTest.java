@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.service.impl;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +23,9 @@ public class DateServiceTest {
         validDateEntity.setDescription("valid description");
         validDateEntity.setId(3);
         validDateEntity.setIntersectable(true);
-        validDateEntity.setStart(new DateTime(2000, 1, 1, 1, 1));
-        validDateEntity.setStop(new DateTime(2002, 2, 2, 2, 2));
+        //validDateEntity.setStart(new DateTime(2000, 1, 1, 1, 1));
+        //validDateEntity.setStop(new DateTime(2002, 2, 2, 2, 2));
+        validDateEntity.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
     }
 
     @Test(expected = ServiceException.class)
@@ -81,14 +83,8 @@ public class DateServiceTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void testValidateDateEntityINVALIstart() throws Exception {
-        validDateEntity.setStart(null);
-        dateService.validateDateEntity(validDateEntity);
-    }
-
-    @Test(expected = ServiceException.class)
     public void testValidateDateEntityINVALIDstop() throws Exception {
-        validDateEntity.setStop(null);
+        validDateEntity.setTime(null);
         dateService.validateDateEntity(validDateEntity);
     }
 
@@ -104,12 +100,6 @@ public class DateServiceTest {
 
     @Test
     public void testValidateDateVALID() throws Exception {
-        dateService.validateDate(validDateEntity.getStart());
-    }
-
-    @Test(expected = ServiceException.class)
-    public void testValidateDateINVALID() throws Exception {
-        validDateEntity.setStart(null);
         dateService.validateDate(validDateEntity.getStart());
     }
 }

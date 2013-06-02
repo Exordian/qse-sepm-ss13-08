@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.semesterPlaning.DependenceTree;
 import org.junit.Before;
 import org.junit.Test;
 

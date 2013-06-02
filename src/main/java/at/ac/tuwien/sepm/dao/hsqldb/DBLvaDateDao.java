@@ -3,18 +3,17 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
+import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Author: MUTH Markus
- * Date: 5/25/13
- * Time: 11:19 AM
- * Description of class "DBLvaDateDao":
+ * @author Markus MUTH
  */
 @Repository
 public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
@@ -41,9 +40,14 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
                 "(id,lva,name,description,type,room,result,start,stop,attendanceRequired,wasAttendant) VALUES" +
                 "(null,?,?,?,?,?,?,?,?,?,?)";
 
+        Timestamp start = new Timestamp(toCreate.getTime().from().getMillis());
+        if(toCreate.getType().equals(LvaDateType.DEADLINE)) {
+            start = new Timestamp(toCreate.getTime().to().getMillis());
+        }
+
         Object[] args = new Object[] {toCreate.getLva(), toCreate.getName(), toCreate.getDescription(),
                 toCreate.getType().ordinal(), toCreate.getRoom(), toCreate.getResult(),
-                new Timestamp(toCreate.getStart().getMillis()), new Timestamp(toCreate.getStop().getMillis()),
+                start, new Timestamp(toCreate.getTime().to().getMillis()),
                 toCreate.getAttendanceRequired(), toCreate.getWasAttendant()};
 
         jdbcTemplate.update(stmt, args);
@@ -71,6 +75,29 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
     public List<LvaDate> readByLvaAndType(int lvaId, LvaDateType type) throws DataAccessException {
         String stmt = "SELECT * FROM lvadate WHERE lva=? AND type=? ORDER BY start";
         return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), lvaId, type.ordinal());
+    }
+
+    @Override
+    public List<LvaDate> readByDay(DateTime date) throws DataAccessException {
+        String stmt = "SELECT * FROM lvadate WHERE " +
+                "(start>=? AND start<=?) OR " +
+                "(stop>=? AND stop<=?) OR " +
+                "(start<=? AND stop>=?)" +
+                "ORDER BY start";
+
+        String stmtCount = "SELECT COUNT(*) FROM lvadate WHERE " +
+                "(start>=? AND start<=?) OR " +
+                "(stop>=? AND stop<=?) OR " +
+                "(start<=? AND stop>=?)";
+
+        Timestamp s1 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 0, 0, 0, 0).getMillis()));
+        Timestamp s2 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 23, 59, 59, 999).getMillis()));
+
+        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), s1, s2, s1, s2, s1, s2) == 0){
+            return new ArrayList<LvaDate>();
+        }
+
+        return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), s1, s2, s1, s2, s1, s2);
     }
 
     @Override
@@ -107,44 +134,39 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
         String stmtUpdateAttendanceRequired = "UPDATE lvadate SET attendancerequired=? WHERE id=?";
         String stmtUpdateWasAttendant = "UPDATE lvadate SET wasattendant=? WHERE id=?";
 
-        try {
-            jdbcTemplate.execute("SET AUTOCOMMIT FALSE");
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateLva, toUpdate.getLva(), toUpdate.getId());
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateLva, toUpdate.getLva(), toUpdate.getId());
+        }
+        if(toUpdate.getName() != null) {
+            jdbcTemplate.update(stmtUpdateName,toUpdate.getName(), toUpdate.getId());
+        }
+        if(toUpdate.getDescription() != null) {
+            jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
+        }
+        if(toUpdate.getType() != null) {
+            jdbcTemplate.update(stmtUpdateType, toUpdate.getType().ordinal(), toUpdate.getId());
+        }
+        if(toUpdate.getRoom() != null) {
+            jdbcTemplate.update(stmtUpdateRoom, toUpdate.getRoom(), toUpdate.getId());
+        }
+        if(toUpdate.getResult() != null) {
+            jdbcTemplate.update(stmtUpdateResult, toUpdate.getResult(), toUpdate.getId());
+        }
+        if(toUpdate.getTime() != null && toUpdate.getTime().from() != null) {
+            Timestamp start = new Timestamp(toUpdate.getTime().from().getMillis());
+            if(toUpdate.getType().equals(LvaDateType.DEADLINE)) {
+                start = new Timestamp(toUpdate.getTime().to().getMillis());
             }
-            if(toUpdate.getName() != null) {
-                jdbcTemplate.update(stmtUpdateName,toUpdate.getName(), toUpdate.getId());
-            }
-            if(toUpdate.getDescription() != null) {
-                jdbcTemplate.update(stmtUpdateDescription, toUpdate.getDescription(), toUpdate.getId());
-            }
-            if(toUpdate.getType() != null) {
-                jdbcTemplate.update(stmtUpdateType, toUpdate.getType().ordinal(), toUpdate.getId());
-            }
-            if(toUpdate.getRoom() != null) {
-                jdbcTemplate.update(stmtUpdateRoom, toUpdate.getRoom(), toUpdate.getId());
-            }
-            if(toUpdate.getResult() != null) {
-                jdbcTemplate.update(stmtUpdateResult, toUpdate.getResult(), toUpdate.getId());
-            }
-            if(toUpdate.getStart() != null) {
-                jdbcTemplate.update(stmtUpdateStart, new Timestamp(toUpdate.getStart().getMillis()), toUpdate.getId());
-            }
-            if(toUpdate.getStop() != null) {
-                jdbcTemplate.update(stmtUpdateStop, new Timestamp(toUpdate.getStop().getMillis()), toUpdate.getId());
-            }
-            if(toUpdate.getAttendanceRequired() != null) {
-                jdbcTemplate.update(stmtUpdateAttendanceRequired, toUpdate.getAttendanceRequired(), toUpdate.getId());
-            }
-            if(toUpdate.getWasAttendant() != null) {
-                jdbcTemplate.update(stmtUpdateWasAttendant, toUpdate.getWasAttendant(), toUpdate.getId());
-            }
-            jdbcTemplate.execute("COMMIT");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-        } catch (DataAccessException e) {
-            jdbcTemplate.execute("ROLLBACK");
-            jdbcTemplate.execute("SET AUTOCOMMIT TRUE");
-            throw e;
+            jdbcTemplate.update(stmtUpdateStart, start, toUpdate.getId());
+        }
+        if(toUpdate.getTime() != null && toUpdate.getTime().to() != null) {
+            jdbcTemplate.update(stmtUpdateStop, new Timestamp(toUpdate.getTime().to().getMillis()), toUpdate.getId());
+        }
+        if(toUpdate.getAttendanceRequired() != null) {
+            jdbcTemplate.update(stmtUpdateAttendanceRequired, toUpdate.getAttendanceRequired(), toUpdate.getId());
+        }
+        if(toUpdate.getWasAttendant() != null) {
+            jdbcTemplate.update(stmtUpdateWasAttendant, toUpdate.getWasAttendant(), toUpdate.getId());
         }
 
         return true;

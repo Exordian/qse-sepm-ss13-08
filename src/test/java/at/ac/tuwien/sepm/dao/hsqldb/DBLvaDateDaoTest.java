@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,13 +40,105 @@ public class DBLvaDateDaoTest {
         e.setDescription("blablabla über Mathe - VO");
         e.setType(LvaDateType.LECTURE);
         e.setRoom("HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
         e.setId(0);
         e.setResult(0);
+        assert(dao.readById(0).equals(e));
+    }
+
+    @Test
+    public void testCreateDifferentLvaDateTypes() throws Exception {
+        TestHelper.insert(1);
+
+        LvaDate e0 = new LvaDate();
+        LvaDate e1 = new LvaDate();
+        LvaDate e2 = new LvaDate();
+        LvaDate e3 = new LvaDate();
+
+        e0.setLva(0);
+        e0.setName("Deadline 1");
+        e0.setDescription("blablabla über Deadline 1");
+        e0.setType(LvaDateType.DEADLINE);
+        e0.setRoom("HS 17 Friedrich Hartmann");
+        e0.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        e0.setAttendanceRequired(false);
+        e0.setWasAttendant(true);
+
+        e1.setLva(1);
+        e1.setName("Prüfung 1");
+        e1.setDescription("blablabla über Prüfung 1");
+        e1.setType(LvaDateType.EXAM);
+        e1.setRoom("HS 17 Friedrich Hartmann");
+        e1.setTime(new TimeFrame(new DateTime(2013, 3, 10, 12, 15, 0),new DateTime(2013, 3, 10, 13, 45, 0)));
+        e1.setAttendanceRequired(false);
+        e1.setWasAttendant(true);
+
+        e2.setLva(2);
+        e2.setName("UE 1");
+        e2.setDescription("blablabla über UE 1");
+        e2.setType(LvaDateType.EXERCISE);
+        e2.setRoom("HS 17 Friedrich Hartmann");
+        e2.setTime(new TimeFrame(new DateTime(2013, 3, 11, 12, 15, 0),new DateTime(2013, 3, 11, 13, 45, 0)));
+        e2.setAttendanceRequired(false);
+        e2.setWasAttendant(true);
+
+        e3.setLva(3);
+        e3.setName("VO 1");
+        e3.setDescription("blablabla über VO 1");
+        e3.setType(LvaDateType.LECTURE);
+        e3.setRoom("HS 17 Friedrich Hartmann");
+        e3.setTime(new TimeFrame(new DateTime(2013, 3, 1, 12, 15, 0),new DateTime(2013, 3, 1, 13, 45, 0)));
+        e3.setAttendanceRequired(false);
+        e3.setWasAttendant(true);
+
+
+        dao.create(e0);
+        dao.create(e1);
+        dao.create(e2);
+        dao.create(e3);
+
+        e0.setId(0);
+        e1.setId(1);
+        e2.setId(2);
+        e3.setId(3);
+
+        e0.setResult(0);
+        e1.setResult(0);
+        e2.setResult(0);
+        e3.setResult(0);
+
+        e0.setTime(new TimeFrame(e0.getStop(), e0.getStop()));
+
+        assert(dao.readById(0).equals(e0));
+        assert(dao.readById(1).equals(e1));
+        assert(dao.readById(2).equals(e2));
+        assert(dao.readById(3).equals(e3));
+    }
+
+    @Test
+    public void testCreateStartAndStopDateAreDifferent() throws Exception {
+        TestHelper.insert(1);
+        LvaDate e = new LvaDate();
+        e.setLva(0);
+        e.setName("VO - Algebra");
+        e.setDescription("blablabla über Mathe - VO");
+        e.setType(LvaDateType.LECTURE);
+        e.setRoom("HS 17 Friedrich Hartmann");
+        e.setTime(new TimeFrame(new DateTime(2005, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2005, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setAttendanceRequired(false);
+        e.setWasAttendant(true);
+        dao.create(e);
+        e.setId(0);
+        e.setResult(0);
+        //e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 13, 45, 0),e.getStop()));
+        //e.setStart(new DateTime(2013, 3, 4, 13, 45, 0));
         assert(dao.readById(0).equals(e));
     }
 
@@ -68,8 +161,9 @@ public class DBLvaDateDaoTest {
         e.setDescription("blablabla über Mathe - VO");
         e.setType(LvaDateType.LECTURE);
         e.setRoom("HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
@@ -88,8 +182,9 @@ public class DBLvaDateDaoTest {
         e.setDescription(s);
         e.setType(LvaDateType.LECTURE);
         e.setRoom("HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
@@ -108,12 +203,14 @@ public class DBLvaDateDaoTest {
         e.setDescription("blablabla über Mathe - VO");
         e.setType(LvaDateType.LECTURE);
         e.setRoom(s);
-        e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
     }
+
 
     @Test(expected = NullPointerException.class)
     public void testCreateStartIsNull() throws Exception {
@@ -124,11 +221,17 @@ public class DBLvaDateDaoTest {
         e.setDescription("blablabla über Mathe - VO");
         e.setType(LvaDateType.LECTURE);
         e.setRoom("HS 17 Friedrich Hartmann");
-        e.setStart(null);
-        e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(null,new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(null);
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 13, 45, 0),e.getStop()));
+        //e.setStart(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setId(0);
+        e.setResult(0);
+        assert(e.equals(dao.readById(0)));
     }
 
     @Test(expected = NullPointerException.class)
@@ -140,8 +243,9 @@ public class DBLvaDateDaoTest {
         e.setDescription("blablabla über Mathe - VO");
         e.setType(LvaDateType.LECTURE);
         e.setRoom("HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
-        e.setStop(null);
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),null));
+        //e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
+        //e.setStop(null);
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
@@ -156,8 +260,9 @@ public class DBLvaDateDaoTest {
         e.setDescription("blablabla über Mathe - VO");
         e.setType(LvaDateType.LECTURE);
         e.setRoom("HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
@@ -172,8 +277,9 @@ public class DBLvaDateDaoTest {
         e.setDescription("blablabla über Mathe - VO");
         e.setType(LvaDateType.LECTURE);
         e.setRoom("HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         dao.create(e);
@@ -189,8 +295,9 @@ public class DBLvaDateDaoTest {
         e.setDescription("blablabla über Mathe - VO");
         e.setType(LvaDateType.LECTURE);
         e.setRoom("HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2013, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2013, 3, 4, 12, 15, 0),new DateTime(2013, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2013, 3, 4, 13, 45, 0));
+        //e.setStop(new DateTime(2013, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(false);
         e.setWasAttendant(true);
         e.setResult(0);
@@ -236,13 +343,37 @@ public class DBLvaDateDaoTest {
         e.setDescription("New blablabla über Mathe - VO");
         e.setType(LvaDateType.EXERCISE);
         e.setRoom("NEw HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2014, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2014, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2014, 3, 4, 12, 15, 0),new DateTime(2014, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2014, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2014, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(true);
         e.setWasAttendant(false);
         e.setResult(0);
         assert(dao.update(e));
+        //e.setTime(new TimeFrame(new DateTime(2014, 3, 4, 13, 45, 0),e.getStop()));
+        //e.setStart(new DateTime(2014, 3, 4, 13, 45, 0));
         assert(dao.readById(0).equals(e));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testUpdateAllAttributesButTimeAreNull() throws Exception {
+        TestHelper.insert(2);
+        LvaDate d = dao.readById(0);
+        LvaDate e = new LvaDate();
+        e.setId(0);
+        e.setLva(null);
+        e.setName(null);
+        e.setDescription(null);
+        e.setType(null);
+        e.setRoom(null);
+        e.setTime(new TimeFrame(null,null));
+        //e.setStart(null);
+        //e.setStop(null);
+        e.setAttendanceRequired(null);
+        e.setWasAttendant(null);
+        e.setResult(null);
+        assert(dao.update(e));
+        assert(dao.readById(0).equals(d));
     }
 
     @Test
@@ -256,8 +387,9 @@ public class DBLvaDateDaoTest {
         e.setDescription(null);
         e.setType(null);
         e.setRoom(null);
-        e.setStart(null);
-        e.setStop(null);
+        e.setTime(null);
+        //e.setStart(null);
+        //e.setStop(null);
         e.setAttendanceRequired(null);
         e.setWasAttendant(null);
         e.setResult(null);
@@ -290,8 +422,9 @@ public class DBLvaDateDaoTest {
         e.setDescription("New blablabla über Mathe - VO");
         e.setType(LvaDateType.EXERCISE);
         e.setRoom("NEw HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2014, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2014, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2014, 3, 4, 12, 15, 0),new DateTime(2014, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2014, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2014, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(true);
         e.setWasAttendant(false);
         e.setResult(0);
@@ -312,8 +445,9 @@ public class DBLvaDateDaoTest {
         e.setDescription(s);
         e.setType(LvaDateType.EXERCISE);
         e.setRoom("NEw HS 17 Friedrich Hartmann");
-        e.setStart(new DateTime(2014, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2014, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2014, 3, 4, 12, 15, 0),new DateTime(2014, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2014, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2014, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(true);
         e.setWasAttendant(false);
         e.setResult(0);
@@ -334,8 +468,9 @@ public class DBLvaDateDaoTest {
         e.setDescription("New blablabla über Mathe - VO");
         e.setType(LvaDateType.EXERCISE);
         e.setRoom(s);
-        e.setStart(new DateTime(2014, 3, 4, 12, 15, 0));
-        e.setStop(new DateTime(2014, 3, 4, 13, 45, 0));
+        e.setTime(new TimeFrame(new DateTime(2014, 3, 4, 12, 15, 0),new DateTime(2014, 3, 4, 13, 45, 0)));
+        //e.setStart(new DateTime(2014, 3, 4, 12, 15, 0));
+        //e.setStop(new DateTime(2014, 3, 4, 13, 45, 0));
         e.setAttendanceRequired(true);
         e.setWasAttendant(false);
         e.setResult(0);
@@ -348,5 +483,34 @@ public class DBLvaDateDaoTest {
         assert(dao.readById(0)!=null);
         assert(dao.delete(0));
         assert(dao.readById(0)==null);
+    }
+
+    @Test
+    public void testReadByDay() throws Exception {
+        TestHelper.insert(15);
+        List<LvaDate> l = dao.readByDay(new DateTime(2014, 5, 2, 4, 4, 4, 4));
+        System.out.println(l.size());
+        assert(l.size()==6);
+        assert(l.get(0).getId()==109);
+        assert(l.get(1).getId()==104);
+        assert(l.get(2).getId()==106);
+        assert(l.get(3).getId()==107);
+        assert(l.get(4).getId()==105);
+        assert(l.get(5).getId()==108);
+        for(int i=0; i<l.size()-1; i++) {
+            assert(l.get(i).getStart().isBefore(l.get(i+1).getStart()));
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testReadByDayIsNull() throws Exception {
+        TestHelper.insert(15);
+        dao.readByDay(null);
+    }
+
+    @Test
+    public void testReadByDayWithoutDates() throws Exception {
+        TestHelper.insert(15);
+        assert(dao.readByDay(new DateTime(1990, 1, 1, 1, 1, 1, 1)).size()==0);
     }
 }
