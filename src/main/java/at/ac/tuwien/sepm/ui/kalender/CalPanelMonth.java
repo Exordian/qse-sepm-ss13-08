@@ -55,8 +55,6 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
     protected void setDays() {
         int actStart, actStop, preStart, preStop, postStart, postStop, preMonthYear, preMonthMonth, postMonthYear, postMonthMonth;
 
-        System.out.println(firstDay);
-
         if(firstDay.getMonthOfYear()==1) {
             preMonthMonth = 12;
             preMonthYear = firstDay.getYear()-1;
@@ -74,7 +72,7 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
             postMonthYear = firstDay.getYear();
         }
 
-        String actFirstDayName = firstDay.toString("E");
+        String actFirstDayName = firstDay.toString("E", Locale.US);
         preMonthDays = 0;
         if(actFirstDayName.toUpperCase().equals("TUE")) {
             preMonthDays = 1;
