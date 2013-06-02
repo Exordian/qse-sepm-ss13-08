@@ -72,14 +72,17 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
         this.revalidate();
     }
 
+    protected void changeTitle(String s) {
+        title.setText(s);
+    }
+
     protected void addEditableTitle(String s) {
         title = new JTextField(s);
         title.setBounds((int) ((size.getWidth() / 2) - (image.getWidth(null) / 2)) + 35, (int) (size.getHeight() / 2 - image.getHeight(null) / 2) - 42, 257, 45);
         title.setForeground(Color.WHITE);
         title.setFont(standardTitleFont);
-        title.setBackground(new Color(0, 0, 0, 0));
+        title.setOpaque(false);
         title.setBorder(null);
-
         title.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 StandardSimpleInsidePanel.this.repaint();

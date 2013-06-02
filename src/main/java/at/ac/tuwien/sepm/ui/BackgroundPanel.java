@@ -2,11 +2,8 @@ package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
-import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -28,14 +25,14 @@ public class BackgroundPanel extends JPanel {
     private JPanel studPanel;
     private JPanel propsPanel;
     private ViewDate viewDate;
-    private ViewLVA viewLVA;
+    private ViewLvaDate viewLVA;
     private Image image;
     private Component lastComponent;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLVA viewLVA) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA) {
         this.setLayout(null);
         this.calPanel = calPanel;
         this.propsPanel = propsPanel;
@@ -49,7 +46,7 @@ public class BackgroundPanel extends JPanel {
         createPropertiesButton();
         createTabButtons();
 
-        /*test  VIEWDATE AND VIEWLVA  */
+        /*test  VIEWDATE AND VIEWLVA
         JButton testViewDate = new JButton("view lva");
         testViewDate.setBounds(500, 630, 110, 38);
         testViewDate.addActionListener(new ActionListener() {
@@ -63,7 +60,7 @@ public class BackgroundPanel extends JPanel {
                 dateEntity.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
                 viewDate(dateEntity);
 
-               /* LvaDate lvaDate = new LvaDate();
+                LvaDate lvaDate = new LvaDate();
                 lvaDate.setName("test name");
                 lvaDate.setDescription("test description");
                 lvaDate.setId(2);
@@ -73,11 +70,11 @@ public class BackgroundPanel extends JPanel {
                 lvaDate.setRoom("test room");
                 lvaDate.setType(LvaDateType.LECTURE);
                 lvaDate.setWasAttendant(false);
-                viewLvaDate(lvaDate); */
+                viewLvaDate(lvaDate);
             }
         });
         this.add(testViewDate);
-        /*test */
+        test */
 
         log.info("Background Panel initialized.");
     }

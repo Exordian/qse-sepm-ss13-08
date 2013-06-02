@@ -52,6 +52,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
         init();
         addImage();
         dateEntity = new DateEntity();
+        addEditableTitle(dateEntity.getName());
         addReturnButton();
         addContent();
         addSaveButton();
@@ -61,7 +62,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
 
     public void setDateEntity(DateEntity dateEntity) {
         this.dateEntity=dateEntity;
-        addEditableTitle(dateEntity.getName());
+        changeTitle(dateEntity.getName());
         description.setText(dateEntity.getDescription());
         intersectable.setSelected(dateEntity.getIntersectable());
         from.setDate(dateEntity.getStart().toDate());

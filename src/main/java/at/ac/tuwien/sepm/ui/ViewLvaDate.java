@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
  * To change this template use File | Settings | File Templates.
  */
 @UI
-public class ViewLVA extends StandardSimpleInsidePanel {
+public class ViewLvaDate extends StandardSimpleInsidePanel {
     private LvaDate lvaDate;
 
     private JTextArea description;
@@ -42,10 +42,11 @@ public class ViewLVA extends StandardSimpleInsidePanel {
     private JSpinner fromTime;
     private JSpinner toTime;
 
-    public ViewLVA() {
+    public ViewLvaDate() {
         init();
         addImage();
         lvaDate = new LvaDate();
+        addEditableTitle(lvaDate.getName());
         addReturnButton();
         addContent();
         addSaveButton();
@@ -53,7 +54,7 @@ public class ViewLVA extends StandardSimpleInsidePanel {
 
     public void setLVADateEntity(LvaDate lvaDate) {
         this.lvaDate=lvaDate;
-        addTitle(lvaDate.getName());
+        changeTitle(lvaDate.getName());
         description.setText(lvaDate.getDescription());
         type.setSelectedItem(lvaDate.getType());
         attendanceRequired.setSelected(lvaDate.getAttendanceRequired());
@@ -76,7 +77,7 @@ public class ViewLVA extends StandardSimpleInsidePanel {
                 lvaDate.setName(title.getText());
                 lvaDate.setDescription(description.getText());
                 lvaDate.setWasAttendant(attended.isSelected());
-                lvaDate.setType((LvaDateType)type.getSelectedItem());
+                lvaDate.setType((LvaDateType) type.getSelectedItem());
                 lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
                 lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
 
@@ -148,13 +149,13 @@ public class ViewLVA extends StandardSimpleInsidePanel {
             type.addItem(t);
         }
         type.setFont(standardTextFont);
-        type.setBounds(typeLabel.getX(), typeLabel.getY() + typeLabel.getHeight() + verticalSpace, 100,25);
+        type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 100,25);
         this.add(type);
 
 
         attendanceRequiredLabel = new JLabel("Anwesenheitspflicht");
         attendanceRequiredLabel.setFont(standardTextFont);
-        attendanceRequiredLabel.setBounds(type.getX(), type.getY() + type.getHeight() + verticalSpace*2, 180,25);
+        attendanceRequiredLabel.setBounds(typeLabel.getX(), type.getY() + type.getHeight() + verticalSpace*2, 180,25);
         this.add(attendanceRequiredLabel);
 
         attendanceRequired = new JCheckBox();
