@@ -160,6 +160,18 @@ public class DBModuleDaoTest {
     }
 
     @Test
+    public void testReadAll () throws Exception {
+        TestHelper.insert(0);
+        assert(dao.readAll().size()==4);
+    }
+
+    @Test
+    public void testReadAllButNothingExists () throws Exception {
+        assert(dao.readAll().size()==0);
+    }
+
+
+    @Test
     public void testReadById() throws Exception {
         TestHelper.insert(0);
 

@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.entity.Curriculum;
-import at.ac.tuwien.sepm.entity.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -236,6 +235,17 @@ public class DBCurriculumDaoTest {
         e0.setEctsSoftskill(null);
 
         dao.create(e0);
+    }
+
+    @Test
+    public void testReadAll () throws Exception {
+        TestHelper.insert(0);
+        assert(dao.readAll().size()==3);
+    }
+
+    @Test
+    public void testReadAllButNothingExists () throws Exception {
+        assert(dao.readAll().size()==0);
     }
 
     /**

@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.Curriculum;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Author: MUTH Markus
@@ -23,8 +24,16 @@ public interface CurriculumDao {
     public boolean create(Curriculum toCreate) throws IOException, DataAccessException;
 
     /**
+     * Read all curriculum. The modules of this curriculum are also returned. See ModuleDao.readById() for more
+     * information.
+     * @return A list filled with the data from the Curriculum or a empty list if there was no match.
+     * @throws DataAccessException If the Curriculum data could not be read because any error occured.
+     */
+    public List<Curriculum> readAll() throws DataAccessException;
+
+    /**
      * Read the curriculum data from the specified curriculum. The modules of this curriculum are also returned. See
-     * ModuleDao.readById() for more information.
+     * ModuleDao.readById() for more information.                                         s
      * @param id the system internal id for the curriculum.
      * @return A <code>Curriculum</code> filled with the data from the Curriculum or <code>null</code> if there is no curriculum with the given id.
      * @throws org.springframework.dao.DataAccessException If the Curriculum data could not be read because any error occured.

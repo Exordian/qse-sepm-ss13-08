@@ -103,7 +103,7 @@ public class DateServiceImpl implements DateService {
             log.error("Name of DateEntity is invalid.");
             throw new ServiceException("Name of DateEntity is invalid.");
         }
-
+                                                                  System.out.println("asdf3");
         if (toValidate.getDescription() == null) {
             log.error("Description of DateEntity is invalid.");
             throw new ServiceException("Description of DateEntity is invalid.");
