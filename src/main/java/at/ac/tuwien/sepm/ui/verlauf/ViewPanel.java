@@ -12,4 +12,7 @@ import at.ac.tuwien.sepm.ui.UI;
  */
 @UI
 public class ViewPanel extends StandardInsidePanel {
+
+    //TODO
+
 }
