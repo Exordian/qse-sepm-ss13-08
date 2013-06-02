@@ -22,9 +22,7 @@ public class StudPanel extends StandardInsidePanel {
     @Autowired
     public StudPanel(PlanningPanel planningPanel) {
         this.planningPanel = planningPanel;
-        this.setLayout(null);
-        this.setBounds(size);
-        this.setOpaque(false);
+        init();
         changeImage(1);
         createTabButtons();
     }
@@ -104,16 +102,16 @@ public class StudPanel extends StandardInsidePanel {
         try{
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(new File("src/main/resources/img/studa.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/studa.png"));
                     break;
                 case 2:
-                    image = ImageIO.read(new File("src/main/resources/img/studp.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/studp.png"));
                     break;
                 case 3:
-                    image = ImageIO.read(new File("src/main/resources/img/stude.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/stude.png"));
                     break;
                 case 4:
-                    image = ImageIO.read(new File("src/main/resources/img/studs.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/studs.png"));
                     break;
                 default:
                     break;

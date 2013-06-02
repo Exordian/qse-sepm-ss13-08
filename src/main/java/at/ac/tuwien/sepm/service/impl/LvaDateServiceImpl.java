@@ -9,6 +9,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * @author Lena Lenz
  */
+@Service
 public class LvaDateServiceImpl implements LvaDateService {
 
     @Autowired
@@ -93,6 +95,7 @@ public class LvaDateServiceImpl implements LvaDateService {
     @Override
     public boolean update(LvaDate toUpdate) throws ServiceException, ValidationException {
         try {
+            this.validateID(toUpdate.getId());
             this.validateLvaDate(toUpdate);
             boolean updated = lvaDateDao.update(toUpdate);
             return updated;
@@ -123,6 +126,7 @@ public class LvaDateServiceImpl implements LvaDateService {
         }
     }
 
+    @Override
     public List<LvaDate> getAllDeadlines() throws ServiceException{
         List<LvaDate> deadlineList = null;
         try {
@@ -139,11 +143,7 @@ public class LvaDateServiceImpl implements LvaDateService {
         String error_msg = "";
         boolean valid = true;
 
-        if(toValidate.getId() <= 0 ) {
-            valid = false;
-            error_msg += "invalid id!\n";
-        }
-        if(toValidate.getLva() <= 0) {
+        if(toValidate.getLva() < 0) {
             valid = false;
             error_msg += "invalid LVA!\n";
         }

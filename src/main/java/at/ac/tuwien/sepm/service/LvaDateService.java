@@ -90,4 +90,7 @@ public interface LvaDateService {
      *
      */
     public void validateID(int id) throws ServiceException;
+
+    public List<LvaDate> getAllDeadlines() throws ServiceException;
+
 }

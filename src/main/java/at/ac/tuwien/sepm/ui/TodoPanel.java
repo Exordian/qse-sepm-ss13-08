@@ -6,7 +6,9 @@ import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.entity.Todo;
+import at.ac.tuwien.sepm.service.LvaDateService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TodoService;
 import at.ac.tuwien.sepm.service.impl.LvaDateServiceImpl;
 import at.ac.tuwien.sepm.service.impl.TodoServiceImpl;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
@@ -35,63 +37,64 @@ public class TodoPanel extends JPanel {
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
-    private static final int MAX_ROWS = 20;
-    private static final int COLUMNS_TODOS = 5;
-    private static final int COLUMNS_DEADLINES = 6;
-
     @Autowired
-    private TodoServiceImpl service;
+    private TodoService service;
     //@Autowired
-    private LvaDateServiceImpl serviceDeadlines;
+    private LvaDateService serviceDeadlines;
+    private TodoTable todoTable;
+    private DeadlineTable deadlineTable;
 
-    private JTable displayTodos;
-    private JTable displayDeadlines;
+    private TodoAdderFrame todoAdderFrame;
+    private TodoEditorFrame todoEditorFrame;
+    private DeadlineAdderFrame deadlineAdderFrame;
+    private DeadlineEditorFrame deadlineEditorFrame;
+
     private JButton add_todo;
     private JButton edit_todo;
     private JButton delete_todo;
     private JButton add_deadline;
     private JButton edit_deadline;
     private JButton delete_deadline;
-    private List<LVA> lvaList;
-
-    private DateTime deadline;
 
 
-    public TodoPanel() {
-        serviceDeadlines = new LvaDateServiceImpl();
+    @Autowired
+    public TodoPanel(TodoService todoService, LvaDateService lvaDateService, TodoTable todoTable, DeadlineTable deadlineTable, TodoAdderFrame todoAdderFrame, TodoEditorFrame todoEditorFrame, DeadlineAdderFrame deadlineAdderFrame, DeadlineEditorFrame deadlineEditorFrame) {
+        this.service = todoService;
+        serviceDeadlines = lvaDateService;
+        this.todoAdderFrame = todoAdderFrame;
+        this.todoEditorFrame = todoEditorFrame;
 
-        initJTables();
-        configureColumns();
+        this.deadlineAdderFrame = deadlineAdderFrame;
+        this.deadlineEditorFrame = deadlineEditorFrame;
+
+        initJTables(todoTable, deadlineTable);
         addButtons();
         addActionListeners();
 
     }
 
-    public void initJTables() {
+ //   @Autowired
+    public void initJTables(TodoTable todoTable, DeadlineTable deadlineTable) {
 
-        //JTable displayTodos
-        String[][] dataTodos = new String[MAX_ROWS][COLUMNS_TODOS];
-        displayTodos = new JTable(dataTodos, new String[] {"Nr", "LVA", "Name", "Beschreibung", "Abgeschlossen"});
-        displayTodos.setRowHeight(20);
+        try {
+            this.todoTable = todoTable;
+            todoTable.init(service.getAllTodos());
+            this.deadlineTable = deadlineTable;
+            deadlineTable.init(serviceDeadlines.getAllDeadlines());
+        } catch(ServiceException e) {
+            logger.error(e.getMessage());
+        }
+        this.add(todoTable);
+        this.add(deadlineTable);
 
-        JTableHeader headerT = displayTodos.getTableHeader();
-        headerT.setBackground(new Color(73, 133, 255));
-        headerT.setFont(new Font("Arial",Font.HANGING_BASELINE+Font.BOLD,15));
 
-
-        //JTable displayDeadlines
-        String[][] dataDeadlines = new String[MAX_ROWS][COLUMNS_DEADLINES];
-        displayDeadlines = new JTable(dataDeadlines, new String[] {"Nr", "LVA", "Name", "Beschreibung", "Deadline", "Abgeschlossen"});
-        displayDeadlines.setRowHeight(20);
-
-        JTableHeader headerD = displayDeadlines.getTableHeader();
-        headerD.setBackground(new Color(73, 133, 255));
-        headerD.setFont(new Font("Arial",Font.HANGING_BASELINE+Font.BOLD,15));
-
-        this.add(displayTodos);
-        this.add(displayDeadlines);
+        this.todoAdderFrame.init(todoTable, service);
+        this.todoEditorFrame.init(todoTable, service);
+        this.deadlineAdderFrame.init(deadlineTable, serviceDeadlines);
+        this.deadlineEditorFrame.init(deadlineTable, serviceDeadlines);
     }
 
+    /*
     public void configureColumns() {
         //Todos
         JScrollPane scrollpaneT = new JScrollPane(displayTodos);
@@ -189,7 +192,7 @@ public class TodoPanel extends JPanel {
             return this;
         }
 
-    }
+    }*/
 
     public void addButtons() {
         add_todo = new JButton("Todo Hinzufügen");
@@ -252,88 +255,56 @@ public class TodoPanel extends JPanel {
         });
     }
 
-
     public void AddTodoPressed() {
-        Todo newTodo = this.makeTodo('N');
-
-        try {
-            service.create(newTodo);
-        } catch(ValidationException e) {
-            logger.error(e.getMessage());
-        } catch(ServiceException e) {
-            logger.error(e.getMessage());
-        }
+        todoAdderFrame.refreshLVATable();
+        todoAdderFrame.openWindow();
+        //this.todoAdderFrame.init(todoTable, service);
     }
 
     public void EditTodoPressed() {
-        Todo editedTodo = this.makeTodo('E');
+        this.todoEditorFrame.refreshLVATable();
+        Todo toEdit = todoTable.getSelectedTodo();
+        this.todoEditorFrame.openWindow(toEdit);
 
-        try {
-            service.update(editedTodo);
-            refreshTodos();
-        } catch(ValidationException e) {
-            logger.error(e.getMessage());
-        } catch(ServiceException e) {
-            logger.error(e.getMessage());
-        }
+        //Todo toEdit = todoTable.getSelectedTodo();
+        //this.todoEditorFrame.init(todoTable, service,);
     }
 
     public void DeleteTodoPressed() {
-        int todo_id = 0;
+        Todo toDelete = todoTable.getSelectedTodo();
         try {
-            todo_id = (Integer)displayTodos.getValueAt(displayTodos.getSelectedRow(), 0);
-        } catch(ArrayIndexOutOfBoundsException e) {
-            //TODO
-        }
-
-        try {
-            service.delete(todo_id);
-            logger.debug("deleting Todo with id=" + todo_id);
-            refreshTodos();
-        } catch (ServiceException e) {
+            service.delete(toDelete.getId());
+            logger.debug("deleting todo with id = "+ toDelete.getId());
+            todoTable.removeSelectedTodo();
+        } catch(ValidationException e) {
             logger.error(e.getMessage());
-        } catch (ValidationException e) {
+        } catch(ServiceException e) {
             logger.error(e.getMessage());
         }
     }
 
     public void AddDeadlinePressed() {
-        LvaDate newDeadline = this.makeDeadline('N');
+        //this.deadlineAdderFrame.init(deadlineTable, serviceDeadlines);
+        this.deadlineAdderFrame.refreshLVATable();
+        this.deadlineAdderFrame.openWindow();
 
-        try {
-            serviceDeadlines.create(newDeadline);
-        } catch(ValidationException e) {
-            logger.error(e.getMessage());
-        } catch(ServiceException e) {
-            logger.error(e.getMessage());
-        }
     }
 
     public void EditDeadlinePressed() {
-        LvaDate editedDeadline = this.makeDeadline('E');
+        //LvaDate toEdit = deadlineTable.getSelectedDeadline();
+        //this.deadlineEditorFrame.init(deadlineTable, serviceDeadlines, toEdit);
+        this.deadlineEditorFrame.refreshLVATable();
+        LvaDate toEdit = deadlineTable.getSelectedDeadline();
+        this.deadlineEditorFrame.openWindow(toEdit);
 
-        try {
-            serviceDeadlines.update(editedDeadline);
-            refreshDeadlines();
-        } catch(ValidationException e) {
-            logger.error(e.getMessage());
-        } catch(ServiceException e) {
-            logger.error(e.getMessage());
-        }
     }
 
     public void DeleteDeadlinePressed() {
-        int deadline_id = 0;
+        LvaDate toDelete = deadlineTable.getSelectedDeadline();
         try {
-            deadline_id = (Integer)displayDeadlines.getValueAt(displayDeadlines.getSelectedRow(), 0);
-        } catch(ArrayIndexOutOfBoundsException e) {
-            //TODO
-        }
-
-        try {
-            serviceDeadlines.delete(deadline_id);
-            logger.debug("deleting Deadline with id=" + deadline_id);
-            refreshDeadlines();
+            serviceDeadlines.delete(toDelete.getId());
+            logger.debug("deleting Deadline with id =" + toDelete.getId());
+            deadlineTable.removeSelectedDeadline();
         } catch (ServiceException e) {
             logger.error(e.getMessage());
         } catch (ValidationException e) {
@@ -341,6 +312,7 @@ public class TodoPanel extends JPanel {
         }
     }
 
+    /*
     //gibt erste freie Reihe in Todos(verwendung == 'T') bzw Deadlines(verwendung == 'D') zurück
     protected int getFirstFreeRow(char verwendung) {
         JTable anzeigeTab = null;
@@ -559,5 +531,5 @@ public class TodoPanel extends JPanel {
             }
             i++;
         }
-    }
+    }*/
 }
