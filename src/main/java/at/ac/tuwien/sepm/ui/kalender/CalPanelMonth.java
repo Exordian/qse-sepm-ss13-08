@@ -19,7 +19,7 @@ import java.util.Locale;
 @UI
 public class CalPanelMonth extends CalAbstractView implements CalendarInterface {
     private MigLayout layout;
-    private int preMonthDays=0;
+    private int preMonthDays;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -73,6 +73,7 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         }
 
         String actFirstDayName = firstDay.toString("E", Locale.US);
+
         preMonthDays = 0;
         if(actFirstDayName.toUpperCase().equals("TUE")) {
             preMonthDays = 1;

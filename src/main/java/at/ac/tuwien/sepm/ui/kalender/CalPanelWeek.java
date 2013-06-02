@@ -133,12 +133,12 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
                 postYear = firstDay.getYear()+1;
                 postMonth = 1;
                 postStart = 1;
-                postStop = 6-dow;
+                postStop = 6-dowb;
             } else {
                 postYear = firstDay.getYear();
                 postMonth = firstDay.getMonthOfYear()+1;
                 postStart = 1;
-                postStop = 6-dow;
+                postStop = 6-dowb;
             }
             actStop = firstDay.dayOfMonth().withMaximumValue().get(DateTimeFieldType.dayOfMonth());
             actStart = actStop-dowb;
