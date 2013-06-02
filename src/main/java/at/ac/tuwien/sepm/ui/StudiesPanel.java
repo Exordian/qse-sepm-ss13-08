@@ -1,9 +1,7 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.ui.verlauf.ExportPanel;
-import at.ac.tuwien.sepm.ui.verlauf.PlanPanel;
-import at.ac.tuwien.sepm.ui.verlauf.StudienplanPanel;
-import at.ac.tuwien.sepm.ui.verlauf.ViewPanel;
+import at.ac.tuwien.sepm.ui.verlauf.*;
+import at.ac.tuwien.sepm.ui.verlauf.anzeigen.ViewPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -31,6 +29,7 @@ public class StudiesPanel extends StandardInsidePanel {
         this.exportPanel = exportPanel;
         this.studienplanPanel = studienplanPanel;
         this.viewPanel = viewPanel;
+        add(viewPanel);
 
         this.studienplanPanel.initPanel();
         this.studienplanPanel.initAddCurriculumButton();
@@ -46,6 +45,8 @@ public class StudiesPanel extends StandardInsidePanel {
         init();
         changeImage(1);
         createTabButtons();
+        this.repaint();
+        this.revalidate();
     }
 
     private void createTabButtons() {
@@ -69,8 +70,8 @@ public class StudiesPanel extends StandardInsidePanel {
                 remove(exportPanel);
                 remove(studienplanPanel);
                 add(viewPanel);
-                revalidate();
-                repaint();
+                StudiesPanel.this.validate();
+                StudiesPanel.this.repaint();
             }
         });
 
@@ -83,8 +84,8 @@ public class StudiesPanel extends StandardInsidePanel {
                 remove(studienplanPanel);
                 remove(viewPanel);
                 add(planningPanel);
-                revalidate();
-                repaint();
+                StudiesPanel.this.validate();
+                StudiesPanel.this.repaint();
             }
         });
 
@@ -97,8 +98,8 @@ public class StudiesPanel extends StandardInsidePanel {
                 remove(studienplanPanel);
                 remove(viewPanel);
                 remove(planningPanel);
-                revalidate();
-                repaint();
+                StudiesPanel.this.validate();
+                StudiesPanel.this.repaint();
             }
         });
 
@@ -111,8 +112,8 @@ public class StudiesPanel extends StandardInsidePanel {
                 add(studienplanPanel);
                 remove(viewPanel);
                 remove(planningPanel);
-                revalidate();
-                repaint();
+                StudiesPanel.this.validate();
+                StudiesPanel.this.repaint();
             }
         });
 

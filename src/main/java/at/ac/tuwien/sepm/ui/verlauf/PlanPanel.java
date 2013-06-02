@@ -54,6 +54,7 @@ public class PlanPanel extends StandardInsidePanel {
     // </ advanced settings >
 
     private boolean advancedShown = true;
+    private boolean showTimeBetweenText = false;
 
     public PlanPanel() {
         this.setLayout(null);
@@ -127,7 +128,8 @@ public class PlanPanel extends StandardInsidePanel {
             timeBetween.setVisible(true);
 
             timeBetweenTextLabel.setVisible(true);
-            timeBetweenText.setVisible(true);
+            if(showTimeBetweenText)
+                timeBetweenText.setVisible(true);
             advancedShown=true;
         } else {
             intersectVOCheckLabel.setVisible(false);
@@ -262,7 +264,6 @@ public class PlanPanel extends StandardInsidePanel {
         timeBetweenTextLabel.setVisible(false);
         this.add(timeBetweenTextLabel);
 
-        //todo fix anzeige bug von timeBetweenText
         timeBetweenText = new JTextField("0");
         timeBetweenText.setBounds(timeBetweenTextLabel.getX()+timeBetweenTextLabel.getWidth(), timeBetweenTextLabel.getY(), 21, textHeight);
         timeBetweenText.setVisible(false);
@@ -274,12 +275,15 @@ public class PlanPanel extends StandardInsidePanel {
                 switch(timeBetween.getSelectedIndex()){
                     case 0:
                         timeBetweenText.setVisible(false);
+                        showTimeBetweenText=false;
                         break;
                     case 1:
                         timeBetweenText.setVisible(true);
+                        showTimeBetweenText=true;
                         break;
                     case 2:
                         timeBetweenText.setVisible(true);
+                        showTimeBetweenText=true;
                         break;
                 }
                 timeBetweenTextLabel.setText(timeBetweenTextLabelStrings[timeBetween.getSelectedIndex()]);

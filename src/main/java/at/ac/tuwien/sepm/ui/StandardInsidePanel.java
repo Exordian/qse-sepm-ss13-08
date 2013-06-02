@@ -25,6 +25,7 @@ public abstract class StandardInsidePanel extends JPanel {
     protected Font standardButtonFont;
     protected Font calendarDaysFont;
     protected Font calendarDatesFont;
+    protected  Font standardSmallerTitleFont;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -40,6 +41,7 @@ public abstract class StandardInsidePanel extends JPanel {
         try {
             Font temp = Font.createFont(Font.TRUETYPE_FONT, ClassLoader.getSystemResource("segoeui.ttf").openStream());
             standardTitleFont = temp.deriveFont(35f);
+            standardSmallerTitleFont = temp.deriveFont(28f);
             standardTextFont = temp.deriveFont(17f);
             standardButtonFont = temp.deriveFont(14f);
             calendarDatesFont =  temp.deriveFont(10f);

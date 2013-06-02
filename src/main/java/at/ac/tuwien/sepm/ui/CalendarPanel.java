@@ -59,6 +59,8 @@ public class CalendarPanel extends StandardInsidePanel {
         createImportButton();
         changeImage(1);
         createTop();
+        this.revalidate();
+        this.repaint();
     }
 
     private void createTop() {
