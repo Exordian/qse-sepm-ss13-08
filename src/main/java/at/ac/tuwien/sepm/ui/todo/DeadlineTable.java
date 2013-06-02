@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.todo;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.Todo;
@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.LVAServiceImpl;
 import at.ac.tuwien.sepm.service.impl.LvaDateServiceImpl;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

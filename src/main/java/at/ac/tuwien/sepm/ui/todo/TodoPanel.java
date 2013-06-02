@@ -1,39 +1,28 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.todo;
 
-import at.ac.tuwien.sepm.dao.MetaLvaDao;
-import at.ac.tuwien.sepm.dao.hsqldb.DBLvaDao;
-import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
-import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.service.LvaDateService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
-import at.ac.tuwien.sepm.service.impl.LvaDateServiceImpl;
-import at.ac.tuwien.sepm.service.impl.TodoServiceImpl;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+import at.ac.tuwien.sepm.ui.UI;
+import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 
 /**
  * @author Lena Lenz
  */
 
 @UI
-public class TodoPanel extends JPanel {
+public class TodoPanel extends StandardInsidePanel {
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -59,6 +48,8 @@ public class TodoPanel extends JPanel {
 
     @Autowired
     public TodoPanel(TodoService todoService, LvaDateService lvaDateService, TodoTable todoTable, DeadlineTable deadlineTable, TodoAdderFrame todoAdderFrame, TodoEditorFrame todoEditorFrame, DeadlineAdderFrame deadlineAdderFrame, DeadlineEditorFrame deadlineEditorFrame) {
+        init();
+        this.setLayout(new MigLayout("fill", "[16%][18%][16%][16%][18%][16%]", "[][grow][]"));
         this.service = todoService;
         serviceDeadlines = lvaDateService;
         this.todoAdderFrame = todoAdderFrame;
@@ -73,9 +64,7 @@ public class TodoPanel extends JPanel {
 
     }
 
- //   @Autowired
     public void initJTables(TodoTable todoTable, DeadlineTable deadlineTable) {
-
         try {
             this.todoTable = todoTable;
             todoTable.init(service.getAllTodos());
@@ -84,8 +73,11 @@ public class TodoPanel extends JPanel {
         } catch(ServiceException e) {
             logger.error(e.getMessage());
         }
-        this.add(todoTable);
-        this.add(deadlineTable);
+        this.add(new JLabel("TODOs"), "grow, spanx 3");
+        this.add(new JLabel("Deadlines"), "grow, spanx 3, wrap");
+
+        this.add(todoTable, "grow, spanx 3");
+        this.add(deadlineTable, "grow, spanx 3, wrap");
 
 
         this.todoAdderFrame.init(todoTable, service);
@@ -94,116 +86,16 @@ public class TodoPanel extends JPanel {
         this.deadlineEditorFrame.init(deadlineTable, serviceDeadlines);
     }
 
-    /*
-    public void configureColumns() {
-        //Todos
-        JScrollPane scrollpaneT = new JScrollPane(displayTodos);
-        displayTodos.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        TableColumnModel tcmT = displayTodos.getColumnModel();
-        TableColumn Tcolumn0 = tcmT.getColumn(0);
-        TableColumn Tcolumn1 = tcmT.getColumn(1);
-        TableColumn Tcolumn2 = tcmT.getColumn(2);
-        TableColumn Tcolumn3 = tcmT.getColumn(3);
-        TableColumn Tcolumn4 = tcmT.getColumn(4);
-        Tcolumn0.setPreferredWidth(10);
-        Tcolumn1.setPreferredWidth(20);
-        Tcolumn2.setPreferredWidth(20);
-        Tcolumn3.setPreferredWidth(20);
-        Tcolumn4.setPreferredWidth(20);
-
-
-        refreshLVAListByYearAndSemester();
-
-        //ComboBox pro Zelle in Spalte 'LVA' der Tabelle 'Todos'
-        String[] lvas = lvaList.toArray(new String[lvaList.size()]);
-        Tcolumn1.setCellEditor(new MyComboBoxEditor(lvas));
-        Tcolumn1.setCellRenderer(new MyComboBoxRenderer(lvas));
-
-        String[] items = {"Ja", "Nein"};
-        //ComboBox pro Zelle in Spalte 'Abgeschlossen' der Tabelle 'Todos'
-        Tcolumn4.setCellEditor(new MyComboBoxEditor(items));
-        Tcolumn4.setCellRenderer(new MyComboBoxRenderer(items));
-
-        this.add(scrollpaneT);
-
-        //Deadlines
-        JScrollPane scrollpaneD = new JScrollPane(displayDeadlines);
-        displayDeadlines.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        TableColumnModel tcmD = displayDeadlines.getColumnModel();
-        TableColumn Dcolumn0 = tcmD.getColumn(0);
-        TableColumn Dcolumn1 = tcmD.getColumn(1);
-        TableColumn Dcolumn2 = tcmD.getColumn(2);
-        TableColumn Dcolumn3 = tcmD.getColumn(3);
-        TableColumn Dcolumn4 = tcmD.getColumn(4);
-        TableColumn Dcolumn5 = tcmD.getColumn(5);
-        Dcolumn0.setPreferredWidth(10);
-        Dcolumn1.setPreferredWidth(20);
-        Dcolumn2.setPreferredWidth(20);
-        Dcolumn3.setPreferredWidth(20);
-        Dcolumn4.setPreferredWidth(20);
-        Dcolumn5.setPreferredWidth(20);
-        //ComboBox pro Zelle in Spalte 'LVA' in Spalte LVA der Tabelle 'Deadlines'
-        Dcolumn1.setCellEditor(new MyComboBoxEditor(lvas));
-        Dcolumn1.setCellRenderer(new MyComboBoxRenderer(lvas));
-        //ComboBox pro Zelle in Spalte 'Abgeschlossen' der Tabelle 'Deadlines'
-        Dcolumn5.setCellEditor(new MyComboBoxEditor(items));
-        Dcolumn5.setCellRenderer(new MyComboBoxRenderer(items));
-
-        this.add(scrollpaneD);
-    }
-
-    private void refreshLVAListByYearAndSemester() {
-        int year = DateTime.now().getYear();
-        boolean isWinterSemester = (DateTime.now().getMonthOfYear() < 6)? false : true;
-        try {
-            this.lvaList = service.getLVAByYearAndSemester(year, isWinterSemester);
-        } catch(ServiceException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private class MyComboBoxEditor extends DefaultCellEditor {
-
-        private static final long serialVersionUID = 1L;
-
-        public MyComboBoxEditor(String[] items) {
-            super(new JComboBox(items));
-        }
-
-    }
-
-    private class MyComboBoxRenderer extends JComboBox implements TableCellRenderer {
-
-        private static final long serialVersionUID = 1L;
-
-        public MyComboBoxRenderer(String[] items) {
-            super(items);
-        }
-
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if(isSelected) {
-                setForeground(table.getSelectionForeground());
-                super.setBackground(table.getSelectionBackground());
-            } else {
-                setForeground(table.getForeground());
-                setBackground(table.getBackground());
-            }
-            setSelectedItem(value);
-            return this;
-        }
-
-    }*/
-
     public void addButtons() {
-        add_todo = new JButton("Todo Hinzufügen");
-        edit_todo = new JButton("Todo Bearbeiten");
-        delete_todo = new JButton("Todo Löschen");
+        add_todo = new JButton("Hinzufügen");
+        edit_todo = new JButton("Bearbeiten");
+        delete_todo = new JButton("Löschen");
         this.add(add_todo);
         this.add(edit_todo);
         this.add(delete_todo);
-        add_deadline = new JButton("Deadline Hinzufügen");
-        edit_deadline = new JButton("Deadline Bearbeiten");
-        delete_deadline = new JButton("Deadline Löschen");
+        add_deadline = new JButton("Hinzufügen");
+        edit_deadline = new JButton("Bearbeiten");
+        delete_deadline = new JButton("Löschen");
         this.add(add_deadline);
         this.add(edit_deadline);
         this.add(delete_deadline);

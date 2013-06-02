@@ -1,6 +1,7 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.todo;
 
 import at.ac.tuwien.sepm.entity.Todo;
+import at.ac.tuwien.sepm.ui.UI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

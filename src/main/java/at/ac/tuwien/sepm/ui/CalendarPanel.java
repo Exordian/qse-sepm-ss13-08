@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.kalender.CalMonthGenerator;
 import at.ac.tuwien.sepm.ui.kalender.CalWeekGenerator;
 import at.ac.tuwien.sepm.ui.kalender.CalendarInterface;
+import at.ac.tuwien.sepm.ui.todo.TodoPanel;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 //import org.joda.time.DateTime;
@@ -79,7 +80,6 @@ public class CalendarPanel extends StandardInsidePanel {
 
         this.add(month);
         this.add(semester);
-        this.add(todoPanel);
     }
 
     private void createImportButton() {

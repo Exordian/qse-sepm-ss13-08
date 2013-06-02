@@ -1,88 +1,89 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.todo;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
-import at.ac.tuwien.sepm.service.impl.LVAServiceImpl;
-import at.ac.tuwien.sepm.service.impl.TodoServiceImpl;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.UI;
+import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 /**
  * @author Lena Lenz
  */
 @UI
-public class TodoEditorFrame extends JFrame {
+public class TodoAdderFrame extends JFrame {
+
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
-    private JButton done_editing;
+    private JButton add;
     private JLabel nameLabel;
     private JTextField name;
     private JLabel descriptionLabel;
     private JTextField description;
     private JCheckBox done;
-
+    
     private TodoTable todoTable;
     private TodoService service;
-    private Todo toEdit;
     @Autowired
     private LVAService lvaService;
     private List<LVA> LVAs;
     private JTable displayLVAs;
     private DefaultTableModel model;
 
-    public TodoEditorFrame() {
-        super("Todo Bearbeiten");
+    public TodoAdderFrame() {
+        super("Neues Todo Hinzufügen");
     }
 
     public void init(TodoTable todoTable, TodoService service) {
         this.todoTable = todoTable;
         this.service = service;
-
+        //this.lvaService = lvaService;
+        
         this.init();
         this.initLVAs();
         this.addActionListeners();
     }
 
-    public void openWindow(Todo toEdit) {
-        this.toEdit = toEdit;
-        name.setText(toEdit.getName());
-        description.setText(toEdit.getDescription());
-        done.setSelected(toEdit.getDone());
-
+    public void openWindow() {
         setLayout(new FlowLayout());
         setAlwaysOnTop(true);
         setLocation(500,300);
-        setSize(400,600);
+        setSize(600,400);
         setVisible(true);
     }
-
+    
     public void init() {
-        done_editing = new JButton("Änderungen speichern");
+        add = new JButton("Hinzufügen");
         nameLabel = new JLabel("Name");
         name = new JTextField();
+        name.setSize(30,20);
         descriptionLabel = new JLabel("Beschreibung");
         description = new JTextField();
+        description.setMinimumSize(new Dimension(60,30));
         done = new JCheckBox("Abgeschlossen");
 
-        this.add(done_editing);
         this.add(nameLabel);
         this.add(name);
         this.add(descriptionLabel);
         this.add(description);
         this.add(done);
+        this.add(add);
+
+        //lvaService = new LVAServiceImpl();
     }
 
     public void initLVAs() {
@@ -121,44 +122,46 @@ public class TodoEditorFrame extends JFrame {
         }
         this.initLVATable();
     }
-
+    
     public void addActionListeners() {
-        done_editing.addActionListener(new ActionListener() {
+        add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TodoEditorFrame.this.editPressed();
+                TodoAdderFrame.this.addPressed();
             }
         });
     }
-
-    public void editPressed() {
-        LVA lva = null;
-        int selectedRow = displayLVAs.getSelectedRow();
-        if(selectedRow < 0) {
-            lva = todoTable.getSelectedTodo().getLva();
-        }
-        else {
-            lva = toEdit.getLva();
-        }
+    
+    public void addPressed() {
+        LVA lva = LVAs.get(displayLVAs.getSelectedRow());
         String todo_name = name.getText();
         String todo_description = description.getText();
         boolean todo_done = done.isSelected();
 
-        toEdit.setLva(lva);
-        toEdit.setName(todo_name);
-        toEdit.setDescription(todo_description);
-        toEdit.setDone(todo_done);
+        Todo toCreate = new Todo();
+        toCreate.setLva(lva);
+        toCreate.setName(todo_name);
+        toCreate.setDescription(todo_description);
+        toCreate.setDone(todo_done);
 
         try {
-            service.update(toEdit);
-            todoTable.refreshTodos(service.getAllTodos());
+            service.create(toCreate);
         } catch (ServiceException e) {
             logger.error(e.getMessage());
         } catch (ValidationException e) {
             logger.error(e.getMessage());
         }
 
-        dispose(); //Fenster schließen
+        todoTable.addNewTodo(toCreate);
+
+        this.reset();
+    }
+
+    //Felder leeren
+    public void reset() {
+        name.setText("");
+        description.setText("");
+        done.setSelected(false);
     }
 
 }
