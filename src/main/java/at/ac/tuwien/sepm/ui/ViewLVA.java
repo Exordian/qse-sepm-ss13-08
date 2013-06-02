@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ui;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import com.toedter.calendar.JDateChooser;
 import org.joda.time.DateTime;
 
 import javax.swing.*;
@@ -36,8 +37,10 @@ public class ViewLVA extends StandardSimpleInsidePanel {
     private JCheckBox attended;
     private JComboBox type;
     private Image room;
-    private JTextField from;
-    private JTextField to;
+    private JDateChooser from;
+    private JDateChooser to;
+    private JSpinner fromTime;
+    private JSpinner toTime;
 
     public ViewLVA() {
         init();
@@ -55,6 +58,10 @@ public class ViewLVA extends StandardSimpleInsidePanel {
         type.setSelectedItem(lvaDate.getType());
         attendanceRequired.setSelected(lvaDate.getAttendanceRequired());
         attended.setSelected(lvaDate.getWasAttendant());
+        from.setDate(lvaDate.getStart().toDate());
+        to.setDate(lvaDate.getStop().toDate());
+        fromTime.setValue(lvaDate.getStart().toDate());
+        toTime.setValue(lvaDate.getStop().toDate());
         this.repaint();
         this.revalidate();
     }
@@ -66,6 +73,13 @@ public class ViewLVA extends StandardSimpleInsidePanel {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                lvaDate.setName(title.getText());
+                lvaDate.setDescription(description.getText());
+                lvaDate.setWasAttendant(attended.isSelected());
+                lvaDate.setType((LvaDateType)type.getSelectedItem());
+                lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
+                lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
+
                 //todo save
             }
         });
@@ -85,15 +99,24 @@ public class ViewLVA extends StandardSimpleInsidePanel {
         this.add(scroll);
 
 
+
+
         fromLabel = new JLabel("Von");
         fromLabel.setFont(standardTextFont);
         fromLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10,50,25);
         this.add(fromLabel);
 
-        from = new JTextField();   //todo eventuell datechooser
-        from.setFont(standardTextFont);
+        from = new JDateChooser();
+        from.setFont(standardButtonFont);
         from.setBounds(fromLabel.getX(), fromLabel.getY() + fromLabel.getHeight() + verticalSpace, 100,25);
         this.add(from);
+
+        fromTime = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(fromTime, "HH:mm");
+        fromTime.setEditor(timeEditor);
+        fromTime.setFont(standardButtonFont);
+        fromTime.setBounds(from.getX() + from.getWidth() + 5, from.getY(), 65,25);
+        this.add(fromTime);
 
 
         toLabel = new JLabel("Bis");
@@ -101,10 +124,18 @@ public class ViewLVA extends StandardSimpleInsidePanel {
         toLabel.setBounds(from.getX(), from.getY() + from.getHeight() + verticalSpace*2, 50,25);
         this.add(toLabel);
 
-        to = new JTextField();   //todo eventuell datechooser
-        to.setFont(standardTextFont);
+        to = new JDateChooser();
+        to.setFont(standardButtonFont);
         to.setBounds(toLabel.getX(), toLabel.getY() + toLabel.getHeight() + verticalSpace, 100,25);
         this.add(to);
+
+        toTime = new JSpinner(new SpinnerDateModel());
+        timeEditor = new JSpinner.DateEditor(toTime, "HH:mm");
+        toTime.setEditor(timeEditor);
+        toTime.setFont(standardButtonFont);
+        toTime.setBounds(to.getX() + to.getWidth() + 5, to.getY(), 65,25);
+        this.add(toTime);
+
 
 
         typeLabel = new JLabel("Typ");

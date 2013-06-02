@@ -23,8 +23,6 @@ public class DateServiceTest {
         validDateEntity.setDescription("valid description");
         validDateEntity.setId(3);
         validDateEntity.setIntersectable(true);
-        //validDateEntity.setStart(new DateTime(2000, 1, 1, 1, 1));
-        //validDateEntity.setStop(new DateTime(2002, 2, 2, 2, 2));
         validDateEntity.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
     }
 
@@ -100,6 +98,21 @@ public class DateServiceTest {
 
     @Test
     public void testValidateDateVALID() throws Exception {
-        dateService.validateDate(validDateEntity.getStart());
+        dateService.validateDates(validDateEntity.getStart(), validDateEntity.getStop());
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testValidateDateINVALIDswitched() throws Exception {
+        dateService.validateDates(validDateEntity.getStop(), validDateEntity.getStart());
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testValidateDateINVALIDfrom() throws Exception {
+        dateService.validateDates(null, validDateEntity.getStop());
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testValidateDateINVALIDto() throws Exception {
+        dateService.validateDates(validDateEntity.getStart(), null);
     }
 }

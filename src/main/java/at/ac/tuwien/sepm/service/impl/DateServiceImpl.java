@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -78,12 +79,11 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public List<DateEntity> readDateInTimeframe(DateTime from, DateTime till) throws ServiceException {
-        this.validateDate(from);
-        this.validateDate(till);
+    public List<DateEntity> readDateInTimeframe(DateTime from, DateTime to) throws ServiceException {
+        this.validateDates(from, to);
 
         try {
-            return dateDao.readInTimeframe(from, till);
+            return dateDao.readInTimeframe(from, to);
         } catch (DataAccessException d) {
             log.error("DateEntities could not be found.");
             throw new ServiceException("DateEntities could not be found.", d);
@@ -139,10 +139,20 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public void validateDate(DateTime date) throws ServiceException {
-        if (date == null) {
+    public void validateDates(DateTime from, DateTime to) throws ServiceException {
+        if (from == null) {
             log.error("Date is invalid.");
             throw new ServiceException("Date is invalid.");
+        }
+
+        if (to == null) {
+            log.error("Date is invalid.");
+            throw new ServiceException("Date is invalid.");
+        }
+
+        if (from.isAfter(to)) {
+            log.error("To is before From.");
+            throw new ServiceException("To is before From.");
         }
     }
 }

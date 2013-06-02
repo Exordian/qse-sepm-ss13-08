@@ -1,11 +1,19 @@
 package at.ac.tuwien.sepm.ui;
 
+import com.toedter.calendar.JDateChooser;
+import org.joda.time.DateTime;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,6 +25,7 @@ import java.io.IOException;
 public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
     protected JButton retButton;
     protected BackgroundPanel bgPanel;
+    protected JTextField title;
 
     protected Rectangle simpleWhiteSpace = new Rectangle(98, 64, 922, 509);  //white space in simple inside panel
 
@@ -59,12 +68,54 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
         title.setForeground(Color.WHITE);
         title.setFont(standardTitleFont);
         this.add(title);
+        this.repaint();
+        this.revalidate();
     }
 
     protected void addEditableTitle(String s) {
+        title = new JTextField(s);
+        title.setBounds((int) ((size.getWidth() / 2) - (image.getWidth(null) / 2)) + 35, (int) (size.getHeight() / 2 - image.getHeight(null) / 2) - 42, 257, 45);
+        title.setForeground(Color.WHITE);
+        title.setFont(standardTitleFont);
+        title.setBackground(new Color(0, 0, 0, 0));
+        title.setBorder(null);
 
+        title.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                StandardSimpleInsidePanel.this.repaint();
+                StandardSimpleInsidePanel.this.revalidate();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                StandardSimpleInsidePanel.this.repaint();
+                StandardSimpleInsidePanel.this.revalidate();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                StandardSimpleInsidePanel.this.repaint();
+                StandardSimpleInsidePanel.this.revalidate();
+            }
+        });
+
+        this.add(title);
+        this.repaint();
+        this.revalidate();
     }
 
+    //converts spinner and datechooser to dateTime
+    protected DateTime convertDateAndTime(JSpinner spinner, JDateChooser dateChooser) {
+        Date time = (Date) spinner.getValue();
+        GregorianCalendar timeCalendar = new GregorianCalendar();
+        timeCalendar.setTime(time);
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(dateChooser.getDate());
+        calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get( Calendar.HOUR_OF_DAY ) );
+        calendar.set(Calendar.MINUTE, timeCalendar.get( Calendar.MINUTE ) );
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date newDate = calendar.getTime();
+        return new DateTime(newDate);
+    }
+
+    //needed for return button
     public void setBgPanel(BackgroundPanel bgPanel) {
         this.bgPanel=bgPanel;
     }

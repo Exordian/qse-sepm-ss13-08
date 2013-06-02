@@ -99,7 +99,7 @@ public class DateEntity implements Date {
     */
     @Override
     public DateTime getStop() {
-        return time.from();
+        return time.to();
     }
 
     @Override
@@ -109,8 +109,8 @@ public class DateEntity implements Date {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", isIntersectable=" + isIntersectable +
-                ", start=" + time.to() +
-                ", stop=" + time.from() +
+                ", start=" + time.from() +
+                ", stop=" + time.to() +
                 '}';
     }
 
