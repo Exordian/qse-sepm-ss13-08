@@ -162,7 +162,7 @@ public class DBCurriculumDaoTest {
         dao.create(e0);
     }
 
-    @Test(expected = DataAccessException.class)
+    @Test
     public void testCreateDescriptionIsNull() throws Exception {
         Curriculum e0 = new Curriculum();
         e0.setId(11234);

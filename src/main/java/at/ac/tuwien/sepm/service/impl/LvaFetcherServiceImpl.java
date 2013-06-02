@@ -140,7 +140,11 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             for(Element e : lvaTable.select(CURRICULUM_TABLE_ELEMENTS)) {
                 if(e.attr("class").trim().equals(CURRICULUM_TABLE_MODULE_NAME_CLASS)) {
                     if(e.text().startsWith(CURRICULUM_TABLE_MODULE_CATALOG_INDICATOR)) {
-                        lastModule.setMetaLvas(getCatalogByUrl(e.select("a").attr("href"), semester));
+                        try {
+                            lastModule.setMetaLvas(getCatalogByUrl(e.select("a").attr("href"), semester));
+                        } catch (NullPointerException ex) {
+                            log.info("Catalog: " + e.text() + " has no link");
+                        }
                     } else {
                         lastModule = new Module();
                         lastModule.setName(e.text());

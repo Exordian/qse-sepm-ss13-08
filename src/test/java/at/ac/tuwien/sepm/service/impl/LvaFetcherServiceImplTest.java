@@ -38,6 +38,7 @@ public class LvaFetcherServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void testGetAcademicProgramsRecursive() throws Exception {
         List<Curriculum> curriculumList = lvaFetcherService.getAcademicPrograms(true);
         Assert.notNull(curriculumList);
