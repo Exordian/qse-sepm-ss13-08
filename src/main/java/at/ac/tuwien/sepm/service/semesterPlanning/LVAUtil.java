@@ -134,27 +134,27 @@ public class LVAUtil {
                 }
             }
         }
-		/*
-		int index1=0;
-		int index2=0;
-		if(iterA.hasNext()&&iterB.hasNext()){
-			tfA=iterA.next();
-			tfB=iterB.next();
+        /*
+        int index1=0;
+        int index2=0;
+        if(iterA.hasNext()&&iterB.hasNext()){
+            tfA=iterA.next();
+            tfB=iterB.next();
 
 
-			while(index1 < times.size() && index2 < b.times.size()){
-				if(times.get(index1).after(b.times.get(index2))){
-					index2++;
-					logger.debug("index2++");
-				}else if(b.times.get(index2).after(times.get(index1))){
-					index1++;
+            while(index1 < times.size() && index2 < b.times.size()){
+                if(times.get(index1).after(b.times.get(index2))){
+                    index2++;
+                    logger.debug("index2++");
+                }else if(b.times.get(index2).after(times.get(index1))){
+                    index1++;
 
-					logger.debug("index1++");
-				}else{
-					return true;
-				}
-			}
-		}*/
+                    logger.debug("index1++");
+                }else{
+                    return true;
+                }
+            }
+        }*/
         return false;
     }
     private static class TimeIterator implements Iterator<LvaDate>{

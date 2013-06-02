@@ -16,11 +16,11 @@ import at.ac.tuwien.sepm.service.TimeFrame;
 public class LVA {
 
     private int id;
-	private MetaLVA metaLVA;
-	private String description;
-	private int year;
-	private Semester semester;
-	private int grade;
+    private MetaLVA metaLVA;
+    private String description;
+    private int year;
+    private Semester semester;
+    private int grade;
 
     private boolean inStudyProgress;
     private String goals;
@@ -32,116 +32,116 @@ public class LVA {
     private String language;
 
 
-	private ArrayList<LvaDate> lectures;
-	//private ArrayList<String> rooms;
-	//private ArrayList<String> lecturer;
-	
-	private ArrayList<LvaDate> exercises;
-	//private ArrayList<String> roomsUE;
-	//private String exerciseInstructor;
-	
-	private ArrayList<LvaDate> exams;
-	//private ArrayList<String> roomsExam;
-	//private ArrayList<Integer> examGrade;
+    private ArrayList<LvaDate> lectures;
+    //private ArrayList<String> rooms;
+    //private ArrayList<String> lecturer;
+    
+    private ArrayList<LvaDate> exercises;
+    //private ArrayList<String> roomsUE;
+    //private String exerciseInstructor;
+    
+    private ArrayList<LvaDate> exams;
+    //private ArrayList<String> roomsExam;
+    //private ArrayList<Integer> examGrade;
 
     private ArrayList<LvaDate> deadlines;
 
     public MetaLVA getMetaLVA() {
-		return metaLVA;
-	}
-	/**
-	 * should only be called by MetaLVA!
-	 * use MetaLVA.setLVAs(List<LVA>) or MetaLVA.setLVA(LVA) instead
-	 * @param metaLVA
-	 */
-	public void setMetaLVA(MetaLVA metaLVA){
-		this.metaLVA = metaLVA;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public int getYear() {
-		return year;
-	}
-	public void setYear(int year) {
-		this.year = year;
-	}
-	public Semester getSemester() {
-		return semester;
-	}
+        return metaLVA;
+    }
+    /**
+     * should only be called by MetaLVA!
+     * use MetaLVA.setLVAs(List<LVA>) or MetaLVA.setLVA(LVA) instead
+     * @param metaLVA
+     */
+    public void setMetaLVA(MetaLVA metaLVA){
+        this.metaLVA = metaLVA;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public int getYear() {
+        return year;
+    }
+    public void setYear(int year) {
+        this.year = year;
+    }
+    public Semester getSemester() {
+        return semester;
+    }
 
     /**
      * sets the Semester.
      * @param semester must either be Semester.W or Semester.S.
      */
-	public void setSemester(Semester semester) {
-		this.semester = semester;
-	}
-	public ArrayList<LvaDate> getLectures() {
-		return lectures;
-	}
-	public void setLectures(List<LvaDate> lectures) {
-		this.lectures = new ArrayList<LvaDate>(lectures);
-	}
-	/*
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
+    public ArrayList<LvaDate> getLectures() {
+        return lectures;
+    }
+    public void setLectures(List<LvaDate> lectures) {
+        this.lectures = new ArrayList<LvaDate>(lectures);
+    }
+    /*
     public ArrayList<String> getRooms() {
-		return rooms;
-	}
+        return rooms;
+    }
 
-	public void setRooms(List<String> rooms) {
-		this.rooms = new ArrayList<String>(rooms);
-	}
+    public void setRooms(List<String> rooms) {
+        this.rooms = new ArrayList<String>(rooms);
+    }
 
-	public ArrayList<String> getLecturer() {
-		return lecturer;
-	}
+    public ArrayList<String> getLecturer() {
+        return lecturer;
+    }
 
-	public void setLecturer(List<String> lecturer) {
-		this.lecturer = new ArrayList<String>(lecturer);
-	}
+    public void setLecturer(List<String> lecturer) {
+        this.lecturer = new ArrayList<String>(lecturer);
+    }
 
     public ArrayList<String> getRoomsUE() {
         return roomsUE;
     }
 
-	public void setRoomsUE(List<String> roomsUE) {
-		this.roomsUE = new ArrayList<String>(roomsUE);
-	}
+    public void setRoomsUE(List<String> roomsUE) {
+        this.roomsUE = new ArrayList<String>(roomsUE);
+    }
 
-	public String getExerciseInstructor() {
-		return exerciseInstructor;
-	}
+    public String getExerciseInstructor() {
+        return exerciseInstructor;
+    }
 
-	public void setExerciseInstructor(String exerciseInstructor) {
-		this.exerciseInstructor = exerciseInstructor;
-	}
+    public void setExerciseInstructor(String exerciseInstructor) {
+        this.exerciseInstructor = exerciseInstructor;
+    }
     */
-	public ArrayList<LvaDate> getExams() {
-		return exams;
-	}
+    public ArrayList<LvaDate> getExams() {
+        return exams;
+    }
 
-	public void setExams(List<LvaDate> exams) {
-		this.exams = new ArrayList<LvaDate>(exams);
-	}
+    public void setExams(List<LvaDate> exams) {
+        this.exams = new ArrayList<LvaDate>(exams);
+    }
     /*
-	public ArrayList<String> getRoomsExam() {
-		return roomsExam;
-	}
+    public ArrayList<String> getRoomsExam() {
+        return roomsExam;
+    }
 
-	public void setRoomsExam(List<String> roomsExam) {
-		this.roomsExam = new ArrayList<String>(roomsExam);
-	}
+    public void setRoomsExam(List<String> roomsExam) {
+        this.roomsExam = new ArrayList<String>(roomsExam);
+    }
 
-	public ArrayList<Integer> getExamGrade() {
-		return examGrade;
-	}
+    public ArrayList<Integer> getExamGrade() {
+        return examGrade;
+    }
 
-	public void setExamGrade(List<Integer> examGrade) {
-		this.examGrade = new ArrayList<Integer>(examGrade);
-	}
+    public void setExamGrade(List<Integer> examGrade) {
+        this.examGrade = new ArrayList<Integer>(examGrade);
+    }
     */
     public List<LvaDate> getDeadlines() {
         return deadlines;
