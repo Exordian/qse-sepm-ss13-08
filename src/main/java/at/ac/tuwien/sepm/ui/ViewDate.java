@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -13,6 +14,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 /**
@@ -34,8 +39,10 @@ public class ViewDate extends StandardSimpleInsidePanel {
     private JLabel intersectLabel;
 
     private JCheckBox intersectable;
-    private JTextField from;
-    private JTextField to;
+    private JDateChooser from;
+    private JSpinner fromTime;
+    private JDateChooser to;
+    private JSpinner toTime;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -45,20 +52,23 @@ public class ViewDate extends StandardSimpleInsidePanel {
         init();
         addImage();
         dateEntity = new DateEntity();
+        addEditableTitle(dateEntity.getName());
         addReturnButton();
         addContent();
         addSaveButton();
+        this.repaint();
+        this.revalidate();
     }
 
     public void setDateEntity(DateEntity dateEntity) {
         this.dateEntity=dateEntity;
-
-        addTitle(dateEntity.getName());
+        changeTitle(dateEntity.getName());
         description.setText(dateEntity.getDescription());
         intersectable.setSelected(dateEntity.getIntersectable());
-
-        this.repaint();
-        this.revalidate();
+        from.setDate(dateEntity.getStart().toDate());
+        to.setDate(dateEntity.getStop().toDate());
+        fromTime.setValue(dateEntity.getStart().toDate());
+        toTime.setValue(dateEntity.getStop().toDate());
     }
 
     private void addSaveButton() {
@@ -69,6 +79,10 @@ public class ViewDate extends StandardSimpleInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
+                    dateEntity.setName(title.getText());
+                    dateEntity.setDescription(description.getText());
+                    dateEntity.setIntersectable(intersectable.isSelected());
+                    dateEntity.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
                     if (dateService.readDateById(dateEntity.getId()) != null) {
                         dateService.updateDate(dateEntity);
                     } else {
@@ -95,15 +109,25 @@ public class ViewDate extends StandardSimpleInsidePanel {
         scroll.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()-40);
         this.add(scroll);
 
+
+
         fromLabel = new JLabel("Von");
         fromLabel.setFont(standardTextFont);
         fromLabel.setBounds((int)simpleWhiteSpace.getX() + 10,(int)simpleWhiteSpace.getY() + 10,50,25);
         this.add(fromLabel);
 
-        from = new JTextField();   //todo eventuell datechooser
-        from.setFont(standardTextFont);
+        from = new JDateChooser();
+        from.setFont(standardButtonFont);
         from.setBounds(fromLabel.getX(), fromLabel.getY() + fromLabel.getHeight() + verticalSpace, 100,25);
         this.add(from);
+
+        fromTime = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(fromTime, "HH:mm");
+        fromTime.setEditor(timeEditor);
+        fromTime.setFont(standardButtonFont);
+        fromTime.setBounds(from.getX() + from.getWidth() + 5, from.getY(), 65,25);
+        this.add(fromTime);
+
 
 
         toLabel = new JLabel("Bis");
@@ -111,10 +135,19 @@ public class ViewDate extends StandardSimpleInsidePanel {
         toLabel.setBounds(from.getX(), from.getY() + from.getHeight() + verticalSpace*2, 50,25);
         this.add(toLabel);
 
-        to = new JTextField();   //todo eventuell datechooser
-        to.setFont(standardTextFont);
+        to = new JDateChooser();
+        to.setFont(standardButtonFont);
         to.setBounds(toLabel.getX(), toLabel.getY() + toLabel.getHeight() + verticalSpace, 100,25);
         this.add(to);
+
+        toTime = new JSpinner(new SpinnerDateModel());
+        timeEditor = new JSpinner.DateEditor(toTime, "HH:mm");
+        toTime.setEditor(timeEditor);
+        toTime.setFont(standardButtonFont);
+        toTime.setBounds(to.getX() + to.getWidth() + 5, to.getY(), 65,25);
+        this.add(toTime);
+
+
 
 
         intersectLabel = new JLabel("Überschneidungen zulassen?");
@@ -127,8 +160,5 @@ public class ViewDate extends StandardSimpleInsidePanel {
         intersectable.setBackground(new Color(0,0,0,0));
         intersectable.setBounds(intersectLabel.getX() + intersectLabel.getWidth() + 5, intersectLabel.getY(), 20, 20);
         this.add(intersectable);
-
-        this.revalidate();
-        this.repaint();
     }
 }

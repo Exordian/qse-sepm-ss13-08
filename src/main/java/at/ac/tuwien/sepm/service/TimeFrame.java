@@ -4,8 +4,8 @@ import org.joda.time.DateTime;
 
 
 public class TimeFrame {
-	private final DateTime from;
-	private final DateTime to;
+    private final DateTime from;
+    private final DateTime to;
 
     /*
     public void setFrom(DateTime from) {
@@ -21,58 +21,58 @@ public class TimeFrame {
      * @param from the first date for this TimeFrame. must lie before "to".
      * @param to the second date for this TimeFrame. must lie after "from".
      */
-	public TimeFrame(DateTime from,DateTime to){
-		if(from.isAfter(to)){
-			throw new RuntimeException("\"from\" must lie before \"to\"!");
-		}
-		this.from = from;
-		this.to=to;
-	}
+    public TimeFrame(DateTime from,DateTime to){
+        if(from.isAfter(to)){
+            throw new RuntimeException("\"from\" must lie before \"to\"!");
+        }
+        this.from = from;
+        this.to=to;
+    }
 
     /**
      * tests, whether the two TimeFrames overlap
      * @param other the other TimeFrame for the test
      * @return the result of the test
      */
-	public boolean intersect(TimeFrame other){
-		return !(before(other) || after(other));
-	}
+    public boolean intersect(TimeFrame other){
+        return !(before(other) || after(other));
+    }
 
     /**
      * tests, whether this TimeFrame lies before the other
      * @param other the other TimeFrame for testing
      * @return the result of the test
      */
-	public boolean before(TimeFrame other){
-		return to.isBefore(other.from);
-	}
+    public boolean before(TimeFrame other){
+        return to.isBefore(other.from);
+    }
 
     /**
      * tests, whether this TimeFrame lies after the other.
      * @param other the other TimeFrame for testing
      * @return the result of the test
      */
-	public boolean after(TimeFrame other){
-		return other.to.isBefore(from);
-	}
+    public boolean after(TimeFrame other){
+        return other.to.isBefore(from);
+    }
     /**
      * tests, whether this TimeFrame lies before the other plus the given seconds.
      * @param other the other TimeFrame for testing
      * @param secondsBetween the amount of seconds, which will be added to the this TimeFrame before testing. Negative values for allowing overlapping.
      * @return the result of the test
      */
-	public boolean before(TimeFrame other,int secondsBetween){
-		return to.plusSeconds(secondsBetween).isBefore(other.from);
-	}
+    public boolean before(TimeFrame other,int secondsBetween){
+        return to.plusSeconds(secondsBetween).isBefore(other.from);
+    }
     /**
      * tests, whether this TimeFrame lies after the other plus the given seconds.
      * @param other the other TimeFrame for testing
      * @param secondsBetween the amount of seconds, which will be added to the other TimeFrame before testing. Negative values for allowing overlapping.
      * @return the result of the test
      */
-	public boolean after(TimeFrame other,int secondsBetween){
-		return other.to.plusSeconds(secondsBetween).isBefore(from);
-	}
+    public boolean after(TimeFrame other,int secondsBetween){
+        return other.to.plusSeconds(secondsBetween).isBefore(from);
+    }
     /**
      * tests, whether there is at least a certain amount of seconds between two TimeFrames.
      * Use negative values, to allow certain overlapping
@@ -87,16 +87,16 @@ public class TimeFrame {
      * requests the first date of this TimeFrame
      * @return the first date of this TimeFrame
      */
-	public DateTime from() {
-		return from;
-	}
+    public DateTime from() {
+        return from;
+    }
     /**
      * requests the second date of this TimeFrame
      * @return the second date of this TimeFrame
      */
-	public DateTime to() {
-		return to;
-	}
+    public DateTime to() {
+        return to;
+    }
 
     /**
      * a readable representation of this object
@@ -104,9 +104,9 @@ public class TimeFrame {
      * @return
      *
      */
-	public String toString(){
-		return "<TimeFrame: from:"+from+", to:"+to+">";
-	}
+    public String toString(){
+        return "<TimeFrame: from:"+from+", to:"+to+">";
+    }
 
     @Override
     public boolean equals(Object o) {

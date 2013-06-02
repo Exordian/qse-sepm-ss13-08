@@ -2,11 +2,8 @@ package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
-import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -28,14 +25,14 @@ public class BackgroundPanel extends JPanel {
     private JPanel studPanel;
     private JPanel propsPanel;
     private ViewDate viewDate;
-    private ViewLVA viewLVA;
+    private ViewLvaDate viewLVA;
     private Image image;
     private Component lastComponent;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLVA viewLVA) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA) {
         this.setLayout(null);
         this.calPanel = calPanel;
         this.propsPanel = propsPanel;
@@ -49,13 +46,13 @@ public class BackgroundPanel extends JPanel {
         createPropertiesButton();
         createTabButtons();
 
-        /*test
+        /*test  VIEWDATE AND VIEWLVA
         JButton testViewDate = new JButton("view lva");
         testViewDate.setBounds(500, 630, 110, 38);
         testViewDate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                /*DateEntity dateEntity = new DateEntity();
+                DateEntity dateEntity = new DateEntity();
                 dateEntity.setName("Testname");
                 dateEntity.setIntersectable(true);
                 dateEntity.setDescription("this is a description for test this is a description for test this\nis a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test");
@@ -87,6 +84,7 @@ public class BackgroundPanel extends JPanel {
         viewDate.setDateEntity(dateEntity);
         viewDate.setVisible(true);
         this.add(viewDate);
+        this.revalidate();
         this.repaint();
     }
 
@@ -95,6 +93,7 @@ public class BackgroundPanel extends JPanel {
         viewLVA.setLVADateEntity(lvaDate);
         viewLVA.setVisible(true);
         this.add(viewLVA);
+        this.revalidate();
         this.repaint();
     }
 

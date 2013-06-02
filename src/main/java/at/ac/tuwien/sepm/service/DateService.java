@@ -73,9 +73,10 @@ public interface DateService {
 
     /**
      * Validates a date.
-     * @param  date The DateTime to validate.
-     * @throws ServiceException If date is not valid (date == null).
+     * @param  from The DateTime to validate.
+     * @param  to The DateTime to validate.
+     * @throws ServiceException If from or to are not valid (datetime == null) or if TO is before FROM.
      *
      */
-    public void validateDate(DateTime date) throws ServiceException;
+    public void validateDates(DateTime from, DateTime to) throws ServiceException;
 }

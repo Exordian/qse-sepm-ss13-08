@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.MetaLva;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * Author: Lena Lenz
  */
+@UI
 public class MetaLVADisplayPanel extends JPanel {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private List<MetaLVA> allLVAs;
@@ -68,7 +70,8 @@ public class MetaLVADisplayPanel extends JPanel {
                         filteredLVAs.add(m);
                     }
                 }
-                table = new MetaLVATable(filteredLVAs, tWidth);
+                //table = new MetaLVATable(filteredLVAs, tWidth);
+                table.refreshMetaLVAs(filteredLVAs);
                 pane.setViewportView(table);
                 revalidate();
                 repaint();
@@ -82,6 +85,10 @@ public class MetaLVADisplayPanel extends JPanel {
     }
     public MetaLVA getSelectedMetaLVA(){
         return table.getSelectedMetaLVA();
+    }
+
+    public void removeSelectedMetaLVA() {
+        table.removeSelectedMetaLVA();
     }
 
 }
