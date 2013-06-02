@@ -25,6 +25,7 @@ import java.util.List;
  * Time: 19:23
  * To change this template use File | Settings | File Templates.
  */
+
 @UI
 public class StudienplanPanel extends StandardInsidePanel {
 
@@ -116,8 +117,9 @@ public class StudienplanPanel extends StandardInsidePanel {
                     }
 
                 } catch (ServiceException e1) {
-                    new ErrorWindow(e1.getMessage());
-                    return;
+                    //new ErrorWindow(e1.getMessage());
+                    //return;
+                    new JOptionPane(e1.getMessage());
                 }
                 fillTable();
             }
@@ -159,14 +161,14 @@ public class StudienplanPanel extends StandardInsidePanel {
         l.add(c1);
         l.add(c2);
                */
-
+        /*
         try {
             l = service.readAllCurriculum();
         } catch (ServiceException e) {
             new ErrorWindow(e.getMessage());
             e.printStackTrace();
         }
-
+        */
 
         mcurr.removeAllElements();
 
@@ -290,35 +292,37 @@ public class StudienplanPanel extends StandardInsidePanel {
             list = service.readAllModules();
         } catch (ServiceException e) {
             // TO DO do something useful
-            e.printStackTrace();
+            // e.printStackTrace();
         }
 
+        if(ccurr.getSelectedItem()!=null){
+            int cid = ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get().getId();
+            HashMap<Module, Boolean> mMap = new HashMap<Module, Boolean>();
 
-        int cid = ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get().getId();
-        HashMap<Module, Boolean> mMap = new HashMap<Module, Boolean>();
+            try {
+                mMap = service.readModuleByCurriculum(cid);
+            } catch (ServiceException e) {
+                //new ErrorWindow(e.getMessage());
+                //e.printStackTrace();
+                new JOptionPane(e.getMessage());
+                return;
+            }
 
-        try {
-            mMap = service.readModuleByCurriculum(cid);
-        } catch (ServiceException e) {
-            new ErrorWindow(e.getMessage());
-            e.printStackTrace();
-            return;
-        }
+            Set<Module> mSet = mMap.keySet();
+            Set<Integer> mids = new HashSet<Integer>();
 
-        Set<Module> mSet = mMap.keySet();
-        Set<Integer> mids = new HashSet<Integer>();
+            for(Module m : mSet) {
+                mids.add(m.getId());
+            }
 
-        for(Module m : mSet) {
-            mids.add(m.getId());
-        }
+            clearTable();
 
-        clearTable();
-
-        for(Module m : list) {
-            if(mids.contains(m.getId())) {
-                mmodule.addRow(createTableRow(true, m));
-            } else {
-                mmodule.addRow(createTableRow(false, m));
+            for(Module m : list) {
+                if(mids.contains(m.getId())) {
+                    mmodule.addRow(createTableRow(true, m));
+                } else {
+                    mmodule.addRow(createTableRow(false, m));
+                }
             }
         }
     }
@@ -523,45 +527,63 @@ public class StudienplanPanel extends StandardInsidePanel {
                     Integer s;
 
                     if(number==null || number.equals("")) {
-                        new ErrorWindow("Bitte geben Sie eine Studienkennzahl an.");
+                        //new ErrorWindow("Bitte geben Sie eine Studienkennzahl an.");
+                        //return;
+                        new JOptionPane("Bitte geben Sie eine Studienkennzahl an.");
                         return;
                     }
                     if(name==null || name.equals("")) {
-                        new ErrorWindow("Bitte geben Sie einen Namen an.");
+                        //new ErrorWindow("Bitte geben Sie einen Namen an.");
+                        //return;
+                        new JOptionPane("Bitte geben Sie einen Namen an.");
                         return;
                     }
                     if(title==null || title.equals("")) {
-                        new ErrorWindow("Bitte geben Sie den akademischen Titel an.");
+                        //new ErrorWindow("Bitte geben Sie den akademischen Titel an.");
+                        //return;
+                        new JOptionPane("Bitte geben Sie den akademischen Titel an.");
                         return;
                     }
                     if(ectsc==null) {
-                        new ErrorWindow("Bitte geben Sie die Wahl-ECTS-Punkte an.");
+                        //new ErrorWindow("Bitte geben Sie die Wahl-ECTS-Punkte an.");
+                        //return;
+                        new JOptionPane("Bitte geben Sie die Wahl-ECTS-Punkte an.");
                         return;
                     }
                     if(ectsf==null) {
-                        new ErrorWindow("Bitte geben Sie die Frei-ECTS-Punkte an.");
+                        //new ErrorWindow("Bitte geben Sie die Frei-ECTS-Punkte an.");
+                        //return;
+                        new JOptionPane("Bitte geben Sie die Frei-ECTS-Punkte an.");
                         return;
                     }
                     if(ectss==null) {
-                        new ErrorWindow("Bitte geben Sie die SoftSkill-ECTS-Punkte an.");
+                        //new ErrorWindow("Bitte geben Sie die SoftSkill-ECTS-Punkte an.");
+                        //return;
+                        new JOptionPane("Bitte geben Sie die SoftSkill-ECTS-Punkte an.");
                         return;
                     }
                     try {
                         c = Integer.parseInt(ectsc);
                     } catch (NumberFormatException e1) {
-                        new ErrorWindow("Die angegebenen Wahl-ECTS-Punkte sind keine gültige zahl.");
+                        //new ErrorWindow("Die angegebenen Wahl-ECTS-Punkte sind keine gültige zahl.");
+                        //return;
+                        new JOptionPane("Die angegebenen Wahl-ECTS-Punkte sind keine gültige zahl.");
                         return;
                     }
                     try {
                         f = Integer.parseInt(ectsf);
                     } catch (NumberFormatException e1) {
-                        new ErrorWindow("Die angegebenen Frei-ECTS-Punkte sind keine gültige zahl.");
+                        //new ErrorWindow("Die angegebenen Frei-ECTS-Punkte sind keine gültige zahl.");
+                        //return;
+                        new JOptionPane("Die angegebenen Frei-ECTS-Punkte sind keine gültige zahl.");
                         return;
                     }
                     try {
                         s = Integer.parseInt(ectss);
                     } catch (NumberFormatException e1) {
-                        new ErrorWindow("Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.");
+                        //new ErrorWindow("Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.");
+                        //return;
+                        new JOptionPane("Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.");
                         return;
                     }
 
@@ -577,7 +599,8 @@ public class StudienplanPanel extends StandardInsidePanel {
                     try {
                         service.createCurriculum(curriculum);
                     } catch (ServiceException e1) {
-                        new ErrorWindow(e1.getMessage());
+                        //new ErrorWindow(e1.getMessage());
+                        new JOptionPane(e1.getMessage());
                     }
 
                 }
@@ -813,7 +836,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         }
     }
     */
-
+    /*
     private class ErrorWindow extends JFrame {
         private JLabel text;
 
@@ -830,5 +853,5 @@ public class StudienplanPanel extends StandardInsidePanel {
             this.repaint();
             this.setVisible(true);
         }
-    }
+    }*/
 }
