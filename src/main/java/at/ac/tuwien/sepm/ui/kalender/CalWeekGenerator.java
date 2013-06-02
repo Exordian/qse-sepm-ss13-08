@@ -31,12 +31,17 @@ public class CalWeekGenerator extends JPanel implements CalendarInterface {
     }
 
     @Override
-    public String next() throws ServiceException {
-        return calPanelWeek.next();
+    public void next() throws ServiceException {
+        calPanelWeek.next();
     }
 
     @Override
-    public String last() throws ServiceException {
-        return calPanelWeek.last();
+    public void last() throws ServiceException {
+        calPanelWeek.last();
+    }
+
+    @Override
+    public String getTimeIntervalInfo() {
+        return calPanelWeek.getTimeIntervalInfo();
     }
 }

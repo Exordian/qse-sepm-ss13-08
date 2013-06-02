@@ -17,7 +17,6 @@ public class DayPanel extends JPanel {
     private JLabel title = new JLabel();
     private JPanel datePanel = new JPanel(new MigLayout("", "1[]1[]1[]1", "1[]"));
     private List<DateLabel> dates;
-    private Font tmdlFont = new Font("Arial", Font.PLAIN, 10);
     private DateTime date;
     private int maxDateLabels;
     private TooMuchDatesLabel tmdl;
@@ -34,7 +33,7 @@ public class DayPanel extends JPanel {
         this.add(datePanel);
         this.setOpaque(true);
         this.tmdl = new TooMuchDatesLabel();
-        this.tmdl.setFont(tmdlFont);
+        this.tmdl.setFont(new Font("Arial", Font.PLAIN, 10));
         this.maxDateLabels=maxDateLabels;
     }
 
@@ -83,11 +82,11 @@ public class DayPanel extends JPanel {
         datePanel.removeAll();
         this.remove(tmdl);
     }
-
+    /*
     public JPanel getDatePanel() {
         return datePanel;
     }
-
+    */
     public List<DateLabel> getDates () {
         return dates;
     }
@@ -126,18 +125,19 @@ public class DayPanel extends JPanel {
     private class CalDisplayAllDatesFrame extends JFrame {
         // TODO implement this frame or panel or whatever ...
         private List<DateLabel> dates;
-        private MigLayout layout = new MigLayout();
+        private JLabel text = new JLabel();
 
         CalDisplayAllDatesFrame(List<DateLabel> dates) {
-            this.setVisible(true);
             this.dates = dates;
             this.setMinimumSize(new Dimension(250, 50));
-            this.setLocation(500,500);
-            init();
-        }
-
-        private void init() {
-            this.add(new JLabel("Here will all " + dates.size() + "dates be displayed ..."));
+            this.setLocation(500, 500);
+            text.setText("Here will all " + this.dates.size() + " dates be displayed ...");
+            this.setMinimumSize(new Dimension((int)(text.getSize().getWidth()), (int)(text.getSize().getHeight())));
+            this.add(text);
+            this.pack();
+            this.revalidate();
+            this.repaint();
+            this.setVisible(true);
         }
     }
 }

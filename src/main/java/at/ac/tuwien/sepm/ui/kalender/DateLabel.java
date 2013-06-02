@@ -94,38 +94,44 @@ public class DateLabel extends JLabel{
         private static class UpdateDateFrame extends JFrame {
             // TODO implement this class correctly
             private DateEntity date;
-            private JLabel label0=new JLabel();
-            private JLabel label1=new JLabel();
+            private JLabel l0=new JLabel();
+            private JLabel l1=new JLabel();
 
             public UpdateDateFrame(DateEntity d) {
                 this.setLayout(new MigLayout());
                 this.date = d;
-                this.setVisible(true);
-                this.setMinimumSize(new Dimension(400, 100));
                 this.setLocation(500,500);
-                label0.setText("UpdateDateFrame ...");
-                label1.setText("Name of date: " + date.getName());
-                this.add(label0, "wrap");
-                this.add(label1);
+                l0.setText("DateLabel.UpdateDateFrame ... ");
+                l1.setText("Name of date: " + date.getName());
+                this.setMinimumSize(new Dimension((int)(l0.getSize().getWidth() + l1.getSize().getWidth()), (int)(l0.getSize().getHeight() + l1.getSize().getHeight())));
+                this.add(l0, "wrap");
+                this.add(l1);
+                this.pack();
+                this.revalidate();
+                this.repaint();
+                this.setVisible(true);
             }
         }
 
         private static class UpdateLvaDateFrame extends JFrame {
             // TODO implement this class correctly
             private LvaDate date;
-            private JLabel label0=new JLabel();
-            private JLabel label1=new JLabel();
+            private JLabel l0=new JLabel();
+            private JLabel l1=new JLabel();
 
             public UpdateLvaDateFrame(LvaDate d) {
                 this.setLayout(new MigLayout());
                 this.date = d;
-                this.setVisible(true);
-                this.setMinimumSize(new Dimension(400,100));
                 this.setLocation(500,500);
-                label0.setText("UpdateLvaDateFrame ...");
-                label1.setText("Name of date: " + date.getName());
-                this.add(label0, "wrap");
-                this.add(label1);
+                l0.setText("DateLabel.UpdateLvaDateFrame ... ");
+                l1.setText("Name of date: " + date.getName());
+                this.setMinimumSize(new Dimension((int)(l0.getSize().getWidth() + l1.getSize().getWidth()), (int)(l0.getSize().getHeight() + l1.getSize().getHeight())));
+                this.add(l0, "wrap");
+                this.add(l1);
+                this.pack();
+                this.revalidate();
+                this.repaint();
+                this.setVisible(true);
             }
         }
     }

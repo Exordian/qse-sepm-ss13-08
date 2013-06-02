@@ -32,8 +32,8 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         setLocation(CalStartCoordinateOfWhiteSpace);
         this.setLayout(layout);
         this.setVisible(true);
-        initPanel();
 
+        initPanel();
         try {
             setDates();
         } catch (ServiceException e) {
@@ -288,7 +288,7 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         //todo für die jcombobox in der man das semester auswählen kann in calendarpanel
     }
 
-    public String next() throws ServiceException {
+    public void next() throws ServiceException {
         if (firstDay.getMonthOfYear()==12) {
             this.firstDay = new DateTime(firstDay.getYear()+1, 1, 1, 0, 0, 0, 0);
         } else {
@@ -298,10 +298,9 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         setDates();
         repaint();
         revalidate();
-        return firstDay.monthOfYear().getAsText(Locale.GERMANY) + " " + firstDay.getYear();
     }
 
-    public String last() throws ServiceException {
+    public void last() throws ServiceException {
         if(firstDay.getMonthOfYear()==1) {
             this.firstDay = new DateTime(firstDay.getYear()-1, 12, 1, 0, 0, 0, 0);
         } else {
@@ -311,6 +310,10 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         setDates();
         repaint();
         revalidate();
+    }
+
+    @Override
+    public String getTimeIntervalInfo() {
         return firstDay.monthOfYear().getAsText(Locale.GERMANY) + " " + firstDay.getYear();
     }
 }

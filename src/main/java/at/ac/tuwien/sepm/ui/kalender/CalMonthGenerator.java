@@ -31,16 +31,21 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
 
     @Override
     public void semester() {
-        // TODO
+        calPanelMonth.semester();
     }
 
     @Override
-    public String next() throws ServiceException {
-        return calPanelMonth.next();
+    public void next() throws ServiceException {
+        calPanelMonth.next();
     }
 
     @Override
-    public String last() throws ServiceException {
-        return calPanelMonth.last();
+    public void last() throws ServiceException {
+        calPanelMonth.last();
+    }
+
+    @Override
+    public String getTimeIntervalInfo() {
+        return calPanelMonth.getTimeIntervalInfo();
     }
 }

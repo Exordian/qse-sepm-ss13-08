@@ -1,28 +1,49 @@
 package at.ac.tuwien.sepm.ui.kalender;
 
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.ui.UI;
+import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 
 /**
  * @author Markus MUTH
  */
+
+@UI
 public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
+    private MigLayout layout;
 
     public CalPanelWeek() {
         super(1);
         super.firstDay = DateTime.now();
+        layout = new MigLayout("", "1[]1[]1[]1", "1[]");
+        loadFonts();
+        setSize((int)whiteSpaceCalendar.getWidth(),(int)whiteSpaceCalendar.getHeight());
+        setLocation(CalStartCoordinateOfWhiteSpace);
+        this.setLayout(layout);
+        this.setVisible(true);
+
+        initPanel();
+        try {
+            setDates();
+        } catch (ServiceException e) {
+            // TODO do something useful
+            e.printStackTrace();
+        }
+
+        this.repaint();
+        this.revalidate();
     }
 
     @Override
-    protected void initPanel() throws ServiceException {
+    protected void initPanel() {
         int width=903;
         int height=459;
-        maxDateLabels=20;
+        maxDateLabels=30;
         initWeekNames(width, height);
         initDayPanels();
         setDays();
-        setDates();
     }
 
     public void setDays() {
@@ -147,29 +168,33 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
     }
 
     @Override
-    public String next() throws ServiceException {
+    public void next() throws ServiceException {
         firstDay = firstDay.plusDays(7);
-        String s = firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getMonthOfYear() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getYear()
-                + " bis " +
-                firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getMonthOfYear() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getYear();
         setDays();
         setDates();
         repaint();
         revalidate();
-        return s;
     }
 
     @Override
-    public String last() throws ServiceException {
+    public void last() throws ServiceException {
         firstDay = firstDay.minusDays(7);
-        String s = firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getMonthOfYear() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getYear()
-                + " bis " +
-                firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getMonthOfYear() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getYear();
         setDays();
         setDates();
         repaint();
         revalidate();
-        return s;
+    }
+
+    @Override
+    public String getTimeIntervalInfo() {
+        /*
+        return String s = firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getMonthOfYear() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getYear()
+                + " bis " +
+                firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getMonthOfYear() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getYear();
+        */
+        return firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getMonthOfYear()
+                + " bis " +
+                firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getMonthOfYear();
     }
 
     @Override

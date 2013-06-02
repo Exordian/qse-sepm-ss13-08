@@ -136,7 +136,4 @@ public abstract class CalAbstractView extends StandardInsidePanel {
         }
     }
     */
-    public abstract String next() throws ServiceException;
-
-    public abstract String last() throws ServiceException;
 }
