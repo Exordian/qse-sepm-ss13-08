@@ -137,7 +137,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             Module lastModule = null;
             for(Element e : lvaTable.select(CURRICULUM_TABLE_ELEMENTS)) {
                 if(e.attr("class").trim().equals(CURRICULUM_TABLE_MODULE_NAME_CLASS)) {
-                    if(e.text().startsWith(CURRICULUM_TABLE_MODULE_CATALOG_INDICATOR)) {
+                    if(recursive && e.text().startsWith(CURRICULUM_TABLE_MODULE_CATALOG_INDICATOR)) {
                         try {
                             lastModule.setMetaLvas(getCatalogByUrl(e.select("a").attr("href"), semester));
                         } catch (NullPointerException ex) {
@@ -153,7 +153,10 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                     if(lastModule != null) {
                         if(lastModule.getMetaLvas() == null)
                             lastModule.setMetaLvas(new ArrayList<MetaLVA>());
-                        MetaLVA lva = getLva(e.select(CURRICULUM_TABLE_MODULE_LVA_CLASS_KEY).text().split(" ", 2)[0], semester);
+                        String lvaNr = e.select(CURRICULUM_TABLE_MODULE_LVA_CLASS_KEY).text().split(" ", 2)[0];
+                        if(lvaNr.isEmpty())
+                            continue;
+                        MetaLVA lva = getLva(lvaNr, semester);
                         log.info("Add LVA " + lva.toString() + " to Module " + lastModule.toString());
                         lastModule.getMetaLvas().add(lva);
                     } else
