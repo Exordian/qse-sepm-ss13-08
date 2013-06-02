@@ -84,8 +84,6 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                 }
             }
             return curriculums;
-        } catch (MalformedURLException e) {
-            throw new ServiceException(e);
         } catch (IOException e) {
             throw new ServiceException(e);
         }
@@ -97,11 +95,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             Document curriculumDoc = Jsoup.parse(curriculumUrl, timeout);
             Element getElement = curriculumDoc.select(ACADEMICPROG_TABLE_PATH + " " + ACADEMICPROG_TABLE_ACADEMICPROG_ROW_PATH + " " + String.format(ACADEMICPROG_TABLE_ACADEMICPROG_ROW_NUMBER_PATH_FIND_BY_NR, studyNumber)).first();
             return BASE_URL+getElement.nextElementSibling().select("a").attr("href");
-        } catch (MalformedURLException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | IOException e) {
             throw new ServiceException(e);
         }
     }
@@ -160,8 +154,6 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                 }
             }
             return moduleList;
-        } catch (MalformedURLException e) {
-            throw new ServiceException(e);
         } catch (IOException e) {
             throw new ServiceException(e);
         }
@@ -228,9 +220,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             }
             try {
                 lva.setAdditionalInfo2(lvaContent.select("h2:contains(Weitere Informationen)").get(1).nextElementSibling().text());
-            } catch (NullPointerException ex) {
-                log.info("LVA: " + metaLVA.getName() + " no additional infos2 found");
-            } catch (IndexOutOfBoundsException ex) {
+            } catch (NullPointerException | IndexOutOfBoundsException ex) {
                 log.info("LVA: " + metaLVA.getName() + " no additional infos2 found");
             }
             try {
