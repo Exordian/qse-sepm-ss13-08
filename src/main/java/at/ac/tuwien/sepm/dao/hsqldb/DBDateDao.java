@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
@@ -58,6 +57,28 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         String stmt = " SELECT * FROM date WHERE start>=? AND start<=? ORDER BY start";
         Object[] args = new Object[]{new Timestamp(from.getMillis()), new Timestamp(till.getMillis())};
         return jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), args);
+    }
+
+    @Override
+    public List<DateEntity> readByDay(DateTime date) throws DataAccessException {
+        String stmt = "SELECT * FROM date WHERE " +
+                "(start>=? AND start<=?) OR " +
+                "(stop>=? AND stop<=?) OR " +
+                "(start<=? AND stop>=?)" +
+                "ORDER BY start";
+
+        String stmtCount = "SELECT COUNT(*) FROM date WHERE " +
+                "(start>=? AND start<=?) OR " +
+                "(stop>=? AND stop<=?) OR " +
+                "(start<=? AND stop>=?)";
+        Timestamp s1 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 0, 0, 0, 0).getMillis()));
+        Timestamp s2 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 23, 59, 59, 999).getMillis()));
+
+        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), s1, s2, s1, s2, s1, s2) == 0){
+            return new ArrayList<DateEntity>();
+        }
+
+        return jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), s1, s2, s1, s2, s1, s2);
     }
 
     @Override
@@ -138,7 +159,7 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         }
         if (toUpdate.getTime() != null && toUpdate.getTime().to() != null) {
             jdbcTemplate.update(stmtUpdateStop,new Timestamp(toUpdate.getTime().to().getMillis()), toUpdate.getId());
-        };
+        }
 
         return true;
     }

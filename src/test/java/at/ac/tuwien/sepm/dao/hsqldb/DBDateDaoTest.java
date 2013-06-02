@@ -397,4 +397,33 @@ public class DBDateDaoTest {
     public void testDeleteNotExistingId() throws Exception {
         assert(!dao.delete(-1));
     }
+
+    @Test
+    public void testReadByDay() throws Exception {
+        TestHelper.insert(15);
+        List<DateEntity> l = dao.readByDay(new DateTime(2014, 5, 2, 4, 4, 4, 4));
+        System.out.println(l.size());
+        assert(l.size()==6);
+        assert(l.get(0).getId()==30);
+        assert(l.get(1).getId()==25);
+        assert(l.get(2).getId()==27);
+        assert(l.get(3).getId()==28);
+        assert(l.get(4).getId()==26);
+        assert(l.get(5).getId()==29);
+        for(int i=0; i<l.size()-1; i++) {
+            assert(l.get(i).getStart().isBefore(l.get(i+1).getStart()));
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testReadByDayIsNull() throws Exception {
+        TestHelper.insert(15);
+        dao.readByDay(null);
+    }
+
+    @Test
+    public void testReadByDayWithoutDates() throws Exception {
+        TestHelper.insert(15);
+        assert(dao.readByDay(new DateTime(1990, 1, 1, 1, 1, 1, 1)).size()==0);
+    }
 }

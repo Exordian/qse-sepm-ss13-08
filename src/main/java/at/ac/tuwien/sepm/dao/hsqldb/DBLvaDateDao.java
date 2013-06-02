@@ -3,11 +3,13 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
+import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,6 +75,29 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
     public List<LvaDate> readByLvaAndType(int lvaId, LvaDateType type) throws DataAccessException {
         String stmt = "SELECT * FROM lvadate WHERE lva=? AND type=? ORDER BY start";
         return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), lvaId, type.ordinal());
+    }
+
+    @Override
+    public List<LvaDate> readByDay(DateTime date) throws DataAccessException {
+        String stmt = "SELECT * FROM lvadate WHERE " +
+                "(start>=? AND start<=?) OR " +
+                "(stop>=? AND stop<=?) OR " +
+                "(start<=? AND stop>=?)" +
+                "ORDER BY start";
+
+        String stmtCount = "SELECT COUNT(*) FROM lvadate WHERE " +
+                "(start>=? AND start<=?) OR " +
+                "(stop>=? AND stop<=?) OR " +
+                "(start<=? AND stop>=?)";
+
+        Timestamp s1 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 0, 0, 0, 0).getMillis()));
+        Timestamp s2 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 23, 59, 59, 999).getMillis()));
+
+        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), s1, s2, s1, s2, s1, s2) == 0){
+            return new ArrayList<LvaDate>();
+        }
+
+        return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), s1, s2, s1, s2, s1, s2);
     }
 
     @Override

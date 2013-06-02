@@ -82,19 +82,11 @@ public class DateServiceTest {
         dateService.validateDateEntity(validDateEntity);
     }
 
-   /* @Test(expected = ServiceException.class)
-    public void testValidateDateEntityINVALIstart() throws Exception {
-        //todo
-        //validDateEntity.setStart(null);
-        dateService.validateDateEntity(validDateEntity);
-    }
-
     @Test(expected = ServiceException.class)
     public void testValidateDateEntityINVALIDstop() throws Exception {
-        //todo
-        //validDateEntity.setStop(null);
+        validDateEntity.setTime(null);
         dateService.validateDateEntity(validDateEntity);
-    }*/
+    }
 
     @Test
     public void testValidateIdVALID() throws Exception {
@@ -110,14 +102,4 @@ public class DateServiceTest {
     public void testValidateDateVALID() throws Exception {
         dateService.validateDate(validDateEntity.getStart());
     }
-
-    // TODO update the following test
-    // Following test case changend to the following
-    /*
-    @Test(expected = ServiceException.class)
-    public void testValidateDateINVALID() throws Exception {
-        validDateEntity.setStart(null);
-        dateService.validateDate(validDateEntity.getStart());
-    }
-    */
 }

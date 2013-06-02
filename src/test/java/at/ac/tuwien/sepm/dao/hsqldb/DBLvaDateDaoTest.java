@@ -484,4 +484,33 @@ public class DBLvaDateDaoTest {
         assert(dao.delete(0));
         assert(dao.readById(0)==null);
     }
+
+    @Test
+    public void testReadByDay() throws Exception {
+        TestHelper.insert(15);
+        List<LvaDate> l = dao.readByDay(new DateTime(2014, 5, 2, 4, 4, 4, 4));
+        System.out.println(l.size());
+        assert(l.size()==6);
+        assert(l.get(0).getId()==109);
+        assert(l.get(1).getId()==104);
+        assert(l.get(2).getId()==106);
+        assert(l.get(3).getId()==107);
+        assert(l.get(4).getId()==105);
+        assert(l.get(5).getId()==108);
+        for(int i=0; i<l.size()-1; i++) {
+            assert(l.get(i).getStart().isBefore(l.get(i+1).getStart()));
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testReadByDayIsNull() throws Exception {
+        TestHelper.insert(15);
+        dao.readByDay(null);
+    }
+
+    @Test
+    public void testReadByDayWithoutDates() throws Exception {
+        TestHelper.insert(15);
+        assert(dao.readByDay(new DateTime(1990, 1, 1, 1, 1, 1, 1)).size()==0);
+    }
 }

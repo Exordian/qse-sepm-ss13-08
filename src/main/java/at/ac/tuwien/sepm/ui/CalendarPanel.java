@@ -1,11 +1,12 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.entity.DateEntity;
-import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.kalender.CalMonthGenerator;
+import at.ac.tuwien.sepm.ui.kalender.CalWeekGenerator;
+import at.ac.tuwien.sepm.ui.kalender.CalendarInterface;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
+//import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -17,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+//import java.util.Locale;
 
 @UI
 public class CalendarPanel extends StandardInsidePanel {
@@ -29,21 +31,26 @@ public class CalendarPanel extends StandardInsidePanel {
     private JLabel month;
     private JComboBox semester;
 
-
-
     static DefaultTableModel mtblCalendar; //Table model
     static JScrollPane stblCalendar; //The scrollpane
     static JPanel pnlCalendar;
     static JTable tblCalendar;
 
     private CalMonthGenerator calPanelMonth;
+    private CalWeekGenerator calPanelWeek;
+    private CalendarInterface activeView;
+
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public CalendarPanel(CalMonthGenerator calPanelMonth) {
+    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek) {
         init();
 
         this.calPanelMonth=calPanelMonth;
+        this.calPanelWeek=calPanelWeek;
+        this.activeView=calPanelWeek;
+
+        add(calPanelWeek);
 
         createTabButtons();
         createNavButtons();
@@ -53,7 +60,7 @@ public class CalendarPanel extends StandardInsidePanel {
     }
 
     private void createTop() {
-        month = new JLabel("SEPTEMBER 2012");
+        month = new JLabel(activeView.getTimeIntervalInfo().toUpperCase());
         month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 290, 30);
         month.setForeground(Color.WHITE);
         month.setFont(standardTitleFont);
@@ -80,6 +87,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 //todo import button
             }
         });
+
         this.add(importBtn);
     }
 
@@ -102,7 +110,13 @@ public class CalendarPanel extends StandardInsidePanel {
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo backward button
+                try {
+                    activeView.last();
+                    month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                } catch (ServiceException e) {
+                    // TODO
+                    month.setText("ERROR");
+                }
             }
         });
 
@@ -114,7 +128,13 @@ public class CalendarPanel extends StandardInsidePanel {
         fwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo forward button
+                try {
+                    activeView.next();
+                    month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                } catch (ServiceException e) {
+                    // TODO
+                    month.setText("ERROR");
+                }
             }
         });
 
@@ -138,23 +158,43 @@ public class CalendarPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
                 remove(calPanelMonth);
-                //todo isnert day panel
+                add(calPanelWeek);
+                activeView = calPanelWeek;
+                month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                calPanelWeek.revalidate();
+                calPanelWeek.repaint();
+
+                /*
+                changeImage(1);
+                remove(calPanelMonth);
                 revalidate();
                 repaint();
+                 */
 
             }
         });
 
         tab2.setBounds(97+142,63,142,36);
         calPanelMonth.setBounds(size);
+        calPanelWeek.setBounds(size);
         tab2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
                 //todo remove other panels
+                remove(calPanelWeek);
+                add(calPanelMonth);
+                activeView = calPanelMonth;
+                month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                calPanelMonth.revalidate();
+                calPanelMonth.repaint();
+
+                /*
+                changeImage(2);
                 add(calPanelMonth);
                 calPanelMonth.revalidate();
                 calPanelMonth.repaint();
+                 */
             }
         });
 
@@ -165,6 +205,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 changeImage(3);
                 //todo insert deadline panel
                 remove(calPanelMonth);
+                remove(calPanelWeek);
                 revalidate();
                 repaint();
             }

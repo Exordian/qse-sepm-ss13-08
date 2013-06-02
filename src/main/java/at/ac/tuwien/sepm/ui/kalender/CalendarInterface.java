@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui.kalender;
 
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.UI;
 
 /**
@@ -12,6 +13,7 @@ import at.ac.tuwien.sepm.ui.UI;
 @UI
 public interface CalendarInterface {
     public void semester();
-    public void next();
-    public void last();
+    public void next() throws ServiceException;
+    public void last() throws ServiceException;
+    String getTimeIntervalInfo();
 }

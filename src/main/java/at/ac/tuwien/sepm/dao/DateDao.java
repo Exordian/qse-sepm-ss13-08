@@ -61,6 +61,16 @@ public interface DateDao {
     public List<DateEntity> readInTimeframe(DateTime from, DateTime till) throws DataAccessException;
 
     /**
+     * Read all dates which start at or after <code>from</code> or stop at or before <code>till</code>.
+     * @param date The date of the day where the dates should be returned.
+     * @return A <code>List<DateEntry></code> containing all dates within the specified time frame, or a empty list
+     * if there was no matching date found. The order is chronological, beginning with oldest date. If there are several
+     * dates at the same time, there is no defined order.
+     * @throws DataAccessException If the date data could not be read because any error occurred.
+     */
+    public List<DateEntity> readByDay(DateTime date) throws DataAccessException;
+
+    /**
      * Read all not intersectable dates which are in the specified year and semester. A winter semester starts on 1.
      * October and ends on 31. January, a summer semester starts on 1. March and ends on 30. June.
      * @param year The year.
