@@ -24,7 +24,8 @@ public class PlanPanel extends StandardInsidePanel {
     private Rectangle outputPlane = new Rectangle(483,12,521,496);
     private MetaLVADisplayPanel pane;
     private ArrayList<MetaLVA> lvas;
-    private JButton next;
+    private JButton plan;
+    private JButton take;
 
     // < basic settings >
     private JLabel desiredECTSTextLabel;
@@ -61,7 +62,7 @@ public class PlanPanel extends StandardInsidePanel {
         setBounds((int)StudStartCoordinateOfWhiteSpace.getX(), (int)StudStartCoordinateOfWhiteSpace.getY(),(int)whiteSpaceStud.getWidth(),(int)whiteSpaceStud.getHeight());
         initTextAndLabels();
         toggleAdvanced();
-        initNextButton();
+        initButtons();
         initLVAPane();
     }
 
@@ -76,25 +77,36 @@ public class PlanPanel extends StandardInsidePanel {
 
 
     /*-----------------------LEFT SIDE  PLANEN-------------------*/
-    private void initNextButton() {
-        next = new JButton("Planen");
-        next.setFont(standardButtonFont);
-        next.setBounds((int)outputPlane.getX() -110,(int)outputPlane.getY() +(int)outputPlane.getHeight()-40,90,40);
-        next.addActionListener(new ActionListener() {
+    private void initButtons() {
+        take = new JButton("Übernehmen");
+        take.setFont(standardButtonFont);
+        take.setBounds((int) outputPlane.getX() - 150, (int) outputPlane.getY() + (int) outputPlane.getHeight() - 40, 130, 40);
+        take.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //todo plan übernehmen nach anzeigen
+            }
+        });
+        this.add(take);
+
+        plan = new JButton("Planen");
+        plan.setFont(standardButtonFont);
+        plan.setBounds((int) outputPlane.getX() - 130 -take.getWidth(), (int) outputPlane.getY() + (int) outputPlane.getHeight() - 40, 90, 40);
+        plan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 float ects = Float.parseFloat(desiredECTSText.getText());
-                boolean vointersect =  intersectVOCheck.isSelected();
+                boolean vointersect = intersectVOCheck.isSelected();
                 int year = Integer.parseInt(yearText.getText());
                 Semester sem = Semester.S;
-                if(semesterDrop.getSelectedIndex()==0){
+                if (semesterDrop.getSelectedIndex() == 0) {
                     sem = Semester.W;
                 }
                 //todo logic
 
             }
         });
-        this.add(next);
+        this.add(plan);
     }
 
     private void toggleAdvanced() {
