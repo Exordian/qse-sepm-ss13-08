@@ -7,6 +7,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Markus MUTH
@@ -42,6 +44,22 @@ public class DBCurriculumDao extends DBBaseDao implements CurriculumDao {
                 toCreate.getAcademicTitle(), toCreate.getEctsChoice(), toCreate.getEctsFree(), toCreate.getEctsSoftskill());
 
         return true;
+    }
+
+    @Override
+    public List<Curriculum> readAll() throws DataAccessException {
+        if(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM curriculum", RowMappers.getIntegerRowMapper()) == 0){
+            return new ArrayList<Curriculum>();
+        }
+
+        String stmt="SELECT * FROM curriculum";
+        List<Curriculum> result = jdbcTemplate.query(stmt, RowMappers.getCurriculumRowMapper());
+
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, readById(result.get(i).getId()));
+        }
+
+        return result;
     }
 
     @Override

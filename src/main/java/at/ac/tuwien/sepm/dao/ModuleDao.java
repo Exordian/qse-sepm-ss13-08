@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Markus MUTH
@@ -20,6 +21,14 @@ public interface ModuleDao {
      * @throws DataAccessException If the data from toCreate could not be saved because any other error occurred.
      */
     public boolean create(Module toCreate) throws IOException, DataAccessException;
+
+    /**
+     * Read all modules.  All containing meta lvas are also returned. The containing meta lvas contain their
+     * predecessors and lvas, they contain their lva dates. The predecessors do not store their predecessors or lvas.
+     * @return A list filled with the data from the Module or a empty list if there was no match.
+     * @throws DataAccessException If the Curriculum data could not be read because any error occured.
+     */
+    public List<Module> readAll() throws DataAccessException;
 
     /**
      * Read a module by its id. All containing meta lvas are also returned. The containing meta lvas contain their
