@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.exception.ServiceException;
 import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -223,6 +224,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             } catch (NullPointerException | IndexOutOfBoundsException ex) {
                 log.info("LVA: " + metaLVA.getName() + " no additional infos2 found");
             }
+            /* dropped ?
             try {
                 Elements elements = lvaContent.select("h2:contains(Vortragende)").first().nextElementSibling().select("li");
                 ArrayList<String> lec = new ArrayList<>();
@@ -233,8 +235,10 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             } catch (NullPointerException ex) {
                 log.info("LVA: " + metaLVA.getName() + " no institute found");
             }
+            */
             try {
                 Elements lvaDateTable = lvaContent.select("h2:contains(LVA Termine)").first().nextElementSibling().select("tbody tr");
+                ArrayList<LvaDate> lecturesList = new ArrayList<>();
                 for(Element e : lvaDateTable) {
                     Elements elem = e.select("td");
                     String[] time = elem.get(1).text().split(" - ");
@@ -242,15 +246,16 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                     if(Pattern.compile(REGEX_SINGLE_DATE).matcher(date[0]).find()) {
                         LvaDate lvaDate = new LvaDate();
                         lvaDate.setType(LvaDateType.LECTURE);
-                        lvaDate.setStart(DateTime.parse(date[0] + " " + time[0],
-                            DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")));
-                        lvaDate.setStop(DateTime.parse(date[0] + " " + time[1],
-                                DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")));
+                        DateTime startTime = DateTime.parse(date[0] + " " + time[0],
+                                DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
+                        DateTime endTime = DateTime.parse(date[0] + " " + time[1],
+                                DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
+                        lvaDate.setTime(new TimeFrame(startTime, endTime));
                         lvaDate.setRoom(elem.get(3).text());
                         //String roomLink = elem.get(3).select("a").attr("href");
                         lvaDate.setDescription(elem.get(4).text());
                         log.info("Added new Date to LVA " + metaLVA.getName());
-                        // TODO: Add to LVA ?!
+                        lecturesList.add(lvaDate);
                     } else {
                         DateTime startTimeDay = DateTime.parse(date[0] + " " + time[0],
                                 DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
@@ -263,20 +268,21 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                             lvaDate.setType(LvaDateType.LECTURE);
                             lvaDate.setRoom(elem.get(3).text());
                             lvaDate.setDescription(elem.get(4).text());
-                            lvaDate.setStop(startTimeDay);
-                            lvaDate.setStart(endTimeDay);
+                            lvaDate.setTime(new TimeFrame(startTimeDay, endTimeDay));
                             log.info("Added new Date to LVA " + metaLVA.getName());
-                            // TODO: Add to LVA ?!
+                            lecturesList.add(lvaDate);
                             startTimeDay = startTimeDay.plusDays(7);
                             endTimeDay = endTimeDay.plusDays(7);
                         } while(startTimeDay.isBefore(endTime));
                     }
                 }
+                lva.setLectures(lecturesList);
             } catch (NullPointerException ex) {
                 log.info("LVA " + metaLVA.getName() + " has no dates");
             }
             try {
                 Elements lvaTestTable = lvaContent.select("h2:contains(Prüfungen)").first().nextElementSibling().select("tbody tr");
+                ArrayList<LvaDate> examList = new ArrayList<>();
                 for(Element e : lvaTestTable) {
                     Elements elem = e.select("td");
                     String[] time = elem.get(1).text().split(" - ");
@@ -288,16 +294,19 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                     lvaDate.setType(LvaDateType.LECTURE);
                     if(time[0].trim().equals("-"))
                         time = new String[] {"07:00", "20:00"};
-                    lvaDate.setStart(DateTime.parse(date[0] + " " + time[0],
-                            DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")));
-                    lvaDate.setStop(DateTime.parse(date[0] + " " + time[1],
-                            DateTimeFormat.forPattern("dd.MM.yyyy HH:mm")));
+                    DateTime startTime = DateTime.parse(date[0] + " " + time[0],
+                            DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
+                    DateTime endTime = DateTime.parse(date[0] + " " + time[1],
+                            DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
+                    lvaDate.setTime(new TimeFrame(startTime, endTime));
                     lvaDate.setRoom(elem.get(3).text());
                     //String roomLink = elem.get(3).select("a").attr("href");
                     lvaDate.setDescription(elem.get(7).text());
+
                     log.info("Added new Date to LVA " + metaLVA.getName());
-                    // TODO: Add to LVA ?!
+                    examList.add(lvaDate);
                 }
+                lva.setExams(examList);
             } catch (NullPointerException ex) {
                 log.info("LVA " + metaLVA.getName() + " has no exams");
             }
