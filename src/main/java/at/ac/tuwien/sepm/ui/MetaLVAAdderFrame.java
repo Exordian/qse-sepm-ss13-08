@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;

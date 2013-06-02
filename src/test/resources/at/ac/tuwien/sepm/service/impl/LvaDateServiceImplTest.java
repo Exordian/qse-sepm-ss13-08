@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.LvaDateService;
+import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +31,7 @@ public class LvaDateServiceImplTest {
         validLvaDate.setWasAttendant(false);
         validLvaDate.setType(LvaDateType.LECTURE);
         validLvaDate.setResult(2);
-        validLvaDate.setStart(new DateTime(2013,12,12,12,12,12));
-        validLvaDate.setStop(new DateTime(2014,12,12,12,12,12));
+        validLvaDate.setTime(new TimeFrame(new DateTime(2013, 12, 12, 12, 12, 12), new DateTime(2014, 12, 12, 12, 12, 12)));
 
         invalidLvaDate = new LvaDate();
         invalidLvaDate.setId(-3);
@@ -42,8 +43,7 @@ public class LvaDateServiceImplTest {
         invalidLvaDate.setWasAttendant(false);
         invalidLvaDate.setType(null);
         invalidLvaDate.setResult(-1);
-        invalidLvaDate.setStart(null);
-        invalidLvaDate.setStop(new DateTime(1990,12,12,12,12,12));
+        invalidLvaDate.setTime(new TimeFrame(null, new DateTime(1990, 12, 12, 12, 12, 12)));
 
         lvaDateService = new LvaDateServiceImpl();
     }
@@ -53,12 +53,12 @@ public class LvaDateServiceImplTest {
         lvaDateService.validateLvaDate(validLvaDate);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = ServiceException.class)
     public void validateInvalidLvaDateShouldThrowException() throws Exception {
         lvaDateService.validateLvaDate(invalidLvaDate);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = ServiceException.class)
     public void validateInvalidIDShouldThrowException() throws Exception {
         validLvaDate.setId(-100);
         lvaDateService.validateID(validLvaDate.getId());

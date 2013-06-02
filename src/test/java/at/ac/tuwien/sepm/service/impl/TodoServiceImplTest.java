@@ -3,10 +3,12 @@ package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.Todo;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -18,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class TodoServiceImplTest {
     private Todo validTodo;
     private Todo invalidTodo;
+    @Autowired
     private TodoService todoService;
 
     @Before
@@ -35,8 +38,6 @@ public class TodoServiceImplTest {
         invalidTodo.setName("Invalid Todo");
         invalidTodo.setDescription(null);
         invalidTodo.setDone(false);
-
-        todoService = new TodoServiceImpl();
     }
 
     @Test
@@ -44,12 +45,12 @@ public class TodoServiceImplTest {
         todoService.validateTodo(validTodo);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = ServiceException.class)
     public void validateInvalidTodoShouldThrowException() throws Exception {
         todoService.validateTodo(invalidTodo);
     }
 
-    @Test(expected = ValidationException.class)
+    @Test(expected = ServiceException.class)
     public void validateInvalidIDShouldThrowException() throws Exception {
         validTodo.setId(-100);
         todoService.validateID(validTodo.getId());

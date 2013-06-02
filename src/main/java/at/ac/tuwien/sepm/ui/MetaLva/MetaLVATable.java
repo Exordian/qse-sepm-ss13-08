@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.MetaLva;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.ui.UI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

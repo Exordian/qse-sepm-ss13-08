@@ -30,7 +30,6 @@ public class CalendarPanel extends StandardInsidePanel {
     private JButton importBtn;
     private JLabel month;
     private JComboBox semester;
-    private TodoPanel todoPanel;
 
     static DefaultTableModel mtblCalendar; //Table model
     static JScrollPane stblCalendar; //The scrollpane

@@ -7,10 +7,10 @@ import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.LvaDateService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.impl.LVAServiceImpl;
 import at.ac.tuwien.sepm.service.impl.LvaDateServiceImpl;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
-import com.sun.java.accessibility.util.GUIInitializedListener;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -153,9 +153,8 @@ public class DeadlineAdderFrame extends JFrame {
         toCreate.setLva(lva.getId());
         toCreate.setName(deadline_name);
         toCreate.setDescription(deadline_description);
-        toCreate.setStart(deadline_time);
+        toCreate.setTime(new TimeFrame(deadline_time, deadline_time));
         toCreate.setType(LvaDateType.DEADLINE);
-        toCreate.setStop(deadline_time);
         toCreate.setWasAttendant(deadline_done);
 
         try {

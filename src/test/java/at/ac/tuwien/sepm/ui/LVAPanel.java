@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.LVAServiceImpl;
 import at.ac.tuwien.sepm.service.impl.MetaLVAServiceImpl;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 

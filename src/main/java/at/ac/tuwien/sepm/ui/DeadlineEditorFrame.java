@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.LvaDateService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.impl.LVAServiceImpl;
 import at.ac.tuwien.sepm.service.impl.LvaDateServiceImpl;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
@@ -166,8 +167,7 @@ public class DeadlineEditorFrame extends JFrame {
         toEdit.setLva(lva.getId());
         toEdit.setName(lvaDate_name);
         toEdit.setDescription(lvaDate_description);
-        toEdit.setStart(lvaDate_time);
-        toEdit.setStop(lvaDate_time);
+        toEdit.setTime(new TimeFrame(lvaDate_time, lvaDate_time));
         toEdit.setWasAttendant(lvaDate_done);
 
         try {
