@@ -49,13 +49,13 @@ public class BackgroundPanel extends JPanel {
         createPropertiesButton();
         createTabButtons();
 
-        /*test*/
+        /*test
         JButton testViewDate = new JButton("view lva");
         testViewDate.setBounds(500, 630, 110, 38);
         testViewDate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                DateEntity dateEntity = new DateEntity();
+                /*DateEntity dateEntity = new DateEntity();
                 dateEntity.setName("Testname");
                 dateEntity.setIntersectable(true);
                 dateEntity.setDescription("this is a description for test this is a description for test this\nis a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test");
@@ -63,7 +63,7 @@ public class BackgroundPanel extends JPanel {
                 dateEntity.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
                 viewDate(dateEntity);
 
-                /*LvaDate lvaDate = new LvaDate();
+                LvaDate lvaDate = new LvaDate();
                 lvaDate.setName("test name");
                 lvaDate.setDescription("test description");
                 lvaDate.setId(2);
@@ -73,11 +73,11 @@ public class BackgroundPanel extends JPanel {
                 lvaDate.setRoom("test room");
                 lvaDate.setType(LvaDateType.LECTURE);
                 lvaDate.setWasAttendant(false);
-                viewLvaDate(lvaDate); */
+                viewLvaDate(lvaDate);
             }
         });
         this.add(testViewDate);
-        /*test*/
+        test */
 
         log.info("Background Panel initialized.");
     }

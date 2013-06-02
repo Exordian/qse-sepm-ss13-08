@@ -61,6 +61,10 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
         this.add(title);
     }
 
+    protected void addEditableTitle(String s) {
+
+    }
+
     public void setBgPanel(BackgroundPanel bgPanel) {
         this.bgPanel=bgPanel;
     }

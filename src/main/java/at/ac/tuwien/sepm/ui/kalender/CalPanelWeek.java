@@ -38,10 +38,8 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
 
     @Override
     protected void initPanel() {
-        int width=903;
-        int height=459;
         maxDateLabels=30;
-        initWeekNames(width, height);
+        initWeekNames((int)whiteSpaceCalendar.getWidth(), (int)whiteSpaceCalendar.getHeight());
         initDayPanels();
         setDays();
     }

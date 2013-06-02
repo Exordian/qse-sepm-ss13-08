@@ -46,10 +46,8 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
     }
 
     public void initPanel () {
-        int width=903;
-        int height=459;
         maxDateLabels = 5;
-        initWeekNames(width, height);
+        initWeekNames((int)whiteSpaceCalendar.getWidth(), (int)whiteSpaceCalendar.getHeight());
         initDayPanels();
         setDays();
     }
