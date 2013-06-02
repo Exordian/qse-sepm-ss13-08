@@ -26,6 +26,7 @@ mydb.*
 ## generic files to ignore
 *~
 *.lock
+*.log
 *.lck
 *.DS_Store
 *.swp
