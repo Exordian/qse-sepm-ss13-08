@@ -114,6 +114,11 @@ public class DateServiceImpl implements DateService {
             throw new ServiceException("Intersectable of DateEntity is invalid.");
         }
 
+        if (toValidate.getTime() == null) {
+            log.error("Start of DateEntity is invalid.");
+            throw new ServiceException("Start of DateEntity is invalid.");
+        }
+
         if (toValidate.getStart() == null) {
             log.error("Start of DateEntity is invalid.");
             throw new ServiceException("Start of DateEntity is invalid.");
