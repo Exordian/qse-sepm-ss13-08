@@ -1,8 +1,13 @@
 package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.service.DateService;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +25,7 @@ import java.awt.event.ActionListener;
 @UI
 public class ViewDate extends StandardSimpleInsidePanel {
     private DateEntity dateEntity;
+    private DateService dateService;
     private JTextArea description;
     private JButton save;
 
@@ -31,12 +37,17 @@ public class ViewDate extends StandardSimpleInsidePanel {
     private JTextField from;
     private JTextField to;
 
-    public ViewDate() {
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+
+    @Autowired
+    public ViewDate(DateService dateService) {
+        this.dateService=dateService;
         init();
         addImage();
         dateEntity = new DateEntity();
         addReturnButton();
         addContent();
+        addSaveButton();
     }
 
     public void setDateEntity(DateEntity dateEntity) {
@@ -50,29 +61,39 @@ public class ViewDate extends StandardSimpleInsidePanel {
         this.revalidate();
     }
 
-    private void addContent() {
-        int verticalSpace = 10;
-
-        description = new JTextArea(dateEntity.getDescription());
-        description.setLineWrap(true);
-        description.setWrapStyleWord(true);
-        //JScrollPane scroll = new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);  //todo scrollpane
-        description.setBorder(BorderFactory.createLineBorder(Color.gray));
-        description.setFont(standardTextFont);
-        description.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()-40);
-        this.add(description);
-
+    private void addSaveButton() {
         save = new JButton("Speichern");
         save.setFont(standardTextFont);
         save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 150,40);
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo save
+                try {
+                    if (dateService.readDateById(dateEntity.getId()) != null) {
+                        dateService.updateDate(dateEntity);
+                    } else {
+                        dateService.createDate(dateEntity);
+                    }
+                } catch (ServiceException e) {
+                    log.error("DateEntity is invalid.");
+                    JOptionPane.showMessageDialog(ViewDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         this.add(save);
+    }
 
+    private void addContent() {
+        int verticalSpace = 10;
+
+        description = new JTextArea(dateEntity.getDescription());
+        description.setLineWrap(true);
+        description.setWrapStyleWord(true);
+        description.setFont(standardTextFont);
+        description.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()-40);
+        JScrollPane scroll = new JScrollPane(description);
+        scroll.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()-40);
+        this.add(scroll);
 
         fromLabel = new JLabel("Von");
         fromLabel.setFont(standardTextFont);
