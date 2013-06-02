@@ -47,7 +47,7 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
        try {
             return moduleDao.readByName(name);
         } catch (DataAccessException e) {
-            throw new ServiceException("Das Modudl konnte nicht gelesen werden.", e);
+            throw new ServiceException("Das Modul konnte nicht gelesen werden.", e);
         }
     }
 
