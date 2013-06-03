@@ -4,7 +4,9 @@ import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.LvaFetcherService;
+import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
@@ -25,6 +29,10 @@ public class LvaFetcherPanel extends JPanel{
     @Autowired
     private LvaFetcherService lvaFetcherService;
 
+    @Autowired
+    private MetaLVAService metaLVAService;
+
+
     private JTree tissTree;
     private JScrollPane treeView;
     private JComboBox<CurriculumSelectItem> academicPrograms;
@@ -32,7 +40,7 @@ public class LvaFetcherPanel extends JPanel{
     private JButton importb;
 
     public LvaFetcherPanel() {
-        super(new MigLayout(/*, "[70%][30%]", "[10%][90%]"*/));
+        super(new MigLayout());
     }
 
     void reconfigLayout(Font textFont, Font buttonFont) {
@@ -83,30 +91,46 @@ public class LvaFetcherPanel extends JPanel{
     }
 
     private void performImport() {
-
-        // TODO implement this
-
+        TreePath path = tissTree.getSelectionPath();
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+        Object item = selectedNode.getUserObject();
+        try {
+            if(item instanceof ModuleSelectItem) {
+                // TODO
+            } else if(item instanceof CurriculumSelectItem) {
+                // TODO
+            } else if(item instanceof MetaLvaSelectItem) {
+                metaLVAService.create(((MetaLvaSelectItem) item).get());
+            }
+        } catch (ServiceException e) {
+            log.error("metalva create failed");
+        } catch (ValidationException e) {
+            log.error("tried to import invalid lva");
+        }
     }
 
     public void refreshTree() {
         try {
             setCursor(new Cursor (Cursor.WAIT_CURSOR));
             Curriculum curriculum = ((CurriculumSelectItem) academicPrograms.getSelectedItem()).get();
-            DefaultMutableTreeNode top = new DefaultMutableTreeNode(curriculum.getName());
+            DefaultMutableTreeNode top = new DefaultMutableTreeNode(new CurriculumSelectItem(curriculum));
 
             List<Module> modules = lvaFetcherService.getModules(curriculum.getStudyNumber(), true);
 
             for(Module m : modules) {
-                DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode(m.getName());
+                DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode(new ModuleSelectItem(m));
                 if(m.getMetaLvas() != null)
                     for(MetaLVA ml: m.getMetaLvas()) {
-                        DefaultMutableTreeNode mln = new DefaultMutableTreeNode(ml.getName());
+                        DefaultMutableTreeNode mln = new DefaultMutableTreeNode(new MetaLvaSelectItem(ml));
                         moduleNode.add(mln);
                     }
                 top.add(moduleNode);
             }
 
-            treeView.setViewportView(new JTree(top));
+            tissTree = new JTree(top);
+            tissTree.getSelectionModel().setSelectionMode
+                    (TreeSelectionModel.SINGLE_TREE_SELECTION);
+            treeView.setViewportView(tissTree);
             setCursor(new Cursor (Cursor.DEFAULT_CURSOR));
         } catch (ServiceException e) {
             log.info("couldn't build LvaTree", e);
