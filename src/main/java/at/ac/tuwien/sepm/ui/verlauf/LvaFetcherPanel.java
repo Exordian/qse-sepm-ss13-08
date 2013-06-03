@@ -32,7 +32,7 @@ public class LvaFetcherPanel extends JPanel{
     private JButton importb;
 
     public LvaFetcherPanel() {
-        super(new MigLayout("debug"/*, "[70%][30%]", "[10%][90%]"*/));
+        super(new MigLayout(/*, "[70%][30%]", "[10%][90%]"*/));
     }
 
     void reconfigLayout(Font textFont, Font buttonFont) {
