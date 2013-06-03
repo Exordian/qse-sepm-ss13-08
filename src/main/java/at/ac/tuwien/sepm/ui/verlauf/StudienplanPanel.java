@@ -61,6 +61,8 @@ public class StudienplanPanel extends StandardInsidePanel {
     private JLabel ectsfInfol;
     private JLabel ectssInfol;
 
+
+
     public StudienplanPanel() {
         this.setLayout(new MigLayout());
         this.setOpaque(false);
@@ -69,7 +71,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         revalidate();
         repaint();
     }
-
+    /*
     public void placeComponents() {
         this.add(panel);
         panel.add(baddcurr);
@@ -91,6 +93,24 @@ public class StudienplanPanel extends StandardInsidePanel {
         infop.add(ectssl);
         infop.add(ectssInfol, "wrap");
         this.add(infop);
+    }
+    */
+
+    public void placeComponents() {
+        this.add(panel);
+        panel.add(baddcurr);
+        panel.add(ccurr, "wrap");
+        panel.add(spane, "span, wrap");
+        panel.add(bcreate, "wrap");
+        this.add(lvaFetcherPanel, "dock east");
+    }
+
+    public void initLvaFetcherPanel() {
+        lvaFetcherPanel.setBounds(new Rectangle(whiteSpaceStud.x + (int)whiteSpaceStud.getWidth()/2, whiteSpaceStud.y, (int)whiteSpaceStud.getWidth()/2, (int)whiteSpaceStud.getHeight()));
+        lvaFetcherPanel.setBackground(Color.WHITE);
+        lvaFetcherPanel.reconfigLayout(standardTextFont, standardButtonFont);
+        lvaFetcherPanel.revalidate();
+        lvaFetcherPanel.repaint();
     }
 
     public void initInfoPanel() {
@@ -239,7 +259,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     public void initPanel() {
         panel = new JPanel();
         panel.setLayout(new MigLayout());
-        panel.setBounds(whiteSpaceStud);
+        panel.setBounds(new Rectangle(whiteSpaceStud.x, whiteSpaceStud.y, (int)whiteSpaceStud.getWidth()/2, (int)whiteSpaceStud.getHeight()));
         panel.setBackground(Color.WHITE);
     }
 
