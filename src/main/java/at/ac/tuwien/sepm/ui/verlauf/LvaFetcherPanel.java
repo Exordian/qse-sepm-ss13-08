@@ -61,13 +61,15 @@ public class LvaFetcherPanel extends JPanel{
         academicPrograms = new JComboBox();
         try {
             for(Curriculum c : lvaFetcherService.getAcademicPrograms())
-                academicPrograms.addItem(new CurriculumSelectItem(c));
+                if(c.getName().startsWith("Bachelor") || c.getName().startsWith("Master"))
+                    academicPrograms.addItem(new CurriculumSelectItem(c));
         } catch (ServiceException e) {
             log.info("no academic prorgams");
         }
         fetchProgram = new JButton("Studium laden");
 
-        treeView = new JScrollPane(new JTree());
+        tissTree = new JTree(new DefaultMutableTreeNode("Wähle ein Studium aus"));
+        treeView = new JScrollPane(tissTree);
 
         fetchProgram.addActionListener(new AbstractAction() {
             @Override
@@ -83,6 +85,7 @@ public class LvaFetcherPanel extends JPanel{
                 performImport();
             }
         });
+        importb.setEnabled(false);
 
         add(academicPrograms, "push");
         add(fetchProgram, "wrap");
@@ -132,6 +135,7 @@ public class LvaFetcherPanel extends JPanel{
                     (TreeSelectionModel.SINGLE_TREE_SELECTION);
             treeView.setViewportView(tissTree);
             setCursor(new Cursor (Cursor.DEFAULT_CURSOR));
+            importb.setEnabled(true);
         } catch (ServiceException e) {
             log.info("couldn't build LvaTree", e);
         }
