@@ -259,11 +259,13 @@ public class CalendarPanel extends StandardInsidePanel {
                 semester.setVisible(true);
                 fwd.setVisible(true);
                 bwd.setVisible(true);
+                importBtn.setVisible(true);
             } else if (s.equals("hide")) {
                 month.setVisible(false);
                 semester.setVisible(false);
                 fwd.setVisible(false);
                 bwd.setVisible(false);
+                importBtn.setVisible(false);
             } else {
                 //troll out loud
             }
