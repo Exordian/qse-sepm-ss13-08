@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.service.semesterPlanning;
 import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
+import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -23,7 +25,7 @@ public class LVAUtil {
     /** This constant serves as an identifier for the Exam-Dates associated with this LVA.*/
     public static final int TIMES_EXAM =2;
 
-    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+    private static Logger logger = LogManager.getLogger(LVAUtil.class.getSimpleName());
     /**
      * This methods will provide an Iterator, which returns all TimeFrames saved for the given LVA, for the given types. Since they are
      * inserted in order, they will also be returned in order.
@@ -79,7 +81,7 @@ public class LVAUtil {
      * @param b the second LVA to use for the test
      * @return the result of the test
      */
-    public static boolean intersectAll(LVA a,LVA b){
+    public static boolean intersectAllTypes(LVA a, LVA b){
         ArrayList<Integer> timeIDs = new ArrayList<Integer>();
         timeIDs.add(TIMES);
         timeIDs.add(TIMES_UE);
@@ -87,6 +89,37 @@ public class LVAUtil {
         return intersect(a,b,timeIDs,timeIDs);
     }
 
+    /**
+     * intersects all LVAs from the given List and returns an array, containging the result from the intersectings.
+     * in row i, the intersection of LVA nr i with the LVAs from nr (n-i) to nr n are stored.
+     * For example if you have three LVAs lva0, lva1 and lva2. lva0 intersects with lva2, but not lva1 and lva1 intersects with lva2. This method will return this array:
+     *  boolea[][] =
+     *  0, 1
+     *  1
+     *
+     * @param lva the List of LVAs which shall be used for the intersect
+     * @return a boolean array with the result of the intersection.
+     */
+    public static boolean[][] intersectAll(List<LVA> lva){
+        //String debug="";
+        boolean[][] toReturn = new boolean[lva.size()][];
+        for(int i=0;i<lva.size();i++){
+            toReturn[i] = new boolean[lva.size()-i];
+            for(int j=i;j<lva.size();j++){
+                toReturn[i][j-i]=intersectAllTypes(lva.get(i),lva.get(j));
+                /*if(toReturn[i][j-i]){
+                    debug+="1 ";
+                }else{
+                    debug+="0 ";
+                }*/
+            }
+            //debug+="\n";
+        }
+        //logger.debug("toReturn: \n"+debug);
+        //debug ="test:\n";
+        //logger.debug(""+debug);
+        return toReturn;
+    }
     /**
      * this method will test, if two LVAs have overlapping TimeFrames, of the give type
      * @param a the first LVA to use for the test

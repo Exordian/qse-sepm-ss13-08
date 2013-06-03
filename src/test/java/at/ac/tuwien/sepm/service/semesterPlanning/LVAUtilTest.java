@@ -114,7 +114,7 @@ public class LVAUtilTest {
 		assertFalse(iter.hasNext());
 	}
 	/**
-	 * tests, if the intersectAll() method works
+	 * tests, if the intersectAllTypes() method works
 	 */
 	@Test
 	public void testIntersectLVAs() {
@@ -155,11 +155,11 @@ public class LVAUtilTest {
 		
 		lva4.setExams(dates1);
 		
-		assertFalse(LVAUtil.intersectAll(lva1,lva2));
-		assertFalse(LVAUtil.intersectAll(lva2,lva1));
+		assertFalse(LVAUtil.intersectAllTypes(lva1, lva2));
+		assertFalse(LVAUtil.intersectAllTypes(lva2, lva1));
 		
-		assertTrue(LVAUtil.intersectAll(lva1,lva3));
-		assertTrue(LVAUtil.intersectAll(lva3,lva1));
+		assertTrue(LVAUtil.intersectAllTypes(lva1, lva3));
+		assertTrue(LVAUtil.intersectAllTypes(lva3, lva1));
 		
 		assertFalse(LVAUtil.intersect(lva1,lva2,LVAUtil.TIMES_UE));
 		assertFalse(LVAUtil.intersect(lva2,lva1,LVAUtil.TIMES_UE));

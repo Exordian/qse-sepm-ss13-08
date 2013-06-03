@@ -106,34 +106,13 @@ public class IntelligentSemesterPlaner {
             }
 		}
 	}
-    private void intersectAll(List<MetaLVA> lva,int year, Semester sem){
-        String debug="";
-        intersecting = new boolean[lva.size()][];
-        for(int i=0;i<lva.size();i++){
-            intersecting[i] = new boolean[lva.size()-i];
-            for(int j=i;j<lva.size();j++){
-                intersecting[i][j-i]=LVAUtil.intersectAll(lva.get(i).getLVA(year, sem),lva.get(j).getLVA(year, sem));
-                if(intersecting[i][j-i]){
-                    debug+="1 ";
-                }else{
-                    debug+="0 ";
-                }
-            }
-            debug+="\n";
+    private void intersectAll(List<MetaLVA> metaLVAs,int year, Semester sem){
+        ArrayList<LVA> lvas = new ArrayList<LVA>();
+        for(MetaLVA m : metaLVAs){
+            lvas.add(m.getLVA(year,sem));
         }
-        logger.debug("intersecting: \n"+debug);
-        debug ="test:\n";
-        for(int i=0;i<lva.size();i++){
-            for(int j=0;j<lva.size();j++){
-                if(intersect(i,j)){
-                    debug+="1 ";
-                }else{
-                    debug+="0 ";
-                }
-            }
-            debug+="\n";
-        }
-        logger.debug(""+debug);
+        intersecting = LVAUtil.intersectAll(lvas);
+
     }
     private boolean intersect(int a, int b){
         if(a>b){
