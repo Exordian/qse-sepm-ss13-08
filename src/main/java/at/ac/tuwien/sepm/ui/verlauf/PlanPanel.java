@@ -1,16 +1,25 @@
 package at.ac.tuwien.sepm.ui.verlauf;
 
+import at.ac.tuwien.sepm.dao.DateDao;
+import at.ac.tuwien.sepm.dao.hsqldb.DBDateDao;
+import at.ac.tuwien.sepm.dao.hsqldb.DBMetaLvaDao;
+import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.semesterPlanning.IntelligentSemesterPlaner;
 import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +30,13 @@ import java.util.ArrayList;
  */
 @UI
 public class PlanPanel extends StandardInsidePanel {
+    @Autowired
+    DBMetaLvaDao metaLVADAO;
+    @Autowired
+    DBDateDao dateDAO;
+
+    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+
     private Rectangle outputPlane = new Rectangle(483,12,521,496);
     private MetaLVADisplayPanel pane;
     private ArrayList<MetaLVA> lvas;
@@ -96,14 +112,48 @@ public class PlanPanel extends StandardInsidePanel {
         plan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                float ects = Float.parseFloat(desiredECTSText.getText());
-                boolean vointersect = intersectVOCheck.isSelected();
-                int year = Integer.parseInt(yearText.getText());
-                Semester sem = Semester.S;
-                if (semesterDrop.getSelectedIndex() == 0) {
-                    sem = Semester.W;
-                }
-                //todo logic
+                new Thread(){
+                    private IntelligentSemesterPlaner planer = new IntelligentSemesterPlaner();
+                    public void start(){
+                        super.start();
+                    }
+                    @Override
+                    public void run(){
+                        float goalECTS = Float.parseFloat(desiredECTSText.getText());
+                        //boolean vointersect =  intersectVOCheck.isSelected();
+                        int year = Integer.parseInt(yearText.getText());
+                        Semester sem = Semester.S;
+                        if (semesterDrop.getSelectedIndex() == 0) {
+                            sem = Semester.W;
+                        }
+                        List<MetaLVA> forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(year, sem, true);
+                        List<MetaLVA> pool = metaLVADAO.readUncompletedByYearSemesterStudyProgress(year,sem,false);
+                        MetaLVA customMetaLVA = new MetaLVA();
+
+                        if(intersectCustomCheck.isSelected()){
+                            customMetaLVA.setLVA(dateDAO.readNotToIntersectByYearSemester(year,sem));
+                            logger.debug(customMetaLVA.getLVA(year,sem));
+                            customMetaLVA.setName("custom dates");
+                            customMetaLVA.setNr("-1");
+                            forced.add(customMetaLVA);
+                        }
+
+
+                        planer.setLVAs(forced, pool);
+                        ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, year, sem);
+                        if(intersectCustomCheck.isSelected()){
+                            solution.remove(customMetaLVA);
+                        }
+                        logger.debug(solution);
+                        //todo instead of replacing table, alter it..
+                        remove(pane);
+                        pane = new MetaLVADisplayPanel(solution, (int)outputPlane.getWidth(), (int)outputPlane.getHeight());
+                        pane.setBounds(outputPlane);
+                        add(pane);
+                        repaint();
+                        revalidate();
+                    }
+                }.start();
 
             }
         });

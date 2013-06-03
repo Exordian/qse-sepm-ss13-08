@@ -253,8 +253,8 @@ public class DBDateDaoTest {
     @Test
     public void testReadNotIntersectableByYearSemester() throws Exception {
         TestHelper.insert(0);
-        LVA e0 = dao.readNotIntersectableByYearSemester(2013, Semester.S);
-        LVA e1 = dao.readNotIntersectableByYearSemester(2013, Semester.W);
+        LVA e0 = dao.readNotToIntersectByYearSemester(2013, Semester.S);
+        LVA e1 = dao.readNotToIntersectByYearSemester(2013, Semester.W);
         assert(e0.getLectures().size()==11);
         assert(e1.getLectures().size()==2);
     }
@@ -262,19 +262,19 @@ public class DBDateDaoTest {
     @Test
     public void testReadNotIntersectableByNotExistingYearSemester() throws Exception {
         TestHelper.insert(0);
-        assert(dao.readNotIntersectableByYearSemester(-1,Semester.S).getLectures().size()==0);
+        assert(dao.readNotToIntersectByYearSemester(-1, Semester.S).getLectures().size()==0);
     }
 
     @Test
     public void testReadNotIntersectableByYearNotExistingSemester() throws Exception {
         TestHelper.insert(0);
-        assert(dao.readNotIntersectableByYearSemester(2013, Semester.UNKNOWN)==null);
+        assert(dao.readNotToIntersectByYearSemester(2013, Semester.UNKNOWN)==null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testReadNotIntersectableByYearSemesterIsNull() throws Exception {
         TestHelper.insert(0);
-        dao.readNotIntersectableByYearSemester(2013,null);
+        dao.readNotToIntersectByYearSemester(2013, null);
     }
 
     @Test

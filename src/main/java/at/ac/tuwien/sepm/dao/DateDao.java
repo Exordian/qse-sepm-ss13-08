@@ -71,7 +71,7 @@ public interface DateDao {
     public List<DateEntity> readByDay(DateTime date) throws DataAccessException;
 
     /**
-     * Read all not intersectable dates which are in the specified year and semester. A winter semester starts on 1.
+     * Read all dates which should not be intersected by the SemesterPlanner, which are in the specified year and semester. A winter semester starts on 1.
      * October and ends on 31. January, a summer semester starts on 1. March and ends on 30. June.
      * @param year The year.
      * @param semester The semester. Should be <code>Semester.S</code> or <code>Semester.W</code>.
@@ -81,7 +81,7 @@ public interface DateDao {
      * @throws DataAccessException If the date data could not be read because any error occurred.
      * @throws NullPointerException If <code>semester==null</code>.
      */
-    public LVA readNotIntersectableByYearSemester(int year, Semester semester) throws DataAccessException, NullPointerException;
+    public LVA readNotToIntersectByYearSemester(int year, Semester semester) throws DataAccessException, NullPointerException;
 
     /*
      * Read all Dates within the specific time frame. It's also possible to specify if the date should be intersectable

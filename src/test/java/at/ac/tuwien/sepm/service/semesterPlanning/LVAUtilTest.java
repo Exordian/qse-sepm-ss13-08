@@ -33,7 +33,7 @@ public class LVAUtilTest {
         times.add(date);
         lva.setLectures(times);
         assertTrue(LVAUtil.iterator(lva).hasNext());
-        assertFalse(LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM).hasNext());
+        assertFalse(LVAUtil.iterator(lva,LVAUtil.EXAM_TIMES).hasNext());
     }
 
     /**
@@ -54,8 +54,8 @@ public class LVAUtilTest {
         
         lva.setLectures(dates1);
         lva.setExercises(dates2);
-        Iterator<LvaDate> iter1 = LVAUtil.iterator(lva,LVAUtil.TIMES_EXAM);
-        Iterator<LvaDate> iter2 = LVAUtil.iterator(lva,LVAUtil.TIMES_UE);
+        Iterator<LvaDate> iter1 = LVAUtil.iterator(lva,LVAUtil.EXAM_TIMES);
+        Iterator<LvaDate> iter2 = LVAUtil.iterator(lva,LVAUtil.EXERCISES_TIMES);
         assertFalse(iter1.hasNext());
         assertTrue(iter2.hasNext());
         assertTrue(iter2.next()==date2);
@@ -161,11 +161,11 @@ public class LVAUtilTest {
         assertTrue(LVAUtil.intersectAll(lva1,lva3));
         assertTrue(LVAUtil.intersectAll(lva3,lva1));
         
-        assertFalse(LVAUtil.intersect(lva1,lva2,LVAUtil.TIMES_UE));
-        assertFalse(LVAUtil.intersect(lva2,lva1,LVAUtil.TIMES_UE));
+        assertFalse(LVAUtil.intersect(lva1,lva2,LVAUtil.EXERCISES_TIMES));
+        assertFalse(LVAUtil.intersect(lva2,lva1,LVAUtil.EXERCISES_TIMES));
 
-        assertFalse(LVAUtil.intersect(lva3,lva4,LVAUtil.TIMES_EXAM));
-        assertFalse(LVAUtil.intersect(lva4,lva3,LVAUtil.TIMES_EXAM));
+        assertFalse(LVAUtil.intersect(lva3,lva4,LVAUtil.EXAM_TIMES));
+        assertFalse(LVAUtil.intersect(lva4,lva3,LVAUtil.EXAM_TIMES));
     }
 
 }

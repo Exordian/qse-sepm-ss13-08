@@ -82,7 +82,7 @@ public class DBDateDao extends DBBaseDao implements DateDao {
     }
 
     @Override
-    public LVA readNotIntersectableByYearSemester(int year, Semester semester) throws DataAccessException, NullPointerException {
+    public LVA readNotToIntersectByYearSemester(int year, Semester semester) throws DataAccessException, NullPointerException {
         int monthStart=3;
         int monthEnd=6;
         int dayEnd=30;
@@ -118,7 +118,8 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         }
         result.setLectures(times);
         */
-
+        result.setYear(year);
+        result.setSemester(semester);
         return result;
     }
 

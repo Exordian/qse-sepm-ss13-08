@@ -2,9 +2,11 @@ package at.ac.tuwien.sepm.entity;
 
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.semesterPlanning.LVAUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -177,7 +179,7 @@ public class MetaLVA {
         String toReturn="<MetaLVA:";
         if(nr!=null){
             if(nr.length()>3){
-                toReturn+=" nr:"+nr.substring(4)+"..";
+                toReturn+=" nr:"+".."+nr.substring(4);
             }else{
                 toReturn+=" nr:"+nr;
             }
@@ -193,6 +195,28 @@ public class MetaLVA {
             toReturn+=" prio:"+priority;
         }
         return toReturn+">";
+    }
+    public String toDetailedString(int indentCount){
+        String toReturn=toString();
+        String indent="";
+        for(int i=0;i<indentCount;i++){
+            indent+="\t";
+        }
+        for(LVA lva:lvas){
+            toReturn+=indent+lva;
+        }
+        return toReturn;
+    }
+    public String toVeryDetailedString(int indentCount){
+        String toReturn=toString();
+        String indent="";
+        for(int i=0;i<indentCount;i++){
+            indent+="\t";
+        }
+        for(LVA lva:lvas){
+            toReturn+="\n"+indent+lva.toDetailedString(indentCount+1);
+        }
+        return toReturn;
     }
 
 }

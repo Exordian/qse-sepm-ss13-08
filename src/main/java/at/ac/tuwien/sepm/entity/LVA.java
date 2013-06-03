@@ -1,11 +1,11 @@
 package at.ac.tuwien.sepm.entity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.service.semesterPlanning.LVAUtil;
 
 /**
  * 
@@ -16,11 +16,11 @@ import at.ac.tuwien.sepm.service.TimeFrame;
 public class LVA {
 
     private int id;
-    private MetaLVA metaLVA;
-    private String description;
-    private int year;
-    private Semester semester;
-    private int grade;
+    private MetaLVA metaLVA=null;
+    private String description=null;
+    private int year=-1;
+    private Semester semester=null;
+    private int grade=0;
 
     private boolean inStudyProgress;
     private String goals;
@@ -238,5 +238,58 @@ public class LVA {
 
     public void setGrade(int grade) {
         this.grade = grade;
+    }
+    @Override
+    public String toString(){
+        String toReturn="<LVA:";
+        if(metaLVA!=null && metaLVA.getName()!=null){
+            toReturn+=" metaLVA:"+metaLVA.getName();
+        }
+        if(year!=-1){
+            toReturn+=" year:"+year;
+        }
+        if(semester!=null){
+            toReturn+=" semester:"+semester;
+        }
+        return toReturn+">";
+    }
+    public String toShortString(){
+        String toReturn="<LVA:";
+        if(metaLVA!=null && metaLVA.getName()!=null){
+            if(metaLVA.getName().length()>7){
+                toReturn+=" metaLVA:"+metaLVA.getName().substring(0,7)+"..";
+            }else{
+                toReturn+=" metaLVA:"+metaLVA.getName();
+            }
+        }
+        if(year!=-1){
+            toReturn+=" year:"+year;
+        }
+        if(semester!=null){
+            toReturn+=" sem:"+semester;
+        }
+        return toReturn+">";
+    }
+    public String toDetailedString(int indentCount){
+        String toReturn = toString();
+        String indent="";
+        for(int i=0;i<indentCount;i++){
+            indent+="\t";
+        }
+        List<Integer> considered = new ArrayList<Integer>();
+        if(lectures!=null){
+            considered.add(LVAUtil.LECTURE_TIMES);
+        }
+        if(exercises!=null){
+            considered.add(LVAUtil.EXERCISES_TIMES);
+        }
+        if(exams!=null){
+            considered.add(LVAUtil.EXAM_TIMES);
+        }
+        Iterator<LvaDate> iter = LVAUtil.iterator(this);
+        while(iter.hasNext()){
+            toReturn+="\n"+indent+iter.next();
+        }
+        return toReturn;
     }
 }

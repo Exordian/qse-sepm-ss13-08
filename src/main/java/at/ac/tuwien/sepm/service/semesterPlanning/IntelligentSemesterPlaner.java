@@ -44,8 +44,8 @@ public class IntelligentSemesterPlaner {
                 this.pool.add(lva);
             }
         }
-        logger.debug("forced set: "+this.forced);
-        logger.debug("pool set: "+this.pool);
+        logger.debug("forced set:\n"+LVAUtil.formatShort(this.forced,1));
+        logger.debug("pool set:\n"+LVAUtil.formatShort(this.pool,1));
     }
 
     /**
@@ -69,9 +69,8 @@ public class IntelligentSemesterPlaner {
         for(MetaLVA mLVA :forced){
             if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
                 toPlan.add(mLVA);
-
+                chosen.add(toPlan.indexOf(mLVA));
             }
-            chosen.add(toPlan.indexOf(mLVA));
         }
         computeSolution(toPlan,chosen,goalECTS);
         intersectAll(toPlan,year,sem);
@@ -102,7 +101,7 @@ public class IntelligentSemesterPlaner {
                 
                 chosen.remove(chosen.size()-1);
             }else{
-                logger.debug("intersecting: "+all.get(lastJ).toShortString()+" with: "+all.get(i).toShortString());
+                //logger.debug("intersecting: "+all.get(lastJ).toShortString()+" with: "+all.get(i).toShortString());
             }
         }
     }
@@ -122,18 +121,7 @@ public class IntelligentSemesterPlaner {
             debug+="\n";
         }
         logger.debug("intersecting: \n"+debug);
-        debug ="test:\n";
-        for(int i=0;i<lva.size();i++){
-            for(int j=0;j<lva.size();j++){
-                if(intersect(i,j)){
-                    debug+="1 ";
-                }else{
-                    debug+="0 ";
-                }
-            }
-            debug+="\n";
-        }
-        logger.debug(""+debug);
+
     }
     private boolean intersect(int a, int b){
         if(a>b){
@@ -158,14 +146,14 @@ public class IntelligentSemesterPlaner {
             }
             bestSolution=newSolution;
             solutionValue=value;
-            logger.debug("new Solution found: " +newSolution+"\nsolution value: "+value);
+            logger.debug("new Solution found: \n" +LVAUtil.formatShort(newSolution,1)+"\n\tsolution value: "+value);
         }else{
             //active for detailed debugging
             ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
             for(Integer i:chosen){
                 toDiscard.add(all.get(i));
             }
-            logger.debug("discarding set: " +toDiscard+"\nsolution value: "+value);
+            //logger.debug("discarding set: " +toDiscard+"\nsolution value: "+value);
 
         }
     }

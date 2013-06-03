@@ -1,9 +1,8 @@
 package at.ac.tuwien.sepm.service.semesterPlanning;
 
-import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
-import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.entity.MetaLVA;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -17,13 +16,45 @@ import java.util.List;
  */
 public class LVAUtil {
     /** This constant serves as an identifier for the VO-Dates associated with this LVA.*/
-    public static final int TIMES =0;
+    public static final int LECTURE_TIMES =0;
     /** This constant serves as an identifier for the UW-Dates associated with this LVA.*/
-    public static final int TIMES_UE =1;
+    public static final int EXERCISES_TIMES =1;
     /** This constant serves as an identifier for the Exam-Dates associated with this LVA.*/
-    public static final int TIMES_EXAM =2;
+    public static final int EXAM_TIMES =2;
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+
+    public static String format(List<MetaLVA> metaLVAs,int indentCount){
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(MetaLVA m:metaLVAs){
+            toReturn+="\n"+indent+(index++)+") "+m;
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+    public static String formatShort(List<MetaLVA> metaLVAs,int indentCount){
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(MetaLVA m:metaLVAs){
+            toReturn+="\n"+indent+(index++)+") "+m.toShortString();
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+
     /**
      * This methods will provide an Iterator, which returns all TimeFrames saved for the given LVA, for the given types. Since they are
      * inserted in order, they will also be returned in order.
@@ -54,9 +85,9 @@ public class LVAUtil {
      */
     public static Iterator<LvaDate> iterator(LVA lva){
         ArrayList<Integer> timeIDs = new ArrayList<Integer>();
-        timeIDs.add(TIMES);
-        timeIDs.add(TIMES_UE);
-        timeIDs.add(TIMES_EXAM);
+        timeIDs.add(LECTURE_TIMES);
+        timeIDs.add(EXERCISES_TIMES);
+        timeIDs.add(EXAM_TIMES);
 
         return new TimeIterator(lva,timeIDs);
     }
@@ -81,9 +112,9 @@ public class LVAUtil {
      */
     public static boolean intersectAll(LVA a,LVA b){
         ArrayList<Integer> timeIDs = new ArrayList<Integer>();
-        timeIDs.add(TIMES);
-        timeIDs.add(TIMES_UE);
-        timeIDs.add(TIMES_EXAM);
+        timeIDs.add(LECTURE_TIMES);
+        timeIDs.add(EXERCISES_TIMES);
+        timeIDs.add(EXAM_TIMES);
         return intersect(a,b,timeIDs,timeIDs);
     }
 
@@ -167,13 +198,13 @@ public class LVAUtil {
             ArrayList<LvaDate> times = lva.getLectures();
             ArrayList<LvaDate> timesUE = lva.getExercises();
             ArrayList<LvaDate> timesExam = lva.getExams();
-            if(times!=null && consideredTimesA.contains(TIMES)){
+            if(times!=null && consideredTimesA.contains(LECTURE_TIMES)){
                 allIter.add(times.iterator());
             }
-            if(timesUE!=null && consideredTimesA.contains(TIMES_UE)){
+            if(timesUE!=null && consideredTimesA.contains(EXERCISES_TIMES)){
                 allIter.add(timesUE.iterator());
             }
-            if(timesExam!=null && consideredTimesA.contains(TIMES_EXAM)){
+            if(timesExam!=null && consideredTimesA.contains(EXAM_TIMES)){
                 allIter.add(timesExam.iterator());
             }
             for(Iterator<LvaDate> iter:allIter){
