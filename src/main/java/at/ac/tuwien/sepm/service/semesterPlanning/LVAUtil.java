@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.service.semesterPlanning;
 
+import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -110,7 +113,7 @@ public class LVAUtil {
      * @param b the second LVA to use for the test
      * @return the result of the test
      */
-    public static boolean intersectAll(LVA a,LVA b){
+    public static boolean intersectAllTypes(LVA a, LVA b){
         ArrayList<Integer> timeIDs = new ArrayList<Integer>();
         timeIDs.add(LECTURE_TIMES);
         timeIDs.add(EXERCISES_TIMES);
@@ -118,6 +121,37 @@ public class LVAUtil {
         return intersect(a,b,timeIDs,timeIDs);
     }
 
+    /**
+     * intersects all LVAs from the given List and returns an array, containging the result from the intersectings.
+     * in row i, the intersection of LVA nr i with the LVAs from nr (n-i) to nr n are stored.
+     * For example if you have three LVAs lva0, lva1 and lva2. lva0 intersects with lva2, but not lva1 and lva1 intersects with lva2. This method will return this array:
+     *  boolea[][] =
+     *  0, 1
+     *  1
+     *
+     * @param lva the List of LVAs which shall be used for the intersect
+     * @return a boolean array with the result of the intersection.
+     */
+    public static boolean[][] intersectAll(List<LVA> lva){
+        //String debug="";
+        boolean[][] toReturn = new boolean[lva.size()][];
+        for(int i=0;i<lva.size();i++){
+            toReturn[i] = new boolean[lva.size()-i];
+            for(int j=i;j<lva.size();j++){
+                toReturn[i][j-i]=intersectAllTypes(lva.get(i),lva.get(j));
+                /*if(toReturn[i][j-i]){
+                    debug+="1 ";
+                }else{
+                    debug+="0 ";
+                }*/
+            }
+            //debug+="\n";
+        }
+        //logger.debug("toReturn: \n"+debug);
+        //debug ="test:\n";
+        //logger.debug(""+debug);
+        return toReturn;
+    }
     /**
      * this method will test, if two LVAs have overlapping TimeFrames, of the give type
      * @param a the first LVA to use for the test
@@ -165,27 +199,27 @@ public class LVAUtil {
                 }
             }
         }
-        /*
-        int index1=0;
-        int index2=0;
-        if(iterA.hasNext()&&iterB.hasNext()){
-            tfA=iterA.next();
-            tfB=iterB.next();
+		/*
+		int index1=0;
+		int index2=0;
+		if(iterA.hasNext()&&iterB.hasNext()){
+			tfA=iterA.next();
+			tfB=iterB.next();
 
 
-            while(index1 < times.size() && index2 < b.times.size()){
-                if(times.get(index1).after(b.times.get(index2))){
-                    index2++;
-                    logger.debug("index2++");
-                }else if(b.times.get(index2).after(times.get(index1))){
-                    index1++;
+			while(index1 < times.size() && index2 < b.times.size()){
+				if(times.get(index1).after(b.times.get(index2))){
+					index2++;
+					logger.debug("index2++");
+				}else if(b.times.get(index2).after(times.get(index1))){
+					index1++;
 
-                    logger.debug("index1++");
-                }else{
-                    return true;
-                }
-            }
-        }*/
+					logger.debug("index1++");
+				}else{
+					return true;
+				}
+			}
+		}*/
         return false;
     }
     private static class TimeIterator implements Iterator<LvaDate>{
