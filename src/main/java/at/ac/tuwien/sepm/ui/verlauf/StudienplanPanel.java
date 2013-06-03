@@ -47,7 +47,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     private LvaFetcherPanel lvaFetcherPanel;
 
     public StudienplanPanel() {
-        this.setLayout(new MigLayout());
+        this.setLayout(new GridLayout());
         this.setOpaque(false);
         loadFonts();
         setBounds((int)StudStartCoordinateOfWhiteSpace.getX(), (int)StudStartCoordinateOfWhiteSpace.getY(),(int)whiteSpaceStud.getWidth(),(int)whiteSpaceStud.getHeight());
