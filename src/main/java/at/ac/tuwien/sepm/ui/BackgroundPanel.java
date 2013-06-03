@@ -2,8 +2,16 @@ package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
+import at.ac.tuwien.sepm.entity.LvaDateType;
+import at.ac.tuwien.sepm.entity.Todo;
+import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.ui.EntityViews.ViewDate;
+import at.ac.tuwien.sepm.ui.EntityViews.ViewDeadline;
+import at.ac.tuwien.sepm.ui.EntityViews.ViewLvaDate;
+import at.ac.tuwien.sepm.ui.EntityViews.ViewTODO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -25,14 +33,16 @@ public class BackgroundPanel extends JPanel {
     private JPanel studPanel;
     private JPanel propsPanel;
     private ViewDate viewDate;
+    private ViewDeadline viewDeadline;
     private ViewLvaDate viewLVA;
+    private ViewTODO viewTodo;
     private Image image;
     private Component lastComponent;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA, ViewTODO viewTodo, ViewDeadline viewDeadline) {
         this.setLayout(null);
         this.calPanel = calPanel;
         this.propsPanel = propsPanel;
@@ -42,6 +52,10 @@ public class BackgroundPanel extends JPanel {
         viewDate.setBgPanel(this);
         this.viewLVA=viewLVA;
         viewLVA.setBgPanel(this);
+        this.viewTodo=viewTodo;
+        viewTodo.setBgPanel(this);
+        this.viewDeadline=viewDeadline;
+        viewDeadline.setBgPanel(this);
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
@@ -52,7 +66,7 @@ public class BackgroundPanel extends JPanel {
         testViewDate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                DateEntity dateEntity = new DateEntity();
+               /* DateEntity dateEntity = new DateEntity();
                 dateEntity.setName("Testname");
                 dateEntity.setIntersectable(true);
                 dateEntity.setDescription("this is a description for test this is a description for test this\nis a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test");
@@ -60,21 +74,21 @@ public class BackgroundPanel extends JPanel {
                 dateEntity.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
                 viewDate(dateEntity);
 
-                LvaDate lvaDate = new LvaDate();
+               LvaDate lvaDate = new LvaDate();
                 lvaDate.setName("test name");
                 lvaDate.setDescription("test description");
                 lvaDate.setId(2);
-                lvaDate.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
+                lvaDate.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2000, 1, 1, 1, 1)));
                 lvaDate.setAttendanceRequired(true);
                 lvaDate.setLva(20);
                 lvaDate.setRoom("test room");
-                lvaDate.setType(LvaDateType.LECTURE);
+                lvaDate.setType(LvaDateType.DEADLINE);
                 lvaDate.setWasAttendant(false);
-                viewLvaDate(lvaDate);
+                viewDeadline(lvaDate);
             }
         });
         this.add(testViewDate);
-        test */
+        /*test */
 
         log.info("Background Panel initialized.");
     }
@@ -97,6 +111,24 @@ public class BackgroundPanel extends JPanel {
         this.repaint();
     }
 
+    public void viewTodo(Todo todo) {
+        removeAddedPanels();
+        viewTodo.setTodo(todo);
+        viewTodo.setVisible(true);
+        this.add(viewTodo);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void viewDeadline(LvaDate deadline) {
+        removeAddedPanels();
+        viewDeadline.setDeadline(deadline);
+        viewDeadline.setVisible(true);
+        this.add(viewDeadline);
+        this.revalidate();
+        this.repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -111,6 +143,8 @@ public class BackgroundPanel extends JPanel {
         this.remove(studPanel);
         this.remove(viewDate);
         this.remove(viewLVA);
+        this.remove(viewTodo);
+        this.remove(viewDeadline);
     }
 
     private void addPanel(Component c) {

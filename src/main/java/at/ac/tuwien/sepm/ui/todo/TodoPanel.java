@@ -48,7 +48,7 @@ public class TodoPanel extends StandardInsidePanel {
 
     @Autowired
     public TodoPanel(TodoService todoService, LvaDateService lvaDateService, TodoTable todoTable, DeadlineTable deadlineTable, TodoAdderFrame todoAdderFrame, TodoEditorFrame todoEditorFrame, DeadlineAdderFrame deadlineAdderFrame, DeadlineEditorFrame deadlineEditorFrame) {
-        init();
+       // init();
         this.setLayout(new MigLayout("fill", "[16%][18%][16%][16%][18%][16%]", "[][grow][]"));
         this.service = todoService;
         serviceDeadlines = lvaDateService;

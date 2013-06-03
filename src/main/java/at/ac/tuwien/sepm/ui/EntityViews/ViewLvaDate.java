@@ -1,10 +1,14 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.EntityViews;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
+import at.ac.tuwien.sepm.ui.UI;
 import com.toedter.calendar.JDateChooser;
-import org.joda.time.DateTime;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,6 +45,9 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
     private JDateChooser to;
     private JSpinner fromTime;
     private JSpinner toTime;
+    private JButton delete;
+
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     public ViewLvaDate() {
         init();
@@ -49,7 +56,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         addEditableTitle(lvaDate.getName());
         addReturnButton();
         addContent();
-        addSaveButton();
+        addButtons();
     }
 
     public void setLVADateEntity(LvaDate lvaDate) {
@@ -67,10 +74,21 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         this.revalidate();
     }
 
-    private void addSaveButton() {
+    private void addButtons() {
+        delete = new JButton("Löschen");
+        delete.setFont(standardTextFont);
+        delete.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-145, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //todo delete
+            }
+        });
+        this.add(delete);
+
         save = new JButton("Speichern");
         save.setFont(standardTextFont);
-        save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 150,40);
+        save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170-120, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -80,7 +98,6 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                 lvaDate.setType((LvaDateType) type.getSelectedItem());
                 lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
                 lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
-
                 //todo save
             }
         });

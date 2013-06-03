@@ -119,15 +119,7 @@ public class DateServiceImpl implements DateService {
             throw new ServiceException("Start of DateEntity is invalid.");
         }
 
-        if (toValidate.getStart() == null) {
-            log.error("Start of DateEntity is invalid.");
-            throw new ServiceException("Start of DateEntity is invalid.");
-        }
-
-        if (toValidate.getStop() == null) {
-            log.error("Stop of DateEntity is invalid.");
-            throw new ServiceException("Stop of DateEntity is invalid.");
-        }
+        validateDates(toValidate.getStart(), toValidate.getStop());
     }
 
     @Override

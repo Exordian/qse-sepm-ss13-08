@@ -1,23 +1,20 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.EntityViews;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
+import at.ac.tuwien.sepm.ui.UI;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 
 /**
@@ -33,6 +30,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
     private DateService dateService;
     private JTextArea description;
     private JButton save;
+    private JButton delete;
 
     private JLabel fromLabel;
     private JLabel toLabel;
@@ -55,7 +53,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
         addEditableTitle(dateEntity.getName());
         addReturnButton();
         addContent();
-        addSaveButton();
+        addButtons();
         this.repaint();
         this.revalidate();
     }
@@ -71,10 +69,33 @@ public class ViewDate extends StandardSimpleInsidePanel {
         toTime.setValue(dateEntity.getStop().toDate());
     }
 
-    private void addSaveButton() {
+    private void addButtons() {
+        delete = new JButton("Löschen");
+        delete.setFont(standardTextFont);
+        delete.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-145, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    if (dateService.readDateById(dateEntity.getId()) != null) {
+                        int i = JOptionPane.showConfirmDialog(ViewDate.this, "Wollen sie diesen Termin wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
+                        if (i == 0) {
+                            dateService.deleteDate(dateEntity.getId());
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(ViewDate.this, "Dieser Termin ist noch nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (ServiceException e) {
+                    log.error("DateEntity is invalid.");
+                    JOptionPane.showMessageDialog(ViewDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        this.add(delete);
+
         save = new JButton("Speichern");
         save.setFont(standardTextFont);
-        save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 150,40);
+        save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170-120, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

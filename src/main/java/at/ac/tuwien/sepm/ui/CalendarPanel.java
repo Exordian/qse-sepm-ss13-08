@@ -71,7 +71,7 @@ public class CalendarPanel extends StandardInsidePanel {
         month.setFont(standardTitleFont);
 
         semester = new JComboBox();
-        semester.setBounds((int)(month.getBounds().getX()+month.getBounds().getWidth()), (int)(size.getHeight()/2-image.getHeight(null)/2)-20, 90, 20);
+        semester.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5+295, (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 90, 20);
         semester.setFont(standardButtonFont);
         semester.addItem("WS2011");
         semester.addItem("SS2011");
@@ -241,7 +241,7 @@ public class CalendarPanel extends StandardInsidePanel {
                     break;
                 case 3:
                     image = ImageIO.read(new File("src/main/resources/img/cald.png"));
-                    toggleComponents("show");
+                    toggleComponents("hide");
                     break;
                 default:
                     break;
