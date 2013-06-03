@@ -143,7 +143,7 @@ public class LvaDateServiceImpl implements LvaDateService {
         String error_msg = "";
         boolean valid = true;
 
-        if(toValidate.getLva() < 0) {
+        if(toValidate.getLva() == null || toValidate.getLva() < 0) {
             valid = false;
             error_msg += "invalid LVA!\n";
         }

@@ -9,14 +9,21 @@ import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Lena Lenz
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:applicationContext-test.xml"})
 public class LvaDateServiceImplTest {
 
     private LvaDate validLvaDate;
     private LvaDate invalidLvaDate;
+    @Autowired
     private LvaDateService lvaDateService;
 
     @Before
@@ -43,9 +50,7 @@ public class LvaDateServiceImplTest {
         invalidLvaDate.setWasAttendant(false);
         invalidLvaDate.setType(null);
         invalidLvaDate.setResult(-1);
-        invalidLvaDate.setTime(new TimeFrame(null, new DateTime(1990, 12, 12, 12, 12, 12)));
-
-        lvaDateService = new LvaDateServiceImpl();
+        invalidLvaDate.setTime(new TimeFrame(new DateTime(1990, 11, 12, 12, 12, 12), new DateTime(1990, 12, 12, 12, 12, 12)));
     }
 
     @Test

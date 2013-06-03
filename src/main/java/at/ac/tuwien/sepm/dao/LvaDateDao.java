@@ -9,10 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Author: MUTH Markus
- * Date: 5/18/13
- * Time: 9:06 PM
- * Description of class "LvaDateDao":
+ * @author Markus MUTH
  */
 public interface LvaDateDao {
 
@@ -101,7 +98,8 @@ public interface LvaDateDao {
     public List<LvaDate> readByLva(int lvaId) throws DataAccessException;
 
     /**
-     * Read all lva dates which start at or after <code>from</code> or stop at or before <code>till</code>.
+     * Read all lva dates which start at the specified day or stop at the specified day or start before the specified day
+     * and stop after the specified day.
      * @param date The date of the day where the dates should be returned.
      * @return A <code>List<DateEntry></code> containing all dates within the specified time frame, or a empty list
      * if there was no matching date found. The order is chronological, beginning with oldest date. If there are several

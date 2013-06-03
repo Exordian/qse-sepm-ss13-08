@@ -6,6 +6,8 @@ import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 
+import java.util.Locale;
+
 /**
  * @author Markus MUTH
  */
@@ -52,7 +54,8 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
         int dowa;
         int dowb;
 
-        String actFirstDayName = firstDay.toString("E");
+        String actFirstDayName = firstDay.toString("E", Locale.US);
+
         dow = 0;
         if(actFirstDayName.toUpperCase().equals("TUE")) {
             dow = 1;
@@ -68,7 +71,7 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
             dow = 6;
         }
 
-        actFirstDayName = d.toString("E");
+        actFirstDayName = d.toString("E", Locale.US);
         dowa = 0;
         if(actFirstDayName.toUpperCase().equals("TUE")) {
             dowa = 1;
@@ -84,7 +87,7 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
             dowa = 6;
         }
 
-        actFirstDayName = e.toString("E");
+        actFirstDayName = e.toString("E", Locale.US);
         dowb = 0;
         if(actFirstDayName.toUpperCase().equals("TUE")) {
             dowb = 1;
@@ -117,13 +120,11 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
                 preMonth = 12;
                 preStart = (new DateTime(preYear, preMonth, 1, 0, 0, 0, 0)).dayOfMonth().withMaximumValue().get(DateTimeFieldType.dayOfMonth())-dowa+1;
                 preStop = (new DateTime(preYear, preMonth, 1, 0, 0, 0, 0)).dayOfMonth().withMaximumValue().get(DateTimeFieldType.dayOfMonth());
-                System.out.println("case 1");
             } else {
                 preYear = firstDay.getYear();
                 preMonth = firstDay.getMonthOfYear()-1;
                 preStart = (new DateTime(preYear, preMonth, 1, 0, 0, 0, 0)).dayOfMonth().withMaximumValue().get(DateTimeFieldType.dayOfMonth())-dowa+1;
                 preStop = (new DateTime(preYear, preMonth, 1, 0, 0, 0, 0)).dayOfMonth().withMaximumValue().get(DateTimeFieldType.dayOfMonth());
-                System.out.println("case 2");
             }
             actStart = 1;
             actStop = actStart+6-dowa;
@@ -132,14 +133,12 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
                 postYear = firstDay.getYear()+1;
                 postMonth = 1;
                 postStart = 1;
-                postStop = 6-dow;
-                System.out.println("case 3");
+                postStop = 6-dowb;
             } else {
                 postYear = firstDay.getYear();
                 postMonth = firstDay.getMonthOfYear()+1;
                 postStart = 1;
-                postStop = 6-dow;
-                System.out.println("case 4");
+                postStop = 6-dowb;
             }
             actStop = firstDay.dayOfMonth().withMaximumValue().get(DateTimeFieldType.dayOfMonth());
             actStart = actStop-dowb;
