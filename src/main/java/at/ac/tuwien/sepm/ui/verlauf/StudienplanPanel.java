@@ -43,7 +43,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     private JComboBox<CurriculumComboBoxItem> ccurr;
     private DefaultComboBoxModel<CurriculumComboBoxItem> mcurr;
     private JLabel ldesc;
-
+    /*
     private JPanel infop;
     private JLabel numberl;
     private JLabel namel;
@@ -60,7 +60,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     private JLabel ectscInfol;
     private JLabel ectsfInfol;
     private JLabel ectssInfol;
-
+    */
     public StudienplanPanel() {
         this.setLayout(new MigLayout());
         this.setOpaque(false);
@@ -76,6 +76,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         panel.add(ccurr, "wrap");
         panel.add(spane, "span, wrap");
         panel.add(bcreate);
+        /*
         infop.add(numberl);
         infop.add(numberInfol, "wrap");
         infop.add(namel);
@@ -90,9 +91,9 @@ public class StudienplanPanel extends StandardInsidePanel {
         infop.add(ectsfInfol, "wrap");
         infop.add(ectssl);
         infop.add(ectssInfol, "wrap");
-        this.add(infop);
+        this.add(infop);*/
     }
-
+    /*
     public void initInfoPanel() {
         infop = new JPanel(new MigLayout());
         infop.setLayout(new MigLayout());
@@ -131,7 +132,8 @@ public class StudienplanPanel extends StandardInsidePanel {
 
         setInfoLabels();
     }
-
+    */
+    /*
     private void setInfoLabels() {
         if(ccurr.getSelectedItem()==null) {
             return;
@@ -145,7 +147,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         ectsfInfol.setText(prepareString("" + c.getEctsFree()));
         ectssInfol.setText(prepareString("" + c.getEctsSoftskill()));
     }
-
+    */
     private String prepareString(String s) {
         if(s.length() > MAX_INFO_LENGTH) {
             s=s.substring(0,17) + "...";
@@ -214,7 +216,6 @@ public class StudienplanPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fillTable();
-                setInfoLabels();
             }
         });
     }
