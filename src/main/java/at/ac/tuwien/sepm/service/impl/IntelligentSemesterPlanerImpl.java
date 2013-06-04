@@ -141,24 +141,24 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         ArrayList<Node> pool = new ArrayList<Node>();
         ArrayList<Node> roots = new ArrayList<Node>();
         ArrayList<Node> leaves= new ArrayList<Node>();
-        HashMap<Integer,Node> nodes;
+        HashMap<String,Node> nodes;
         ArrayList<Node> nodesList;
         Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
         public DependenceTree(List<MetaLVA> lvas){
             nodesList = new ArrayList<Node>();
-            nodes = new HashMap<Integer,Node>(lvas.size()+(int)(lvas.size()*0.2));
+            nodes = new HashMap<String,Node>(lvas.size()+(int)(lvas.size()*0.2));
             for(MetaLVA lva: lvas){
                 Node tempNode =new Node(lva);
-                nodes.put(new Integer(lva.getNr().replace(".","")), tempNode);
+                nodes.put(lva.getNr(), tempNode);
                 nodesList.add(tempNode);
             }
             for(MetaLVA lva: lvas){
-                Node tempNode=nodes.get(new Integer(lva.getNr().replace(".","")));
+                Node tempNode=nodes.get(lva.getNr());
                 List<MetaLVA> tempPres =tempNode.getLVA().getPrecursor();
                 for(MetaLVA pre : tempPres){
-                    if(nodes.containsKey(new Integer(pre.getNr().replace(".","")))){
-                        tempNode.addChild(nodes.get(new Integer(pre.getNr().replace(".", ""))));
+                    if(nodes.containsKey(pre.getNr())){
+                        tempNode.addChild(nodes.get(pre.getNr()));
                     }
                 }
                 if(tempNode.getChildren().isEmpty()){
@@ -166,7 +166,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
                 }
             }
             for(MetaLVA lva: lvas){
-                Node tempNode=nodes.get(new Integer(lva.getNr().replace(".", "")));
+                Node tempNode=nodes.get(lva.getNr());
                 if(tempNode.getParents().isEmpty()){
                     leaves.add(tempNode);
                 }
@@ -200,7 +200,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             }
         }
         public float getPriority(MetaLVA lva){
-            return nodes.get(new Integer(lva.getNr().replace(".", ""))).getPriority();
+            return nodes.get(lva.getNr()).getPriority();
         }
         private class Node implements Comparable<Node>{
             MetaLVA lva;
