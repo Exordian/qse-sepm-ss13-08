@@ -130,7 +130,7 @@ public class PlanPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //todo warning alert: all data from year x, sem y will be overriden
-                List<LVA> toRemove = lvaDAO.readByYearSemesterStudyProgress(plannedYear,plannedSemester,true);
+                List<LVA> toRemove = lvaDAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,true);
                 logger.debug("deleting from studyProgress: "+LVAUtil.formatLVA(toRemove,1));
                 for(LVA lva:toRemove){
                     //logger.debug("deleting from studyProgress: "+lva);
