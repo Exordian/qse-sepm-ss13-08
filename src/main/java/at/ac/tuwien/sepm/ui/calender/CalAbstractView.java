@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.CalService;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.service.impl.CalServiceImpl;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 //import net.miginfocom.swing.MigLayout;
 import at.ac.tuwien.sepm.ui.UI;
@@ -24,7 +23,7 @@ import java.util.List;
 @UI
 public abstract class CalAbstractView extends StandardInsidePanel {
 
-    private CalService service;
+    private CalService calService;
     private LVAService lvaService;
 
     // layout config ------------------------------------------------------------------------------------------------ //
@@ -53,7 +52,7 @@ public abstract class CalAbstractView extends StandardInsidePanel {
     // -------------------------------------------------------------------------------------------------------------- //
     @Autowired
     public CalAbstractView(int weeks, CalService calService,LVAService lvaService) {
-        this.service = calService;
+        this.calService = calService;
         this.lvaService=lvaService;
         WEEKS = weeks;
         AMOUNT_DAYS_SHOWN = 7 * weeks;
@@ -116,10 +115,13 @@ public abstract class CalAbstractView extends StandardInsidePanel {
         //CalServiceImpl s = new CalServiceImpl();
 
         for (DayPanel day : days) {
-            List<LvaDate> l = service.getLVADatesByDateInStudyProgress(day.getDate());
-
+            List<LvaDate> l1 = calService.getLVADatesByDateInStudyProgress(day.getDate());
+            List<Date> l2 = calService.getAllDatesAt(day.getDate());
             LinkedList<DateLabel> r = new LinkedList<DateLabel>();
-            for (Date d : l) {
+            for (Date d : l1) {
+                r.addLast(new DateLabel(d));
+            }
+            for (Date d : l2) {
                 r.addLast(new DateLabel(d));
             }
             day.setDateLabels(r);
