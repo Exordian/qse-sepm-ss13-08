@@ -166,7 +166,7 @@ public class CalendarPanel extends StandardInsidePanel {
         tabs.add(tab2);
         tabs.add(tab3);
 
-        tab1.setBounds(97,63,142,36);
+        tab1.setBounds(97, 63, 142, 36);
         tab1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -201,8 +201,8 @@ public class CalendarPanel extends StandardInsidePanel {
             }
         });
 
-        tab3.setBounds(878,63,142,36);
-        todoPanel.setBounds(110,110,900,450);
+        tab3.setBounds(878, 63, 142, 36);
+        todoPanel.setBounds(110, 110, 900, 450);
         tab3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

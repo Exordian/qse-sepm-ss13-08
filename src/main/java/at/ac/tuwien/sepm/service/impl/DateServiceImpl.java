@@ -43,6 +43,7 @@ public class DateServiceImpl implements DateService {
     @Override
     public void updateDate(DateEntity toUpdate) throws ServiceException {
         this.validateDateEntity(toUpdate);
+        this.validateId(toUpdate.getId());
 
         try {
             dateDao.update(toUpdate);
@@ -98,13 +99,11 @@ public class DateServiceImpl implements DateService {
             throw new ServiceException("DateEntity is invalid.");
         }
 
-        validateId(toValidate.getId());
-
         if (toValidate.getName() == null) {
             log.error("Name of DateEntity is invalid.");
             throw new ServiceException("Name of DateEntity is invalid.");
         }
-                                                                  System.out.println("asdf3");
+
         if (toValidate.getDescription() == null) {
             log.error("Description of DateEntity is invalid.");
             throw new ServiceException("Description of DateEntity is invalid.");

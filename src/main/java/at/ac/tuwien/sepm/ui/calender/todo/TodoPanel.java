@@ -21,19 +21,20 @@ import java.awt.event.*;
 @UI
 public class TodoPanel extends StandardInsidePanel {
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
-    private TodoService service;
+    private TodoService todoService;
     private LvaDateService serviceDeadlines;
     private TodoTable todoTable;
     private DeadlineTable deadlineTable;
     private JButton add;
+    private JButton refresh;
     private JButton showTODO;
     private JButton showDeadline;
-    private boolean showTodo = true;
+    private boolean showTodo = false;
 
     @Autowired
     public TodoPanel(TodoService todoService, LvaDateService lvaDateService, TodoTable todoTable, DeadlineTable deadlineTable) {
         init();
-        this.service = todoService;
+        this.todoService = todoService;
         this.serviceDeadlines = lvaDateService;
         this.todoTable = todoTable;
         this.deadlineTable = deadlineTable;
@@ -43,7 +44,7 @@ public class TodoPanel extends StandardInsidePanel {
 
     public void initJTables() {
         try {
-            todoTable.init(service.getAllTodos());
+            todoTable.init(todoService.getAllTodos());
             deadlineTable.init(serviceDeadlines.getAllDeadlines());
         } catch(ServiceException e) {
             logger.error(e.getMessage());
@@ -103,11 +104,6 @@ public class TodoPanel extends StandardInsidePanel {
 
         public PopUpMenu(){
             edit = new JMenuItem("Bearbeiten");
-            add(edit);
-            addActionListeners();
-        }
-
-        private void addActionListeners() {
             edit.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {}
@@ -127,13 +123,14 @@ public class TodoPanel extends StandardInsidePanel {
                 @Override
                 public void mouseExited(MouseEvent e) {}
             });
+            add(edit);
         }
     }
 
     public void addButtons() {
         add = new JButton("Hinzufügen");
         add.setFont(standardButtonFont);
-        add.setBounds((int)whiteSpaceCalendar.getWidth()/2-75, todoTable.getY() + todoTable.getHeight() + 20+50, 150,30);
+        add.setBounds((int)whiteSpaceCalendar.getWidth()/2-150, todoTable.getY() + todoTable.getHeight() + 20+50, 150,30);
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -146,12 +143,27 @@ public class TodoPanel extends StandardInsidePanel {
         });
         this.add(add);
 
+        refresh = new JButton("Aktualisieren");
+        refresh.setFont(standardButtonFont);
+        refresh.setBounds(add.getX()+add.getWidth()+10, add.getY(), 150,30);
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (showTodo) {
+                    todoTable.refreshTodos(todoService);
+                } else {
+                    deadlineTable.refreshDeadlines(serviceDeadlines);
+                }
+            }
+        });
+        this.add(refresh);
+
         showTODO=new JButton();
         showTODO.setBounds(469,22,122,29);
         showTODO.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                showTodo =true;
+                showTodo = true;
                 changeTables();
             }
         });
@@ -166,7 +178,7 @@ public class TodoPanel extends StandardInsidePanel {
         showDeadline.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                showTodo =false;
+                showTodo = false;
                 changeTables();
             }
         });
@@ -182,6 +194,7 @@ public class TodoPanel extends StandardInsidePanel {
             this.add(todoTable);
             this.remove(deadlineTable);
             PanelTube.calendarPanel.showTodo(true);
+
         } else {
             this.remove(todoTable);
             this.add(deadlineTable);

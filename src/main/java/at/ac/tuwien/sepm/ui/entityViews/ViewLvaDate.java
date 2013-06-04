@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.service.LvaDateService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -96,7 +97,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             changeTitle(lvaDate.getName());
             description.setText(lvaDate.getDescription());
             type.setSelectedItem(lvaDate.getType());
-            try {
+           /* try {
                 lva.setSelectedItem(lvaService.readById(lvaDate.getLva()));     //todo
             } catch (ServiceException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
@@ -104,7 +105,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             } catch (ValidationException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();
-            }
+            }  */
             attendanceRequired.setSelected(lvaDate.getAttendanceRequired());
             attended.setSelected(lvaDate.getWasAttendant());
             from.setDate(lvaDate.getStart().toDate());
@@ -139,6 +140,8 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                     } else {
                         JOptionPane.showMessageDialog(ViewLvaDate.this, "Dieser Termin ist noch nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
+                    setVisible(false);
+                    PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("LvaDateEntity is invalid.");
                     JOptionPane.showMessageDialog(ViewLvaDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -170,6 +173,8 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                     } else {
                         lvaDateService.create(lvaDate);
                     }
+                    setVisible(false);
+                    PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("LvaDateEntity is invalid.");
                     JOptionPane.showMessageDialog(ViewLvaDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
