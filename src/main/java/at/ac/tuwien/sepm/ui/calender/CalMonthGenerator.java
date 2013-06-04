@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.calender;
 
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.CalService;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.impl.CalServiceImpl;
+import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 //import net.miginfocom.swing.MigLayout;
 import at.ac.tuwien.sepm.ui.UI;
@@ -50,15 +52,13 @@ public abstract class CalAbstractView extends StandardInsidePanel {
     protected int maxDateLabels;                                                // the amount of days shown of the previous month
 
     // -------------------------------------------------------------------------------------------------------------- //
-    @Autowired
+
     public CalAbstractView(int weeks, CalService calService,LVAService lvaService) {
         this.calService = calService;
         this.lvaService=lvaService;
         WEEKS = weeks;
         AMOUNT_DAYS_SHOWN = 7 * weeks;
         days = new DayPanel[AMOUNT_DAYS_SHOWN];
-        //this.setLayout(layout);
-        //this.setBackground(backgroundColor);
     }
 
     protected abstract void initPanel() throws ServiceException;

@@ -1,13 +1,15 @@
 package at.ac.tuwien.sepm.ui.entityViews;
 
+import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.helper.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
-import at.ac.tuwien.sepm.ui.WideComboBox;
+import at.ac.tuwien.sepm.ui.helper.WideComboBox;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -79,7 +81,15 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             done.setSelected(deadline.getWasAttendant());
             calTime.setDate(deadline.getStart().toDate());
             time.setValue(deadline.getStart().toDate());
-            //lva.setSelectedItem(todo.getLva().getMetaLVA().getName()); //todo wie setze ich das in einer comobox?
+            try {
+                lva.setSelectedItem(lvaService.readById(deadline.getLva()));     //todo
+            } catch (ServiceException e) {
+                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
+                e.printStackTrace();
+            } catch (ValidationException e) {
+                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
+                e.printStackTrace();
+            }
             setDeleteButton(true);
         }
     }
@@ -87,8 +97,10 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
     private void setDeleteButton(boolean showDeleteButton) {
         if (showDeleteButton) {
             delete.setVisible(true);
+            done.setVisible(true);
         } else {
             delete.setVisible(false);
+            done.setVisible(false);
         }
     }
 
@@ -106,7 +118,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                             lvaDateService.delete(deadline.getId());
                         }
                     } else {
-                        JOptionPane.showMessageDialog(ViewDeadline.this, "Diese Deadline ist noch nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(ViewDeadline.this, "Diese Deadline existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (ServiceException e) {
                     log.error("Deadline is invalid.");
@@ -128,12 +140,15 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                 try {
                     deadline.setName(title.getText());
                     deadline.setDescription(description.getText());
-                    deadline.setLva(((LVA)lva.getSelectedItem()).getId()); //todo gleiches problem wie oben
+                    deadline.setLva(((LvaSelectItem) lva.getSelectedItem()).get().getId());
                     deadline.setWasAttendant(done.isSelected());
                     deadline.setType(LvaDateType.DEADLINE);
                     deadline.setTime(new TimeFrame(convertDateAndTime(time, calTime), convertDateAndTime(time, calTime)));
-                    if (lvaDateService.readById(deadline.getId()) != null) {
-                        lvaDateService.update(deadline);
+
+                    if (deadline.getId() != null) {
+                        if (lvaDateService.readById(deadline.getId()) != null) {
+                            lvaDateService.update(deadline);
+                        }
                     } else {
                         lvaDateService.create(deadline);
                     }
@@ -196,9 +211,8 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         } catch(ValidationException e) {
             log.error(e.getMessage());
         }
-
         for (LVA t : lvas) {
-            lva.addItem(t.getMetaLVA().getName());
+            lva.addItem(new LvaSelectItem(t));
         }
         lva.setFont(standardTextFont);
         lva.setBounds(lvaLabel.getX() + lvaLabel.getWidth() + 10, lvaLabel.getY(), 200,25);
@@ -215,6 +229,17 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         done.setBackground(new Color(0, 0, 0, 0));
         done.setBounds(doneLabel.getX() + doneLabel.getWidth() + 10, doneLabel.getY(), 20, 20);
         this.add(done);
+    }
+
+    private static class LvaSelectItem extends SelectItem<LVA> {
+        LvaSelectItem(LVA item) {
+            super(item);
+        }
+
+        @Override
+        public String toString() {
+            return item.getMetaLVA().getName();
+        }
     }
 
     @Override

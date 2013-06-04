@@ -7,9 +7,12 @@ import at.ac.tuwien.sepm.ui.entityViews.ViewDate;
 import at.ac.tuwien.sepm.ui.entityViews.ViewDeadline;
 import at.ac.tuwien.sepm.ui.entityViews.ViewLvaDate;
 import at.ac.tuwien.sepm.ui.entityViews.ViewTODO;
+import at.ac.tuwien.sepm.ui.helper.PanelTube;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -24,8 +27,7 @@ public class BackgroundPanel extends JPanel {
     private JButton properties;
     private JButton tab1;
     private JButton tab2;
-    private JButton tab3;
-    private JButton tab4;
+
     private StandardInsidePanel calPanel;
     private StandardInsidePanel studPanel;
     private StandardInsidePanel propsPanel;
@@ -41,58 +43,18 @@ public class BackgroundPanel extends JPanel {
     @Autowired
     public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA, ViewTODO viewTodo, ViewDeadline viewDeadline) {
         this.setLayout(null);
+        PanelTube.backgroundPanel=this;
         this.calPanel = calPanel;
-        calPanel.setBGPanel(this);
         this.studPanel = studPanel;
-
         this.propsPanel = propsPanel;
-        propsPanel.setBgPanel(this);
-
         this.viewDate = viewDate;
-        viewDate.setBgPanel(this);
-
         this.viewLVA=viewLVA;
-        viewLVA.setBgPanel(this);
-
         this.viewTodo=viewTodo;
-        viewTodo.setBgPanel(this);
-
         this.viewDeadline=viewDeadline;
-        viewDeadline.setBgPanel(this);
 
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
-
-        //test  VIEWDATE AND VIEWLVA
-        /*JButton testViewDate = new JButton("view lva");
-        testViewDate.setBounds(500, 630, 110, 38);
-        testViewDate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-               /* DateEntity dateEntity = new DateEntity();
-                dateEntity.setName("Testname");
-                dateEntity.setIntersectable(true);
-                dateEntity.setDescription("this is a description for test this is a description for test this\nis a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test");
-                dateEntity.setId(2);
-                dateEntity.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
-                viewDate(dateEntity);
-
-               LvaDate lvaDate = new LvaDate();
-                lvaDate.setName("test name");
-                lvaDate.setDescription("test description");
-                lvaDate.setId(2);
-                lvaDate.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2000, 1, 1, 1, 1)));
-                lvaDate.setAttendanceRequired(true);
-                lvaDate.setLva(20);
-                lvaDate.setRoom("test room");
-                lvaDate.setType(LvaDateType.DEADLINE);
-                lvaDate.setWasAttendant(false);
-                viewDeadline(lvaDate);
-            }
-        });
-        this.add(testViewDate); */
-       // test
 
         log.info("Background Panel initialized.");
     }
@@ -170,14 +132,8 @@ public class BackgroundPanel extends JPanel {
                     this.addPanel(calPanel);
                     break;
                 case 2:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/tra.jpg"));
-                    break;
-                case 3:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/stud.jpg"));
                     this.addPanel(studPanel);
-                    break;
-                case 4:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/stat.jpg"));
                     break;
                 default:
                     break;
@@ -210,14 +166,10 @@ public class BackgroundPanel extends JPanel {
     private void createTabButtons() {
         tab1 = new JButton();
         tab2 = new JButton();
-        tab3 = new JButton();
-        tab4 = new JButton();
 
         ArrayList<JButton> tabs = new ArrayList<JButton>();
         tabs.add(tab1);
         tabs.add(tab2);
-        tabs.add(tab3);
-        tabs.add(tab4);
 
         tab1.setBounds(12,50,55,159);
         tab1.addActionListener(new ActionListener() {
@@ -237,25 +189,7 @@ public class BackgroundPanel extends JPanel {
             }
         });
 
-        tab3.setBounds(12,369,55,159);
-        tab3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                changeImage(3);
-                refresh();
-            }
-        });
-
-        tab4.setBounds(12, 526, 55, 159);
-        tab4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                changeImage(4);
-                refresh();
-            }
-        });
-
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 2; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
             tabs.get(i).setOpaque(false);
             tabs.get(i).setContentAreaFilled(false);

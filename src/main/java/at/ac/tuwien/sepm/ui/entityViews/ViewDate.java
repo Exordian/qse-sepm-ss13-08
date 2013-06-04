@@ -127,7 +127,8 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     dateEntity.setIntersectable(intersectable.isSelected());
                     dateEntity.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
                     if (dateService.readDateById(dateEntity.getId()) != null) {
-                        dateService.updateDate(dateEntity);
+                        if (dateEntity.getId() != null)
+                            dateService.updateDate(dateEntity);
                     } else {
                         dateService.createDate(dateEntity);
                     }

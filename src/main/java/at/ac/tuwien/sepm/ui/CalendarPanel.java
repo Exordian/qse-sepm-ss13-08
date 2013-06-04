@@ -4,7 +4,8 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.calender.CalMonthGenerator;
 import at.ac.tuwien.sepm.ui.calender.CalWeekGenerator;
 import at.ac.tuwien.sepm.ui.calender.CalendarInterface;
-import at.ac.tuwien.sepm.ui.todo.TodoPanel;
+import at.ac.tuwien.sepm.ui.calender.todo.TodoPanel;
+import at.ac.tuwien.sepm.ui.helper.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 //import org.joda.time.DateTime;
@@ -42,14 +43,15 @@ public class CalendarPanel extends StandardInsidePanel {
     private CalendarInterface activeView;
     private TodoPanel todoPanel;
 
-    private BackgroundPanel bgPanel;
+    private boolean showTodo = false;
+
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
     public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel) {
         init();
-
+        PanelTube.calendarPanel=this;
         this.calPanelMonth=calPanelMonth;
         this.calPanelWeek=calPanelWeek;
         this.activeView=calPanelWeek;
@@ -66,9 +68,9 @@ public class CalendarPanel extends StandardInsidePanel {
         this.repaint();
     }
 
-    public void setBGPanel(BackgroundPanel bgPanel) {
-        this.bgPanel = bgPanel;
-        todoPanel.setBGPanel(bgPanel);
+    public void showTodo(boolean show) {
+        showTodo = show;
+        changeImage(3);
     }
 
     private void createTop() {
@@ -178,13 +180,6 @@ public class CalendarPanel extends StandardInsidePanel {
                 calPanelWeek.revalidate();
                 calPanelWeek.repaint();
 
-                /*
-                changeImage(1);
-                remove(calPanelMonth);
-                revalidate();
-                repaint();
-                 */
-
             }
         });
 
@@ -195,7 +190,6 @@ public class CalendarPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                //todo remove other panels
                 remove(calPanelWeek);
                 remove(todoPanel);
                 add(calPanelMonth);
@@ -204,13 +198,6 @@ public class CalendarPanel extends StandardInsidePanel {
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 calPanelMonth.revalidate();
                 calPanelMonth.repaint();
-
-                /*
-                changeImage(2);
-                add(calPanelMonth);
-                calPanelMonth.revalidate();
-                calPanelMonth.repaint();
-                 */
             }
         });
 
@@ -249,7 +236,11 @@ public class CalendarPanel extends StandardInsidePanel {
                     toggleComponents("show");
                     break;
                 case 3:
-                    image = ImageIO.read(new File("src/main/resources/img/cald.png"));
+                    if (showTodo) {
+                        image = ImageIO.read(new File("src/main/resources/img/caldt.png"));
+                    } else {
+                        image = ImageIO.read(new File("src/main/resources/img/caldd.png"));
+                    }
                     toggleComponents("hide");
                     break;
                 default:

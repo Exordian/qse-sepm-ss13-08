@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.helper;
 
 import javax.swing.*;
 import java.awt.*;

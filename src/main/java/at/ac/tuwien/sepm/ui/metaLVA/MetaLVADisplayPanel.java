@@ -1,13 +1,16 @@
-package at.ac.tuwien.sepm.ui.metaLVA;
+package at.ac.tuwien.sepm.ui.metaLva;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.template.HintTextField;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +23,10 @@ public class MetaLVADisplayPanel extends JPanel {
     private List<MetaLVA> allLVAs;
     private List<MetaLVA> filteredLVAs;
     private MetaLVATable table;
-    private JTextField searchNr = new JTextField();
-    private JTextField searchType = new JTextField();
-    private JTextField searchName = new JTextField();
-    private JTextField searchECTS = new JTextField();
+    private JTextField searchNr = new HintTextField("Lva NR");
+    private JTextField searchType = new HintTextField("Type");
+    private JTextField searchName = new HintTextField("Name");
+    private JTextField searchECTS = new HintTextField("ECTS");
 
     private JPanel searchPanel = new JPanel();
 
@@ -53,14 +56,7 @@ public class MetaLVADisplayPanel extends JPanel {
         pane.setViewportView(table);
 
         pane.setPreferredSize(new Dimension(table.getPreferredSize().width, height-searchPanel.getHeight()));
-        KeyListener listener = new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-            @Override
-            public void keyPressed(KeyEvent e) {
-            }
+        KeyListener listener = new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 logger.debug("searching for: (nr: "+searchNr.getText()+", type:"+searchType.getText()+", name: " + searchName.getText()+", ECTS: "+searchECTS.getText()+")");

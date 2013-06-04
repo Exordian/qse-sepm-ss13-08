@@ -90,7 +90,8 @@ public class ViewPanel extends StandardInsidePanel {
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                semesterList.setSelectedIndex(semesterList.getSelectedIndex()-1);
+                if (!semesterList.isSelectionEmpty())
+                    semesterList.setSelectedIndex(semesterList.getSelectedIndex()-1);
             }
         });
 
@@ -102,7 +103,8 @@ public class ViewPanel extends StandardInsidePanel {
         fwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                semesterList.setSelectedIndex(semesterList.getSelectedIndex()+1);
+                if (!semesterList.isSelectionEmpty())
+                    semesterList.setSelectedIndex(semesterList.getSelectedIndex()+1);
             }
         });
         fwd.setCursor(new Cursor(Cursor.HAND_CURSOR));

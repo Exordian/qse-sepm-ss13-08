@@ -1,19 +1,29 @@
 package at.ac.tuwien.sepm.ui.entityViews;
 
+import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
+import at.ac.tuwien.sepm.service.LVAService;
+import at.ac.tuwien.sepm.service.LvaDateService;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.helper.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.helper.WideComboBox;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
+import java.util.*;
+import java.util.List;
 
 
 /**
@@ -36,6 +46,9 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
     private JLabel attendanceRequiredLabel;
     private JLabel attendedLabel;
     private JLabel roomLabel;
+    private WideComboBox lva;
+    private List<LVA> lvas;
+    private LVAService lvaService;
 
     private JCheckBox attendanceRequired;
     private JCheckBox attended;
@@ -46,12 +59,18 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
     private JSpinner fromTime;
     private JSpinner toTime;
     private JButton delete;
+    private JLabel lvaLabel;
+
+    private LvaDateService lvaDateService;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
-    public ViewLvaDate() {
+    @Autowired
+    public ViewLvaDate(LvaDateService lvaDateService, LVAService lvaService) {
         init();
         addImage();
+        this.lvaService=lvaService;
+        this.lvaDateService=lvaDateService;
         lvaDate = new LvaDate();
         addEditableTitle(lvaDate.getName());
         addReturnButton();
@@ -77,6 +96,15 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             changeTitle(lvaDate.getName());
             description.setText(lvaDate.getDescription());
             type.setSelectedItem(lvaDate.getType());
+            try {
+                lva.setSelectedItem(lvaService.readById(lvaDate.getLva()));     //todo
+            } catch (ServiceException e) {
+                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
+                e.printStackTrace();
+            } catch (ValidationException e) {
+                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
+                e.printStackTrace();
+            }
             attendanceRequired.setSelected(lvaDate.getAttendanceRequired());
             attended.setSelected(lvaDate.getWasAttendant());
             from.setDate(lvaDate.getStart().toDate());
@@ -102,7 +130,22 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo delete
+                try {
+                    if (lvaDateService.readById(lvaDate.getId()) != null) {
+                        int i = JOptionPane.showConfirmDialog(ViewLvaDate.this, "Wollen sie diesen Termin wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
+                        if (i == 0) {
+                            lvaDateService.delete(lvaDate.getId());
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(ViewLvaDate.this, "Dieser Termin ist noch nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (ServiceException e) {
+                    log.error("LvaDateEntity is invalid.");
+                    JOptionPane.showMessageDialog(ViewLvaDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                } catch (ValidationException e) {
+                    log.error("LvaDateEntity is invalid.");
+                    JOptionPane.showMessageDialog(ViewLvaDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         this.add(delete);
@@ -113,13 +156,27 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                lvaDate.setName(title.getText());
-                lvaDate.setDescription(description.getText());
-                lvaDate.setWasAttendant(attended.isSelected());
-                lvaDate.setType((LvaDateType) type.getSelectedItem());
-                lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
-                lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
-                //todo save
+                try {
+                    lvaDate.setName(title.getText());
+                    lvaDate.setDescription(description.getText());
+                    lvaDate.setWasAttendant(attended.isSelected());
+                    lvaDate.setType((LvaDateType) type.getSelectedItem());
+                    lvaDate.setLva(((LvaSelectItem) lva.getSelectedItem()).get().getId());
+                    lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
+                    lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
+                    if (lvaDate.getId() != null) {
+                        if (lvaDateService.readById(lvaDate.getId()) != null)
+                            lvaDateService.update(lvaDate);
+                    } else {
+                        lvaDateService.create(lvaDate);
+                    }
+                } catch (ServiceException e) {
+                    log.error("LvaDateEntity is invalid.");
+                    JOptionPane.showMessageDialog(ViewLvaDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                } catch (ValidationException e) {
+                    log.error("LvaDateEntity is invalid.");
+                    JOptionPane.showMessageDialog(ViewLvaDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         this.add(save);
@@ -191,9 +248,33 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         this.add(type);
 
 
+        lvaLabel = new JLabel("Lva");
+        lvaLabel.setFont(standardTextFont);
+        lvaLabel.setBounds(typeLabel.getX(), typeLabel.getY() + typeLabel.getHeight() + verticalSpace*2, 60,25);
+        this.add(lvaLabel);
+
+        lva = new WideComboBox();
+        try {
+            int year = DateTime.now().getYear();
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7);
+            lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
+        } catch(ServiceException e) {
+            log.error(e.getMessage());
+        } catch(ValidationException e) {
+            log.error(e.getMessage());
+        }
+
+        for (LVA t : lvas) {
+            lva.addItem(new LvaSelectItem(t));
+        }
+        lva.setFont(standardTextFont);
+        lva.setBounds(lvaLabel.getX() + lvaLabel.getWidth() + 10, lvaLabel.getY(), 200,25);
+        this.add(lva);
+
+
         attendanceRequiredLabel = new JLabel("Anwesenheitspflicht");
         attendanceRequiredLabel.setFont(standardTextFont);
-        attendanceRequiredLabel.setBounds(typeLabel.getX(), type.getY() + type.getHeight() + verticalSpace*2, 180,25);
+        attendanceRequiredLabel.setBounds(lvaLabel.getX(), lvaLabel.getY() + lvaLabel.getHeight() + verticalSpace*2, 180,25);
         this.add(attendanceRequiredLabel);
 
         attendanceRequired = new JCheckBox();
@@ -221,6 +302,17 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
 
         this.revalidate();
         this.repaint();
+    }
+
+    private static class LvaSelectItem extends SelectItem<LVA> {
+        LvaSelectItem(LVA item) {
+            super(item);
+        }
+
+        @Override
+        public String toString() {
+            return item.getMetaLVA().getName();
+        }
     }
 
     @Override
