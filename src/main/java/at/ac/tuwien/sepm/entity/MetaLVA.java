@@ -164,6 +164,9 @@ public class MetaLVA {
         if(nr!=null){
             toReturn+=" nr:"+nr;
         }
+        if(type!=null){
+            toReturn+=" type:"+type;
+        }
         if(name!=null){
             toReturn+=" name:"+name;
         }
@@ -184,6 +187,9 @@ public class MetaLVA {
                 toReturn+=" nr:"+nr;
             }
         }
+        if(type!=null){
+            toReturn+=" type:"+type;
+        }
         if(name!=null){
             if(name.length()>15){
                 toReturn+=" name:"+name.substring(0,15)+"..";
@@ -202,8 +208,9 @@ public class MetaLVA {
         for(int i=0;i<indentCount;i++){
             indent+="\t";
         }
+        int index =0;
         for(LVA lva:lvas){
-            toReturn+=indent+lva;
+            toReturn+="\n"+(index++)+") "+indent+lva;
         }
         return toReturn;
     }
@@ -213,8 +220,21 @@ public class MetaLVA {
         for(int i=0;i<indentCount;i++){
             indent+="\t";
         }
+        int index=0;
         for(LVA lva:lvas){
-            toReturn+="\n"+indent+lva.toDetailedString(indentCount+1);
+            toReturn+="\n"+indent+(index++)+") "+lva.toDetailedString(indentCount+1);
+        }
+        return toReturn;
+    }
+    public String toShortDetailedString(int indentCount){
+        String toReturn=toShortString();
+        String indent="";
+        for(int i=0;i<indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(LVA lva:lvas){
+            toReturn+="\n"+indent+(index++)+") "+lva.toShortString();
         }
         return toReturn;
     }

@@ -1,11 +1,8 @@
 package at.ac.tuwien.sepm.service.semesterPlanning;
 
-import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -65,7 +62,22 @@ public class LVAUtil {
         }
         int index=0;
         for(MetaLVA m:metaLVAs){
-            toReturn+="\n"+indent+(index++)+") "+m.toDetailedString(indentCount+1);
+            toReturn+="\n"+indent+(index++)+") "+m.toDetailedString(indentCount + 1);
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+    public static String formatShortDetailedMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(MetaLVA m:metaLVAs){
+            toReturn+="\n"+indent+(index++)+") "+m.toShortDetailedString(indentCount + 1);
         }
         if(toReturn.length()==0){
             return "";
@@ -82,6 +94,21 @@ public class LVAUtil {
         int index=0;
         for(LVA m:lvas){
             toReturn+="\n"+indent+(index++)+") "+m;
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+    public static String formatShortLVA(List<LVA> lvas,int indentCount) {
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(LVA lva :lvas){
+            toReturn+="\n"+indent+(index++)+") "+ lva.toShortString();
         }
         if(toReturn.length()==0){
             return "";

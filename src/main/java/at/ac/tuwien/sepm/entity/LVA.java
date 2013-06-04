@@ -287,8 +287,9 @@ public class LVA {
             considered.add(LVAUtil.EXAM_TIMES);
         }
         Iterator<LvaDate> iter = LVAUtil.iterator(this);
+        int index =0;
         while(iter.hasNext()){
-            toReturn+="\n"+indent+iter.next();
+            toReturn+="\n"+indent+(index++)+")"+iter.next();
         }
         return toReturn;
     }

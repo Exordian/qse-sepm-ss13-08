@@ -131,7 +131,7 @@ public class PlanPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent e) {
                 //todo warning alert: all data from year x, sem y will be overriden
                 List<LVA> toRemove = lvaDAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,true);
-                logger.debug("deleting from studyProgress: "+LVAUtil.formatLVA(toRemove,1));
+                logger.debug("deleting from studyProgress:\n"+LVAUtil.formatShortLVA(toRemove,1));
                 for(LVA lva:toRemove){
                     //logger.debug("deleting from studyProgress: "+lva);
                     lva.setInStudyProgress(false);
@@ -142,7 +142,7 @@ public class PlanPanel extends StandardInsidePanel {
                         e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 }
-                logger.debug("adding to studyProgress: \n"+LVAUtil.formatMetaLVA(plannedMetaLVAs, 1));
+                logger.debug("adding to studyProgress: \n"+LVAUtil.formatShortDetailedMetaLVA(plannedMetaLVAs, 1));
                 for(MetaLVA m:plannedMetaLVAs){
 
                     LVA temp = m.getLVA(plannedYear,plannedSemester);
