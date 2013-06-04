@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.metaLva;
+package at.ac.tuwien.sepm.ui.metaLVA;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.ui.UI;

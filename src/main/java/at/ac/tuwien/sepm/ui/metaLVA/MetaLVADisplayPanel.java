@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.metaLva;
+package at.ac.tuwien.sepm.ui.metaLVA;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.ui.UI;
@@ -24,7 +24,7 @@ public class MetaLVADisplayPanel extends JPanel {
     private List<MetaLVA> filteredLVAs;
     private MetaLVATable table;
     private JTextField searchNr = new HintTextField("Lva NR");
-    private JTextField searchType = new HintTextField("Type");
+    private JTextField searchType = new HintTextField("Typ");
     private JTextField searchName = new HintTextField("Name");
     private JTextField searchECTS = new HintTextField("ECTS");
 
