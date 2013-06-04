@@ -58,6 +58,70 @@ public class DBModuleDaoTest {
     }
 
     @Test
+    public void testCreateCorectIdsSchouldBeReturned() throws Exception {
+        TestHelper.insert(9);
+
+        Module e0 = new Module();
+        Module e1 = new Module();
+        Module e2 = new Module();
+        Module e3 = new Module();
+
+        e0.setId(34);
+        e0.setName("Algebra und Diskrete Mathematik 0");
+        e0.setDescription("asdf");
+        e0.setCompleteall(true);
+        MetaLVA l1 = new MetaLVA();
+        MetaLVA l2 = new MetaLVA();
+        ArrayList<MetaLVA> lvaList0 = new ArrayList<MetaLVA>();
+        lvaList0.add(l1);
+        lvaList0.add(l2);
+        e0.setMetaLvas(lvaList0);
+
+        e1.setId(23);
+        e1.setName("Algebra und Diskrete Mathematik 1");
+        e1.setDescription("asdfasdf");
+        e1.setCompleteall(true);
+        MetaLVA l3 = new MetaLVA();
+        MetaLVA l4 = new MetaLVA();
+        ArrayList<MetaLVA> lvaList1 = new ArrayList<MetaLVA>();
+        lvaList1.add(l3);
+        lvaList1.add(l4);
+        e1.setMetaLvas(lvaList1);
+
+        e2.setId(3456);
+        e2.setName("Algebra und Diskrete Mathematik 2");
+        e2.setDescription("asdfasdfasdf");
+        e2.setCompleteall(true);
+        MetaLVA l5 = new MetaLVA();
+        MetaLVA l6 = new MetaLVA();
+        ArrayList<MetaLVA> lvaList2 = new ArrayList<MetaLVA>();
+        lvaList2.add(l5);
+        lvaList2.add(l6);
+        e2.setMetaLvas(lvaList2);
+
+        e3.setId(4325);
+        e3.setName("Algebra und Diskrete Mathematik 3");
+        e3.setDescription("asdfasdfasdfasdf");
+        e3.setCompleteall(false);
+        MetaLVA l7 = new MetaLVA();
+        MetaLVA l8 = new MetaLVA();
+        ArrayList<MetaLVA> lvaList3 = new ArrayList<MetaLVA>();
+        lvaList3.add(l7);
+        lvaList3.add(l8);
+        e3.setMetaLvas(lvaList3);
+
+        assert(dao.create(e0));
+        assert(dao.create(e1));
+        assert(dao.create(e2));
+        assert(dao.create(e3));
+
+        assert(e0.getId()==0);
+        assert(e1.getId()==1);
+        assert(e2.getId()==2);
+        assert(e3.getId()==3);
+    }
+
+    @Test
     public void testCreateNull() throws Exception {
         TestHelper.insert(0);
         assert(!dao.create(null));

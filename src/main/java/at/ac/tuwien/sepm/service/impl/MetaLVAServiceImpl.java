@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.dao.LvaDao;
+import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.dao.MetaLvaDao;
+import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.Semester;
@@ -33,16 +35,45 @@ public class MetaLVAServiceImpl implements MetaLVAService {
     @Autowired
     LvaDao lvaDao;
 
+    @Autowired
+    LvaDateDao lvaDateDao;
+
     @Override
     public boolean create(MetaLVA toCreate) throws ServiceException, ValidationException {
         try {
             this.validateMetaLVA(toCreate);
             boolean metaLvaCreated = metaLvaDao.create(toCreate);
-            //Integer id = metaLvaDao.readByLvaNumber(toCreate.getNr()).getId();
-            //toCreate.getLVAs().get(0).getMetaLVA().setId(metaLvaId);
-            //boolean lvaCreated = lvaDao.create(toCreate.getLVAs().get(0));
-            //return (metaLvaCreated && lvaCreated);
-            return metaLvaCreated;
+            toCreate.getLVAs().get(0).setId(toCreate.getId());
+            boolean lvaCreated = lvaDao.create(toCreate.getLVAs().get(0));
+            int lvaId = toCreate.getLVAs().get(0).getId();
+
+            boolean datesCreated = true;
+            if(toCreate.getLVAs().get(0).getLectures() != null) {
+                for(LvaDate d : toCreate.getLVAs().get(0).getLectures()) {
+                    d.setLva(lvaId);
+                    datesCreated = datesCreated && lvaDateDao.create(d);
+                }
+            }
+            if(toCreate.getLVAs().get(0).getExercises() != null) {
+                for(LvaDate d : toCreate.getLVAs().get(0).getExercises()) {
+                    d.setLva(lvaId);
+                    datesCreated = datesCreated && lvaDateDao.create(d);
+                }
+            }
+            if(toCreate.getLVAs().get(0).getExams() != null) {
+                for(LvaDate d : toCreate.getLVAs().get(0).getExams()) {
+                    d.setLva(lvaId);
+                    datesCreated = datesCreated && lvaDateDao.create(d);
+                }
+            }
+            if(toCreate.getLVAs().get(0).getDeadlines() != null) {
+                for(LvaDate d : toCreate.getLVAs().get(0).getDeadlines()) {
+                    d.setLva(lvaId);
+                    datesCreated = datesCreated && lvaDateDao.create(d);
+                }
+            }
+
+            return metaLvaCreated && lvaCreated;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
             throw new ValidationException("Exception: "+ e.getMessage());

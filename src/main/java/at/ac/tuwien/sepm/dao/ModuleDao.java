@@ -15,8 +15,8 @@ public interface ModuleDao {
      * Insert persistent a new module. The id of <code>toCreate</code> is ignored. The containing meta lvas are not
      * created.
      * @param toCreate A <code>Module</code> containing all data to be stored.
-     * @return <code>true</code>  if the lva could be created and <code>false</code> if there is already an existing
-     * meta lva with the same name (name is unique) or <ocde>toCreate==null</ocde>.
+     * @return <code>true</code>  if the module could be created and <code>false</code> if there is already an existing
+     * module with the same name (name is unique) or <ocde>toCreate==null</ocde>.
      * @throws IOException If the name or the description are too long to store.
      * @throws DataAccessException If the data from toCreate could not be saved because any other error occurred.
      */
