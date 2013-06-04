@@ -3,11 +3,10 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.dao.ModuleDao;
 import at.ac.tuwien.sepm.entity.InCurriculum;
 import at.ac.tuwien.sepm.entity.Module;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.interceptor.DefaultKeyGenerator;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.UncategorizedDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -26,6 +25,9 @@ import java.util.List;
 
 @Repository
 public class DBModuleDao extends DBBaseDao implements ModuleDao {
+
+    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+
     private static final int MAX_LENGTH_NAME=200;
     private static final int MAX_LENGTH_DESCRIPTION=5000;
 
@@ -70,10 +72,12 @@ public class DBModuleDao extends DBBaseDao implements ModuleDao {
             PreparedStatement ps = con.prepareStatement(stmt);
             ps.setString(1, e.getName());
             ps.setString(2, e.getDescription());
-            if(e.getCompleteall()==null) {
-                throw new DataIntegrityViolationException("completeAll == null");
+            boolean a = false;
+            if(e.getCompleteall()!=null) {
+                a=e.getCompleteall();
+                logger.info("create MetaLVA: " + e.getName() + " completeAll==null");
             }
-            ps.setBoolean(3, e.getCompleteall());
+            ps.setBoolean(3, a);
 
             return ps;
         }
