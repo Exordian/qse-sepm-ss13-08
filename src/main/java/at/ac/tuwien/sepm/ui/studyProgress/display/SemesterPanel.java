@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.ui.studyProgress.display;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 
 import javax.swing.*;
@@ -42,7 +42,7 @@ public class SemesterPanel extends StandardInsidePanel {
     private void initSemesterTitle() {
         semesterTitle = new JLabel();
         semesterTitle.setFont(standardSmallerTitleFont);
-        semesterTitle.setBounds(this.getX()+50,0,300,35);
+        semesterTitle.setBounds(this.getX() + 50, 0, 300, 35);
         this.add(semesterTitle);
     }
 
