@@ -82,6 +82,68 @@ public class DBLvaDaoTest {
         assert(!l1.isInStudyProgress());
     }
 
+    @Test
+    public void testCreateCorrectIdShouldBeReturned() throws Exception {
+        TestHelper.insert(3);
+
+        LVA e0 = new LVA();
+        LVA e1 = new LVA();
+        LVA e2 = new LVA();
+        LVA e3 = new LVA();
+
+        e0.setId(-4);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description0");
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        e1.setId(-45);
+        MetaLVA m1 = new MetaLVA();
+        m1.setId(1);
+        e1.setMetaLVA(m0);
+        e1.setYear(2001);
+        e1.setSemester(Semester.W);
+        e1.setDescription("Description1");
+        e1.setGrade(1);
+        e1.setInStudyProgress(true);
+
+        e2.setId(-13);
+        MetaLVA m2 = new MetaLVA();
+        m2.setId(2);
+        e2.setMetaLVA(m0);
+        e2.setYear(2002);
+        e2.setSemester(Semester.W);
+        e2.setDescription("Description2");
+        e2.setGrade(2);
+        e2.setInStudyProgress(false);
+
+        e3.setId(-1234);
+        MetaLVA m3 = new MetaLVA();
+        m3.setId(3);
+        e3.setMetaLVA(m0);
+        e3.setYear(2003);
+        e3.setSemester(Semester.S);
+        e3.setDescription("Description3");
+        e3.setGrade(3);
+        e3.setInStudyProgress(true);
+
+
+
+        assert(dao.create(e0));
+        assert(dao.create(e1));
+        assert(dao.create(e2));
+        assert(dao.create(e3));
+
+        assert(e0.getId()==0);
+        assert(e1.getId()==1);
+        assert(e2.getId()==2);
+        assert(e3.getId()==3);
+    }
+
     @Test(expected = IOException.class)
     public void testCreateTooLongDescription() throws Exception {
         TestHelper.insert(3);

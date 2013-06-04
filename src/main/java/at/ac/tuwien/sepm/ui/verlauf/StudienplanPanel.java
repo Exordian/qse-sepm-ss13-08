@@ -194,6 +194,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                 }
             }
         };
+
         spane = new JScrollPane(tmodule);
         spane.setBackground(Color.WHITE);
         //spane.setMinimumSize(new Dimension(650, 400));

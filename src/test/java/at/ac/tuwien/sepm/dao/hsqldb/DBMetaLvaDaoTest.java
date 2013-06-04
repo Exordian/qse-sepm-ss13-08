@@ -57,6 +57,60 @@ public class DBMetaLvaDaoTest {
         assert(e1.getModule()==e0.getModule());
     }
 
+    @Test
+    public void testCreateCorrectIdShouldBeReturned() throws Exception {
+        TestHelper.drop();
+        TestHelper.create();
+
+        TestHelper.insert(5);
+        MetaLVA e0 = new MetaLVA();
+        MetaLVA e1 = new MetaLVA();
+        MetaLVA e2 = new MetaLVA();
+        MetaLVA e3 = new MetaLVA();
+
+        e0.setNr("104.asdf");
+        e0.setName("Name 0");
+        e0.setSemestersOffered(Semester.S);
+        e0.setType(LvaType.VO);
+        e0.setPriority(0f);
+        e0.setECTS(4);
+        e0.setModule(0);
+
+        e1.setNr("104.qwer");
+        e1.setName("Name 1");
+        e1.setSemestersOffered(Semester.W);
+        e1.setType(LvaType.VU);
+        e1.setPriority(1f);
+        e1.setECTS(5);
+        e1.setModule(0);
+
+        e2.setNr("104.wert");
+        e2.setName("Name 2");
+        e2.setSemestersOffered(Semester.W_S);
+        e2.setType(LvaType.UE);
+        e2.setPriority(2f);
+        e2.setECTS(6);
+        e2.setModule(0);
+
+        e3.setNr("104.zrt");
+        e3.setName("NAme 3");
+        e3.setSemestersOffered(Semester.UNKNOWN);
+        e3.setType(LvaType.PR);
+        e3.setPriority(3f);
+        e3.setECTS(7);
+        e3.setModule(0);
+
+        assert(dao.create(e0));
+        assert(dao.create(e1));
+        assert(dao.create(e2));
+        assert(dao.create(e3));
+
+        assert(e0.getId()==0);
+        assert(e1.getId()==1);
+        assert(e2.getId()==2);
+        assert(e3.getId()==3);
+    }
+
     @Test(expected = IOException.class)
     public void testCreateTooLongLvaNumber() throws Exception {
         TestHelper.insert(5);
