@@ -1,4 +1,7 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.helper;
+
+import at.ac.tuwien.sepm.ui.BackgroundPanel;
+import at.ac.tuwien.sepm.ui.CalendarPanel;
 
 /**
  * Created with IntelliJ IDEA.
@@ -7,6 +10,7 @@ package at.ac.tuwien.sepm.ui;
  * Time: 21:19
  * To change this template use File | Settings | File Templates.
  */
-public class BGPanelHelper {
+public class PanelTube {
     public static BackgroundPanel backgroundPanel;
+    public static CalendarPanel calendarPanel;
 }

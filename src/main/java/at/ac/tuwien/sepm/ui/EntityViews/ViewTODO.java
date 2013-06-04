@@ -1,21 +1,19 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.entity.LVA;
-import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
-import at.ac.tuwien.sepm.ui.SelectItem;
+import at.ac.tuwien.sepm.ui.helper.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
-import at.ac.tuwien.sepm.ui.WideComboBox;
+import at.ac.tuwien.sepm.ui.helper.WideComboBox;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import javax.swing.*;
 import java.awt.*;
@@ -133,7 +131,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                 try {
                     todo.setName(title.getText());
                     todo.setDescription(description.getText());
-                    todo.setLva(((LvaSelectItem)lva.getSelectedItem()).get());
+                    todo.setLva(((LvaSelectItem) lva.getSelectedItem()).get());
                     todo.setDone(done.isSelected());
                     if (todo.getId() != null) {
                         if (todoService.readById(todo.getId()) != null)

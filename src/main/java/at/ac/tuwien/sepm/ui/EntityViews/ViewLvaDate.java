@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
@@ -8,10 +8,10 @@ import at.ac.tuwien.sepm.service.LvaDateService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
-import at.ac.tuwien.sepm.ui.SelectItem;
+import at.ac.tuwien.sepm.ui.helper.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
-import at.ac.tuwien.sepm.ui.WideComboBox;
+import at.ac.tuwien.sepm.ui.helper.WideComboBox;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -160,8 +160,8 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                     lvaDate.setName(title.getText());
                     lvaDate.setDescription(description.getText());
                     lvaDate.setWasAttendant(attended.isSelected());
-                    lvaDate.setType((LvaDateType)type.getSelectedItem());
-                    lvaDate.setLva(((LvaSelectItem)lva.getSelectedItem()).get().getId());
+                    lvaDate.setType((LvaDateType) type.getSelectedItem());
+                    lvaDate.setLva(((LvaSelectItem) lva.getSelectedItem()).get().getId());
                     lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
                     lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
                     if (lvaDate.getId() != null) {

@@ -7,7 +7,7 @@ import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
-import at.ac.tuwien.sepm.ui.SelectItem;
+import at.ac.tuwien.sepm.ui.helper.SelectItem;
 import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;

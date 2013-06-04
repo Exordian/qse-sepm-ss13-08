@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.todo;
+package at.ac.tuwien.sepm.ui.calender.todo;
 
 import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.ui.UI;

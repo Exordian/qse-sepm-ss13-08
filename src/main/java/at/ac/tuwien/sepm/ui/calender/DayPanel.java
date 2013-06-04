@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.ui.calender;
 
-import at.ac.tuwien.sepm.ui.BGPanelHelper;
-import at.ac.tuwien.sepm.ui.BackgroundPanel;
+import at.ac.tuwien.sepm.ui.helper.PanelTube;
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
 
@@ -166,7 +165,7 @@ public class DayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    BGPanelHelper.backgroundPanel.viewDate(null);
+                    PanelTube.backgroundPanel.viewDate(null);
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {}
@@ -184,7 +183,7 @@ public class DayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    BGPanelHelper.backgroundPanel.viewLvaDate(null);
+                    PanelTube.backgroundPanel.viewLvaDate(null);
                 }
 
                 @Override

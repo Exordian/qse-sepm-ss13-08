@@ -1,12 +1,12 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
-import at.ac.tuwien.sepm.ui.SelectItem;
+import at.ac.tuwien.sepm.ui.helper.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
-import at.ac.tuwien.sepm.ui.WideComboBox;
+import at.ac.tuwien.sepm.ui.helper.WideComboBox;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -137,7 +137,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                 try {
                     deadline.setName(title.getText());
                     deadline.setDescription(description.getText());
-                    deadline.setLva(((LvaSelectItem)lva.getSelectedItem()).get().getId());
+                    deadline.setLva(((LvaSelectItem) lva.getSelectedItem()).get().getId());
                     deadline.setWasAttendant(done.isSelected());
                     deadline.setType(LvaDateType.DEADLINE);
                     deadline.setTime(new TimeFrame(convertDateAndTime(time, calTime), convertDateAndTime(time, calTime)));

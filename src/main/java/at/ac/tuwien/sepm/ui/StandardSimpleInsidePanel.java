@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.ui.helper.PanelTube;
 import com.toedter.calendar.JDateChooser;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -53,7 +53,7 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 setVisible(false);
-                BGPanelHelper.backgroundPanel.showLastComponent();
+                PanelTube.backgroundPanel.showLastComponent();
             }
         });
         retButton.setCursor(new Cursor(Cursor.HAND_CURSOR));

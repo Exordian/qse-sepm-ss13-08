@@ -1,14 +1,9 @@
-package at.ac.tuwien.sepm.ui.todo;
+package at.ac.tuwien.sepm.ui.calender.todo;
 
-import at.ac.tuwien.sepm.entity.LvaDate;
-import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.service.LvaDateService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
-import at.ac.tuwien.sepm.service.impl.ValidationException;
-import at.ac.tuwien.sepm.ui.BGPanelHelper;
-import at.ac.tuwien.sepm.ui.BackgroundPanel;
-import at.ac.tuwien.sepm.ui.EntityViews.ViewTODO;
+import at.ac.tuwien.sepm.ui.helper.PanelTube;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
@@ -33,7 +28,7 @@ public class TodoPanel extends StandardInsidePanel {
     private JButton add;
     private JButton showTODO;
     private JButton showDeadline;
-    private boolean todoTableShown = true;
+    private boolean showTodo = true;
 
     @Autowired
     public TodoPanel(TodoService todoService, LvaDateService lvaDateService, TodoTable todoTable, DeadlineTable deadlineTable) {
@@ -44,7 +39,6 @@ public class TodoPanel extends StandardInsidePanel {
         this.deadlineTable = deadlineTable;
         initJTables();
         addButtons();
-        changeTables();
     }
 
     public void initJTables() {
@@ -117,10 +111,10 @@ public class TodoPanel extends StandardInsidePanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    if(todoTableShown) {
-                        BGPanelHelper.backgroundPanel.viewTodo(todoTable.getSelectedTodo());
+                    if(showTodo) {
+                        PanelTube.backgroundPanel.viewTodo(todoTable.getSelectedTodo());
                     } else {
-                        BGPanelHelper.backgroundPanel.viewDeadline(deadlineTable.getSelectedDeadline());
+                        PanelTube.backgroundPanel.viewDeadline(deadlineTable.getSelectedDeadline());
                     }
                 }
                 @Override
@@ -138,10 +132,10 @@ public class TodoPanel extends StandardInsidePanel {
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (todoTableShown) {
-                    BGPanelHelper.backgroundPanel.viewTodo(null);
+                if (showTodo) {
+                    PanelTube.backgroundPanel.viewTodo(null);
                 } else {
-                    BGPanelHelper.backgroundPanel.viewDeadline(null);
+                    PanelTube.backgroundPanel.viewDeadline(null);
                 }
             }
         });
@@ -152,7 +146,7 @@ public class TodoPanel extends StandardInsidePanel {
         showTODO.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                todoTableShown=true;
+                showTodo =true;
                 changeTables();
             }
         });
@@ -167,7 +161,7 @@ public class TodoPanel extends StandardInsidePanel {
         showDeadline.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                todoTableShown=false;
+                showTodo =false;
                 changeTables();
             }
         });
@@ -179,12 +173,14 @@ public class TodoPanel extends StandardInsidePanel {
     }
 
     private void changeTables() {
-        if (todoTableShown) {
+        if (showTodo) {
             this.add(todoTable);
             this.remove(deadlineTable);
+            PanelTube.calendarPanel.showTodo(true);
         } else {
             this.remove(todoTable);
             this.add(deadlineTable);
+            PanelTube.calendarPanel.showTodo(false);
         }
         this.repaint();
         this.revalidate();

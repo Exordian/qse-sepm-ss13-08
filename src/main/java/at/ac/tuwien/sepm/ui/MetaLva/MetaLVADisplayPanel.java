@@ -1,6 +1,7 @@
-package at.ac.tuwien.sepm.ui.metaLVA;
+package at.ac.tuwien.sepm.ui.MetaLva;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.ui.MetaLva.MetaLVATable;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;

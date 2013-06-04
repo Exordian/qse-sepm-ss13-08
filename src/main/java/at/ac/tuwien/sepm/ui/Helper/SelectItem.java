@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.helper;
 
 /**
  * Created with IntelliJ IDEA.

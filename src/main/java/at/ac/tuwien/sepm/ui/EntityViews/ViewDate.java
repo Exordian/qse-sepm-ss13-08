@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
@@ -10,7 +10,6 @@ import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import javax.swing.*;
 import java.awt.*;

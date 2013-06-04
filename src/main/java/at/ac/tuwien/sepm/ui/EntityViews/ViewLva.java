@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 
