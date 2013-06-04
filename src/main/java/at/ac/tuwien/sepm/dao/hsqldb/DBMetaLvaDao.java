@@ -6,9 +6,15 @@ import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,13 +44,50 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
             semester=Semester.UNKNOWN;
         }
 
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+
+        /*
         String stmt = "INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module) VALUES " +
                 "(null,?,?,?,?,?,?,?)";
+        */
+        //PrivatePreparedCreateStatementCreator psc = new PrivatePreparedCreateStatementCreator(toCreate, semester.ordinal());
 
-        jdbcTemplate.update(stmt, toCreate.getNr(), toCreate.getName(), semester.ordinal(), toCreate.getType().ordinal(),
-                toCreate.getPriority(), toCreate.getECTS(), toCreate.getModule());
+        jdbcTemplate.update(new PrivatePreparedCreateStatementCreator(toCreate, semester.ordinal()), keyHolder);
+
+        // TODO use the key holder
+        // toCreate.setId(keyHolder.getKey().intValue());
+
+        Integer id = jdbcTemplate.queryForObject("SELECT id FROM metalva WHERE lvanumber=?", RowMappers.getIntegerRowMapper(), toCreate.getNr());
+        toCreate.setId(id);
 
         return true;
+    }
+
+    class PrivatePreparedCreateStatementCreator implements PreparedStatementCreator {
+        private MetaLVA e;
+        private int semester;
+
+        public PrivatePreparedCreateStatementCreator (MetaLVA e, int semester) {
+            this.e = e;
+            this.semester = semester;
+        }
+
+        @Override
+        public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+            String stmt = "INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module) VALUES " +
+                    "(null,?,?,?,?,?,?,?)";
+
+            //PreparedStatement ps = jdbcTemplate.getDataSource().getConnection().prepareStatement(stmt);
+            PreparedStatement ps = con.prepareStatement(stmt);
+            ps.setString(1, e.getNr());
+            ps.setString(2, e.getName());
+            ps.setInt(3, semester);
+            ps.setInt(4, e.getType().ordinal());
+            ps.setFloat(5, e.getPriority());
+            ps.setFloat(6, e.getECTS());
+            ps.setInt(7, e.getModule());
+            return ps;
+        }
     }
 
     @Override

@@ -21,9 +21,11 @@ public interface MetaLvaDao {
      * The predecessors and successors of this meta lva are not stored. If there are lvas stored int <code>toCreate</code>,
      * they will not be created by this method. If <code>toCreate.getSemestersOffered()==null</code> it will be stored
      * as <code>Semester.UNKNOWN</code>.
+     * The id of the object <code>toCreate</code> will be set.
      * @param toCreate Contains the data which should be saved. The value of the id and the predecessors are ignored.
      * @return <code>true</code>  if the lva could be created and <code>false</code> if there is already an existing
-     * meta lva with the same lva number (lva number is unique) or <ocde>toCreate==null</ocde>..
+     * meta lva with the same lva number (lva number is unique) or <ocde>toCreate==null</ocde>.
+     * The id of the object <code>toCreate</code> will be set.
      * @throws IOException  If the name of the lva number of the meta lva are too long to store.
      * @throws DataAccessException  If the data from toCreate could not be saved because any other error occurred.
      * @throws NullPointerException if <code>toCreate.getType()==null</code>.

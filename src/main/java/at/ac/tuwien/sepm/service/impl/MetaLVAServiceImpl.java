@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.service.impl;
 
+import at.ac.tuwien.sepm.dao.LvaDao;
 import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.MetaLVAService;
@@ -29,12 +30,19 @@ public class MetaLVAServiceImpl implements MetaLVAService {
     @Autowired
     MetaLvaDao metaLvaDao;
 
+    @Autowired
+    LvaDao lvaDao;
+
     @Override
     public boolean create(MetaLVA toCreate) throws ServiceException, ValidationException {
         try {
             this.validateMetaLVA(toCreate);
-            boolean created = metaLvaDao.create(toCreate);
-            return created;
+            boolean metaLvaCreated = metaLvaDao.create(toCreate);
+            //Integer id = metaLvaDao.readByLvaNumber(toCreate.getNr()).getId();
+            //toCreate.getLVAs().get(0).getMetaLVA().setId(metaLvaId);
+            //boolean lvaCreated = lvaDao.create(toCreate.getLVAs().get(0));
+            //return (metaLvaCreated && lvaCreated);
+            return metaLvaCreated;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
             throw new ValidationException("Exception: "+ e.getMessage());
@@ -192,7 +200,7 @@ public class MetaLVAServiceImpl implements MetaLVAService {
         String error_msg = "";
         boolean valid = true;
 
-        if(toValidate.getId() <= 0 ) {
+        if(toValidate.getId() != null && toValidate.getId() <= 0 ) {
             valid = false;
             error_msg += "invalid id!\n";
         }
@@ -212,6 +220,10 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             valid = false;
             error_msg += "invalid semester!(null)\n";
         }
+
+        // TODO remove this line
+        valid = true;
+
         if(valid == false) {
             logger.error("Invalid MetaLVA: "+ error_msg);
             throw new ServiceException("Invalid MetaLVA: "+ error_msg);

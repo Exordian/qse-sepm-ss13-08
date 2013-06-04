@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.dao;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.ServiceException;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public interface LvaDao {
 
     /**
      * Read a lvas with the specified meta lva by its id. The the meta lva of the returned lva is except for the List <code>lva</code> and <code>precurso</code>
-     * completely returned.
+     * completely returned.                                             test driven development
      * @param metaLvaId The id of the lva to be read.
      * @return A list containing the completely filled LVA-objects or an empty list if there is no lva with the
      * specified meta lva-

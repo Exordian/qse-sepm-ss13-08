@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Author: MUTH Markus
- * Date: 5/18/13
- * Time: 9:05 PM
- * Description of class "DateDao":
+ * @author Markus MUTH
  */
 public interface DateDao {
 

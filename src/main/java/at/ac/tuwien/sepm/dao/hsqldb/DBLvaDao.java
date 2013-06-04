@@ -8,9 +8,14 @@ import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,18 +38,55 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
             throw new IOException(ExceptionMessages.tooLongDescription(MAX_LENGTH_DESCRIPTION));
         }
 
+        /*
         String stmt = "INSERT INTO LVA (id,metaLva,year,isWinterSemester,description,grade,inStudyProgress) " +
                 "VALUES (null,?,?,?,?,?,?);";
+        */
 
         boolean semester=true;
         if(toCreate.getSemester().equals(Semester.S)) {
             semester=false;
         }
-
+        /*
         jdbcTemplate.update(stmt, toCreate.getMetaLVA().getId(), toCreate.getYear(), semester, toCreate.getDescription(),
                 toCreate.getGrade(), toCreate.isInStudyProgress());
+        */
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PrivatePreparedCreateStatementCreator(toCreate, semester), keyHolder);
+
+        // TODO use the key holder
+        // toCreate.setId(keyHolder.getKey().intValue());
+
+        Integer id = jdbcTemplate.queryForObject("SELECT id FROM lva WHERE metalva=? AND year=? AND iswintersemester=?", RowMappers.getIntegerRowMapper(), toCreate.getMetaLVA().getId(), toCreate.getYear(), semester);
+        toCreate.setId(id);
 
         return true;
+    }
+
+    class PrivatePreparedCreateStatementCreator implements PreparedStatementCreator {
+        private LVA e;
+        private boolean semester;
+
+        public PrivatePreparedCreateStatementCreator (LVA e, boolean semester) {
+            this.e = e;
+            this.semester = semester;
+        }
+
+        @Override
+        public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+            String stmt = "INSERT INTO LVA (id,metaLva,year,isWinterSemester,description,grade,inStudyProgress) " +
+                    "VALUES (null,?,?,?,?,?,?);";
+
+            PreparedStatement ps = con.prepareStatement(stmt);
+            ps.setInt(1, e.getMetaLVA().getId());
+            ps.setInt(2, e.getYear());
+            ps.setBoolean(3, semester);
+            ps.setString(4, e.getDescription());
+            ps.setInt(5, e.getGrade());
+            ps.setBoolean(6, e.isInStudyProgress());
+
+            return ps;
+        }
     }
 
     @Override
