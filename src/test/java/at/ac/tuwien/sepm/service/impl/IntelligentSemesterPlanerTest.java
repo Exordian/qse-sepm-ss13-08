@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.service.semesterPlanning;
+package at.ac.tuwien.sepm.service.impl;
 
 import static org.junit.Assert.*;
 
@@ -39,7 +39,7 @@ public class IntelligentSemesterPlanerTest {
      * performs a simple test, if the planned semester is not empty
      */
     @Test
-    public void test() {
+    public void testPlannedSemesterNotEmpty() {
         IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
         //System.out.println(pool);
         planer.setLVAs(new ArrayList<MetaLVA>(), pool);

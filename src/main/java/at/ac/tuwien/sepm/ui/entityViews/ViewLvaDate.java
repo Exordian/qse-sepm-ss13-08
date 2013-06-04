@@ -314,4 +314,9 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             return item.getMetaLVA().getName();
         }
     }
+
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

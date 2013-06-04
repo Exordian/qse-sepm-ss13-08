@@ -205,4 +205,9 @@ public class ViewDate extends StandardSimpleInsidePanel {
         intersectable.setBounds(intersectLabel.getX() + intersectLabel.getWidth() + 5, intersectLabel.getY(), 20, 20);
         this.add(intersectable);
     }
+
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

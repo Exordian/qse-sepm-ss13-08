@@ -189,4 +189,9 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
         this.revalidate();
         this.repaint();
     }
+
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

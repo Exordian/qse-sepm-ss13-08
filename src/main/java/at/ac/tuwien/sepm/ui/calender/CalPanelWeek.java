@@ -1,10 +1,14 @@
 package at.ac.tuwien.sepm.ui.calender;
 
+import at.ac.tuwien.sepm.service.CalService;
+import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Locale;
 
@@ -15,9 +19,11 @@ import java.util.Locale;
 @UI
 public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
     private MigLayout layout;
+    private static final Logger logger = Logger.getLogger(CalPanelWeek.class);
 
-    public CalPanelWeek() {
-        super(1);
+    @Autowired
+    public CalPanelWeek(CalService service,LVAService lvaService) {
+        super(1,service,lvaService);
         super.firstDay = DateTime.now();
         layout = new MigLayout("", "1[]1[]1[]1", "1[]");
         loadFonts();
@@ -191,6 +197,15 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
         return firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getMonthOfYear()
                 + " bis " +
                 firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getMonthOfYear();
+    }
+
+    @Override
+    public void refresh() {
+        try {
+            setDates();
+        } catch (ServiceException e) {
+            logger.error(e);
+        }
     }
 
     @Override

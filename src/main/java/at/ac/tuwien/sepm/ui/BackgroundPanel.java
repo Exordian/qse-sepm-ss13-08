@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.ui.entityViews.ViewDeadline;
 import at.ac.tuwien.sepm.ui.entityViews.ViewLvaDate;
 import at.ac.tuwien.sepm.ui.entityViews.ViewTODO;
 import at.ac.tuwien.sepm.ui.helper.PanelTube;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,10 @@ public class BackgroundPanel extends JPanel {
     private JButton properties;
     private JButton tab1;
     private JButton tab2;
-    private JPanel calPanel;
-    private JPanel studPanel;
-    private JPanel propsPanel;
+
+    private StandardInsidePanel calPanel;
+    private StandardInsidePanel studPanel;
+    private StandardInsidePanel propsPanel;
     private ViewDate viewDate;
     private ViewDeadline viewDeadline;
     private ViewLvaDate viewLVA;
@@ -174,6 +176,7 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
+                refresh();
             }
         });
 
@@ -182,6 +185,7 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
+                refresh();
             }
         });
 
@@ -192,5 +196,10 @@ public class BackgroundPanel extends JPanel {
             tabs.get(i).setBorderPainted(false);
             this.add(tabs.get(i));
         }
+    }
+    public void refresh(){
+        calPanel.refresh();
+        studPanel.refresh();
+        propsPanel.refresh();
     }
 }

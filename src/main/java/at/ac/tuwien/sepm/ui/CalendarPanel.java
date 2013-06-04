@@ -174,6 +174,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 remove(calPanelMonth);
                 remove(todoPanel);
                 add(calPanelWeek);
+                calPanelWeek.refresh();
                 activeView = calPanelWeek;
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 calPanelWeek.revalidate();
@@ -192,6 +193,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 remove(calPanelWeek);
                 remove(todoPanel);
                 add(calPanelMonth);
+                calPanelMonth.refresh();
                 activeView = calPanelMonth;
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 calPanelMonth.revalidate();
@@ -268,5 +270,11 @@ public class CalendarPanel extends StandardInsidePanel {
                 //troll out loud
             }
         }
+    }
+
+    @Override
+    public void refresh() {
+        calPanelMonth.refresh();
+        calPanelWeek.refresh();
     }
 }

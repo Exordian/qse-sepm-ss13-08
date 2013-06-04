@@ -11,4 +11,8 @@ import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
  */
 public class ViewMetaLva extends StandardSimpleInsidePanel {
 
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

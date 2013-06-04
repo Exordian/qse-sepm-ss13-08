@@ -149,4 +149,9 @@ public class StudiesPanel extends StandardInsidePanel {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

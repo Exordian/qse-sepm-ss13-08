@@ -1,13 +1,15 @@
 package at.ac.tuwien.sepm.ui.entityViews;
 
-import at.ac.tuwien.sepm.entity.*;
-import at.ac.tuwien.sepm.service.*;
+import at.ac.tuwien.sepm.entity.LVA;
+import at.ac.tuwien.sepm.entity.Todo;
+import at.ac.tuwien.sepm.service.LVAService;
+import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TodoService;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.helper.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.helper.WideComboBox;
-import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -17,7 +19,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,9 +29,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @UI
-public class ViewDeadline extends StandardSimpleInsidePanel {
-    private LvaDateService lvaDateService;
-    private LvaDate deadline;
+public class ViewTODO extends StandardSimpleInsidePanel {
+    private TodoService todoService;
+    private Todo todo;
     private JTextArea description;
     private JCheckBox done;
     private JLabel doneLabel;
@@ -40,21 +41,17 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
     private WideComboBox lva;
     private List<LVA> lvas;
     private LVAService lvaService;
-    private JLabel timeLabel;
-
-    private JDateChooser calTime;
-    private JSpinner time;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public ViewDeadline(LvaDateService lvaDateService, LVAService lvaService) {
+    public ViewTODO(TodoService todoService, LVAService lvaService) {
         this.lvaService=lvaService;
-        this.lvaDateService = lvaDateService;
+        this.todoService = todoService;
         init();
         addImage();
-        deadline = new LvaDate();
-        addEditableTitle(deadline.getName());
+        todo = new Todo();
+        addEditableTitle(todo.getName());
         addReturnButton();
         addContent();
         addButtons();
@@ -62,24 +59,20 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         this.revalidate();
     }
 
-    public void setDeadline(LvaDate deadline) {
-        if(deadline == null){
-            this.deadline = new LvaDate();
-            changeTitle("Neue Deadline");
+    public void setTodo(Todo todo) {
+        if(todo == null) {
+            this.todo = new Todo();
+            changeTitle("Neues Todo");
             description.setText("Bitte Beschreibung einfügen");
-            calTime.setDate(new Date());
-            time.setValue(new Date());
             done.setSelected(false);
             setDeleteButton(false);
         } else {
-            this.deadline=deadline;
-            changeTitle(deadline.getName());
-            description.setText(deadline.getDescription());
-            done.setSelected(deadline.getWasAttendant());
-            calTime.setDate(deadline.getStart().toDate());
-            time.setValue(deadline.getStart().toDate());
+            this.todo=todo;
+            changeTitle(todo.getName());
+            description.setText(todo.getDescription());
+            done.setSelected(todo.getDone());
             try {
-                lva.setSelectedItem(lvaService.readById(deadline.getLva()));     //todo
+                lva.setSelectedItem(lvaService.readById(todo.getLva().getId()));     //todo
             } catch (ServiceException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();
@@ -101,28 +94,29 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         }
     }
 
+
     private void addButtons() {
         delete = new JButton("Löschen");
         delete.setFont(standardTextFont);
-        delete.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-145, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
+        delete.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170-120, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    if (lvaDateService.readById(deadline.getId()) != null) {
-                        int i = JOptionPane.showConfirmDialog(ViewDeadline.this, "Wollen sie diese Deadline wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
+                    if (todoService.readById(todo.getId()) != null) {
+                        int i = JOptionPane.showConfirmDialog(ViewTODO.this, "Wollen sie dieses TODO wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
-                            lvaDateService.delete(deadline.getId());
+                            todoService.delete(todo.getId());
                         }
                     } else {
-                        JOptionPane.showMessageDialog(ViewDeadline.this, "Diese Deadline existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(ViewTODO.this, "Dieses TODO existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (ServiceException e) {
-                    log.error("Deadline is invalid.");
-                    JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    log.error("TODO is invalid.");
+                    JOptionPane.showMessageDialog(ViewTODO.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 } catch (ValidationException e) {
-                    log.error("Deadline is invalid.");
-                    JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    log.error("TODO is invalid.");
+                    JOptionPane.showMessageDialog(ViewTODO.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -130,31 +124,27 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
 
         save = new JButton("Speichern");
         save.setFont(standardTextFont);
-        save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170-120, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
+        save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-145, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    deadline.setName(title.getText());
-                    deadline.setDescription(description.getText());
-                    deadline.setLva(((LvaSelectItem) lva.getSelectedItem()).get().getId());
-                    deadline.setWasAttendant(done.isSelected());
-                    deadline.setType(LvaDateType.DEADLINE);
-                    deadline.setTime(new TimeFrame(convertDateAndTime(time, calTime), convertDateAndTime(time, calTime)));
-
-                    if (deadline.getId() != null) {
-                        if (lvaDateService.readById(deadline.getId()) != null) {
-                            lvaDateService.update(deadline);
-                        }
+                    todo.setName(title.getText());
+                    todo.setDescription(description.getText());
+                    todo.setLva(((LvaSelectItem) lva.getSelectedItem()).get());
+                    todo.setDone(done.isSelected());
+                    if (todo.getId() != null) {
+                        if (todoService.readById(todo.getId()) != null)
+                            todoService.update(todo);
                     } else {
-                        lvaDateService.create(deadline);
+                        todoService.create(todo);
                     }
                 } catch (ServiceException e) {
-                    log.error("Deadline is invalid.");
-                    JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    log.error("TODO is invalid.");
+                    JOptionPane.showMessageDialog(ViewTODO.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 } catch (ValidationException e) {
-                    log.error("Deadline is invalid.");
-                    JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    log.error("TODO is invalid.");
+                    JOptionPane.showMessageDialog(ViewTODO.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -164,7 +154,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
     private void addContent() {
         int verticalSpace = 10;
 
-        description = new JTextArea(deadline.getDescription());
+        description = new JTextArea(todo.getDescription());
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
         description.setFont(standardTextFont);
@@ -174,27 +164,9 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         this.add(scroll);
 
 
-        timeLabel = new JLabel("Datum");
-        timeLabel.setFont(standardTextFont);
-        timeLabel.setBounds((int)simpleWhiteSpace.getX() + 10,(int)simpleWhiteSpace.getY() + 10,80,25);
-        this.add(timeLabel);
-
-        calTime = new JDateChooser();
-        calTime.setFont(standardButtonFont);
-        calTime.setBounds(timeLabel.getX(), timeLabel.getY() + timeLabel.getHeight() + verticalSpace, 100,25);
-        this.add(calTime);
-
-        time = new JSpinner(new SpinnerDateModel());
-        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(time, "HH:mm");
-        time.setEditor(timeEditor);
-        time.setFont(standardButtonFont);
-        time.setBounds(calTime.getX() + calTime.getWidth() + 5, calTime.getY(), 65,25);
-        this.add(time);
-
-
         lvaLabel = new JLabel("Lva");
         lvaLabel.setFont(standardTextFont);
-        lvaLabel.setBounds(calTime.getX(), calTime.getY() + calTime.getHeight() + verticalSpace*2, 60,25);
+        lvaLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10, 60,25);
         this.add(lvaLabel);
 
         lva = new WideComboBox();
@@ -208,6 +180,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         } catch(ValidationException e) {
             log.error(e.getMessage());
         }
+
         for (LVA t : lvas) {
             lva.addItem(new LvaSelectItem(t));
         }
@@ -222,9 +195,9 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         this.add(doneLabel);
 
         done = new JCheckBox();
-        done.setSelected(deadline.getWasAttendant() != null ? deadline.getWasAttendant() : false);
-        done.setBackground(new Color(0, 0, 0, 0));
-        done.setBounds(doneLabel.getX() + doneLabel.getWidth() + 10, doneLabel.getY(), 20, 20);
+        done.setSelected(todo.getDone() != null ? todo.getDone() : false);
+        done.setBackground(new Color(0,0,0,0));
+        done.setBounds(doneLabel.getX() + doneLabel.getWidth() + 5, doneLabel.getY(), 20, 20);
         this.add(done);
     }
 
@@ -238,5 +211,9 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             return item.getMetaLVA().getName();
         }
     }
-}
 
+    @Override
+    public void refresh() {
+        //do nothing
+    }
+}
