@@ -53,7 +53,7 @@ public abstract class CalAbstractView extends StandardInsidePanel {
 
     // -------------------------------------------------------------------------------------------------------------- //
 
-    public CalAbstractView(int weeks, CalService calService,LVAService lvaService) {
+    public CalAbstractView(int weeks, CalService calService, LVAService lvaService) {
         this.calService = calService;
         this.lvaService=lvaService;
         WEEKS = weeks;

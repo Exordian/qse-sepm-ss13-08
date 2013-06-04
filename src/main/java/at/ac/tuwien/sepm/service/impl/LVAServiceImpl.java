@@ -166,7 +166,7 @@ public class LVAServiceImpl implements LVAService {
 
     @Override
     public void validateID(int id) throws ServiceException {
-        if(id <= 0) {
+        if(id < 0) {
             logger.error("invalid id!");
             throw new ServiceException("invalid id!");
         }

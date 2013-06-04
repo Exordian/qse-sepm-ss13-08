@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -80,7 +81,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             done.setSelected(deadline.getWasAttendant());
             calTime.setDate(deadline.getStart().toDate());
             time.setValue(deadline.getStart().toDate());
-            try {
+           /* try {
                 lva.setSelectedItem(lvaService.readById(deadline.getLva()));     //todo
             } catch (ServiceException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
@@ -88,7 +89,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             } catch (ValidationException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();
-            }
+            }  */
             setDeleteButton(true);
         }
     }
@@ -97,9 +98,11 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         if (showDeleteButton) {
             delete.setVisible(true);
             done.setVisible(true);
+            doneLabel.setVisible(true);
         } else {
             delete.setVisible(false);
             done.setVisible(false);
+            doneLabel.setVisible(false);
         }
     }
 
@@ -116,6 +119,8 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                         if (i == 0) {
                             lvaDateService.delete(deadline.getId());
                         }
+                        setVisible(false);
+                        PanelTube.backgroundPanel.showLastComponent();
                     } else {
                         JOptionPane.showMessageDialog(ViewDeadline.this, "Diese Deadline existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
@@ -151,6 +156,8 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                     } else {
                         lvaDateService.create(deadline);
                     }
+                    setVisible(false);
+                    PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("Deadline is invalid.");
                     JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);

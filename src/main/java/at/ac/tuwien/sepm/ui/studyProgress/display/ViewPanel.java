@@ -58,6 +58,7 @@ public class ViewPanel extends StandardInsidePanel {
             listModel.addElement(i + ". Semester");
         }
         semesterList = new JList(listModel);
+        semesterList.setSelectedIndex(1);
         semesterList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {

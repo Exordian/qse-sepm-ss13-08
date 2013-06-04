@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -71,7 +72,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             changeTitle(todo.getName());
             description.setText(todo.getDescription());
             done.setSelected(todo.getDone());
-            try {
+           /* try {
                 lva.setSelectedItem(lvaService.readById(todo.getLva().getId()));     //todo
             } catch (ServiceException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
@@ -79,7 +80,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             } catch (ValidationException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();
-            }
+            }     */
             setDeleteButton(true);
         }
     }
@@ -88,12 +89,13 @@ public class ViewTODO extends StandardSimpleInsidePanel {
         if (showDeleteButton) {
             delete.setVisible(true);
             done.setVisible(true);
+            doneLabel.setVisible(true);
         } else {
             delete.setVisible(false);
             done.setVisible(false);
+            doneLabel.setVisible(false);
         }
     }
-
 
     private void addButtons() {
         delete = new JButton("Löschen");
@@ -107,6 +109,8 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewTODO.this, "Wollen sie dieses TODO wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             todoService.delete(todo.getId());
+                            setVisible(false);
+                            PanelTube.backgroundPanel.showLastComponent();
                         }
                     } else {
                         JOptionPane.showMessageDialog(ViewTODO.this, "Dieses TODO existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -139,6 +143,8 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                     } else {
                         todoService.create(todo);
                     }
+                    setVisible(false);
+                    PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("TODO is invalid.");
                     JOptionPane.showMessageDialog(ViewTODO.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);

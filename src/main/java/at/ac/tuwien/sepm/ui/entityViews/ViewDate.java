@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -107,6 +108,8 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     } else {
                         JOptionPane.showMessageDialog(ViewDate.this, "Dieser Termin ist noch nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
+                    setVisible(false);
+                    PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("DateEntity is invalid.");
                     JOptionPane.showMessageDialog(ViewDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -126,12 +129,14 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     dateEntity.setDescription(description.getText());
                     dateEntity.setIntersectable(intersectable.isSelected());
                     dateEntity.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
-                    if (dateService.readDateById(dateEntity.getId()) != null) {
-                        if (dateEntity.getId() != null)
+                    if (dateEntity.getId() != null) {
+                        if (dateService.readDateById(dateEntity.getId()) != null)
                             dateService.updateDate(dateEntity);
                     } else {
                         dateService.createDate(dateEntity);
                     }
+                    setVisible(false);
+                    PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("DateEntity is invalid.");
                     JOptionPane.showMessageDialog(ViewDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
