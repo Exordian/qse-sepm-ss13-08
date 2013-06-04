@@ -26,7 +26,8 @@ CREATE TABLE MetaLVA (
   type INTEGER NOT NULL,
   priority FLOAT DEFAULT 0 NOT NULL,
   ects FLOAT NOT NULL,
-  module INTEGER REFERENCES Module (id)
+  module INTEGER REFERENCES Module (id),
+  UNIQUE (lvaNumber)
 );
 
 CREATE TABLE Predecessor (
