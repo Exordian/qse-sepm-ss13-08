@@ -1,7 +1,7 @@
-package at.ac.tuwien.sepm.ui.verlauf.anzeigen;
+package at.ac.tuwien.sepm.ui.studyProgress.display;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.metaLVA.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 
 import javax.swing.*;

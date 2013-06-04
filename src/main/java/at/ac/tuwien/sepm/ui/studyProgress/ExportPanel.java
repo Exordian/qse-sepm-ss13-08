@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.verlauf;
+package at.ac.tuwien.sepm.ui.studyProgress;
 
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;

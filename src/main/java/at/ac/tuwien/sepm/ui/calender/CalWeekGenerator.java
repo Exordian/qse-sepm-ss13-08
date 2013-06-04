@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.kalender;
+package at.ac.tuwien.sepm.ui.calender;
 
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.UI;
@@ -14,38 +14,34 @@ import javax.swing.*;
  * To change this template use File | Settings | File Templates.
  */
 @UI
-public class CalMonthGenerator extends JPanel implements CalendarInterface {
-    private CalPanelMonth calPanelMonth;
+public class CalWeekGenerator extends JPanel implements CalendarInterface {
+    private CalPanelWeek calPanelWeek;
 
     @Autowired
-    public CalMonthGenerator(CalPanelMonth calPanelMonth) {
-
-        //braucht man, damit man den kalender frei verschieben kann
-        //das verschieben passiert dann in calpanelmonth
-        //das muss bei der wochenansicht auch so gemacht werden
-        this.calPanelMonth=calPanelMonth;
+    public CalWeekGenerator(CalPanelWeek calPanelWeek) {
+        this.calPanelWeek=calPanelWeek;
         this.setLayout(null);
         this.setOpaque(false);
-        this.add(calPanelMonth);
+        this.add(calPanelWeek);
     }
 
     @Override
     public void semester() {
-        calPanelMonth.semester();
+        calPanelWeek.semester();
     }
 
     @Override
     public void next() throws ServiceException {
-        calPanelMonth.next();
+        calPanelWeek.next();
     }
 
     @Override
     public void last() throws ServiceException {
-        calPanelMonth.last();
+        calPanelWeek.last();
     }
 
     @Override
     public String getTimeIntervalInfo() {
-        return calPanelMonth.getTimeIntervalInfo();
+        return calPanelWeek.getTimeIntervalInfo();
     }
 }

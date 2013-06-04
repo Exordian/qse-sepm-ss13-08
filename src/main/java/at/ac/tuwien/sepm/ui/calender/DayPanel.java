@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.kalender;
+package at.ac.tuwien.sepm.ui.calender;
 
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;

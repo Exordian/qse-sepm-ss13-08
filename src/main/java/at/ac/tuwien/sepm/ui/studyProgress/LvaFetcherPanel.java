@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.verlauf;
+package at.ac.tuwien.sepm.ui.studyProgress;
 
 import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.MetaLVA;
