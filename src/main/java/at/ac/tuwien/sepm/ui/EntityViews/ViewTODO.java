@@ -60,17 +60,35 @@ public class ViewTODO extends StandardSimpleInsidePanel {
     }
 
     public void setTodo(Todo todo) {
-        this.todo=todo;
-        changeTitle(todo.getName());
-        description.setText(todo.getDescription());
-        done.setSelected(todo.getDone());
-        //lva.setSelectedItem(todo.getLva().getMetaLVA().getName()); //todo wie setze ich das in einer comobox?
+        if(todo == null) {
+            this.todo = new Todo();
+            changeTitle("Neues Todo");
+            description.setText("Bitte Beschreibung einfügen");
+            done.setSelected(false);
+            setDeleteButton(false);
+        } else {
+            this.todo=todo;
+            changeTitle(todo.getName());
+            description.setText(todo.getDescription());
+            done.setSelected(todo.getDone());
+            //lva.setSelectedItem(todo.getLva().getMetaLVA().getName()); //todo wie setze ich das in einer comobox?
+            setDeleteButton(true);
+        }
     }
+
+    private void setDeleteButton(boolean showDeleteButton) {
+        if (showDeleteButton) {
+            delete.setVisible(true);
+        } else {
+            delete.setVisible(false);
+        }
+    }
+
 
     private void addButtons() {
         delete = new JButton("Löschen");
         delete.setFont(standardTextFont);
-        delete.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-145, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
+        delete.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170-120, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -96,7 +114,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
 
         save = new JButton("Speichern");
         save.setFont(standardTextFont);
-        save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-170-120, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
+        save.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3-145, (int)simpleWhiteSpace.getY() + (int)simpleWhiteSpace.getHeight()-60, 130,40);
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

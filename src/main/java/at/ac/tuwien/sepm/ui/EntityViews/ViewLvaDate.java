@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 
 /**
@@ -60,18 +61,39 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
     }
 
     public void setLVADateEntity(LvaDate lvaDate) {
-        this.lvaDate=lvaDate;
-        changeTitle(lvaDate.getName());
-        description.setText(lvaDate.getDescription());
-        type.setSelectedItem(lvaDate.getType());
-        attendanceRequired.setSelected(lvaDate.getAttendanceRequired());
-        attended.setSelected(lvaDate.getWasAttendant());
-        from.setDate(lvaDate.getStart().toDate());
-        to.setDate(lvaDate.getStop().toDate());
-        fromTime.setValue(lvaDate.getStart().toDate());
-        toTime.setValue(lvaDate.getStop().toDate());
-        this.repaint();
-        this.revalidate();
+        if (lvaDate == null) {
+            this.lvaDate = new LvaDate();
+            changeTitle("Neuer Lva Termin");
+            description.setText("Bitte Beschreibung einfügen");
+            type.setSelectedItem(false);
+            attendanceRequired.setSelected(true);
+            attended.setSelected(false);
+            from.setDate(new Date());
+            to.setDate(new Date());
+            fromTime.setValue(new Date());
+            toTime.setValue(new Date());
+            setDeleteButton(false);
+        } else {
+            this.lvaDate=lvaDate;
+            changeTitle(lvaDate.getName());
+            description.setText(lvaDate.getDescription());
+            type.setSelectedItem(lvaDate.getType());
+            attendanceRequired.setSelected(lvaDate.getAttendanceRequired());
+            attended.setSelected(lvaDate.getWasAttendant());
+            from.setDate(lvaDate.getStart().toDate());
+            to.setDate(lvaDate.getStop().toDate());
+            fromTime.setValue(lvaDate.getStart().toDate());
+            toTime.setValue(lvaDate.getStop().toDate());
+            setDeleteButton(true);
+        }
+    }
+
+    private void setDeleteButton(boolean showDeleteButton) {
+        if (showDeleteButton) {
+            delete.setVisible(true);
+        } else {
+            delete.setVisible(false);
+        }
     }
 
     private void addButtons() {

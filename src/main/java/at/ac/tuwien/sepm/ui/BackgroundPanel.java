@@ -45,17 +45,24 @@ public class BackgroundPanel extends JPanel {
     public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA, ViewTODO viewTodo, ViewDeadline viewDeadline) {
         this.setLayout(null);
         this.calPanel = calPanel;
+        calPanel.setBGPanel(this);
+        this.studPanel = studPanel;
+
         this.propsPanel = propsPanel;
         propsPanel.setBgPanel(this);
-        this.studPanel = studPanel;
+
         this.viewDate = viewDate;
         viewDate.setBgPanel(this);
+
         this.viewLVA=viewLVA;
         viewLVA.setBgPanel(this);
+
         this.viewTodo=viewTodo;
         viewTodo.setBgPanel(this);
+
         this.viewDeadline=viewDeadline;
         viewDeadline.setBgPanel(this);
+
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
@@ -93,6 +100,7 @@ public class BackgroundPanel extends JPanel {
         log.info("Background Panel initialized.");
     }
 
+    //wenn neue entity erzeugt werden soll ->  viewDate(null)
     public void viewDate(DateEntity dateEntity) {
         removeAddedPanels();
         viewDate.setDateEntity(dateEntity);

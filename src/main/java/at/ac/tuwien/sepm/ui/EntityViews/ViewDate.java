@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 
 /**
@@ -59,14 +60,35 @@ public class ViewDate extends StandardSimpleInsidePanel {
     }
 
     public void setDateEntity(DateEntity dateEntity) {
-        this.dateEntity=dateEntity;
-        changeTitle(dateEntity.getName());
-        description.setText(dateEntity.getDescription());
-        intersectable.setSelected(dateEntity.getIntersectable());
-        from.setDate(dateEntity.getStart().toDate());
-        to.setDate(dateEntity.getStop().toDate());
-        fromTime.setValue(dateEntity.getStart().toDate());
-        toTime.setValue(dateEntity.getStop().toDate());
+        if (dateEntity == null) {
+            this.dateEntity=new DateEntity();
+            changeTitle("Neuer Termin");
+            description.setText("Bitte Beschreibung einfügen");
+            intersectable.setSelected(true);
+            from.setDate(new Date());
+            to.setDate(new Date());
+            fromTime.setValue(new Date());
+            toTime.setValue(new Date());
+            setDeleteButton(false);
+        } else {
+            this.dateEntity=dateEntity;
+            changeTitle(dateEntity.getName());
+            description.setText(dateEntity.getDescription());
+            intersectable.setSelected(dateEntity.getIntersectable());
+            from.setDate(dateEntity.getStart().toDate());
+            to.setDate(dateEntity.getStop().toDate());
+            fromTime.setValue(dateEntity.getStart().toDate());
+            toTime.setValue(dateEntity.getStop().toDate());
+            setDeleteButton(true);
+        }
+    }
+
+    private void setDeleteButton(boolean showDeleteButton) {
+        if (showDeleteButton) {
+            delete.setVisible(true);
+        } else {
+            delete.setVisible(false);
+        }
     }
 
     private void addButtons() {

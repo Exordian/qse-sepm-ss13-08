@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -64,13 +65,32 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
     }
 
     public void setDeadline(LvaDate deadline) {
-        this.deadline=deadline;
-        changeTitle(deadline.getName());
-        description.setText(deadline.getDescription());
-        done.setSelected(deadline.getWasAttendant());
-        calTime.setDate(deadline.getStart().toDate());
-        time.setValue(deadline.getStart().toDate());
-        //lva.setSelectedItem(todo.getLva().getMetaLVA().getName()); //todo wie setze ich das in einer comobox?
+        if(deadline == null){
+            this.deadline = new LvaDate();
+            changeTitle("Neue Deadline");
+            description.setText("Bitte Beschreibung einfügen");
+            calTime.setDate(new Date());
+            time.setValue(new Date());
+            done.setSelected(false);
+            setDeleteButton(false);
+        } else {
+            this.deadline=deadline;
+            changeTitle(deadline.getName());
+            description.setText(deadline.getDescription());
+            done.setSelected(deadline.getWasAttendant());
+            calTime.setDate(deadline.getStart().toDate());
+            time.setValue(deadline.getStart().toDate());
+            //lva.setSelectedItem(todo.getLva().getMetaLVA().getName()); //todo wie setze ich das in einer comobox?
+            setDeleteButton(true);
+        }
+    }
+
+    private void setDeleteButton(boolean showDeleteButton) {
+        if (showDeleteButton) {
+            delete.setVisible(true);
+        } else {
+            delete.setVisible(false);
+        }
     }
 
     private void addButtons() {

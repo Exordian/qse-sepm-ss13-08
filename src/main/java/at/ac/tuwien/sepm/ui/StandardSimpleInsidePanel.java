@@ -78,7 +78,7 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
 
     protected void addEditableTitle(String s) {
         title = new JTextField(s);
-        title.setBounds((int) ((size.getWidth() / 2) - (image.getWidth(null) / 2)) + 35, (int) (size.getHeight() / 2 - image.getHeight(null) / 2) - 42, 257, 45);
+        title.setBounds((int) ((size.getWidth() / 2) - (image.getWidth(null) / 2)) + 35, (int) (size.getHeight() / 2 - image.getHeight(null) / 2) - 42, image.getWidth(null), 45);
         title.setForeground(Color.WHITE);
         title.setFont(standardTitleFont);
         title.setOpaque(false);
@@ -116,6 +116,10 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
         calendar.set(Calendar.MILLISECOND, 0);
         Date newDate = calendar.getTime();
         return new DateTime(newDate);
+    }
+
+    public BackgroundPanel getBgPanel() {
+        return this.bgPanel;
     }
 
     //needed for return button
