@@ -6,12 +6,13 @@ import java.util.ArrayList;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.impl.IntelligentSemesterPlanerImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 
 public class DependenceTreeTest {
-    private DependenceTree tree;
+    private IntelligentSemesterPlanerImpl.DependenceTree tree;
     private MetaLVA lva0;
     private MetaLVA lva1;
     private MetaLVA lva2;
@@ -51,7 +52,7 @@ public class DependenceTreeTest {
         pool.add(lva2);
         pool.add(lva4);
         
-        tree = new DependenceTree(pool);
+        tree = new IntelligentSemesterPlanerImpl.DependenceTree(pool);
     }
     @Test
     public void testRoots() {

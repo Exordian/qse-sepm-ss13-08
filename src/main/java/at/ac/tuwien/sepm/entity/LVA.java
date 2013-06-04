@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.semesterPlanning.LVAUtil;
+import at.ac.tuwien.sepm.service.impl.LVAUtil;
 
 /**
  * 
