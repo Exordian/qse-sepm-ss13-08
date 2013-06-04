@@ -84,8 +84,9 @@ public class IntelligentSemesterPlanerTest {
         planer.setLVAs(new ArrayList<MetaLVA>(), pool);
         LVA toAlter = pool.get(0).getLVA(2013,Semester.S);
         toAlter.setYear(2012);
+        toAlter.setSemester(Semester.W);
         pool.get(0).setLVA(toAlter);
-        assertTrue(planer.planSemester(20,2012, Semester.S).size()==1);
+        assertTrue(planer.planSemester(20,2012, Semester.W).size()==1);
     }
     /**
      * sets up a bunch of MetaLVAs and LVAs, so the Planner can be tested.

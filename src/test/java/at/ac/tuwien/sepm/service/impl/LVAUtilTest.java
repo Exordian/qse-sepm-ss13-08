@@ -4,9 +4,13 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
+import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.LvaType;
+import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.impl.LVAUtil;
 import org.joda.time.DateTime;
@@ -19,6 +23,39 @@ public class LVAUtilTest {
 	@Before
 	public void setUp(){
 	}
+    /**
+     * tests, if the format methods return something else than null
+     */
+    @Test
+    public void testFormat(){
+        MetaLVA metaLVA = new MetaLVA();
+        metaLVA.setName("meta-LVA name");
+        metaLVA.setNr("123.123");
+        metaLVA.setPriority(5);
+        metaLVA.setType(LvaType.VO);
+        LVA lva1 = new LVA();
+        lva1.setYear(2013);
+        lva1.setSemester(Semester.S);
+        LVA lva2 = new LVA();
+        lva2.setSemester(Semester.W);
+        lva2.setYear(2014);
+
+        List<MetaLVA> metaLVAs = new ArrayList<MetaLVA>(2);
+        metaLVAs.add(metaLVA);
+        metaLVAs.add(metaLVA);
+        List<LVA> lvas = new ArrayList<LVA>();
+        lvas.add(lva1);
+        lvas.add(lva2);
+
+        metaLVA.setLVAs(lvas);
+        assertTrue(metaLVA.toString().length() > 0);
+        assertTrue(metaLVA.toShortString().length()>0);
+        assertTrue(metaLVA.toDetailedString(1).length()>0);
+        assertTrue(metaLVA.toShortDetailedString(1).length()>0);
+
+        //todo jacoco verbessern
+        //assertTrue(LVAUtil.formatMetaLVA(metaLVAs,1));
+    }
 
     /**
      * tests if the hasNext() of the Iterator works as expected.
