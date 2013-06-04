@@ -4,10 +4,18 @@ import at.ac.tuwien.sepm.dao.ModuleDao;
 import at.ac.tuwien.sepm.entity.InCurriculum;
 import at.ac.tuwien.sepm.entity.Module;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.interceptor.DefaultKeyGenerator;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.UncategorizedDataAccessException;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +42,41 @@ public class DBModuleDao extends DBBaseDao implements ModuleDao {
             throw new IOException(ExceptionMessages.tooLongDescription(MAX_LENGTH_DESCRIPTION));
         }
 
+        /*
         String stmt = "INSERT INTO Module (id,name,description,completeAll) VALUES (null,?,?,?)";
         jdbcTemplate.update(stmt, toCreate.getName(), toCreate.getDescription(), toCreate.getCompleteall());
+        */
+
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PrivatePreparedCreateStatementCreator(toCreate), keyHolder);
+
+        Integer id = jdbcTemplate.queryForObject("SELECT id FROM module WHERE name=?", RowMappers.getIntegerRowMapper(), toCreate.getName());
+        toCreate.setId(id);
 
         return true;
+    }
+
+    class PrivatePreparedCreateStatementCreator implements PreparedStatementCreator {
+        private Module e;
+
+        public PrivatePreparedCreateStatementCreator (Module e) {
+            this.e = e;
+        }
+
+        @Override
+        public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+            String stmt = "INSERT INTO Module (id,name,description,completeAll) VALUES (null,?,?,?)";
+
+            PreparedStatement ps = con.prepareStatement(stmt);
+            ps.setString(1, e.getName());
+            ps.setString(2, e.getDescription());
+            if(e.getCompleteall()==null) {
+                throw new DataIntegrityViolationException("completeAll == null");
+            }
+            ps.setBoolean(3, e.getCompleteall());
+
+            return ps;
+        }
     }
 
     @Override

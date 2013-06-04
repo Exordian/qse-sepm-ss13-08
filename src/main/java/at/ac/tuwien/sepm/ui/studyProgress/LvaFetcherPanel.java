@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.MetaLVAService;
+import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
@@ -32,6 +33,9 @@ public class LvaFetcherPanel extends JPanel{
 
     @Autowired
     private MetaLVAService metaLVAService;
+
+    @Autowired
+    private ModuleService moduleService;
 
 
     private JTree tissTree;
@@ -100,7 +104,7 @@ public class LvaFetcherPanel extends JPanel{
         Object item = selectedNode.getUserObject();
         try {
             if(item instanceof ModuleSelectItem) {
-                // TODO
+                moduleService.create(((ModuleSelectItem)item).get());
             } else if(item instanceof CurriculumSelectItem) {
                 // TODO
             } else if(item instanceof MetaLvaSelectItem) {
