@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ui.calender;
 
-import at.ac.tuwien.sepm.ui.helper.PanelTube;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
 

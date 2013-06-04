@@ -7,12 +7,11 @@ import at.ac.tuwien.sepm.ui.entityViews.ViewDate;
 import at.ac.tuwien.sepm.ui.entityViews.ViewDeadline;
 import at.ac.tuwien.sepm.ui.entityViews.ViewLvaDate;
 import at.ac.tuwien.sepm.ui.entityViews.ViewTODO;
-import at.ac.tuwien.sepm.ui.helper.PanelTube;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

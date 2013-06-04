@@ -5,7 +5,7 @@ import at.ac.tuwien.sepm.ui.calender.CalMonthGenerator;
 import at.ac.tuwien.sepm.ui.calender.CalWeekGenerator;
 import at.ac.tuwien.sepm.ui.calender.CalendarInterface;
 import at.ac.tuwien.sepm.ui.calender.todo.TodoPanel;
-import at.ac.tuwien.sepm.ui.helper.PanelTube;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 //import org.joda.time.DateTime;

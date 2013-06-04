@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.ui.helper.PanelTube;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import com.toedter.calendar.JDateChooser;
 import org.joda.time.DateTime;
 

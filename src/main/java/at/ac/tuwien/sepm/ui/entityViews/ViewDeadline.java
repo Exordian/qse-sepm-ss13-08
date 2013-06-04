@@ -1,15 +1,14 @@
 package at.ac.tuwien.sepm.ui.entityViews;
 
-import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
-import at.ac.tuwien.sepm.ui.helper.SelectItem;
+import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
-import at.ac.tuwien.sepm.ui.helper.WideComboBox;
+import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
