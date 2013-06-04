@@ -41,10 +41,51 @@ public class IntelligentSemesterPlanerTest {
     @Test
     public void testPlannedSemesterNotEmpty() {
         IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
-        //System.out.println(pool);
         planer.setLVAs(new ArrayList<MetaLVA>(), pool);
-        //System.out.println(planer.planSemester(20,2013, Semester.S));
         assertFalse(planer.planSemester(20,2013, Semester.S).isEmpty());
+    }
+    /**
+     * passes empty lists to the planner
+     */
+    @Test
+    public void testNoLVAS(){
+        IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
+        planer.setLVAs(new ArrayList<MetaLVA>(0), new ArrayList<MetaLVA>(0));
+        assertTrue(planer.planSemester(30, 2013, Semester.S).isEmpty());
+    }
+    /**
+     * passes empty lists to the planner
+     */
+    @Test
+    public void testForcedLVA(){
+        IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
+        ArrayList<MetaLVA> forced = new ArrayList<MetaLVA>(1);
+        forced.add(pool.get(0));
+        planer.setLVAs(forced, pool);
+        assertTrue(planer.planSemester(0,2013, Semester.S).size()==1);
+        assertTrue(planer.planSemester(0,2013, Semester.S).get(0)==pool.get(0));
+    }
+    /**
+     * plans semester, where the metaLVAs contain no LVA
+     */
+    @Test
+    public void testPlanEmptyYear(){
+        IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
+        planer.setLVAs(new ArrayList<MetaLVA>(), pool);
+        assertTrue(planer.planSemester(20,2012, Semester.S).isEmpty());
+    }
+    /**
+     * alters one LVA and performs the test
+     * @throws Exception
+     */
+    @Test
+    public void testPlanChangeSemester(){
+        IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
+        planer.setLVAs(new ArrayList<MetaLVA>(), pool);
+        LVA toAlter = pool.get(0).getLVA(2013,Semester.S);
+        toAlter.setYear(2012);
+        pool.get(0).setLVA(toAlter);
+        assertTrue(planer.planSemester(20,2012, Semester.S).size()==1);
     }
     /**
      * sets up a bunch of MetaLVAs and LVAs, so the Planner can be tested.
