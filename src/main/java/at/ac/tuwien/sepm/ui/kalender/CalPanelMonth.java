@@ -37,7 +37,6 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         try {
             setDates();
         } catch (ServiceException e) {
-            // TODO do something useful
             e.printStackTrace();
         }
 

@@ -60,8 +60,8 @@ public class BackgroundPanel extends JPanel {
         createPropertiesButton();
         createTabButtons();
 
-        /*test  VIEWDATE AND VIEWLVA
-        JButton testViewDate = new JButton("view lva");
+        //test  VIEWDATE AND VIEWLVA
+        /*JButton testViewDate = new JButton("view lva");
         testViewDate.setBounds(500, 630, 110, 38);
         testViewDate.addActionListener(new ActionListener() {
             @Override
@@ -87,8 +87,8 @@ public class BackgroundPanel extends JPanel {
                 viewDeadline(lvaDate);
             }
         });
-        this.add(testViewDate);
-        /*test */
+        this.add(testViewDate); */
+       // test
 
         log.info("Background Panel initialized.");
     }

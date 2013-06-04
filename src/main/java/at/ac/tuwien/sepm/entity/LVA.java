@@ -14,7 +14,6 @@ import at.ac.tuwien.sepm.service.semesterPlanning.LVAUtil;
  */
 
 public class LVA {
-
     private int id;
     private MetaLVA metaLVA=null;
     private String description=null;

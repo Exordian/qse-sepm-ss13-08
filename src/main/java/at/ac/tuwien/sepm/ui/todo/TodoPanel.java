@@ -41,7 +41,7 @@ public class TodoPanel extends StandardInsidePanel {
     private JButton showTODO;
     private JButton showDeadline;
 
-    private boolean todoTableShown = false;
+    private boolean todoTableShown = true;
 
 
     @Autowired
@@ -58,6 +58,7 @@ public class TodoPanel extends StandardInsidePanel {
         initJTables(todoTable, deadlineTable);
         addButtons();
         addActionListeners();
+        changeTables();
     }
 
     public void initJTables(TodoTable todoTable, DeadlineTable deadlineTable) {
@@ -121,16 +122,16 @@ public class TodoPanel extends StandardInsidePanel {
     }
 
     private class PopUpMenu extends JPopupMenu {
-        private JMenuItem newDate;
+        private JMenuItem edit;
 
         public PopUpMenu(){
-            newDate = new JMenuItem("Bearbeiten");
-            add(newDate);
+            edit = new JMenuItem("Bearbeiten");
+            add(edit);
             addActionListeners();
         }
 
         private void addActionListeners() {
-            newDate.addMouseListener(new MouseListener() {
+            edit.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {}
                 @Override
@@ -163,8 +164,8 @@ public class TodoPanel extends StandardInsidePanel {
         showTODO.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                changeTables();
                 todoTableShown=true;
+                changeTables();
             }
         });
         showTODO.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -178,8 +179,8 @@ public class TodoPanel extends StandardInsidePanel {
         showDeadline.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                changeTables();
                 todoTableShown=false;
+                changeTables();
             }
         });
         showDeadline.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -191,11 +192,11 @@ public class TodoPanel extends StandardInsidePanel {
 
     private void changeTables() {
         if (todoTableShown) {
-            this.remove(todoTable);
-            this.add(deadlineTable);
-        } else {
             this.add(todoTable);
             this.remove(deadlineTable);
+        } else {
+            this.remove(todoTable);
+            this.add(deadlineTable);
         }
         this.repaint();
         this.revalidate();

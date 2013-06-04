@@ -87,25 +87,22 @@ public class DateLabel extends JLabel{
     }
 
     private class PopUpMenu extends JPopupMenu {
-        private JMenuItem show;
-        private JMenuItem delete;
+        private JMenuItem edit;
         private JMenuItem attendance;
         private JMenuItem share;
 
         public PopUpMenu(){
-            show = new JMenuItem("Anzeigen");
-            delete = new JMenuItem("Löschen");
+            edit = new JMenuItem("Bearbeiten");
             attendance = new JMenuItem("Anwesenheit");
             share = new JMenuItem("Share");
-            add(show);
-            add(delete);
+            add(edit);
             add(attendance);
             add(share);
             addActionListeners();
         }
 
         private void addActionListeners() {
-            show.addMouseListener(new MouseListener() {
+            edit.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {}
                 @Override
@@ -113,23 +110,7 @@ public class DateLabel extends JLabel{
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    // TODO implement this
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
-            });
-            delete.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    // TODO implement this
+                    // TODO implement either viewlvadate or viewdate
                 }
 
                 @Override
