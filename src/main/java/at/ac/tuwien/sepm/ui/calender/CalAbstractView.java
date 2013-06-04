@@ -1,10 +1,14 @@
 package at.ac.tuwien.sepm.ui.calender;
 
 import at.ac.tuwien.sepm.entity.Date;
+import at.ac.tuwien.sepm.entity.LvaDate;
+import at.ac.tuwien.sepm.service.CalService;
+import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.CalServiceImpl;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 //import net.miginfocom.swing.MigLayout;
+import at.ac.tuwien.sepm.ui.UI;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,10 +21,11 @@ import java.util.List;
 /**
  * @author Markus MUTH
  */
+@UI
 public abstract class CalAbstractView extends StandardInsidePanel {
 
-    @Autowired
-    protected CalServiceImpl service;
+    private CalService service;
+    private LVAService lvaService;
 
     // layout config ------------------------------------------------------------------------------------------------ //
 
@@ -46,8 +51,10 @@ public abstract class CalAbstractView extends StandardInsidePanel {
     protected int maxDateLabels;                                                // the amount of days shown of the previous month
 
     // -------------------------------------------------------------------------------------------------------------- //
-
-    public CalAbstractView(int weeks) {
+    @Autowired
+    public CalAbstractView(int weeks, CalService calService,LVAService lvaService) {
+        this.service = calService;
+        this.lvaService=lvaService;
         WEEKS = weeks;
         AMOUNT_DAYS_SHOWN = 7 * weeks;
         days = new DayPanel[AMOUNT_DAYS_SHOWN];
@@ -105,11 +112,11 @@ public abstract class CalAbstractView extends StandardInsidePanel {
      * Display all dates.
      * @throws ServiceException If the dates could not be read.
      */
-    protected void setDates () throws ServiceException {
-        CalServiceImpl s = new CalServiceImpl();
+    public void setDates () throws ServiceException {
+        //CalServiceImpl s = new CalServiceImpl();
 
         for (DayPanel day : days) {
-            List<Date> l = s.getAllDatesAt(day.getDate());
+            List<LvaDate> l = service.getLVADatesByDateInStudyProgress(day.getDate());
 
             LinkedList<DateLabel> r = new LinkedList<DateLabel>();
             for (Date d : l) {

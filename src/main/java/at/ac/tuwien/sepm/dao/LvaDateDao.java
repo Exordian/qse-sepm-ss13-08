@@ -153,4 +153,6 @@ public interface LvaDateDao {
      * @throws DataAccessException if data could not be read
      */
     public List<LvaDate> getAllDeadlines() throws DataAccessException;
+
+    public List<LvaDate> readByDayInStudyProgress(DateTime date);
 }

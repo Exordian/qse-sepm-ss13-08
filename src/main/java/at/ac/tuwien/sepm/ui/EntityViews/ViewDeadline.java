@@ -1,9 +1,8 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
@@ -216,6 +215,11 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         done.setBackground(new Color(0, 0, 0, 0));
         done.setBounds(doneLabel.getX() + doneLabel.getWidth() + 10, doneLabel.getY(), 20, 20);
         this.add(done);
+    }
+
+    @Override
+    public void refresh() {
+        //do nothing
     }
 }
 

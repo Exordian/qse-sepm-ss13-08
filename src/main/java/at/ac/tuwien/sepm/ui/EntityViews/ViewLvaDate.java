@@ -1,8 +1,7 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -222,5 +221,10 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
 
         this.revalidate();
         this.repaint();
+    }
+
+    @Override
+    public void refresh() {
+        //do nothing
     }
 }

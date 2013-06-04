@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ui.calender;
 
+import at.ac.tuwien.sepm.service.CalService;
+import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 //import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -8,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.Locale;
@@ -20,11 +23,13 @@ import java.util.Locale;
 public class CalPanelMonth extends CalAbstractView implements CalendarInterface {
     private MigLayout layout;
     private int preMonthDays;
+    private static final Logger logger = Logger.getLogger(CalPanelMonth.class);
+
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
-
-    public CalPanelMonth() {
-        super(5);
+    @Autowired
+    public CalPanelMonth(CalService service,LVAService lvaService) {
+        super(5,service,lvaService);
         super.firstDay = new DateTime(DateTime.now().getYear(), DateTime.now().getMonthOfYear(), 1, 0, 0, 0, 0);
         layout = new MigLayout("", "1[]1[]1[]1", "1[]");
         loadFonts();
@@ -279,6 +284,15 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         this.repaint();
         this.revalidate();
     }*/
+
+    @Override
+    public void refresh() {
+        try {
+            setDates();
+        } catch (ServiceException e) {
+            logger.error(e);
+        }
+    }
 
     public void semester() {
         //todo für die jcombobox in der man das semester auswählen kann in calendarpanel

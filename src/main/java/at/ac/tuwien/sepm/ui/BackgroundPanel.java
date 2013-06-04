@@ -2,16 +2,13 @@ package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
-import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.entity.Todo;
-import at.ac.tuwien.sepm.service.TimeFrame;
-import at.ac.tuwien.sepm.ui.EntityViews.ViewDate;
-import at.ac.tuwien.sepm.ui.EntityViews.ViewDeadline;
-import at.ac.tuwien.sepm.ui.EntityViews.ViewLvaDate;
-import at.ac.tuwien.sepm.ui.EntityViews.ViewTODO;
+import at.ac.tuwien.sepm.ui.entityViews.ViewDate;
+import at.ac.tuwien.sepm.ui.entityViews.ViewDeadline;
+import at.ac.tuwien.sepm.ui.entityViews.ViewLvaDate;
+import at.ac.tuwien.sepm.ui.entityViews.ViewTODO;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -29,9 +26,9 @@ public class BackgroundPanel extends JPanel {
     private JButton tab2;
     private JButton tab3;
     private JButton tab4;
-    private JPanel calPanel;
-    private JPanel studPanel;
-    private JPanel propsPanel;
+    private StandardInsidePanel calPanel;
+    private StandardInsidePanel studPanel;
+    private StandardInsidePanel propsPanel;
     private ViewDate viewDate;
     private ViewDeadline viewDeadline;
     private ViewLvaDate viewLVA;
@@ -227,6 +224,7 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
+                refresh();
             }
         });
 
@@ -235,6 +233,7 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
+                refresh();
             }
         });
 
@@ -243,6 +242,7 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
+                refresh();
             }
         });
 
@@ -251,6 +251,7 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(4);
+                refresh();
             }
         });
 
@@ -261,5 +262,10 @@ public class BackgroundPanel extends JPanel {
             tabs.get(i).setBorderPainted(false);
             this.add(tabs.get(i));
         }
+    }
+    public void refresh(){
+        calPanel.refresh();
+        studPanel.refresh();
+        propsPanel.refresh();
     }
 }

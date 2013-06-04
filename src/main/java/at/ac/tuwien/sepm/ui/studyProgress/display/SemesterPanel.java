@@ -56,4 +56,9 @@ public class SemesterPanel extends StandardInsidePanel {
         semesterTitle.setText(title);
         this.repaint();
     }
+
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

@@ -122,4 +122,9 @@ public class ViewPanel extends StandardInsidePanel {
         majorName.setBounds(20,0,(int)whiteSpaceStud.getWidth() - 10,50);
         this.add(majorName);
     }
+
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

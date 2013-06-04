@@ -12,6 +12,7 @@ import at.ac.tuwien.sepm.ui.UI;
  */
 @UI
 public interface CalendarInterface {
+    public void refresh();
     public void semester();
     public void next() throws ServiceException;
     public void last() throws ServiceException;

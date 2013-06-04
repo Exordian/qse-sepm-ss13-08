@@ -7,7 +7,6 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.BackgroundPanel;
-import at.ac.tuwien.sepm.ui.EntityViews.ViewTODO;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
@@ -125,6 +124,11 @@ public class TodoPanel extends StandardInsidePanel {
         this.todoEditorFrame.init(todoTable, service);
         this.deadlineAdderFrame.init(deadlineTable, serviceDeadlines);
         this.deadlineEditorFrame.init(deadlineTable, serviceDeadlines);
+    }
+
+    @Override
+    public void refresh() {
+        //do nothing
     }
 
     private class PopUpMenu extends JPopupMenu {

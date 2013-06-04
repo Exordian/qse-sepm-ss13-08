@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 
@@ -10,4 +10,8 @@ import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
  * To change this template use File | Settings | File Templates.
  */
 public class ViewLva extends StandardSimpleInsidePanel {
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

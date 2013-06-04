@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.EntityViews;
+package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
@@ -203,5 +203,10 @@ public class ViewDate extends StandardSimpleInsidePanel {
         intersectable.setBackground(new Color(0,0,0,0));
         intersectable.setBounds(intersectLabel.getX() + intersectLabel.getWidth() + 5, intersectLabel.getY(), 20, 20);
         this.add(intersectable);
+    }
+
+    @Override
+    public void refresh() {
+        //do nothing
     }
 }

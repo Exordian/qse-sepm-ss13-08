@@ -454,4 +454,9 @@ public class PlanPanel extends StandardInsidePanel {
         // </ advanced settings >
         this.repaint();
     }
+
+    @Override
+    public void refresh() {
+        //do nothing
+    }
 }

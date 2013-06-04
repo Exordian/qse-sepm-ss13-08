@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.service.impl;
 
+import at.ac.tuwien.sepm.dao.DateDao;
+import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBDateDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBLvaDateDao;
 import at.ac.tuwien.sepm.entity.Date;
@@ -8,6 +10,7 @@ import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.CalService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +23,14 @@ import java.util.List;
 
 @Service
 public class CalServiceImpl implements CalService {
-
+    DateDao dateDao;
+    LvaDateDao lvaDateDao;
+    @Autowired
+    public CalServiceImpl(DateDao dateDao,LvaDateDao lvaDateDao){
+        this.dateDao=dateDao;
+        this.lvaDateDao=lvaDateDao;
+    }
     public List<Date> getAllDatesAt(DateTime date) throws ServiceException {
-        DBDateDao dateDao = new DBDateDao();
-        DBLvaDateDao lvaDateDao = new DBLvaDateDao();
 
         List<LvaDate> l1;
         List<DateEntity> l2;
@@ -40,5 +47,14 @@ public class CalServiceImpl implements CalService {
         result.addAll(l2);
 
         return result;
+    }
+
+    @Override
+    public List<LvaDate> getLVADatesByDateInStudyProgress(DateTime date) throws ServiceException {
+        try {
+            return lvaDateDao.readByDayInStudyProgress(date);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Die Termine konnten nicht geladen werden.", e);
+        }
     }
 }
