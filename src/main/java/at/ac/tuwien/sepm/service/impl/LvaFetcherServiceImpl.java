@@ -269,6 +269,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                     String[] date = elem.get(2).text().split(" - ");
                     if(Pattern.compile(REGEX_SINGLE_DATE).matcher(date[0]).find()) {
                         LvaDate lvaDate = new LvaDate();
+                        lvaDate.setName(metaLVA.getType() +" "+ metaLVA.getName());
                         lvaDate.setType(LvaDateType.LECTURE);
                         DateTime startTime = DateTime.parse(date[0] + " " + time[0],
                                 DateTimeFormat.forPattern("dd.MM.yyyy HH:mm"));
@@ -315,6 +316,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
                     //String registerDeadline = elem.get(5).text();
                     //String register = elem.get(6).text();
                     LvaDate lvaDate = new LvaDate();
+                    lvaDate.setName("Prüfung: " + metaLVA.getType() +" "+ metaLVA.getName());
                     lvaDate.setType(LvaDateType.LECTURE);
                     if(time[0].trim().equals("-"))
                         time = new String[] {"07:00", "20:00"};
