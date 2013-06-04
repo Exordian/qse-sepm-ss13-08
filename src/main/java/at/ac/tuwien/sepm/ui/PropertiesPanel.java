@@ -39,6 +39,7 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
         addReturnButton();
         addContent();
         addSaveButton();
+        //todo studienanfang eingeben (erstes semester)
     }
 
     private void addSaveButton() {

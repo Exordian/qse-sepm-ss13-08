@@ -129,8 +129,11 @@ public class PlanPanel extends StandardInsidePanel {
         take.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for(LVA lva:lvaDAO.readByYearSemesterStudyProgress(plannedYear,plannedSemester,true)){
-                    logger.debug("deleting from studyProgress: "+lva);
+                //todo warning alert: all data from year x, sem y will be overriden
+                List<LVA> toRemove = lvaDAO.readByYearSemesterStudyProgress(plannedYear,plannedSemester,true);
+                logger.debug("deleting from studyProgress: "+LVAUtil.formatLVA(toRemove,1));
+                for(LVA lva:toRemove){
+                    //logger.debug("deleting from studyProgress: "+lva);
                     lva.setInStudyProgress(false);
                     try {
                         lvaDAO.update(lva);
@@ -139,11 +142,12 @@ public class PlanPanel extends StandardInsidePanel {
                         e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 }
+                logger.debug("adding to studyProgress: \n"+LVAUtil.formatMetaLVA(plannedMetaLVAs, 1));
                 for(MetaLVA m:plannedMetaLVAs){
 
                     LVA temp = m.getLVA(plannedYear,plannedSemester);
                     temp.setInStudyProgress(true);
-                    logger.debug("adding to studyProgress: "+temp);
+                    //logger.debug("adding to studyProgress: "+temp);
                     try {
                         lvaDAO.update(temp);
                     } catch (IOException e1) {
@@ -176,12 +180,14 @@ public class PlanPanel extends StandardInsidePanel {
                             plannedSemester = Semester.W;
                         }
                         List<MetaLVA> forced;
+                        List<MetaLVA> pool= metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,false);
                         if (considerStudyProgressCheck.isSelected()){
                             forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
+
                         }else{
                             forced = new ArrayList<>(0);
+                            pool.addAll(metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
                         }
-                        List<MetaLVA> pool = metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,false);
                         MetaLVA customMetaLVA = new MetaLVA();
 
                         if(intersectCustomCheck.isSelected()){
@@ -198,14 +204,9 @@ public class PlanPanel extends StandardInsidePanel {
                         if(intersectCustomCheck.isSelected()){
                             solution.remove(customMetaLVA);
                         }
-                        if (considerStudyProgressCheck.isSelected()){
-                            solution.removeAll(forced);
-                            solution.addAll(metaLVADAO.readByYearSemesterStudyProgress(plannedYear,plannedSemester,true));
-                        }else{
-                            //todo tell user that old semester will be lost
-                        }
 
-                        logger.debug("solution provided by planner:\n"+ LVAUtil.formatShort(solution,1));
+
+                        logger.debug("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
 
                         refreshMetaLVAs(solution);
 
@@ -288,7 +289,7 @@ public class PlanPanel extends StandardInsidePanel {
         yearTextLabel.setFont(standardTextFont);
         this.add(yearTextLabel);
 
-        yearText = new JTextField("2013");
+        yearText = new JTextField(""+dateService.getCurrentYear());
         yearText.setBounds(yearTextLabel.getX() + yearTextLabel.getWidth() +5, yearTextLabel.getY(), 50, textHeight);
         yearText.setFont(standardTextFont);
         this.add(yearText);
@@ -314,10 +315,11 @@ public class PlanPanel extends StandardInsidePanel {
         semesterDrop.setFont(standardButtonFont);
         semesterDrop.setBounds(semesterDropLabel.getX()+semesterDropLabel.getWidth()+5, semesterDropLabel.getY(), 100, textHeight);
         this.add(semesterDrop);
-        if(semesterDrop.getSelectedIndex()==0){
+        if(dateService.getCurrentSemester().equals(Semester.W)){
             plannedSemester=Semester.W;
         }else{
             plannedSemester = Semester.S;
+            semesterDrop.setSelectedIndex(1);
         }
         semesterDrop.addItemListener(new ItemListener() {
             @Override

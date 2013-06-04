@@ -2,8 +2,6 @@ package at.ac.tuwien.sepm.service.semesterPlanning;
 
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.semesterPlanning.DependenceTree;
-import at.ac.tuwien.sepm.service.semesterPlanning.LVAUtil;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -44,8 +42,8 @@ public class IntelligentSemesterPlaner {
                 this.pool.add(lva);
             }
         }
-        logger.debug("forced set:\n"+LVAUtil.formatShort(this.forced,1));
-        logger.debug("pool set:\n"+LVAUtil.formatShort(this.pool,1));
+        logger.debug("forced set:\n"+LVAUtil.formatShortMetaLVA(this.forced, 1));
+        logger.debug("pool set:\n"+LVAUtil.formatShortMetaLVA(this.pool, 1));
     }
 
     /**
@@ -69,6 +67,9 @@ public class IntelligentSemesterPlaner {
         for(MetaLVA mLVA :forced){
             if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
                 toPlan.add(mLVA);
+
+            }
+            if(mLVA.containsLVA(year, sem)){
                 chosen.add(toPlan.indexOf(mLVA));
             }
         }
@@ -136,7 +137,7 @@ public class IntelligentSemesterPlaner {
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-            logger.debug("new Solution found: \n" +LVAUtil.formatShort(newSolution,1)+"\n\tsolution value: "+value);
+            logger.debug("new Solution found: \n" +LVAUtil.formatShortMetaLVA(newSolution, 1)+"\n\tsolution value: "+value);
 		}else{
             //active for detailed debugging
 			ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
