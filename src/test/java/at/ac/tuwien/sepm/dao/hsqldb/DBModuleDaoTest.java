@@ -199,7 +199,7 @@ public class DBModuleDaoTest {
         dao.create(e0);
     }
 
-    @Test(expected = DataAccessException.class)
+    @Test
     public void testCreateCompleteAllIsNull() throws Exception {
         TestHelper.insert(9);
 
@@ -220,7 +220,8 @@ public class DBModuleDaoTest {
         lvaList.add(l2);
         e0.setMetaLvas(lvaList);
 
-        dao.create(e0);
+        assert(dao.create(e0));
+        assert(!dao.readById(0).getCompleteall());
     }
 
     @Test
