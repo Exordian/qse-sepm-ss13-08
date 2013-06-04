@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.verlauf;
+package at.ac.tuwien.sepm.ui.studyProgress;
 
 import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.dao.LvaDao;
@@ -7,9 +7,10 @@ import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.semesterPlanning.IntelligentSemesterPlaner;
-import at.ac.tuwien.sepm.service.semesterPlanning.LVAUtil;
-import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.service.IntelligentSemesterPlaner;
+import at.ac.tuwien.sepm.service.impl.IntelligentSemesterPlanerImpl;
+import at.ac.tuwien.sepm.service.impl.LVAUtil;
+import at.ac.tuwien.sepm.ui.metaLVA.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
@@ -166,7 +167,7 @@ public class PlanPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Thread(){
-                    private IntelligentSemesterPlaner planer = new IntelligentSemesterPlaner();
+                    private IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
                     public void start(){
                         super.start();
                     }

@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.IntelligentSemesterPlaner;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.service.impl.IntelligentSemesterPlanerImpl;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -38,7 +40,7 @@ public class IntelligentSemesterPlanerTest {
      */
     @Test
     public void test() {
-        IntelligentSemesterPlaner planer = new IntelligentSemesterPlaner();
+        IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
         //System.out.println(pool);
         planer.setLVAs(new ArrayList<MetaLVA>(), pool);
         //System.out.println(planer.planSemester(20,2013, Semester.S));

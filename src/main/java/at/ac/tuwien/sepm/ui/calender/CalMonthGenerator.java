@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.kalender;
+package at.ac.tuwien.sepm.ui.calender;
 
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.BackgroundPanel;

@@ -1,11 +1,10 @@
-package at.ac.tuwien.sepm.ui.MetaLva;
+package at.ac.tuwien.sepm.ui.metaLVA;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.ui.UI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.util.List;
 
 /**

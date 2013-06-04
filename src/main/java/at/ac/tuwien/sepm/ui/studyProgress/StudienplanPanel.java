@@ -1,6 +1,5 @@
-package at.ac.tuwien.sepm.ui.verlauf;
+package at.ac.tuwien.sepm.ui.studyProgress;
 
-import at.ac.tuwien.sepm.dao.hsqldb.DBCurriculumDao;
 import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.*;

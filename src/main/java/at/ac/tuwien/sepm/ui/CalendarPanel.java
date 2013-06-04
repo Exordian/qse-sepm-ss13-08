@@ -1,9 +1,9 @@
 package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.ui.kalender.CalMonthGenerator;
-import at.ac.tuwien.sepm.ui.kalender.CalWeekGenerator;
-import at.ac.tuwien.sepm.ui.kalender.CalendarInterface;
+import at.ac.tuwien.sepm.ui.calender.CalMonthGenerator;
+import at.ac.tuwien.sepm.ui.calender.CalWeekGenerator;
+import at.ac.tuwien.sepm.ui.calender.CalendarInterface;
 import at.ac.tuwien.sepm.ui.todo.TodoPanel;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;

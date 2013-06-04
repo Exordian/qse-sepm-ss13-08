@@ -8,6 +8,7 @@ import java.util.Iterator;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.service.impl.LVAUtil;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;

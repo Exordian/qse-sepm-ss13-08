@@ -1,12 +1,9 @@
-package at.ac.tuwien.sepm.ui.verlauf.anzeigen;
+package at.ac.tuwien.sepm.ui.studyProgress.display;
 
 import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
-import at.ac.tuwien.sepm.ui.verlauf.anzeigen.SemesterPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
