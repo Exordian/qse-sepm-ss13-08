@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.WideComboBox;
@@ -14,6 +15,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,7 +73,15 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             changeTitle(todo.getName());
             description.setText(todo.getDescription());
             done.setSelected(todo.getDone());
-            //lva.setSelectedItem(todo.getLva().getMetaLVA().getName()); //todo wie setze ich das in einer comobox?
+            try {
+                lva.setSelectedItem(lvaService.readById(todo.getLva().getId()));     //todo
+            } catch (ServiceException e) {
+                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
+                e.printStackTrace();
+            } catch (ValidationException e) {
+                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
+                e.printStackTrace();
+            }
             setDeleteButton(true);
         }
     }
@@ -79,8 +89,10 @@ public class ViewTODO extends StandardSimpleInsidePanel {
     private void setDeleteButton(boolean showDeleteButton) {
         if (showDeleteButton) {
             delete.setVisible(true);
+            done.setVisible(true);
         } else {
             delete.setVisible(false);
+            done.setVisible(false);
         }
     }
 
@@ -99,7 +111,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                             todoService.delete(todo.getId());
                         }
                     } else {
-                        JOptionPane.showMessageDialog(ViewTODO.this, "Dieses TODO ist noch nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(ViewTODO.this, "Dieses TODO existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (ServiceException e) {
                     log.error("TODO is invalid.");
@@ -121,10 +133,11 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                 try {
                     todo.setName(title.getText());
                     todo.setDescription(description.getText());
-                    todo.setLva((LVA)lva.getSelectedItem()); //todo gleiches problem wie oben
+                    todo.setLva(((LvaSelectItem)lva.getSelectedItem()).get());
                     todo.setDone(done.isSelected());
-                    if (todoService.readById(todo.getId()) != null) {
-                        todoService.update(todo);
+                    if (todo.getId() != null) {
+                        if (todoService.readById(todo.getId()) != null)
+                            todoService.update(todo);
                     } else {
                         todoService.create(todo);
                     }
@@ -171,7 +184,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
         }
 
         for (LVA t : lvas) {
-            lva.addItem(t.getMetaLVA().getName());
+            lva.addItem(new LvaSelectItem(t));
         }
         lva.setFont(standardTextFont);
         lva.setBounds(lvaLabel.getX() + lvaLabel.getWidth() + 10, lvaLabel.getY(), 200,25);
@@ -188,5 +201,16 @@ public class ViewTODO extends StandardSimpleInsidePanel {
         done.setBackground(new Color(0,0,0,0));
         done.setBounds(doneLabel.getX() + doneLabel.getWidth() + 5, doneLabel.getY(), 20, 20);
         this.add(done);
+    }
+
+    private static class LvaSelectItem extends SelectItem<LVA> {
+        LvaSelectItem(LVA item) {
+            super(item);
+        }
+
+        @Override
+        public String toString() {
+            return item.getMetaLVA().getName();
+        }
     }
 }

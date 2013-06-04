@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ui;
 
 import com.toedter.calendar.JDateChooser;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -52,7 +53,7 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 setVisible(false);
-                bgPanel.showLastComponent();
+                BGPanelHelper.backgroundPanel.showLastComponent();
             }
         });
         retButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -124,6 +125,6 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
 
     //needed for return button
     public void setBgPanel(BackgroundPanel bgPanel) {
-        this.bgPanel=bgPanel;
+      //  this.bgPanel=bgPanel;
     }
 }

@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SelectItem;
 import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
@@ -172,19 +173,5 @@ public class LvaFetcherPanel extends JPanel{
         public String toString() {
             return item.getName();
         }
-    }
-
-    private static abstract class SelectItem<E> {
-        protected E item;
-
-        SelectItem(E item) {
-            this.item = item;
-        }
-
-        public E get () {
-            return item;
-        }
-
-        public abstract String toString();
     }
 }

@@ -30,7 +30,6 @@ public class DeadlineTable extends JTable {
     DefaultTableModel model;
 
     public void init(List<LvaDate> list) {
-//        lvaService = new LVAServiceImpl();
         model = new DefaultTableModel(new String[] {"LVA", "Name", "Beschreibung", "Deadline", "Abgeschlossen"},0);
         this.setModel(model);
         for(int i = 0; i < colWidth.length; i++) {
@@ -65,21 +64,4 @@ public class DeadlineTable extends JTable {
         model.setRowCount(0);
         this.setDeadlines(list);
     }
-
-    /*public void addNewRow() {
-        model.addRow(new String[colWidth.length]);
-        deadlineList.add(new LvaDate());
-    }*/
-
-    public void addNewDeadline(LvaDate deadline) {
-        deadlineList.add(deadline);
-        try {
-            model.addRow(new String[] {(lvaService.readById(deadline.getLva())).getMetaLVA().getName(), deadline.getName(), deadline.getDescription(), deadline.getStop().toString(), deadline.getWasAttendant().toString()});
-        } catch(ValidationException e) {
-            logger.error(e.getMessage());
-        } catch(ServiceException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
 }

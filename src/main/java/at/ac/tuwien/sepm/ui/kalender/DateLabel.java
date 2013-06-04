@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.ui.BGPanelHelper;
+import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
 
@@ -110,7 +112,11 @@ public class DateLabel extends JLabel{
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    // TODO implement either viewlvadate or viewdate
+                      if(date instanceof LvaDate) {
+                          BGPanelHelper.backgroundPanel.viewLvaDate((LvaDate)date);
+                      } else if(date instanceof DateEntity) {
+                          BGPanelHelper.backgroundPanel.viewDate((DateEntity)date);
+                      }
                 }
 
                 @Override

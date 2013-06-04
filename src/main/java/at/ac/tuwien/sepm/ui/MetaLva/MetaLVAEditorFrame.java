@@ -1,8 +1,9 @@
-package at.ac.tuwien.sepm.ui;
+package at.ac.tuwien.sepm.ui.MetaLva;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.UI;
 
 /**
  * Created with IntelliJ IDEA.

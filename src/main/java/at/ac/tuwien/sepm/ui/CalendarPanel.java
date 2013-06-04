@@ -42,14 +42,12 @@ public class CalendarPanel extends StandardInsidePanel {
     private CalendarInterface activeView;
     private TodoPanel todoPanel;
 
-    private BackgroundPanel bgPanel;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
     public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel) {
         init();
-
         this.calPanelMonth=calPanelMonth;
         this.calPanelWeek=calPanelWeek;
         this.activeView=calPanelWeek;
@@ -64,11 +62,6 @@ public class CalendarPanel extends StandardInsidePanel {
         createTop();
         this.revalidate();
         this.repaint();
-    }
-
-    public void setBGPanel(BackgroundPanel bgPanel) {
-        this.bgPanel = bgPanel;
-        todoPanel.setBGPanel(bgPanel);
     }
 
     private void createTop() {

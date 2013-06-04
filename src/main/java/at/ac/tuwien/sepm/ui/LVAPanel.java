@@ -1,9 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
 import javax.swing.*;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.LVAService;
@@ -13,7 +10,9 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.LVAServiceImpl;
 import at.ac.tuwien.sepm.service.impl.MetaLVAServiceImpl;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.MetaLva.MetaLVAAdderFrame;
 import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.MetaLva.MetaLVAEditorFrame;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 

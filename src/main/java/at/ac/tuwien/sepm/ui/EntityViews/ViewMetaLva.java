@@ -10,4 +10,5 @@ import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
  * To change this template use File | Settings | File Templates.
  */
 public class ViewMetaLva extends StandardSimpleInsidePanel {
+
 }

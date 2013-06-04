@@ -13,6 +13,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @UI
+@Scope("singleton")
 public class BackgroundPanel extends JPanel {
     private JButton properties;
     private JButton tab1;
@@ -44,58 +46,18 @@ public class BackgroundPanel extends JPanel {
     @Autowired
     public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA, ViewTODO viewTodo, ViewDeadline viewDeadline) {
         this.setLayout(null);
+        BGPanelHelper.backgroundPanel=this;
         this.calPanel = calPanel;
-        calPanel.setBGPanel(this);
         this.studPanel = studPanel;
-
         this.propsPanel = propsPanel;
-        propsPanel.setBgPanel(this);
-
         this.viewDate = viewDate;
-        viewDate.setBgPanel(this);
-
         this.viewLVA=viewLVA;
-        viewLVA.setBgPanel(this);
-
         this.viewTodo=viewTodo;
-        viewTodo.setBgPanel(this);
-
         this.viewDeadline=viewDeadline;
-        viewDeadline.setBgPanel(this);
 
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
-
-        //test  VIEWDATE AND VIEWLVA
-        /*JButton testViewDate = new JButton("view lva");
-        testViewDate.setBounds(500, 630, 110, 38);
-        testViewDate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-               /* DateEntity dateEntity = new DateEntity();
-                dateEntity.setName("Testname");
-                dateEntity.setIntersectable(true);
-                dateEntity.setDescription("this is a description for test this is a description for test this\nis a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test this is a description for test");
-                dateEntity.setId(2);
-                dateEntity.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2002, 2, 2, 2, 2)));
-                viewDate(dateEntity);
-
-               LvaDate lvaDate = new LvaDate();
-                lvaDate.setName("test name");
-                lvaDate.setDescription("test description");
-                lvaDate.setId(2);
-                lvaDate.setTime(new TimeFrame(new DateTime(2000, 1, 1, 1, 1), new DateTime(2000, 1, 1, 1, 1)));
-                lvaDate.setAttendanceRequired(true);
-                lvaDate.setLva(20);
-                lvaDate.setRoom("test room");
-                lvaDate.setType(LvaDateType.DEADLINE);
-                lvaDate.setWasAttendant(false);
-                viewDeadline(lvaDate);
-            }
-        });
-        this.add(testViewDate); */
-       // test
 
         log.info("Background Panel initialized.");
     }

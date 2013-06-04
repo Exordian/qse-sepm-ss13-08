@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ui.kalender;
 
+import at.ac.tuwien.sepm.ui.BGPanelHelper;
+import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
 
@@ -21,12 +23,7 @@ public class DayPanel extends JPanel {
     private DateTime date;
     private int maxDateLabels;
     private TooMuchDatesLabel tmdl;
-    /*
-    public DayPanel () {
-        super(new MigLayout("", "1[]1[]1[]1", "1[]"));
-        dates = new ArrayList<DateLabel>();
-    }
-    */
+
     public DayPanel(int maxDateLabels) {
         super(new MigLayout("", "1[]1[]1[]1", "1[]"));
         dates = new ArrayList<DateLabel>();
@@ -39,16 +36,6 @@ public class DayPanel extends JPanel {
         this.addMouseListeners();
     }
 
-    /*
-    public void addDateLabel(DateLabel date) {
-
-    }
-    */
-    /*
-    public void draw() {
-
-    }
-    */
     public void setDate(DateTime date) {
         this.date = date;
         this.title.setText(" " + date.getDayOfMonth());
@@ -158,11 +145,14 @@ public class DayPanel extends JPanel {
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem newDate;
         private JMenuItem free;
+        private JMenuItem newLvaDate;
 
         public PopUpMenu(){
             newDate = new JMenuItem("Neuer Termin");
             free = new JMenuItem("Als freien Tag markieren");
+            newLvaDate = new JMenuItem("Neuer Lva Termin");
             add(newDate);
+            add(newLvaDate);
             add(free);
             addActionListeners();
         }
@@ -176,13 +166,34 @@ public class DayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    // TODO implement this
+                    BGPanelHelper.backgroundPanel.viewDate(null);
                 }
-
                 @Override
                 public void mouseEntered(MouseEvent e) {}
                 @Override
                 public void mouseExited(MouseEvent e) {}
+            });
+            newLvaDate.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    BGPanelHelper.backgroundPanel.viewLvaDate(null);
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                }
             });
             free.addMouseListener(new MouseListener() {
                 @Override

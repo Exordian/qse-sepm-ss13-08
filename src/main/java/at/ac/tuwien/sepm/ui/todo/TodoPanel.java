@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.service.LvaDateService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.BGPanelHelper;
 import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.EntityViews.ViewTODO;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
@@ -24,54 +25,31 @@ import java.awt.event.*;
 
 @UI
 public class TodoPanel extends StandardInsidePanel {
-
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
-
-
     private TodoService service;
     private LvaDateService serviceDeadlines;
     private TodoTable todoTable;
     private DeadlineTable deadlineTable;
-    private TodoAdderFrame todoAdderFrame;
-    private TodoEditorFrame todoEditorFrame;
-    private DeadlineAdderFrame deadlineAdderFrame;
-    private DeadlineEditorFrame deadlineEditorFrame;
-
     private JButton add;
-
     private JButton showTODO;
     private JButton showDeadline;
-
     private boolean todoTableShown = true;
 
-    private BackgroundPanel backgroundPanel;
-
-
     @Autowired
-    public TodoPanel(TodoService todoService, LvaDateService lvaDateService, TodoTable todoTable, DeadlineTable deadlineTable, TodoAdderFrame todoAdderFrame, TodoEditorFrame todoEditorFrame, DeadlineAdderFrame deadlineAdderFrame, DeadlineEditorFrame deadlineEditorFrame) {
+    public TodoPanel(TodoService todoService, LvaDateService lvaDateService, TodoTable todoTable, DeadlineTable deadlineTable) {
         init();
         this.service = todoService;
         this.serviceDeadlines = lvaDateService;
-        this.todoAdderFrame = todoAdderFrame;
-        this.todoEditorFrame = todoEditorFrame;
-        this.deadlineAdderFrame = deadlineAdderFrame;
-        this.deadlineEditorFrame = deadlineEditorFrame;
-
-        initJTables(todoTable, deadlineTable);
+        this.todoTable = todoTable;
+        this.deadlineTable = deadlineTable;
+        initJTables();
         addButtons();
-        addActionListeners();
         changeTables();
     }
 
-    public void setBGPanel(BackgroundPanel bgPanel) {
-        this.backgroundPanel = bgPanel;
-    }
-
-    public void initJTables(TodoTable todoTable, DeadlineTable deadlineTable) {
+    public void initJTables() {
         try {
-            this.todoTable = todoTable;
             todoTable.init(service.getAllTodos());
-            this.deadlineTable = deadlineTable;
             deadlineTable.init(serviceDeadlines.getAllDeadlines());
         } catch(ServiceException e) {
             logger.error(e.getMessage());
@@ -113,18 +91,12 @@ public class TodoPanel extends StandardInsidePanel {
                 int rowindex = TodoPanel.this.deadlineTable.getSelectedRow();
                 if (rowindex < 0)
                     return;
-                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
                     JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
-
-
-        this.todoAdderFrame.init(todoTable, service);
-        this.todoEditorFrame.init(todoTable, service);
-        this.deadlineAdderFrame.init(deadlineTable, serviceDeadlines);
-        this.deadlineEditorFrame.init(deadlineTable, serviceDeadlines);
     }
 
     private class PopUpMenu extends JPopupMenu {
@@ -146,9 +118,9 @@ public class TodoPanel extends StandardInsidePanel {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if(todoTableShown) {
-                       backgroundPanel.viewTodo(todoTable.getSelectedTodo());
+                        BGPanelHelper.backgroundPanel.viewTodo(todoTable.getSelectedTodo());
                     } else {
-                        backgroundPanel.viewDeadline(deadlineTable.getSelectedDeadline());
+                        BGPanelHelper.backgroundPanel.viewDeadline(deadlineTable.getSelectedDeadline());
                     }
                 }
                 @Override
@@ -163,6 +135,16 @@ public class TodoPanel extends StandardInsidePanel {
         add = new JButton("Hinzufügen");
         add.setFont(standardButtonFont);
         add.setBounds((int)whiteSpaceCalendar.getWidth()/2-75, todoTable.getY() + todoTable.getHeight() + 20+50, 150,30);
+        add.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (todoTableShown) {
+                    BGPanelHelper.backgroundPanel.viewTodo(null);
+                } else {
+                    BGPanelHelper.backgroundPanel.viewDeadline(null);
+                }
+            }
+        });
         this.add(add);
 
         showTODO=new JButton();
@@ -206,72 +188,5 @@ public class TodoPanel extends StandardInsidePanel {
         }
         this.repaint();
         this.revalidate();
-    }
-
-    public void addActionListeners() {
-        add.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (todoTableShown) {
-                    backgroundPanel.viewTodo(null);
-                } else {
-                    backgroundPanel.viewDeadline(null);
-                }
-            }
-        });
-    }
-
-    public void AddTodoPressed() {
-        todoAdderFrame.refreshLVATable();
-        todoAdderFrame.openWindow();
-        //this.todoAdderFrame.init(todoTable, service);
-    }
-
-    public void EditTodoPressed() {
-        this.todoEditorFrame.refreshLVATable();
-        Todo toEdit = todoTable.getSelectedTodo();
-        this.todoEditorFrame.openWindow(toEdit);
-    }
-
-    public void DeleteTodoPressed() {
-        Todo toDelete = todoTable.getSelectedTodo();
-        try {
-            service.delete(toDelete.getId());
-            logger.debug("deleting todo with id = "+ toDelete.getId());
-            todoTable.removeSelectedTodo();
-        } catch(ValidationException e) {
-            logger.error(e.getMessage());
-        } catch(ServiceException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    public void AddDeadlinePressed() {
-        //this.deadlineAdderFrame.init(deadlineTable, serviceDeadlines);
-        this.deadlineAdderFrame.refreshLVATable();
-        this.deadlineAdderFrame.openWindow();
-
-    }
-
-    public void EditDeadlinePressed() {
-        //LvaDate toEdit = deadlineTable.getSelectedDeadline();
-        //this.deadlineEditorFrame.init(deadlineTable, serviceDeadlines, toEdit);
-        this.deadlineEditorFrame.refreshLVATable();
-        LvaDate toEdit = deadlineTable.getSelectedDeadline();
-        this.deadlineEditorFrame.openWindow(toEdit);
-
-    }
-
-    public void DeleteDeadlinePressed() {
-        LvaDate toDelete = deadlineTable.getSelectedDeadline();
-        try {
-            serviceDeadlines.delete(toDelete.getId());
-            logger.debug("deleting Deadline with id =" + toDelete.getId());
-            deadlineTable.removeSelectedDeadline();
-        } catch (ServiceException e) {
-            logger.error(e.getMessage());
-        } catch (ValidationException e) {
-            logger.error(e.getMessage());
-        }
     }
 }

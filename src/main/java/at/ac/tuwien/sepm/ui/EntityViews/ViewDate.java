@@ -10,6 +10,7 @@ import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import javax.swing.*;
 import java.awt.*;
@@ -127,7 +128,8 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     dateEntity.setIntersectable(intersectable.isSelected());
                     dateEntity.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
                     if (dateService.readDateById(dateEntity.getId()) != null) {
-                        dateService.updateDate(dateEntity);
+                        if (dateEntity.getId() != null)
+                            dateService.updateDate(dateEntity);
                     } else {
                         dateService.createDate(dateEntity);
                     }

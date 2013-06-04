@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ui.kalender;
 import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.CalServiceImpl;
+import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 //import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
@@ -47,12 +48,11 @@ public abstract class CalAbstractView extends StandardInsidePanel {
 
     // -------------------------------------------------------------------------------------------------------------- //
 
+
     public CalAbstractView(int weeks) {
         WEEKS = weeks;
         AMOUNT_DAYS_SHOWN = 7 * weeks;
         days = new DayPanel[AMOUNT_DAYS_SHOWN];
-        //this.setLayout(layout);
-        //this.setBackground(backgroundColor);
     }
 
     protected abstract void initPanel() throws ServiceException;

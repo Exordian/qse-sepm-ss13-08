@@ -46,10 +46,4 @@ public class TodoTable extends JTable {
         model.setRowCount(0);
         this.setTodos(list);
     }
-
-    public void addNewTodo(Todo todo) {
-        todoList.add(todo);
-        model.addRow(new String[] {todo.getLva().getMetaLVA().getName(), todo.getName(), todo.getDescription(), todo.getDone().toString()});
-    }
-
 }
