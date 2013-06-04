@@ -56,6 +56,15 @@ public interface LvaDao {
     public List<LVA> readUncompletedByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
 
     /**
+     * todo
+     * @param year
+     * @param semester
+     * @param isInStudyProgress
+     * @return
+     * @throws DataAccessException
+     */
+    public List<LVA> readByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
+    /**
      * Read a lva by its id, the lva dates are not read. The MetaLVA is except for the List <code>ArrayList<LVA>lvas</code>
      * completely returned.
      * @param id The id of the lva to be read.

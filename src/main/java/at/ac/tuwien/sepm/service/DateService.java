@@ -7,10 +7,11 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 /**
- * Author: Flo
+ * Author: Flo, Georg
  */
 public interface DateService {
-
+    public static final int WINTER_SEMESTER_START_MONTH = 8;
+    public static final int WINTER_SEMESTER_END_MONTH = 1;
     /**
      * Validates toCreate and passes it to DateDAO.
      * @param toCreate A DateEntity containing all data to be stored.
@@ -79,4 +80,16 @@ public interface DateService {
      *
      */
     public void validateDates(DateTime from, DateTime to) throws ServiceException;
+
+    /**
+     * returns the current Semester
+     * @return the current Semester
+     */
+    public Semester getCurrentSemester();
+
+    /**
+     * returns the current year
+     * @return the current year
+     */
+    public int getCurrentYear();
 }

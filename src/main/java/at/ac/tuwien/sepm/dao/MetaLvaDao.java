@@ -81,9 +81,9 @@ public interface MetaLvaDao {
      */
     public MetaLVA readByLvaNumber(String lvaNumber) throws DataAccessException;
 
-    /**
-     * Return all meta lvas, which have no completed lva, have no lva in the specified year and semester and where the
-     * perhaps existing lva from the specified year and semester is included to the study progress or not.
+    /**todo check text for errors
+     * Return all MetaLVAs, which have no completed LVA, have no LVA in the specified year and semester and where the
+     * perhaps existing lva from the specified year and semester is included in the study progress or not.
      * @param year The year.
      * @param semester The semester. Must be <code>Semester.S</code> of <code>Semester.W</code>.
      * @param isInStudyProgress <code>true</code> if the returned list should only contain meta lvas which have actual
@@ -94,6 +94,19 @@ public interface MetaLvaDao {
      * @throws NullPointerException If <code>semester==null</code>.
      */
     public List<MetaLVA> readUncompletedByYearSemesterStudyProgress (int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
+    /**
+     * Return all MetaLVAs, which have a LVA in the specified year and semester and where the
+     * lva from the specified year and semester is included in the study progress or not.
+     * @param year The year.
+     * @param semester The semester. Must be <code>Semester.S</code> of <code>Semester.W</code>.
+     * @param isInStudyProgress <code>true</code> if the returned list should only contain meta lvas which have actual
+     *                          lvas which are included to the study progress and <code>false</code>  otherwise.
+     * @return A list containing all matching meta lvas, a emtpy list if there was no match and <code>null</code> if
+     * <code>!semester.equals(Semester.S) && !semester.equals(Semester.W)</code>.
+     * @throws DataAccessException If the data could not be read because any other error occurred.
+     * @throws NullPointerException If <code>semester==null</code>.
+     */
+    public List<MetaLVA> readByYearSemesterStudyProgress (int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
 
     /*
      * Read all meta lvas which have a lva in the specified year and semester and which is either included to study

@@ -5,7 +5,7 @@ import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 
 import javax.swing.*;
-import java.awt.*;
+import java.util.*;
 import java.util.ArrayList;
 
 /**
@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class SemesterPanel extends StandardInsidePanel {
     private JLabel semesterTitle;
-    private ArrayList<MetaLVA> lvas;
+    private List<MetaLVA> lvas;
     private MetaLVADisplayPanel pane;
     private int height;
 
@@ -46,8 +46,10 @@ public class SemesterPanel extends StandardInsidePanel {
         this.add(semesterTitle);
     }
 
-    public void setLvas(ArrayList<MetaLVA> lvas) {
+    public void setLvas(List<MetaLVA> lvas) {
         this.lvas = lvas;
+        remove(pane);
+        initLvaTable();
     }
 
     public void setSemesterTitle(String title) {

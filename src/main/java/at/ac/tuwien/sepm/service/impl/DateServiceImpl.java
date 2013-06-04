@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.service.impl;
 import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
+import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
@@ -146,5 +147,27 @@ public class DateServiceImpl implements DateService {
             log.error("To is before From.");
             throw new ServiceException("To is before From.");
         }
+    }
+
+    @Override
+    public Semester getCurrentSemester() {
+        DateTime currentTime = new DateTime(System.currentTimeMillis());
+        if(WINTER_SEMESTER_START_MONTH<WINTER_SEMESTER_END_MONTH){
+            if(currentTime.getMonthOfYear()>WINTER_SEMESTER_START_MONTH && currentTime.getMonthOfYear()<WINTER_SEMESTER_END_MONTH){
+                return Semester.S;
+            }
+            return Semester.W;
+        }else{
+            if(currentTime.getMonthOfYear()>WINTER_SEMESTER_START_MONTH || currentTime.getMonthOfYear()<WINTER_SEMESTER_END_MONTH){
+                return Semester.W;
+            }
+            return Semester.S;
+        }
+    }
+
+    @Override
+    public int getCurrentYear() {
+        DateTime currentTime = new DateTime(System.currentTimeMillis());
+        return currentTime.getYear();
     }
 }

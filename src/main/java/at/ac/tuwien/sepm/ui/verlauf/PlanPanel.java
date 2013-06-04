@@ -1,12 +1,14 @@
 package at.ac.tuwien.sepm.ui.verlauf;
 
 import at.ac.tuwien.sepm.dao.DateDao;
-import at.ac.tuwien.sepm.dao.hsqldb.DBDateDao;
-import at.ac.tuwien.sepm.dao.hsqldb.DBMetaLvaDao;
+import at.ac.tuwien.sepm.dao.LvaDao;
+import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.semesterPlanning.IntelligentSemesterPlaner;
+import at.ac.tuwien.sepm.service.semesterPlanning.LVAUtil;
 import at.ac.tuwien.sepm.ui.MetaLva.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -16,30 +18,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Flo
+ * User: Flo, Georg
  * Date: 01.06.13
  * Time: 16:19
  * To change this template use File | Settings | File Templates.
  */
 @UI
 public class PlanPanel extends StandardInsidePanel {
-    @Autowired
-    DBMetaLvaDao metaLVADAO;
-    @Autowired
-    DBDateDao dateDAO;
+    MetaLvaDao metaLVADAO;
+    LvaDao lvaDAO;
+    DateDao dateDAO;
+
+    /*@Autowired
+    LVAService lvaService;
+*/
+    DateService dateService;
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
     private Rectangle outputPlane = new Rectangle(483,12,521,496);
     private MetaLVADisplayPanel pane;
-    private ArrayList<MetaLVA> lvas;
+    private List<MetaLVA> plannedMetaLVAs = new ArrayList<MetaLVA>(0);
+    private int plannedYear =-1;
+    private Semester plannedSemester =null;
+
     private JButton plan;
     private JButton take;
 
@@ -62,6 +71,8 @@ public class PlanPanel extends StandardInsidePanel {
     private JCheckBox intersectExamCheck;
     private JLabel intersectCustomCheckLabel;
     private JCheckBox intersectCustomCheck;
+    private JLabel considerStudyProgressCheckLabel;
+    private JCheckBox considerStudyProgressCheck;
     private JLabel timeBetweenLabel;
     private JComboBox timeBetween;
     private String[] timeBetweenTextLabelStrings;
@@ -71,8 +82,14 @@ public class PlanPanel extends StandardInsidePanel {
 
     private boolean advancedShown = true;
     private boolean showTimeBetweenText = false;
+    @Autowired
+    public PlanPanel(MetaLvaDao metaLVADAO,DateDao dateDao,DateService dateService,LvaDao lvaDAO) {
+        this.lvaDAO=lvaDAO;
+        this.dateService=dateService;
+        this.metaLVADAO= metaLVADAO;
+        this.dateDAO = dateDao;
 
-    public PlanPanel() {
+
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
@@ -82,12 +99,23 @@ public class PlanPanel extends StandardInsidePanel {
         initButtons();
         initLVAPane();
     }
+    private void refreshMetaLVAs(List<MetaLVA> metaLVAs){
+        plannedMetaLVAs =metaLVAs;
+        remove(pane);
+        pane = new MetaLVADisplayPanel(plannedMetaLVAs, (int)outputPlane.getWidth(), (int)outputPlane.getHeight());
+        pane.setBounds(outputPlane);
+        add(pane);
+        repaint();
+        revalidate();
+    }
 
      /*-----------------------RIGHT SIDE  PLAN ANZEIGEN-------------------*/
 
     private void initLVAPane() {
-        lvas = new ArrayList<MetaLVA>();
-        pane = new MetaLVADisplayPanel(lvas, (int)outputPlane.getWidth(), (int)outputPlane.getHeight());
+        //plannedMetaLVAs = metaLVADAO.readByYearSemesterStudyProgress(dateService.getCurrentYear(), dateService.getCurrentSemester(), true);
+
+        plannedMetaLVAs = new ArrayList<MetaLVA>(); //metaLVADAO.readUncompletedByYearSemesterStudyProgress(2013,Semester.S, true);
+        pane = new MetaLVADisplayPanel(plannedMetaLVAs, (int)outputPlane.getWidth(), (int)outputPlane.getHeight()); //todo plannedMetaLVAs anzeigen die schon geplant sind
         pane.setBounds(outputPlane);
         this.add(pane);
     }
@@ -101,7 +129,28 @@ public class PlanPanel extends StandardInsidePanel {
         take.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo plan übernehmen nach anzeigen
+                for(LVA lva:lvaDAO.readByYearSemesterStudyProgress(plannedYear,plannedSemester,true)){
+                    logger.debug("deleting from studyProgress: "+lva);
+                    lva.setInStudyProgress(false);
+                    try {
+                        lvaDAO.update(lva);
+
+                    } catch (IOException e1) {
+                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
+                for(MetaLVA m:plannedMetaLVAs){
+
+                    LVA temp = m.getLVA(plannedYear,plannedSemester);
+                    temp.setInStudyProgress(true);
+                    logger.debug("adding to studyProgress: "+temp);
+                    try {
+                        lvaDAO.update(temp);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
+
             }
         });
         this.add(take);
@@ -121,18 +170,23 @@ public class PlanPanel extends StandardInsidePanel {
                     public void run(){
                         float goalECTS = Float.parseFloat(desiredECTSText.getText());
                         //boolean vointersect =  intersectVOCheck.isSelected();
-                        int year = Integer.parseInt(yearText.getText());
-                        Semester sem = Semester.S;
+                        plannedYear = Integer.parseInt(yearText.getText());
+                        plannedSemester = Semester.S;
                         if (semesterDrop.getSelectedIndex() == 0) {
-                            sem = Semester.W;
+                            plannedSemester = Semester.W;
                         }
-                        List<MetaLVA> forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(year, sem, true);
-                        List<MetaLVA> pool = metaLVADAO.readUncompletedByYearSemesterStudyProgress(year,sem,false);
+                        List<MetaLVA> forced;
+                        if (considerStudyProgressCheck.isSelected()){
+                            forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
+                        }else{
+                            forced = new ArrayList<>(0);
+                        }
+                        List<MetaLVA> pool = metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,false);
                         MetaLVA customMetaLVA = new MetaLVA();
 
                         if(intersectCustomCheck.isSelected()){
-                            customMetaLVA.setLVA(dateDAO.readNotToIntersectByYearSemester(year,sem));
-                            logger.debug(customMetaLVA.getLVA(year,sem));
+                            customMetaLVA.setLVA(dateDAO.readNotToIntersectByYearSemester(plannedYear,plannedSemester));
+                            logger.debug(customMetaLVA.getLVA(plannedYear,plannedSemester));
                             customMetaLVA.setName("custom dates");
                             customMetaLVA.setNr("-1");
                             forced.add(customMetaLVA);
@@ -140,18 +194,21 @@ public class PlanPanel extends StandardInsidePanel {
 
 
                         planer.setLVAs(forced, pool);
-                        ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, year, sem);
+                        ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
                         if(intersectCustomCheck.isSelected()){
                             solution.remove(customMetaLVA);
                         }
-                        logger.debug(solution);
-                        //todo instead of replacing table, alter it..
-                        remove(pane);
-                        pane = new MetaLVADisplayPanel(solution, (int)outputPlane.getWidth(), (int)outputPlane.getHeight());
-                        pane.setBounds(outputPlane);
-                        add(pane);
-                        repaint();
-                        revalidate();
+                        if (considerStudyProgressCheck.isSelected()){
+                            solution.removeAll(forced);
+                            solution.addAll(metaLVADAO.readByYearSemesterStudyProgress(plannedYear,plannedSemester,true));
+                        }else{
+                            //todo tell user that old semester will be lost
+                        }
+
+                        logger.debug("solution provided by planner:\n"+ LVAUtil.formatShort(solution,1));
+
+                        refreshMetaLVAs(solution);
+
                     }
                 }.start();
 
@@ -174,6 +231,9 @@ public class PlanPanel extends StandardInsidePanel {
             intersectCustomCheckLabel.setVisible(true);
             intersectCustomCheck.setVisible(true);
 
+            considerStudyProgressCheck.setVisible(true);
+            considerStudyProgressCheckLabel.setVisible(true);
+
             timeBetweenLabel.setVisible(true);
             timeBetween.setVisible(true);
 
@@ -194,6 +254,9 @@ public class PlanPanel extends StandardInsidePanel {
             intersectCustomCheckLabel.setVisible(false);
             intersectCustomCheck.setVisible(false);
 
+            considerStudyProgressCheck.setVisible(false);
+            considerStudyProgressCheckLabel.setVisible(false);
+
             timeBetweenLabel.setVisible(false);
             timeBetween.setVisible(false);
 
@@ -207,6 +270,7 @@ public class PlanPanel extends StandardInsidePanel {
         int verticalSpace = 10;
         int textHeight = 25;
         int textWidth = 150;
+
 
         // < basic settings >
         desiredECTSTextLabel = new JLabel("Gewünschte ECTS:");
@@ -228,16 +292,41 @@ public class PlanPanel extends StandardInsidePanel {
         yearText.setBounds(yearTextLabel.getX() + yearTextLabel.getWidth() +5, yearTextLabel.getY(), 50, textHeight);
         yearText.setFont(standardTextFont);
         this.add(yearText);
+        plannedYear=Integer.parseInt(yearText.getText());
+        yearText.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {}
+            @Override
+            public void keyReleased(KeyEvent e) {
+                refreshMetaLVAs(new ArrayList<MetaLVA>(0));
+            }
+        });
 
         semesterDropLabel = new JLabel("Semester:");
         semesterDropLabel.setFont(standardTextFont);
         semesterDropLabel.setBounds(yearTextLabel.getX(),yearTextLabel.getY()+yearTextLabel.getHeight()+verticalSpace, textWidth, textHeight);
         this.add(semesterDropLabel);
 
+
         semesterDrop = new JComboBox (new String[]{"Winter","Sommer"});
         semesterDrop.setFont(standardButtonFont);
         semesterDrop.setBounds(semesterDropLabel.getX()+semesterDropLabel.getWidth()+5, semesterDropLabel.getY(), 100, textHeight);
         this.add(semesterDrop);
+        if(semesterDrop.getSelectedIndex()==0){
+            plannedSemester=Semester.W;
+        }else{
+            plannedSemester = Semester.S;
+        }
+        semesterDrop.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    refreshMetaLVAs(new ArrayList<MetaLVA>(0));
+                }
+            }
+        });
         // </ basic settings >
 
         // < advanced settings >
@@ -264,6 +353,8 @@ public class PlanPanel extends StandardInsidePanel {
         intersectVOCheck.setBackground(new Color(0,0,0,0));
         intersectVOCheck.setBounds(intersectVOCheckLabel.getX()+intersectVOCheckLabel.getWidth()+5, intersectVOCheckLabel.getY()+5, 20, 20);
         this.add(intersectVOCheck);
+        intersectVOCheck.setSelected(true);
+        intersectVOCheck.setEnabled(false);
 
         intersectUECheckLabel = new JLabel("Überprüfe Übungstermine auf Überschneidungen:");
         intersectUECheckLabel.setFont(standardTextFont);
@@ -274,6 +365,8 @@ public class PlanPanel extends StandardInsidePanel {
         intersectUECheck.setBackground(new Color(0,0,0,0));
         intersectUECheck.setBounds(intersectUECheckLabel.getX()+intersectUECheckLabel.getWidth()+5, intersectUECheckLabel.getY()+5, 20, 20);
         this.add(intersectUECheck);
+        intersectUECheck.setSelected(true);
+        intersectUECheck.setEnabled(false);
 
         intersectExamCheckLabel = new JLabel("Überprüfe Prüfungstermine auf Überschneidungen:");
         intersectExamCheckLabel.setFont(standardTextFont);
@@ -284,6 +377,8 @@ public class PlanPanel extends StandardInsidePanel {
         intersectExamCheck.setBackground(new Color(0,0,0,0));
         intersectExamCheck.setBounds(intersectExamCheckLabel.getX()+intersectExamCheckLabel.getWidth()+5, intersectExamCheckLabel.getY()+5, 20, 20);
         this.add(intersectExamCheck);
+        intersectExamCheck.setSelected(true);
+        intersectExamCheck.setEnabled(false);
 
         intersectCustomCheckLabel = new JLabel("Überprüfe private Termine auf Überschneidungen:");
         intersectCustomCheckLabel.setFont(standardTextFont);
@@ -295,9 +390,22 @@ public class PlanPanel extends StandardInsidePanel {
         intersectCustomCheck.setBounds(intersectCustomCheckLabel.getX()+intersectCustomCheckLabel.getWidth()+5, intersectCustomCheckLabel.getY()+5, 20, 20);
         this.add(intersectCustomCheck);
 
+
+        considerStudyProgressCheckLabel = new JLabel("Inkludiere bereits verplante LVAs in dem Semester:");
+        considerStudyProgressCheckLabel.setFont(standardTextFont);
+        considerStudyProgressCheckLabel.setBounds(intersectCustomCheckLabel.getX(), intersectCustomCheckLabel.getY()+intersectCustomCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
+        this.add(considerStudyProgressCheckLabel);
+
+        considerStudyProgressCheck = new JCheckBox();
+        considerStudyProgressCheck.setBackground(new Color(0,0,0,0));
+        considerStudyProgressCheck.setBounds(considerStudyProgressCheckLabel.getX()+considerStudyProgressCheckLabel.getWidth()+5, considerStudyProgressCheckLabel.getY()+5, 20, 20);
+        this.add(considerStudyProgressCheck);
+        considerStudyProgressCheck.setSelected(true);
+
+
         timeBetweenLabel = new JLabel("Zeit zwischen Terminen:");
         timeBetweenLabel.setFont(standardTextFont);
-        timeBetweenLabel.setBounds(intersectCustomCheckLabel.getX(), intersectCustomCheckLabel.getY()+intersectCustomCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
+        timeBetweenLabel.setBounds(considerStudyProgressCheckLabel.getX(), considerStudyProgressCheckLabel.getY()+considerStudyProgressCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
         this.add(timeBetweenLabel);
 
         timeBetween= new JComboBox(new String[]{"exakte Zeiten verwenden","Termine dürfen sich überschneiden","Zwischen Terminen Zeit erzwingen"});
@@ -318,6 +426,7 @@ public class PlanPanel extends StandardInsidePanel {
         timeBetweenText.setBounds(timeBetweenTextLabel.getX()+timeBetweenTextLabel.getWidth(), timeBetweenTextLabel.getY(), 21, textHeight);
         timeBetweenText.setVisible(false);
         this.add(timeBetweenText);
+        timeBetweenText.setEnabled(false);
 
         timeBetween.addActionListener(new ActionListener() {
             @Override

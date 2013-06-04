@@ -1,10 +1,13 @@
 package at.ac.tuwien.sepm.ui.verlauf.anzeigen;
 
+import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.verlauf.anzeigen.SemesterPanel;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -31,8 +34,10 @@ public class ViewPanel extends StandardInsidePanel {
     private JButton bwd;
     private SemesterPanel semester;
     private JList semesterList;
-
-    public ViewPanel() {
+    private MetaLvaDao metaLvaDao;
+    @Autowired
+    public ViewPanel(MetaLvaDao metaLvaDao) {
+        this.metaLvaDao=metaLvaDao;
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
@@ -60,7 +65,7 @@ public class ViewPanel extends StandardInsidePanel {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 semester.setSemesterTitle((String)semesterList.getSelectedValue());
-                //todo change lvas semester.setLvas(...);
+                //semester.setLvas(metaLvaDao.readByYearSemesterStudyProgress(2013, Semester.S,true));
             }
         });
         semesterList.setBounds(50, semesters.getY() + semesters.getHeight() + 10, 230, (20 * (anzahl)));

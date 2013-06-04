@@ -137,6 +137,22 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
 
         return result;
     }
+    @Override
+    public List<MetaLVA> readByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws DataAccessException {
+        if(!semester.equals(Semester.S) && !semester.equals(Semester.W)) {
+            return null;
+        }
+
+        List<LVA> lvas = lvaDao.readByYearSemesterStudyProgress(year, semester, isInStudyProgress);
+        ArrayList<MetaLVA> result = new ArrayList<MetaLVA>(lvas.size());
+
+        for(int i=0; i<lvas.size(); i++) {
+            result.add(i, readById(lvas.get(i).getMetaLVA().getId()));
+            result.get(i).setLVA(lvas.get(i));
+        }
+
+        return result;
+    }
 
     /*@Override
     public List<MetaLVA> readNotCompletedByYearSemesterStudProgress(int year, Semester semester, boolean inStudyProgress) throws DataAccessException, NullPointerException {
