@@ -10,7 +10,7 @@ import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.IntelligentSemesterPlaner;
 import at.ac.tuwien.sepm.service.impl.IntelligentSemesterPlanerImpl;
 import at.ac.tuwien.sepm.service.impl.LVAUtil;
-import at.ac.tuwien.sepm.ui.metaLVA.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;

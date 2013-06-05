@@ -202,7 +202,6 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
 
 
 
-
         fromLabel = new JLabel("Von");
         fromLabel.setFont(standardTextFont);
         fromLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10,50,25);
