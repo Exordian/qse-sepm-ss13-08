@@ -2,8 +2,6 @@ package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.dao.LvaDateDao;
-import at.ac.tuwien.sepm.dao.hsqldb.DBDateDao;
-import at.ac.tuwien.sepm.dao.hsqldb.DBLvaDateDao;
 import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
@@ -30,6 +28,7 @@ public class CalServiceImpl implements CalService {
         this.dateDao=dateDao;
         this.lvaDateDao=lvaDateDao;
     }
+    @Override
     public List<Date> getAllDatesAt(DateTime date) throws ServiceException {
 
         List<LvaDate> l1;
@@ -47,6 +46,15 @@ public class CalServiceImpl implements CalService {
         result.addAll(l2);
 
         return result;
+    }
+
+    @Override
+    public List<DateEntity> getAllNotLVADatesAt(DateTime date) throws ServiceException {
+        try {
+            return dateDao.readByDay(date);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Die Termine konnten nicht geladen werden.", e);
+        }
     }
 
     @Override

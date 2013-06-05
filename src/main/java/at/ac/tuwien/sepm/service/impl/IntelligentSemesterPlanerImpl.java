@@ -98,6 +98,18 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             lvas.add(m.getLVA(year,sem));
         }
         intersecting = LVAUtil.intersectAll(lvas);
+        String debug = "";
+        for(int y=0;y<lvas.size();y++){
+            for(int x=0;x<lvas.size();x++){
+               if(intersect(x,y)){
+                   debug+="1 ";
+               }else{
+                   debug+="0 ";
+               }
+            }
+            debug+="\n";
+        }
+        logger.debug("intersecting array:\n"+debug);
 
     }
     private boolean intersect(int a, int b){
