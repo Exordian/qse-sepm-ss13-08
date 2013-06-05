@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,6 +105,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             done.setVisible(false);
             doneLabel.setVisible(false);
         }
+        refresh();
     }
 
     private void addButtons() {
@@ -250,7 +252,19 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
 
     @Override
     public void refresh() {
-        //do nothing
+        try {
+            int year = DateTime.now().getYear();
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7); //todo was is mit januar?
+            lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
+        } catch(ServiceException e) {
+            log.error(e.getMessage());
+        } catch(ValidationException e) {
+            log.error(e.getMessage());
+        }
+        lva.removeAllItems();
+        for (LVA t : lvas) {
+            lva.addItem(new LvaSelectItem(t));
+        }
     }
 }
 
