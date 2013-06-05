@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.service;
 
 import at.ac.tuwien.sepm.entity.Date;
+import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.entity.LvaDate;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -19,4 +21,6 @@ public interface CalService {
      * @throws ServiceException If the data could not be read.
      */
     public List<Date> getAllDatesAt(DateTime date) throws ServiceException;
+    public List<DateEntity> getAllNotLVADatesAt(DateTime date) throws ServiceException;
+    public List<LvaDate> getLVADatesByDateInStudyProgress(DateTime date) throws ServiceException;
 }

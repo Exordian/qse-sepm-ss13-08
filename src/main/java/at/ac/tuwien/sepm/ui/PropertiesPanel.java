@@ -46,7 +46,7 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
         save = new JButton("Speichern");
         save.setFont(standardButtonFont);
         save.setBounds(deleteALL.getX() + deleteALL.getWidth()+100, deleteALL.getHeight() + deleteALL.getY() + 60, 110, 30);
-        deleteALL.addActionListener(new ActionListener() {
+        save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 //todo speichern
@@ -188,5 +188,10 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
         this.add(deleteALL);
         this.revalidate();
         this.repaint();
+    }
+
+    @Override
+    public void refresh() {
+        //do nothing
     }
 }

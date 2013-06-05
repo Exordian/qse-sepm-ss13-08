@@ -2,11 +2,9 @@ package at.ac.tuwien.sepm.entity;
 
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.semesterPlanning.LVAUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 

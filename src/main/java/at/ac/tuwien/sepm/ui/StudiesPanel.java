@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.ui.verlauf.*;
-import at.ac.tuwien.sepm.ui.verlauf.anzeigen.ViewPanel;
+import at.ac.tuwien.sepm.ui.studyProgress.*;
+import at.ac.tuwien.sepm.ui.studyProgress.display.ViewPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -148,5 +148,10 @@ public class StudiesPanel extends StandardInsidePanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void refresh() {
+        //do nothing
     }
 }

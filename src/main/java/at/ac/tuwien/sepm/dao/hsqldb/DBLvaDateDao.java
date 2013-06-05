@@ -94,7 +94,7 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
         Timestamp s2 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 23, 59, 59, 999).getMillis()));
 
         if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), s1, s2, s1, s2, s1, s2) == 0){
-            return new ArrayList<LvaDate>();
+            return new ArrayList<LvaDate>(0);
         }
 
         return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), s1, s2, s1, s2, s1, s2);
@@ -193,5 +193,35 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
             result.set(i, readById(result.get(i).getId()));
         }
         return result;
+    }
+
+    /**
+     * todo
+     * @param date
+     * @return
+     */
+    @Override
+    public List<LvaDate> readByDayInStudyProgress(DateTime date) {
+        String stmt = "SELECT * FROM lvadate WHERE " +
+                "lva IN " +
+                "(SELECT id FROM lva WHERE instudyprogress=true)" +
+                "AND ((start>=? AND start<=?) OR" +
+                " (stop>=? AND stop<=?) OR " +
+                " (start<=? AND stop>=?))";
+        String stmtCount = "SELECT COUNT(*) FROM lvadate WHERE " +
+                "lva IN " +
+                "(SELECT id FROM lva WHERE instudyprogress=true)" +
+                "AND ((start>=? AND start<=?) OR" +
+                " (stop>=? AND stop<=?) OR " +
+                " (start<=? AND stop>=?))";
+
+        Timestamp s1 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 0, 0, 0, 0).getMillis()));
+        Timestamp s2 = new Timestamp((new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 23, 59, 59, 999).getMillis()));
+
+        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), s1, s2, s1, s2, s1, s2) == 0){
+            return new ArrayList<LvaDate>(0);
+        }
+
+        return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), s1, s2, s1, s2, s1, s2);
     }
 }
