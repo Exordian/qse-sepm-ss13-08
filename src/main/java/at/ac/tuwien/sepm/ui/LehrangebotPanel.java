@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.ui.lehrangebot.LvaFetcherPanel;
+import at.ac.tuwien.sepm.ui.lehrangebot.LvaPanel;
 import at.ac.tuwien.sepm.ui.lehrangebot.StudienplanPanel;
-import at.ac.tuwien.sepm.ui.studyProgress.*;
-import at.ac.tuwien.sepm.ui.studyProgress.display.ViewPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -13,25 +13,32 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Created with IntelliJ IDEA.
+ * User: Flo
+ * Date: 05.06.13
+ * Time: 18:54
+ * To change this template use File | Settings | File Templates.
+ */
 @UI
-public class StudiesPanel extends StandardInsidePanel {
+public class LehrangebotPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
-    private PlanPanel planningPanel;
-    private ExportPanel exportPanel;
-    private ViewPanel viewPanel;
+
+    private StudienplanPanel studienplanPanel;
+    private LvaFetcherPanel lvaFetcherPanel;
+    private StandardInsidePanel lvaPanel;
 
     @Autowired
-    public StudiesPanel(PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel) {
-        this.planningPanel = planningPanel;
-        this.exportPanel = exportPanel;
-        this.viewPanel = viewPanel;
-        add(viewPanel);
-
+    public LehrangebotPanel(StudienplanPanel studienplanPanel, LvaPanel lvaPanel, LvaFetcherPanel lvaFetcherPanel) {
         init();
-        changeImage(1);
+        this.studienplanPanel=studienplanPanel;
+        this.lvaFetcherPanel=lvaFetcherPanel;
+        this.lvaPanel=lvaPanel;
+        this.add(studienplanPanel);
         createTabButtons();
+        changeImage(1);
         this.repaint();
         this.revalidate();
     }
@@ -51,11 +58,11 @@ public class StudiesPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
-                remove(planningPanel);
-                remove(exportPanel);
-                add(viewPanel);
-                StudiesPanel.this.validate();
-                StudiesPanel.this.repaint();
+                remove(lvaFetcherPanel);
+                remove(lvaPanel);
+                add(studienplanPanel);
+                LehrangebotPanel.this.validate();
+                LehrangebotPanel.this.repaint();
             }
         });
 
@@ -64,11 +71,11 @@ public class StudiesPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                remove(exportPanel);
-                remove(viewPanel);
-                add(planningPanel);
-                StudiesPanel.this.validate();
-                StudiesPanel.this.repaint();
+                remove(lvaFetcherPanel);
+                remove(studienplanPanel);
+                add(lvaPanel);
+                LehrangebotPanel.this.validate();
+                LehrangebotPanel.this.repaint();
             }
         });
 
@@ -77,11 +84,11 @@ public class StudiesPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
-                add(exportPanel);
-                remove(viewPanel);
-                remove(planningPanel);
-                StudiesPanel.this.validate();
-                StudiesPanel.this.repaint();
+                remove(studienplanPanel);
+                remove(lvaPanel);
+                add(lvaFetcherPanel);
+                LehrangebotPanel.this.validate();
+                LehrangebotPanel.this.repaint();
             }
         });
 
@@ -98,13 +105,13 @@ public class StudiesPanel extends StandardInsidePanel {
         try{
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/studa.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehrs.png"));
                     break;
                 case 2:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/studp.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehrl.png"));
                     break;
                 case 3:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/stude.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehri.png"));
                     break;
                 default:
                     break;
@@ -115,8 +122,9 @@ public class StudiesPanel extends StandardInsidePanel {
         }
     }
 
+
     @Override
     public void refresh() {
-        //do nothing
+
     }
 }

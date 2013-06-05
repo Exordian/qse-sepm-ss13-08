@@ -1,12 +1,7 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.entity.DateEntity;
-import at.ac.tuwien.sepm.entity.LvaDate;
-import at.ac.tuwien.sepm.entity.Todo;
-import at.ac.tuwien.sepm.ui.entityViews.ViewDate;
-import at.ac.tuwien.sepm.ui.entityViews.ViewDeadline;
-import at.ac.tuwien.sepm.ui.entityViews.ViewLvaDate;
-import at.ac.tuwien.sepm.ui.entityViews.ViewTODO;
+import at.ac.tuwien.sepm.entity.*;
+import at.ac.tuwien.sepm.ui.entityViews.*;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 
 import org.apache.log4j.LogManager;
@@ -26,23 +21,28 @@ public class BackgroundPanel extends JPanel {
     private JButton properties;
     private JButton tab1;
     private JButton tab2;
+    private JButton tab3;
 
     private StandardInsidePanel calPanel;
     private StandardInsidePanel studPanel;
     private StandardInsidePanel propsPanel;
+    private StandardInsidePanel lehrPanel;
     private ViewDate viewDate;
     private ViewDeadline viewDeadline;
     private ViewLvaDate viewLVA;
     private ViewTODO viewTodo;
+    private ViewLva viewLva;
+    private ViewMetaLva viewMetaLva;
     private Image image;
     private Component lastComponent;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA, ViewTODO viewTodo, ViewDeadline viewDeadline) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA, ViewTODO viewTodo, ViewDeadline viewDeadline) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
+        this.lehrPanel=lehrPanel;
         this.calPanel = calPanel;
         this.studPanel = studPanel;
         this.propsPanel = propsPanel;
@@ -95,6 +95,24 @@ public class BackgroundPanel extends JPanel {
         this.repaint();
     }
 
+    public void viewLva(LVA lva) {
+        removeAddedPanels();
+        viewLva.setLva(lva);
+        viewLva.setVisible(true);
+        this.add(viewLva);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void viewMetaLva(MetaLVA metalva) {
+        removeAddedPanels();
+        viewMetaLva.setMetaLva(metalva);
+        viewMetaLva.setVisible(true);
+        this.add(viewMetaLva);
+        this.revalidate();
+        this.repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -111,6 +129,7 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewLVA);
         this.remove(viewTodo);
         this.remove(viewDeadline);
+        this.remove(lehrPanel);
     }
 
     private void addPanel(Component c) {
@@ -133,6 +152,10 @@ public class BackgroundPanel extends JPanel {
                 case 2:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/stud.jpg"));
                     this.addPanel(studPanel);
+                    break;
+                case 3:
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehr.jpg"));
+                    this.addPanel(lehrPanel);
                     break;
                 default:
                     break;
@@ -165,10 +188,12 @@ public class BackgroundPanel extends JPanel {
     private void createTabButtons() {
         tab1 = new JButton();
         tab2 = new JButton();
+        tab3 = new JButton();
 
         ArrayList<JButton> tabs = new ArrayList<JButton>();
         tabs.add(tab1);
         tabs.add(tab2);
+        tabs.add(tab3);
 
         tab1.setBounds(12,50,55,159);
         tab1.addActionListener(new ActionListener() {
@@ -188,7 +213,16 @@ public class BackgroundPanel extends JPanel {
             }
         });
 
-        for (int i = 0; i < 2; i++) {
+        tab3.setBounds(12,369,55,159);
+        tab3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                changeImage(3);
+                refresh();
+            }
+        });
+
+        for (int i = 0; i < 3; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
             tabs.get(i).setOpaque(false);
             tabs.get(i).setContentAreaFilled(false);
@@ -199,6 +233,7 @@ public class BackgroundPanel extends JPanel {
     public void refresh(){
         calPanel.refresh();
         studPanel.refresh();
+        lehrPanel.refresh();
         propsPanel.refresh();
     }
 }

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui.entityViews;
 
+import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 
 /**
@@ -14,5 +15,9 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     @Override
     public void refresh() {
         //do nothing
+    }
+
+    public void setMetaLva(MetaLVA metalva) {
+
     }
 }

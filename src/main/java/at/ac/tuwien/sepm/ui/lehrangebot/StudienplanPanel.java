@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.studyProgress;
+package at.ac.tuwien.sepm.ui.lehrangebot;
 
 import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.Module;
@@ -27,8 +27,6 @@ import java.util.List;
 
 @UI
 public class StudienplanPanel extends StandardInsidePanel {
-
-    @Autowired
     protected CreateCurriculumService service;
 
     private static final int MAX_INFO_LENGTH = 18;
@@ -43,13 +41,19 @@ public class StudienplanPanel extends StandardInsidePanel {
     private DefaultComboBoxModel<CurriculumComboBoxItem> mcurr;
 
     @Autowired
-    private LvaFetcherPanel lvaFetcherPanel;
-
-    public StudienplanPanel() {
+    public StudienplanPanel(CreateCurriculumService service) {
+        this.service=service;
         this.setLayout(new GridLayout());
         this.setOpaque(false);
         loadFonts();
         setBounds((int)StudStartCoordinateOfWhiteSpace.getX(), (int)StudStartCoordinateOfWhiteSpace.getY(),(int)whiteSpaceStud.getWidth(),(int)whiteSpaceStud.getHeight());
+        initPanel();
+        initAddCurriculumButton();
+        initCurriculumComboBox();
+        initModuleTable();
+        initButtonCreate();
+        placeComponents();
+        initCurriculumComboBoxActionListener();
         revalidate();
         repaint();
     }
@@ -60,15 +64,6 @@ public class StudienplanPanel extends StandardInsidePanel {
         panel.add(ccurr, "wrap");
         panel.add(spane, "span, wrap");
         panel.add(bcreate);
-        this.add(lvaFetcherPanel, "dock east");
-    }
-
-    public void initLvaFetcherPanel() {
-        lvaFetcherPanel.setBounds(new Rectangle(whiteSpaceStud.x + (int)whiteSpaceStud.getWidth()/2, whiteSpaceStud.y, (int)whiteSpaceStud.getWidth()/2, (int)whiteSpaceStud.getHeight()));
-        lvaFetcherPanel.setBackground(Color.WHITE);
-        lvaFetcherPanel.reconfigLayout(standardTextFont, standardButtonFont);
-        lvaFetcherPanel.revalidate();
-        lvaFetcherPanel.repaint();
     }
 
     public void initButtonCreate() {

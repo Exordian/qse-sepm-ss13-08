@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui.entityViews;
 
+import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 
 /**
@@ -16,4 +17,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
         //do nothing
     }
 
+    public void setLva(LVA lva) {
+
+    }
 }
