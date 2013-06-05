@@ -184,10 +184,10 @@ public class PlanPanel extends StandardInsidePanel {
                         List<MetaLVA> pool= metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,false);
                         if (considerStudyProgressCheck.isSelected()){
                             forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
-
                         }else{
                             forced = new ArrayList<>(0);
                             pool.addAll(metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
+                            Collections.sort(pool);
                         }
                         MetaLVA customMetaLVA = new MetaLVA();
 

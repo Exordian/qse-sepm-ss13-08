@@ -152,7 +152,8 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
         int a=0;
         for(int i=preStart; i<=preStop; i++) {
             days[a].setDate(new DateTime(preYear, preMonth, i, 0, 0, 0, 0));
-            days[a].setBackground(COLOR_OF_NOT_ACTUAL_MONTH);
+            //days[a].setBackground(COLOR_OF_NOT_ACTUAL_MONTH);
+            days[a].setBackground(COLOR_OF_ACTUAL_MONTH);
             a++;
         }
 
@@ -164,7 +165,8 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
 
         for(int i=postStart; i<=postStop; i++) {
             days[a].setDate(new DateTime(postYear, postMonth, i, 0, 0, 0, 0));
-            days[a].setBackground(COLOR_OF_NOT_ACTUAL_MONTH);
+            //days[a].setBackground(COLOR_OF_NOT_ACTUAL_MONTH);
+            days[a].setBackground(COLOR_OF_ACTUAL_MONTH);
             a++;
         }
     }
