@@ -114,6 +114,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             toTime.setValue(lvaDate.getStop().toDate());
             setDeleteButton(true);
         }
+        refresh();
     }
 
     private void setDeleteButton(boolean showDeleteButton) {
@@ -261,7 +262,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         lva = new WideComboBox();
         try {
             int year = DateTime.now().getYear();
-            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7);
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7); //todo was is mit januar?
             lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
         } catch(ServiceException e) {
             log.error(e.getMessage());
@@ -322,6 +323,18 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
 
     @Override
     public void refresh() {
-        //do nothing
+        try {
+            int year = DateTime.now().getYear();
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7); //todo was is mit januar?
+            lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
+        } catch(ServiceException e) {
+            log.error(e.getMessage());
+        } catch(ValidationException e) {
+            log.error(e.getMessage());
+        }
+        lva.removeAllItems();
+        for (LVA t : lvas) {
+            lva.addItem(new LvaSelectItem(t));
+        }
     }
 }

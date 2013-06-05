@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,8 @@ public class ViewTODO extends StandardSimpleInsidePanel {
     private JTextArea description;
     private JCheckBox done;
     private JLabel doneLabel;
+    private JLabel privateLabel;
+    private JCheckBox privateDate;
     private JButton save;
     private JButton delete;
     private JLabel lvaLabel;
@@ -83,6 +86,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             }     */
             setDeleteButton(true);
         }
+        refresh();
     }
 
     private void setDeleteButton(boolean showDeleteButton) {
@@ -137,6 +141,9 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                     todo.setDescription(description.getText());
                     todo.setLva(((LvaSelectItem) lva.getSelectedItem()).get());
                     todo.setDone(done.isSelected());
+                    if (privateDate.isSelected()){
+                       // todo.setLva(-1);   wie kennzeichnen wir einen privaten termin?
+                    }
                     if (todo.getId() != null) {
                         if (todoService.readById(todo.getId()) != null)
                             todoService.update(todo);
@@ -169,10 +176,38 @@ public class ViewTODO extends StandardSimpleInsidePanel {
         scroll.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()-40);
         this.add(scroll);
 
+        privateLabel = new JLabel("Privater Termin");
+        privateLabel.setFont(standardTextFont);
+        privateLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10, 120,25);
+        this.add(privateLabel);
+
+
+        privateDate = new JCheckBox();
+        privateDate.setSelected(false);
+        privateDate.setBackground(new Color(0, 0, 0, 0));
+        privateDate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (!privateDate.isSelected()) {
+                    lva.setVisible(true);
+                    lvaLabel.setVisible(true);
+                    repaint();
+                    revalidate();
+                } else {
+                    lvaLabel.setVisible(false);
+                    lva.setVisible(false);
+                    repaint();
+                    revalidate();
+                }
+            }
+        });
+        privateDate.setBounds(privateLabel.getX() + privateLabel.getWidth() + 5, privateLabel.getY(), 20, 20);
+        this.add(privateDate);
+
 
         lvaLabel = new JLabel("Lva");
         lvaLabel.setFont(standardTextFont);
-        lvaLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10, 60,25);
+        lvaLabel.setBounds(privateLabel.getX(),privateLabel.getY()+privateLabel.getHeight() + 20, 60,25);
         this.add(lvaLabel);
 
         lva = new WideComboBox();
@@ -220,6 +255,18 @@ public class ViewTODO extends StandardSimpleInsidePanel {
 
     @Override
     public void refresh() {
-        //do nothing
+        try {
+            int year = DateTime.now().getYear();
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7);    //todo was is mit januar?
+            lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
+        } catch(ServiceException e) {
+            log.error(e.getMessage());
+        } catch(ValidationException e) {
+            log.error(e.getMessage());
+        }
+        lva.removeAllItems();
+        for (LVA t : lvas) {
+            lva.addItem(new LvaSelectItem(t));
+        }
     }
 }

@@ -44,6 +44,8 @@ public class LvaFetcherPanel extends JPanel{
     private JButton fetchProgram;
     private JButton importb;
 
+    private List<Module> currentModules;
+
     public LvaFetcherPanel() {
         super(new MigLayout());
     }
@@ -109,7 +111,10 @@ public class LvaFetcherPanel extends JPanel{
             if(item instanceof ModuleSelectItem) {
                 moduleService.create(((ModuleSelectItem)item).get());
             } else if(item instanceof CurriculumSelectItem) {
-                // TODO
+                // TODO: Not always working, db contraint fails
+                for(Module m : currentModules) {
+                    moduleService.create(m);
+                }
             } else if(item instanceof MetaLvaSelectItem) {
                 metaLVAService.create(((MetaLvaSelectItem) item).get());
             }
@@ -126,9 +131,9 @@ public class LvaFetcherPanel extends JPanel{
             Curriculum curriculum = ((CurriculumSelectItem) academicPrograms.getSelectedItem()).get();
             DefaultMutableTreeNode top = new DefaultMutableTreeNode(new CurriculumSelectItem(curriculum));
 
-            List<Module> modules = lvaFetcherService.getModules(curriculum.getStudyNumber(), true);
+            currentModules = lvaFetcherService.getModules(curriculum.getStudyNumber(), true);
 
-            for(Module m : modules) {
+            for(Module m : currentModules) {
                 DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode(new ModuleSelectItem(m));
                 if(m.getMetaLvas() != null)
                     for(MetaLVA ml: m.getMetaLvas()) {
