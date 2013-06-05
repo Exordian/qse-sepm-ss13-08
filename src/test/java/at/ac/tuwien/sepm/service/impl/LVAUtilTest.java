@@ -24,7 +24,7 @@ public class LVAUtilTest {
 	public void setUp(){
 	}
     /**
-     * tests, if the format methods return something else than null
+     * tests, if the format methods return something else than an empty String
      */
     @Test
     public void testFormat(){
@@ -53,8 +53,14 @@ public class LVAUtilTest {
         assertTrue(metaLVA.toDetailedString(1).length()>0);
         assertTrue(metaLVA.toShortDetailedString(1).length()>0);
 
-        //todo jacoco verbessern
-        //assertTrue(LVAUtil.formatMetaLVA(metaLVAs,1));
+
+        assertTrue(LVAUtil.formatMetaLVA(metaLVAs,1).length()>0);
+        assertTrue(LVAUtil.formatDetailedMetaLVA(metaLVAs,1).length()>0);
+        assertTrue(LVAUtil.formatShortDetailedMetaLVA(metaLVAs,1).length()>0);
+        assertTrue(LVAUtil.formatShortMetaLVA(metaLVAs,1).length()>0);
+
+        assertTrue(LVAUtil.formatLVA(lvas,1).length()>0);
+        assertTrue(LVAUtil.formatShortLVA(lvas,1).length()>0);
     }
 
     /**
