@@ -27,6 +27,9 @@ public class LVAServiceImpl implements LVAService {
 
     @Override
     public boolean create(LVA toCreate) throws ServiceException, ValidationException {
+        if(toCreate==null){
+            throw new ServiceException("must not be null");
+        }
         try {
             this.validateLVA(toCreate);
             boolean created = lvaDao.create(toCreate);
@@ -75,6 +78,9 @@ public class LVAServiceImpl implements LVAService {
 
     @Override
     public List<LVA> readUncompletedByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws ServiceException, ValidationException {
+        if(semester==null){
+            throw new ServiceException("semester must not be null");
+        }
         if(year < 0 || semester == null) {
             logger.error("invalid parameters!");
             throw new ValidationException("invalid parameters!");
@@ -120,6 +126,9 @@ public class LVAServiceImpl implements LVAService {
 
     @Override
     public boolean update(LVA toUpdate) throws ServiceException, ValidationException {
+        if(toUpdate==null){
+            throw new ServiceException("toUpdate must not be null");
+        }
         try {
             this.validateID(toUpdate.getId());
             this.validateLVA(toUpdate);
@@ -139,6 +148,9 @@ public class LVAServiceImpl implements LVAService {
 
     @Override
     public void validateLVA(LVA toValidate) throws ServiceException {
+        if(toValidate==null){
+            throw new ServiceException("toValidate must not be null");
+        }
         String error_msg = "";
         boolean valid = true;
 

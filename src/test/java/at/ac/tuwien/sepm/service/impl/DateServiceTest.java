@@ -2,11 +2,14 @@ package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
+import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Author: Flo
@@ -115,4 +118,14 @@ public class DateServiceTest {
     public void testValidateDateINVALIDto() throws Exception {
         dateService.validateDates(validDateEntity.getStart(), null);
     }
+    @Test
+    public void checkIfYearIsGreaterZero() throws Exception{
+        assertTrue(dateService.getCurrentYear() > 0);
+    }
+    @Test
+    public void checkIfSemesterIsSOrW() throws Exception{
+        assertTrue(dateService.getCurrentSemester().equals(Semester.W)|| dateService.getCurrentSemester().equals(Semester.S));
+    }
+
+
 }
