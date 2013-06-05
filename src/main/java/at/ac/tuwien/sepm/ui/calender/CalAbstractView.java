@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.calender;
 
 import at.ac.tuwien.sepm.entity.Date;
+import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.CalService;
 import at.ac.tuwien.sepm.service.LVAService;
@@ -116,7 +117,7 @@ public abstract class CalAbstractView extends StandardInsidePanel {
 
         for (DayPanel day : days) {
             List<LvaDate> l1 = calService.getLVADatesByDateInStudyProgress(day.getDate());
-            List<Date> l2 = calService.getAllDatesAt(day.getDate());
+            List<DateEntity> l2 = calService.getAllNotLVADatesAt(day.getDate());
             LinkedList<DateLabel> r = new LinkedList<DateLabel>();
             for (Date d : l1) {
                 r.addLast(new DateLabel(d));
