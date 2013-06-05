@@ -16,8 +16,8 @@ public interface MetaLVAService {
     /**
     * Insert persistent a new MetaLVA. If there are problems, f. e. the
     * associated module does not exist, there will be thrown a ServiceException.
-    * The predecessors and successors of this meta lva are not stored. If there are lvas stored int <code>toCreate</code>,
-    * they will not be created by this method. If <code>toCreate.getSemestersOffered()==null</code> it will be stored
+    * The predecessors and successors of this meta lva are not stored. If there are lvas stored in <code>toCreate</code>,
+    * they will also created by this method. If <code>toCreate.getSemestersOffered()==null</code> it will be stored
     * as <code>Semester.UNKNOWN</code>.
     * @param toCreate Contains the data which should be saved. The value of the id and the predecessors are ignored.
     * @return <code>true</code>  if the lva could be created and <code>false</code> if there is already an existing
@@ -50,7 +50,7 @@ public interface MetaLVAService {
      * Read a meta lva by its id. There are all lvas and predecessors set.
      * @return A <code>MetaLVA</code> containing all stored data from the meta lva identified by the spevified id.
      * @param id The id of the meta lva which should be read.
-     * @throws org.springframework.dao.ServiceException If the meta lva data could not be read because any error occured
+     * @throws ServiceException If the meta lva data could not be read because any error occured
      */
     public MetaLVA readById(int id) throws ServiceException, ValidationException;
 
@@ -67,7 +67,7 @@ public interface MetaLVAService {
      * Read a meta lva by its id. The lvas and predecessors are not returned.
      * @return A <code>MetaLVA</code> containing all stored data from the meta lva identified by the specified id.
      * @param id The id of the meta lva which should be read.
-     * @throws org.springframework.dao.ServiceException If the meta lva data could not be read because any error occured
+     * @throws ServiceException If the meta lva data could not be read because any error occured
      */
     public MetaLVA readByIdWithoutLvaAndPrecursor(int id) throws ServiceException, ValidationException;
 

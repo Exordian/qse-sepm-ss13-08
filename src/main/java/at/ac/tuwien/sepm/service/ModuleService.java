@@ -4,10 +4,7 @@ import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 
 /**
- * Author: MUTH Markus
- * Date: 6/4/13
- * Time: 9:01 PM
- * Description of class "ModuleService":
+ * @author Markus MUTH
  */
 public interface ModuleService {
     /**

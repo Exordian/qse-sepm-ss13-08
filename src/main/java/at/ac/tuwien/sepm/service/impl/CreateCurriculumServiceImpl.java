@@ -94,6 +94,7 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
         }
     }
 
+    @Override
     public void createModule(Module m) throws ServiceException{
         try {
             validate(m);
@@ -105,6 +106,7 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
         }
     }
 
+    @Override
     public void createCurriculum(Curriculum c) throws ServiceException {
         try {
             validate(c);
@@ -116,9 +118,10 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
         }
     }
 
+    @Override
     public void createMetaLva(MetaLVA m) throws ServiceException {
         try {
-            validate(m);
+            //validate(m);
             metaLvaDao.create(m);
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
@@ -127,6 +130,7 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
         }
     }
 
+    @Override
     public void validate(Module m) throws IOException {
         if(m.getName()==null) {
             throw new IOException("Bitte geben Sie einen Namen an.");
@@ -136,6 +140,7 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
         }
     }
 
+    @Override
     public void validate(Curriculum c) throws IOException {
         if(c.getStudyNumber() == null) {
             throw new IOException("Bitte geben Sie eine Studienkennzahl an");
@@ -165,8 +170,8 @@ public class CreateCurriculumServiceImpl implements CreateCurriculumService {
             throw new IOException("Die SoftSkill-ECTS müssen größer als 0 sein.");
         }
     }
-
+   /*
     public void validate(MetaLVA m) throws IOException {
-        // TODO use the meta lva validator at the lva management
-    }
+        // TO DO use the meta lva validator at the lva management
+    }*/
 }
