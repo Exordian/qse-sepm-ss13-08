@@ -60,10 +60,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         academicPrograms.setFont(standardButtonFont);
         try {
             for(Curriculum c : lvaFetcherService.getAcademicPrograms())
-                if((c.getName().startsWith("Bachelor")  ) && (c.getName().contains("nformatik")&& !c.getName().contains("Geod")))
-                    academicPrograms.addItem(new CurriculumSelectItem(c));
-            for(Curriculum c : lvaFetcherService.getAcademicPrograms())
-                if(( c.getName().startsWith("Master") ) && (c.getName().contains("nformatik")&& !c.getName().contains("Geod")))
+                if (((c.getName().startsWith("Bachelor")) || (c.getName().startsWith("Master"))) && ((c.getName().contains("nformatik") || c.getName().contains("Software")) && !c.getName().contains("Geod")))
                     academicPrograms.addItem(new CurriculumSelectItem(c));
         } catch (ServiceException e) {
             log.info("no academic prorgams");
