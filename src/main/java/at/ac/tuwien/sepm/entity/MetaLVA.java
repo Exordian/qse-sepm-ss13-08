@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class MetaLVA {
+public class MetaLVA implements Comparable<MetaLVA>{
     
     private Integer id;
     private String nr;
@@ -237,4 +237,8 @@ public class MetaLVA {
         return toReturn;
     }
 
+    @Override
+    public int compareTo(MetaLVA o) {
+        return (int)(Math.max((priority+1),1)*name.compareTo(o.name));
+    }
 }
