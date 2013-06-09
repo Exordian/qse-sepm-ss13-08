@@ -62,7 +62,7 @@ public class DateServiceTest {
     @Test(expected = ServiceException.class)
     public void testValidateDateEntityINVALIDid() throws Exception {
         validDateEntity.setId(-1);
-        dateService.validateDateEntity(validDateEntity);
+        dateService.validateId(validDateEntity.getId());
     }
 
     @Test(expected = ServiceException.class)
