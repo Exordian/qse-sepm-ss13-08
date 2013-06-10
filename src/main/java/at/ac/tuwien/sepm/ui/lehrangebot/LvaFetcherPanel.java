@@ -38,6 +38,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
     private JComboBox<CurriculumSelectItem> academicPrograms;
     private JButton fetchProgram;
     private JButton importb;
+    private JProgressBar progressBar;
 
     private List<Module> currentModules;
 
@@ -93,10 +94,13 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         });
         importb.setEnabled(false);
 
+        progressBar = new JProgressBar();
+
         add(academicPrograms, "push");
         add(fetchProgram, "wrap");
         add(treeView, "grow, push, span, wrap");
         add(importb);
+        add(progressBar);
     }
 
     @Override
@@ -127,31 +131,42 @@ public class LvaFetcherPanel extends StandardInsidePanel {
     }
 
     public void refreshTree() {
-        try {
-            setCursor(new Cursor (Cursor.WAIT_CURSOR));
-            Curriculum curriculum = ((CurriculumSelectItem) academicPrograms.getSelectedItem()).get();
-            DefaultMutableTreeNode top = new DefaultMutableTreeNode(new CurriculumSelectItem(curriculum));
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        progressBar.setIndeterminate(true);
+        FetcherTask task = new FetcherTask();
+        task.execute();
+    }
 
-            currentModules = lvaFetcherService.getModules(curriculum.getStudyNumber(), true);
+    private class FetcherTask extends SwingWorker<Void, Void> {
+        @Override
+        protected Void doInBackground() throws Exception {
+            try {
+                Curriculum curriculum = ((CurriculumSelectItem) academicPrograms.getSelectedItem()).get();
+                DefaultMutableTreeNode top = new DefaultMutableTreeNode(new CurriculumSelectItem(curriculum));
 
-            for(Module m : currentModules) {
-                DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode(new ModuleSelectItem(m));
-                if(m.getMetaLvas() != null)
-                    for(MetaLVA ml: m.getMetaLvas()) {
-                        DefaultMutableTreeNode mln = new DefaultMutableTreeNode(new MetaLvaSelectItem(ml));
-                        moduleNode.add(mln);
-                    }
-                top.add(moduleNode);
+                currentModules = lvaFetcherService.getModules(curriculum.getStudyNumber(), true);
+
+                for(Module m : currentModules) {
+                    DefaultMutableTreeNode moduleNode = new DefaultMutableTreeNode(new ModuleSelectItem(m));
+                    if(m.getMetaLvas() != null)
+                        for(MetaLVA ml: m.getMetaLvas()) {
+                            DefaultMutableTreeNode mln = new DefaultMutableTreeNode(new MetaLvaSelectItem(ml));
+                            moduleNode.add(mln);
+                        }
+                    top.add(moduleNode);
+                }
+
+                tissTree = new JTree(top);
+                tissTree.getSelectionModel().setSelectionMode
+                        (TreeSelectionModel.SINGLE_TREE_SELECTION);
+                treeView.setViewportView(tissTree);
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                progressBar.setIndeterminate(false);
+                importb.setEnabled(true);
+            } catch (ServiceException e) {
+                log.info("couldn't build LvaTree", e);
             }
-
-            tissTree = new JTree(top);
-            tissTree.getSelectionModel().setSelectionMode
-                    (TreeSelectionModel.SINGLE_TREE_SELECTION);
-            treeView.setViewportView(tissTree);
-            setCursor(new Cursor (Cursor.DEFAULT_CURSOR));
-            importb.setEnabled(true);
-        } catch (ServiceException e) {
-            log.info("couldn't build LvaTree", e);
+            return null;
         }
     }
 
