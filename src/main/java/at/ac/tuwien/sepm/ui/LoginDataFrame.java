@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,16 +34,14 @@ public class LoginDataFrame extends JPanel {
         nameLabel = new JLabel("Name:");
         this.add(nameLabel, "grow");
 
-        nameField = new JTextField("eingeben");
-        nameField.setForeground(Color.GRAY);
+        nameField = new JTextField("");
         this.add(nameField, "grow, wrap");
 
 
         pwdLabel = new JLabel("Passwort:");
         this.add(pwdLabel, "grow");
 
-        pwField = new JTextField("eingeben");
-        pwField.setForeground(Color.GRAY);
+        pwField = new JPasswordField("");
         this.add(pwField, "grow, wrap");
 
 

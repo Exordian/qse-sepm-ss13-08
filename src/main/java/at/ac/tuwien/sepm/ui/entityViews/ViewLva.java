@@ -35,11 +35,6 @@ public class ViewLva extends StandardSimpleInsidePanel {
 
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
-
     public void setLva(LVA lva) {
 
     }

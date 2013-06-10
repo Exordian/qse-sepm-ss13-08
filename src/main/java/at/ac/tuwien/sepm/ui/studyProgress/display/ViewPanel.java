@@ -126,8 +126,4 @@ public class ViewPanel extends StandardInsidePanel {
         this.add(majorName);
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
 }

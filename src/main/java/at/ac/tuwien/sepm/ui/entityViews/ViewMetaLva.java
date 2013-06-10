@@ -32,11 +32,6 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
 
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
-
     public void setMetaLva(MetaLVA metalva) {
 
     }

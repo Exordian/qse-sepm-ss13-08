@@ -12,8 +12,5 @@ import at.ac.tuwien.sepm.ui.UI;
  */
 @UI
 public class ExportPanel extends StandardInsidePanel {
-    @Override
-    public void refresh() {
-        //do nothing
-    }
+
 }

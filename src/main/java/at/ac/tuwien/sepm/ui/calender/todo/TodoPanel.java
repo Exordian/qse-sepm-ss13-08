@@ -94,11 +94,6 @@ public class TodoPanel extends StandardInsidePanel {
         });
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
-
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
 

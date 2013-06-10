@@ -1,5 +1,10 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.service.AuthService;
+import at.ac.tuwien.sepm.service.PropertyService;
+import at.ac.tuwien.sepm.service.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -31,6 +36,12 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
 
     private String loginNameTISS;
     private String loginPWDTISS;
+
+    @Autowired
+    private PropertyService propertyService;
+
+    @Autowired
+    private AuthService authService;
 
     public PropertiesPanel() {
         init();
@@ -91,11 +102,16 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
-                        loginNameTISS = temp.getName();
-                        nameLabelTISS.setText("Eingeloggt als: " + temp.getName());
-                        //todo do with name whatever
-                        loginPWDTISS = temp.getPassword();
-                        //todo do with password whatever
+                        try {
+                            authService.authenticate(temp.getName(), temp.getPassword());
+                            loginNameTISS = temp.getName();
+                            nameLabelTISS.setText("Eingeloggt als: " + temp.getName());
+                            propertyService.setProperty("tiss.user", temp.getName());
+                            loginPWDTISS = temp.getPassword();
+                            propertyService.setProperty("tiss.password", temp.getPassword());
+                        } catch (ServiceException ex) {
+                            nameLabelTISS.setText("Login Daten ungültig");
+                        }
                         PropertiesPanel.this.revalidate();
                         PropertiesPanel.this.setVisible(true);
                     }
@@ -190,8 +206,4 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
         this.repaint();
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
 }

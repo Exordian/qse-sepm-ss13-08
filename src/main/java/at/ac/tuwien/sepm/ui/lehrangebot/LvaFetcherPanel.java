@@ -103,11 +103,6 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         add(progressBar);
     }
 
-    @Override
-    public void refresh() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     private void performImport() {
         TreePath path = tissTree.getSelectionPath();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();

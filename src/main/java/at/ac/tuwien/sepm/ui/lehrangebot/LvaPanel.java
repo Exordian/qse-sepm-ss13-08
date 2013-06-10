@@ -14,8 +14,4 @@ import at.ac.tuwien.sepm.ui.UI;
 public class LvaPanel extends StandardInsidePanel {
 
 
-    @Override
-    public void refresh() {
-
-    }
 }

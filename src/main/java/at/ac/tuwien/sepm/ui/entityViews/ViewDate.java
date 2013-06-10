@@ -211,8 +211,4 @@ public class ViewDate extends StandardSimpleInsidePanel {
         this.add(intersectable);
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
 }

@@ -62,5 +62,5 @@ public abstract class StandardInsidePanel extends JPanel {
         this.setOpaque(false);
         loadFonts();
     }
-    public abstract void refresh();
+    public void refresh() {}
 }

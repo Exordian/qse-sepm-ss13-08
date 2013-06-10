@@ -246,11 +246,6 @@ public class StudienplanPanel extends StandardInsidePanel {
         mmodule.setRowCount(0);
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
-
     private class CurriculumComboBoxItem {
         private Curriculum c;
 

@@ -122,9 +122,4 @@ public class LehrangebotPanel extends StandardInsidePanel {
         }
     }
 
-
-    @Override
-    public void refresh() {
-
-    }
 }

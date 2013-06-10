@@ -115,8 +115,4 @@ public class StudiesPanel extends StandardInsidePanel {
         }
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
 }

@@ -455,8 +455,4 @@ public class PlanPanel extends StandardInsidePanel {
         this.repaint();
     }
 
-    @Override
-    public void refresh() {
-        //do nothing
-    }
 }
