@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.entity.*;
+import at.ac.tuwien.sepm.service.RoomFinderService;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.entityViews.*;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 
@@ -35,6 +37,9 @@ public class BackgroundPanel extends JPanel {
     private ViewMetaLva viewMetaLva;
     private Image image;
     private Component lastComponent;
+
+    @Autowired
+    RoomFinderService roomFinderService;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -230,6 +235,15 @@ public class BackgroundPanel extends JPanel {
             this.add(tabs.get(i));
         }
     }
+
+    public void openRoomBrowser(String room) {
+        try {
+            UIHelper.openURL(roomFinderService.getRoomURL(room));
+        } catch (ServiceException e) {
+            log.error("could not find room");
+        }
+    }
+
     public void refresh(){
         calPanel.refresh();
         studPanel.refresh();

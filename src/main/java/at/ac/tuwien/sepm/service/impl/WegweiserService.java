@@ -8,8 +8,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -28,23 +30,38 @@ public class WegweiserService implements RoomFinderService {
 
     private static String HS_LIST = "/tuwien/hoersaal/";
 
+    private Elements roomList;
 
-    @Override
-    public URL getRoomURL(String room) throws ServiceException {
+    // TODO: make this async
+    @PostConstruct
+    void init() {
         try {
             URL tuwienRooms = new URL(BASE_URL + HS_LIST);
             Document tuwienRoomsDoc = Jsoup.parse(tuwienRooms, timeout);
 
-            Elements roomList = tuwienRoomsDoc.select(".maintext li");
+            roomList = tuwienRoomsDoc.select(".maintext li");
+        } catch (IOException e) {
+            log.error("could not pre cache rooms");
+        }
+
+    }
+
+    @Override
+    public URL getRoomURL(String room) throws ServiceException {
+        try {
+            if(room == null)
+                throw new ServiceException("room not found");
+            if(roomList == null || roomList.size() == 0)
+                init();
+            if(roomList == null || roomList.size() == 0)
+                throw new ServiceException("service not available");
             for(Element elemRoom : roomList)
-                if (elemRoom.text().equalsIgnoreCase(room)) {
+                if (elemRoom.text().startsWith(room)) { // some rooms have a "Hörsaal" postfix
                     return new URL(BASE_URL + elemRoom.select("a").first().attr("href"));
                 }
             throw new ServiceException("room not found");
         } catch (MalformedURLException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException("service not available", e);
+            throw new ServiceException("room not found");
         }
     }
 

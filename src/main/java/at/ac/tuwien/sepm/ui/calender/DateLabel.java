@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.ui.UIHelper;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
@@ -90,25 +91,23 @@ public class DateLabel extends JLabel{
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
         private JMenuItem attendance;
+        private JMenuItem showRoom;
         private JMenuItem share;
 
         public PopUpMenu(){
             edit = new JMenuItem("Bearbeiten");
             attendance = new JMenuItem("Anwesenheit");
+            showRoom = new JMenuItem("Wegbeschreibung");
             share = new JMenuItem("Share");
             add(edit);
             add(attendance);
+            add(showRoom);
             add(share);
             addActionListeners();
         }
 
         private void addActionListeners() {
-            edit.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
+            edit.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                       if(date instanceof LvaDate) {
@@ -117,44 +116,28 @@ public class DateLabel extends JLabel{
                           PanelTube.backgroundPanel.viewDate((DateEntity)date);
                       }
                 }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
             });
-            attendance.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
+            attendance.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     // TODO implement this
                 }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
             });
-            share.addMouseListener(new MouseListener() {
+            showRoom.addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
+                public void mouseReleased(MouseEvent e) {
+                    if(date instanceof LvaDate) {
+                        PanelTube.backgroundPanel.openRoomBrowser(((LvaDate) date).getRoom());
+                    }
+                }
+            });
+            share.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     // TODO implement this
                 }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
             });
+
         }
     }
 

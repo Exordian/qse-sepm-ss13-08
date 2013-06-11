@@ -25,7 +25,7 @@ public abstract class StandardInsidePanel extends JPanel {
     protected Font standardButtonFont;
     protected Font calendarDaysFont;
     protected Font calendarDatesFont;
-    protected  Font standardSmallerTitleFont;
+    protected Font standardSmallerTitleFont;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
