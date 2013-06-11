@@ -236,12 +236,14 @@ public class BackgroundPanel extends JPanel {
         }
     }
 
-    public void openRoomBrowser(String room) {
+    public boolean openRoomBrowser(String room) {
         try {
             UIHelper.openURL(roomFinderService.getRoomURL(room));
         } catch (ServiceException e) {
             log.error("could not find room");
+            return false;
         }
+        return true;
     }
 
     public void refresh(){

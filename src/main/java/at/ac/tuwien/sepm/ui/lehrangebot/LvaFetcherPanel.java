@@ -95,6 +95,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         importb.setEnabled(false);
 
         progressBar = new JProgressBar();
+        progressBar.setVisible(false);
 
         add(academicPrograms, "push");
         add(fetchProgram, "wrap");
@@ -128,6 +129,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
     public void refreshTree() {
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
         progressBar.setIndeterminate(true);
+        progressBar.setVisible(true);
         FetcherTask task = new FetcherTask();
         task.execute();
     }
@@ -157,6 +159,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 treeView.setViewportView(tissTree);
                 setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 progressBar.setIndeterminate(false);
+                progressBar.setVisible(false);
                 importb.setEnabled(true);
             } catch (ServiceException e) {
                 log.info("couldn't build LvaTree", e);

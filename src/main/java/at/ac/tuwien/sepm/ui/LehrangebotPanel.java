@@ -36,9 +36,9 @@ public class LehrangebotPanel extends StandardInsidePanel {
         this.studienplanPanel=studienplanPanel;
         this.lvaFetcherPanel=lvaFetcherPanel;
         this.lvaPanel=lvaPanel;
-        this.add(studienplanPanel);
         createTabButtons();
         changeImage(1);
+        this.add(studienplanPanel);
         this.repaint();
         this.revalidate();
     }

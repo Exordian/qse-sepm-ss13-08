@@ -127,7 +127,8 @@ public class DateLabel extends JLabel{
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if(date instanceof LvaDate) {
-                        PanelTube.backgroundPanel.openRoomBrowser(((LvaDate) date).getRoom());
+                        if(!PanelTube.backgroundPanel.openRoomBrowser(((LvaDate) date).getRoom()))
+                            JOptionPane.showMessageDialog(PopUpMenu.this, "Keine Wegbeschreibung gefunden.", "Wegbeschreibung", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             });
