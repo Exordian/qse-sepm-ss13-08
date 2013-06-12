@@ -103,17 +103,17 @@ public class DateLabel extends JLabel{
 
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
-        private JMenuItem attendance;
+       // private JMenuItem attendance;
         private JMenuItem showRoom;
         private JMenuItem share;
 
         public PopUpMenu(){
             edit = new JMenuItem("Bearbeiten");
-            attendance = new JMenuItem("Anwesenheit");
+           // attendance = new JMenuItem("Anwesenheit");
             showRoom = new JMenuItem("Wegbeschreibung");
             share = new JMenuItem("Share");
             add(edit);
-            add(attendance);
+           // add(attendance);
             add(showRoom);
             add(share);
             addActionListeners();
@@ -130,18 +130,20 @@ public class DateLabel extends JLabel{
                     }
                 }
             });
-            attendance.addMouseListener(new MouseAdapter() {
+           /* attendance.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     // TODO implement this
                 }
-            });
+            });*/
             showRoom.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if(date instanceof LvaDate) {
                         if(!PanelTube.backgroundPanel.openRoomBrowser(((LvaDate) date).getRoom()))
-                            JOptionPane.showMessageDialog(PopUpMenu.this, "Keine Wegbeschreibung gefunden.", "Wegbeschreibung", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(PopUpMenu.this, "Keine Wegbeschreibung gefunden.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(PopUpMenu.this, "Es existieren keine Wegbeschreibungen zu privaten Terminen.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             });

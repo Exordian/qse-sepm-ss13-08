@@ -102,4 +102,12 @@ public interface LVAService {
      *
      */
     public void validateID(int id) throws ServiceException;
+
+    /**
+     * Read all lvas.
+     * @return An <code>List<LVA></code> containing all lvas.
+     * @throws ServiceException If the meta lva data could not be read because any error occured.
+     * @throws ValidationException if invalid parameters
+     */
+    public List<LVA> readAll() throws ServiceException, ValidationException;
 }

@@ -285,4 +285,20 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
 
         return result;
     }
+
+    @Override
+    public List<MetaLVA> readAll() throws DataAccessException {
+        String stmt = "SELECT * FROM metalva";
+        List<MetaLVA> result = jdbcTemplate.query(stmt, RowMappers.getMetaLvaRowMapper());
+
+        if(result.size()==0) {
+            return new ArrayList<MetaLVA>();
+        }
+
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, this.readById(result.get(i).getId()));
+        }
+
+        return result;
+    }
 }

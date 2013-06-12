@@ -38,7 +38,7 @@ public class ViewPanel extends StandardInsidePanel {
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
-        setBounds((int) StudStartCoordinateOfWhiteSpace.getX(), (int) StudStartCoordinateOfWhiteSpace.getY(), (int) whiteSpaceStud.getWidth(), (int) whiteSpaceStud.getHeight());
+        setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(), (int) whiteSpace.getWidth(), (int) whiteSpace.getHeight());
         initMajorName();
         initSemesterPanel();
         initButtons();
@@ -96,7 +96,7 @@ public class ViewPanel extends StandardInsidePanel {
             }
         });
 
-        fwd.setBounds((int)whiteSpaceStud.getWidth() - 50,majorName.getY() + majorName.getHeight() + 30+semester.getHeight()/2, 40, 40);
+        fwd.setBounds((int) whiteSpace.getWidth() - 50,majorName.getY() + majorName.getHeight() + 30+semester.getHeight()/2, 40, 40);
         fwd.setOpaque(false);
         fwd.setContentAreaFilled(false);
         fwd.setBorderPainted(false);
@@ -122,7 +122,7 @@ public class ViewPanel extends StandardInsidePanel {
     private void initMajorName() {
         majorName = new JLabel("Bachelor - Teststudium");
         majorName.setFont(standardTitleFont);
-        majorName.setBounds(20,0,(int)whiteSpaceStud.getWidth() - 10,50);
+        majorName.setBounds(20,0,(int) whiteSpace.getWidth() - 10,50);
         this.add(majorName);
     }
 

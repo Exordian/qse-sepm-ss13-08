@@ -275,6 +275,17 @@ public class MetaLVAServiceImpl implements MetaLVAService {
     }
 
     @Override
+    public List<MetaLVA> readAll() throws ServiceException, ValidationException {
+        try {
+            List<MetaLVA> metaLVAList = metaLvaDao.readAll();
+            return metaLVAList;
+        }  catch(DataAccessException e) {
+            logger.error("Exception: "+ e.getMessage());
+            throw new ServiceException("Exception: "+ e.getMessage());
+        }
+    }
+
+    @Override
     public void delete(Integer id) throws ServiceException {
         //To change body of implemented methods use File | Settings | File Templates.
     }

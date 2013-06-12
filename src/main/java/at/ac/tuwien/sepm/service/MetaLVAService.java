@@ -140,5 +140,15 @@ public interface MetaLVAService {
      */
     public void validateID(int id) throws ServiceException;
 
+    /**
+     * Read all meta lvas.
+     * @return An <code>List<MetaLVA></code> containing all meta lvas.
+     * @throws ServiceException If the meta lva data could not be read because any error occured.
+     * @throws ValidationException if invalid parameters
+     */
+    public List<MetaLVA> readAll() throws ServiceException, ValidationException;
+
+
+
     void delete(Integer id) throws ServiceException;
 }

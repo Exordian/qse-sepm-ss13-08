@@ -16,9 +16,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class LVAServiceImplTest {
     @Autowired
     LVAServiceImpl lvaService;
+
     @Before
     public void setUp() throws Exception {
-        //lvaService = new LVAServiceImpl();
+
     }
 
     @Test(expected = ServiceException.class)
@@ -26,30 +27,30 @@ public class LVAServiceImplTest {
         lvaService.create(null);
     }
 
-    /*@Test(expected = ServiceException.class)
+    @Test(expected = ValidationException.class)
     public void testReadByIdNull() throws Exception {
-        lvaService.readById(null);
+        lvaService.readById(-1);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = ValidationException.class)
     public void testReadByMetaLvaNull() throws Exception {
-        lvaService.readByMetaLva(null);
-    }*/
+        lvaService.readByMetaLva(-1);
+    }
 
     @Test(expected = ServiceException.class)
     public void testReadUncompletedByYearSemesterStudyProgressNull() throws Exception {
         lvaService.readUncompletedByYearSemesterStudyProgress(0,null,false);
     }
 
-    /*@Test(expected = ServiceException.class)
+    @Test(expected = ValidationException.class)
     public void testReadByIdWithoutLvaDatesNull() throws Exception {
-        lvaService.readByIdWithoutLvaDates()
+        lvaService.readByIdWithoutLvaDates(-1);
     }
 
     @Test(expected = ServiceException.class)
     public void testReadByYearAndSemesterNull() throws Exception {
         lvaService.readByYearAndSemester(0,false);
-    }*/
+    }
 
     @Test(expected = ServiceException.class)
     public void testUpdateNull() throws Exception {
@@ -60,9 +61,4 @@ public class LVAServiceImplTest {
     public void testValidateLVANull() throws Exception {
         lvaService.validateLVA(null);
     }
-
-    /*@Test(expected = ServiceException.class)
-    public void testValidateIDNull() throws Exception {
-
-    }*/
 }

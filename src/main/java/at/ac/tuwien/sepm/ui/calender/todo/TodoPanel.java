@@ -94,7 +94,7 @@ public class TodoPanel extends StandardInsidePanel {
         });
     }
 
-    private class PopUpMenu extends JPopupMenu {
+        private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
 
         public PopUpMenu(){

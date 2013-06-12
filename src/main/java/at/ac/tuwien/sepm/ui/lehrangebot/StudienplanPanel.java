@@ -46,7 +46,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         this.setLayout(new GridLayout());
         this.setOpaque(false);
         loadFonts();
-        setBounds((int)StudStartCoordinateOfWhiteSpace.getX(), (int)StudStartCoordinateOfWhiteSpace.getY(),(int)whiteSpaceStud.getWidth(),(int)whiteSpaceStud.getHeight());
+        setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(),(int) whiteSpace.getWidth(),(int) whiteSpace.getHeight());
         initPanel();
         initAddCurriculumButton();
         initCurriculumComboBox();
@@ -150,7 +150,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     public void initPanel() {
         panel = new JPanel();
         panel.setLayout(new MigLayout());
-        panel.setBounds(whiteSpaceStud);
+        panel.setBounds(whiteSpace);
         panel.setBackground(Color.WHITE);
     }
 
