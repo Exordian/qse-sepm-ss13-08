@@ -113,12 +113,14 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         for(int i=preStart; i<=preStop; i++) {
             days[a].setDate(new DateTime(preMonthYear, preMonthMonth, i, 0, 0, 0, 0));
             days[a].setBackground(COLOR_OF_NOT_ACTUAL_MONTH);
+            days[a].setActual(false);
             a++;
         }
 
         for(int i=actStart; i<=actStop; i++) {
             days[a].setDate(new DateTime(firstDay.getYear(), firstDay.getMonthOfYear(), i, 0, 0, 0, 0));
             days[a].setBackground(COLOR_OF_ACTUAL_MONTH);
+            days[a].setActual(true);
             a++;
         }
 
@@ -126,6 +128,7 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
             for(int i=postStart; i<=postStop; i++) {
                 days[a].setDate(new DateTime(postMonthYear, postMonthMonth, i, 0, 0, 0, 0));
                 days[a].setBackground(COLOR_OF_NOT_ACTUAL_MONTH);
+                days[a].setActual(false);
                 a++;
             }
         }

@@ -22,17 +22,26 @@ public class DayPanel extends JPanel {
     private DateTime date;
     private int maxDateLabels;
     private TooMuchDatesLabel tmdl;
+    private boolean isActual = false;
 
     public DayPanel(int maxDateLabels) {
         super(new MigLayout("", "1[]1[]1[]1", "1[]"));
         dates = new ArrayList<DateLabel>();
         this.add(title, "wrap");
-        this.add(datePanel);
+        this.add(datePanel, "grow, push, span ");
         this.setOpaque(true);
         this.tmdl = new TooMuchDatesLabel();
         this.tmdl.setFont(new Font("Arial", Font.PLAIN, 10));
         this.maxDateLabels=maxDateLabels;
         this.addMouseListeners();
+    }
+
+    public void setActual(boolean actual) {
+        this.isActual = actual;
+    }
+
+    public boolean getActual() {
+        return this.isActual;
     }
 
     public void setDate(DateTime date) {
@@ -53,13 +62,15 @@ public class DayPanel extends JPanel {
         deleteAllDates();
         if(dates.size() > maxDateLabels) {
             for(int i=0; i<maxDateLabels-1; i++) {
-                datePanel.add(dates.get(i), "wrap");
+                dates.get(i).changeColor(isActual);
+                datePanel.add(dates.get(i), "w 100%, wrap");
             }
             tmdl.setText(dates.size()-maxDateLabels+1);
             datePanel.add(tmdl);
         } else {
             for(DateLabel l : dates) {
-                datePanel.add(l, "wrap");
+                l.changeColor(isActual);
+                datePanel.add(l, "w 100%, wrap");
             }
         }
         this.revalidate();

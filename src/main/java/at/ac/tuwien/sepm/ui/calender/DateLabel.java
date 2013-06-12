@@ -31,6 +31,19 @@ public class DateLabel extends JLabel{
         this.addMouseListener(new PrivateMouseListener());
     }
 
+    public void changeColor (boolean isActualMonth) {
+        if(isActualMonth) {
+            this.setOpaque(true);
+            if(date instanceof LvaDate) {
+                this.setBackground(new Color(223, 233, 255));
+                //this.setForeground(new Color(117, 190, 255));
+            } else if (date instanceof DateEntity) {
+                this.setBackground(new Color(195, 255, 194));
+                //this.setForeground(new Color(163, 255, 114));
+            }
+        }
+    }
+
     public DateTime getStart() {
         return date.getTime().from();
     }
@@ -110,11 +123,11 @@ public class DateLabel extends JLabel{
             edit.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                      if(date instanceof LvaDate) {
-                          PanelTube.backgroundPanel.viewLvaDate((LvaDate)date);
-                      } else if(date instanceof DateEntity) {
-                          PanelTube.backgroundPanel.viewDate((DateEntity)date);
-                      }
+                    if(date instanceof LvaDate) {
+                        PanelTube.backgroundPanel.viewLvaDate((LvaDate)date);
+                    } else if(date instanceof DateEntity) {
+                        PanelTube.backgroundPanel.viewDate((DateEntity)date);
+                    }
                 }
             });
             attendance.addMouseListener(new MouseAdapter() {

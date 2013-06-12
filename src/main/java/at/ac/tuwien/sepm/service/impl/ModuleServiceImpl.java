@@ -10,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -54,8 +55,12 @@ public class ModuleServiceImpl implements ModuleService {
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
             throw new ValidationException("Exception: "+ e.getMessage());
+        } catch(DuplicateKeyException e) {
+            logger.info("The module \"" + toCreate.getName() + "\" is already stored.");
+            // TODO implement merger
+            return false;
         } catch(DataAccessException e) {
-            logger.error("Exception: "+ e.getMessage());
+            logger.error("Exception: " + e.getClass() + "\t" + e.getMessage());
             throw new ServiceException("Exception: "+ e.getMessage());
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage());
