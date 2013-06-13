@@ -76,7 +76,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             description.setText(todo.getDescription());
             done.setSelected(todo.getDone());
             try {
-                lva.setSelectedItem(lvaService.readById(todo.getLva().getId()));
+                lva.setSelectedItem(lvaService.readById(todo.getLva().getId()));   //todo
             } catch (ServiceException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();

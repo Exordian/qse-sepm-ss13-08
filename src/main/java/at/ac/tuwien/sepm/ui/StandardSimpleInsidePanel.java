@@ -26,8 +26,8 @@ import java.util.GregorianCalendar;
 public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
     protected JButton retButton;
     protected BackgroundPanel bgPanel;
-    protected JTextField title;
-    protected JLabel title2;
+    protected JTextField title;  //editable title
+    protected JLabel title2;     //non-editable title
 
     protected Rectangle simpleWhiteSpace = new Rectangle(98, 64, 922, 509);  //white space in simple inside panel
 

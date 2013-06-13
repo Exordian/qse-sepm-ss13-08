@@ -55,7 +55,7 @@ public class LvaDisplayPanel extends JPanel {
                 if (rowindex < 0)
                     return;
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
-                    JPopupMenu popup = new PopUpMenu();
+                    JPopupMenu popup = new PopUpMenu(false);                     //todo erstellen muss möglich sein auch ohne item
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
@@ -102,14 +102,14 @@ public class LvaDisplayPanel extends JPanel {
         searchName.addKeyListener(listener);
     }
 
-
     private class PopUpMenu extends JPopupMenu {
-        private JMenuItem edit;
-        private JMenuItem create;
+        private JMenuItem button;
+        private JMenuItem button2;
 
-        public PopUpMenu(){
-            create = new JMenuItem("Erstellen");
-            create.addMouseListener(new MouseListener() {
+        public PopUpMenu(boolean bol){
+            //if (bol) {
+            button = new JMenuItem("Erstellen");
+            button.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {}
                 @Override
@@ -124,10 +124,9 @@ public class LvaDisplayPanel extends JPanel {
                 @Override
                 public void mouseExited(MouseEvent e) {}
             });
-            add(create);
-
-            edit = new JMenuItem("Bearbeiten");
-            edit.addMouseListener(new MouseListener() {
+            //} else {
+            button2 = new JMenuItem("Bearbeiten");
+            button2.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {}
                 @Override
@@ -142,7 +141,9 @@ public class LvaDisplayPanel extends JPanel {
                 @Override
                 public void mouseExited(MouseEvent e) {}
             });
-            add(edit);
+            // }
+            add(button);
+            add(button2);
         }
     }
 

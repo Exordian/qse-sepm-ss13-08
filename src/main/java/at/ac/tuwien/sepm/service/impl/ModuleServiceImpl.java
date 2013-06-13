@@ -14,6 +14,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Markus MUTH
@@ -67,6 +68,16 @@ public class ModuleServiceImpl implements ModuleService {
             throw new ServiceException("Exception: "+ e.getMessage());
         } catch (ValidationException e) {
             logger.error("Exception: " + e.getMessage());
+            throw new ServiceException("Exception: "+ e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Module> readAll() throws ServiceException {
+        try {
+            return moduleDao.readAll();
+        } catch (DataAccessException e) {
+            logger.error("Exception: " + e.getClass() + "\t" + e.getMessage());
             throw new ServiceException("Exception: "+ e.getMessage());
         }
     }

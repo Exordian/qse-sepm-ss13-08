@@ -236,10 +236,6 @@ public class MetaLVAServiceImpl implements MetaLVAService {
         String error_msg = "";
         boolean valid = true;
 
-        if(toValidate.getId() != null && toValidate.getId() <= 0 ) {
-            valid = false;
-            error_msg += "invalid id!\n";
-        }
         if(toValidate.getNr() == null) {
             valid = false;
             error_msg += "invalid Nr.!\n";
@@ -256,9 +252,6 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             valid = false;
             error_msg += "invalid semester!(null)\n";
         }
-
-        // TODO remove this line
-        valid = true;
 
         if(valid == false) {
             logger.error("Invalid MetaLVA: "+ error_msg);

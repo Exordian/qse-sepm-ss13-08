@@ -81,6 +81,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
     public void setLva(LVA lva) {
         if (lva == null) {
             this.lva=new LVA();
+            changeTitle("Neue Lva");
             inStudyProgress.setSelected(false);
             additionalInfo1.setText("Bitte Infos einfügen");
             additionalInfo2.setText("Bitte Infos einfügen");
@@ -97,7 +98,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
             content.setText(lva.getContent());
             language.setText(lva.getLanguage());
             semester.setSelectedItem(lva.getSemester());
-            metaLVA.setSelectedItem(lva.getMetaLVA());
+            metaLVA.setSelectedItem(lva.getMetaLVA());   //todo
             year.setYear(lva.getYear());
 
             goals.setText(lva.getGoals());

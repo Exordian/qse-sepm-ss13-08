@@ -31,6 +31,7 @@ public class MetaLVADisplayPanel extends JPanel {
 
     private JScrollPane pane = new JScrollPane();
 
+
     int tWidth;
     public MetaLVADisplayPanel(List<MetaLVA> lvas,int width,int height){
         this.tWidth =width;
@@ -41,18 +42,19 @@ public class MetaLVADisplayPanel extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 int r = MetaLVADisplayPanel.this.getTable().rowAtPoint(e.getPoint());
+
                 if (r >= 0 && r < MetaLVADisplayPanel.this.getTable().getRowCount()) {
                     MetaLVADisplayPanel.this.getTable().setRowSelectionInterval(r, r);
+                    if (e.isPopupTrigger()) {
+                        JPopupMenu popup = new PopUpMenu(false);
+                        popup.show(e.getComponent(), e.getX(), e.getY());
+                    }
                 } else {
                     MetaLVADisplayPanel.this.getTable().clearSelection();
-                }
-
-                int rowindex = MetaLVADisplayPanel.this.getTable().getSelectedRow();
-                if (rowindex < 0)
-                    return;
-                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
-                    JPopupMenu popup = new PopUpMenu();
-                    popup.show(e.getComponent(), e.getX(), e.getY());
+                    /*if (e.isPopupTrigger()) {
+                        JPopupMenu popup = new PopUpMenu(true);        //todo erstellen muss möglich sein auch ohne item
+                        popup.show(pane, e.getX(), e.getY());
+                    } */
                 }
             }
         });
@@ -84,7 +86,6 @@ public class MetaLVADisplayPanel extends JPanel {
                         filteredLVAs.add(m);
                     }
                 }
-                //table = new MetaLVATable(filteredLVAs, tWidth);
                 table.refreshMetaLVAs(filteredLVAs);
                 pane.setViewportView(table);
                 revalidate();
@@ -99,45 +100,47 @@ public class MetaLVADisplayPanel extends JPanel {
     }
 
     private class PopUpMenu extends JPopupMenu {
-        private JMenuItem edit;
-        private JMenuItem create;
+        private JMenuItem button;
+        private JMenuItem button2;
 
-        public PopUpMenu(){
-            create = new JMenuItem("Erstellen");
-            create.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
+        public PopUpMenu(boolean bol){
+            //if (bol) {
+                button = new JMenuItem("Erstellen");
+                button.addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {}
+                    @Override
+                    public void mousePressed(MouseEvent e) {}
 
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    PanelTube.backgroundPanel.viewMetaLva(null);
-                }
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
-            });
-            add(create);
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        PanelTube.backgroundPanel.viewMetaLva(null);
+                    }
+                    @Override
+                    public void mouseEntered(MouseEvent e) {}
+                    @Override
+                    public void mouseExited(MouseEvent e) {}
+                });
+            //} else {
+                button2 = new JMenuItem("Bearbeiten");
+                button2.addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {}
+                    @Override
+                    public void mousePressed(MouseEvent e) {}
 
-            edit = new JMenuItem("Bearbeiten");
-            edit.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    PanelTube.backgroundPanel.viewMetaLva(getSelectedMetaLVA());
-                }
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
-            });
-            add(edit);
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        PanelTube.backgroundPanel.viewMetaLva(getSelectedMetaLVA());
+                    }
+                    @Override
+                    public void mouseEntered(MouseEvent e) {}
+                    @Override
+                    public void mouseExited(MouseEvent e) {}
+                });
+           // }
+            add(button);
+            add(button2);
         }
     }
 

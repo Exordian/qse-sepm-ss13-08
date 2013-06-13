@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.service;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 
+import java.util.List;
+
 /**
  * @author Markus MUTH
  */
@@ -14,4 +16,11 @@ public interface ModuleService {
      * @throws ServiceException If any error occurred.
      */
     boolean create(Module toCreate) throws ServiceException, ValidationException;
+
+    /**
+     * reads all modules from the database
+     * @return list of all modules, null if no modules exist
+     * @throws ServiceException If any error occurred.
+     */
+    List<Module> readAll() throws ServiceException;
 }
