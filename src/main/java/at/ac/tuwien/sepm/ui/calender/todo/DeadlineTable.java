@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Scope;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @UI
@@ -43,7 +45,7 @@ public class DeadlineTable extends JTable {
         this.deadlineList = list;
         for(LvaDate deadline: deadlineList) {
             try {
-                model.addRow(new String[] {(lvaService.readById(deadline.getLva())).getMetaLVA().getName(), deadline.getName(), deadline.getDescription(), deadline.getStop().toString(), deadline.getWasAttendant().toString()});
+                model.addRow(new String[] {(lvaService.readById(deadline.getLva())).getMetaLVA().getName(), deadline.getName(), deadline.getDescription(), new SimpleDateFormat("dd.MM.yy HH:mm").format(deadline.getStop().toDate()), deadline.getWasAttendant() ? "Ja" : "Nein"});
             } catch(ValidationException e) {
                 logger.error(e.getMessage());
             } catch(ServiceException e) {
@@ -62,7 +64,7 @@ public class DeadlineTable extends JTable {
             this.setDeadlines(lvaDateService.getAllDeadlines());
         } catch (ServiceException e) {
             log.error(e.getMessage());
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 }

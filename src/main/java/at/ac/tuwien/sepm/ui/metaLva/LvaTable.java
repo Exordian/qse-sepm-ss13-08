@@ -20,22 +20,27 @@ public class LvaTable extends JTable {
     int[] colWidth = new int[]{35,62,43,410};
     int width = colWidth[0]+colWidth[1]+colWidth[2]+colWidth[3];
     DefaultTableModel model;
+
     public LvaTable(int width){
         init(width);
     }
+
     public LvaTable(List<LVA> lvas,int width){
         this.lvas = lvas;
         init(width);
         setLVAs(lvas);
     }
+
     public LvaTable(List<LVA> lvas){
         this.lvas = lvas;
         init(this.width);
         setLVAs(lvas);
     }
+
     public int getColWidth(int index){
         return colWidth[index];
     }
+
     private void init(int width){
         model = new DefaultTableModel(new String[]{"Jahr","Semester","Typ","Name"},0);
 
@@ -65,10 +70,5 @@ public class LvaTable extends JTable {
 
     public LVA getSelectedLVA(){
         return lvas.get(getSelectedRow());
-    }
-
-    public void removeSelectedMetaLVA() {
-        lvas.remove(getSelectedRow());
-        model.removeRow(getSelectedRow());
     }
 }

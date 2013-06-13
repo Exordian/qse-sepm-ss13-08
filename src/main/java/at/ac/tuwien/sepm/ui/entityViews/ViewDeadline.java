@@ -82,15 +82,15 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             done.setSelected(deadline.getWasAttendant());
             calTime.setDate(deadline.getStart().toDate());
             time.setValue(deadline.getStart().toDate());
-           /* try {
-                lva.setSelectedItem(lvaService.readById(deadline.getLva()));     //todo
+            try {
+                lva.setSelectedItem(new LvaSelectItem(lvaService.readById(deadline.getLva())));     //todo
             } catch (ServiceException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();
             } catch (ValidationException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();
-            }  */
+            }
             setDeleteButton(true);
         }
     }

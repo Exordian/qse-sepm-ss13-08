@@ -20,7 +20,6 @@ import java.util.ArrayList;
  */
 @UI
 public class ViewMetaLva extends StandardSimpleInsidePanel {
-    private JTextField id;
     private JTextField nr;
     private JTextField name;
     private JSpinner ects;
