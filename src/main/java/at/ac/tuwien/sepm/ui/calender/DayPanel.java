@@ -1,8 +1,16 @@
 package at.ac.tuwien.sepm.ui.calender;
 
+import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.service.DateService;
+import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,8 +32,13 @@ public class DayPanel extends JPanel {
     private TooMuchDatesLabel tmdl;
     private boolean isActual = false;
 
-    public DayPanel(int maxDateLabels) {
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+
+    private DateService dateService;
+
+    public DayPanel(int maxDateLabels, DateService dateService) {
         super(new MigLayout("", "1[]1[]1[]1", "1[]"));
+        this.dateService=dateService;
         dates = new ArrayList<DateLabel>();
         this.add(title, "wrap");
         this.add(datePanel, "grow, push, span ");
@@ -213,7 +226,16 @@ public class DayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    // TODO implement this
+                    DateEntity dateEntity = new DateEntity();
+                    dateEntity.setName("Freier Tag");
+                    dateEntity.setTime(new TimeFrame(new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 0, 0, 0, 0), new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 23, 59, 59, 0)));
+                    dateEntity.setIntersectable(false);
+                    dateEntity.setDescription("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!");
+                    try {
+                        DayPanel.this.dateService.createDate(dateEntity);
+                    } catch (ServiceException e1) {
+                        log.error(e1.getMessage());
+                    }
                 }
 
                 @Override

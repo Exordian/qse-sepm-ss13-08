@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.CalService;
+import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.CalServiceImpl;
@@ -28,6 +29,7 @@ public abstract class CalAbstractView extends StandardInsidePanel {
 
     private CalService calService;
     private LVAService lvaService;
+    private DateService dateService;
 
     // layout config ------------------------------------------------------------------------------------------------ //
 
@@ -54,9 +56,10 @@ public abstract class CalAbstractView extends StandardInsidePanel {
 
     // -------------------------------------------------------------------------------------------------------------- //
 
-    public CalAbstractView(int weeks, CalService calService, LVAService lvaService) {
+    public CalAbstractView(int weeks, CalService calService, LVAService lvaService, DateService dateService) {
         this.calService = calService;
         this.lvaService=lvaService;
+        this.dateService=dateService;
         WEEKS = weeks;
         AMOUNT_DAYS_SHOWN = 7 * weeks;
         days = new DayPanel[AMOUNT_DAYS_SHOWN];
@@ -98,11 +101,11 @@ public abstract class CalAbstractView extends StandardInsidePanel {
     protected void initDayPanels() {
         for(int y=0; y<days.length; y=y+7) {
             for(int x=0; x<7-1; x++) {
-                days[x+y] = new DayPanel(maxDateLabels);
+                days[x+y] = new DayPanel(maxDateLabels, dateService);
                 days[x+y].setMinimumSize(dayPanelDimension);
                 this.add(days[x + y]);
             }
-            days[y+6] = new DayPanel(maxDateLabels);
+            days[y+6] = new DayPanel(maxDateLabels, dateService);
             days[y+6].setMinimumSize(dayPanelDimension);
             this.add(days[y + 6], "wrap");
         }

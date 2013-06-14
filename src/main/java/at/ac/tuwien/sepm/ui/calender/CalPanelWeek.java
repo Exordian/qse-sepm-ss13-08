@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.calender;
 
 import at.ac.tuwien.sepm.service.CalService;
+import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.UI;
@@ -22,8 +23,8 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
     private static final Logger logger = Logger.getLogger(CalPanelWeek.class);
 
     @Autowired
-    public CalPanelWeek(CalService service,LVAService lvaService) {
-        super(1,service,lvaService);
+    public CalPanelWeek(CalService service,LVAService lvaService, DateService dateService) {
+        super(1,service,lvaService, dateService);
         super.firstDay = DateTime.now();
         layout = new MigLayout("", "1[]1[]1[]1", "1[]");
         loadFonts();
