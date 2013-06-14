@@ -41,7 +41,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
     private JButton save;
     private JButton delete;
     private JLabel lvaLabel;
-    private WideComboBox lva;
+    private JComboBox lva;
     private List<LVA> lvas;
     private LVAService lvaService;
     private JLabel timeLabel;
@@ -82,15 +82,11 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             done.setSelected(deadline.getWasAttendant());
             calTime.setDate(deadline.getStart().toDate());
             time.setValue(deadline.getStart().toDate());
-            try {
-                lva.setSelectedItem(lvaService.readById(deadline.getLva()));     //todo
-            } catch (ServiceException e) {
-                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
-                e.printStackTrace();
-            } catch (ValidationException e) {
-                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
-                e.printStackTrace();
-            }
+            for(int i = 0; i < lva.getModel().getSize(); i++)                                    //todo
+                if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == deadline.getLva()) {
+                    lva.setSelectedIndex(i);
+                    break;
+                }
             setDeleteButton(true);
         }
     }

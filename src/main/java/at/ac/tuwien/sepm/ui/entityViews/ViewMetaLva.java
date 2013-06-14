@@ -119,7 +119,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
 
         nr = new JTextField();
         nr.setFont(standardTextFont);
-        nr.setBounds(nrLabel.getX() + nrLabel.getWidth() + 20, nrLabel.getY(), 100,25);
+        nr.setBounds(nrLabel.getX() + nrLabel.getWidth() + 20, nrLabel.getY(), 140,25);
         this.add(nr);
 
         ectsLabel = new JLabel("ECTs:");
@@ -131,7 +131,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         ects.setModel(new SpinnerNumberModel(0.,0.,30.,0.1));
         ects.setEditor(new JSpinner.NumberEditor(ects, "0.#"));
         ects.setFont(standardTextFont);
-        ects.setBounds(ectsLabel.getX() + ectsLabel.getWidth() + 20, ectsLabel.getY(), 100,25);
+        ects.setBounds(ectsLabel.getX() + ectsLabel.getWidth() + 20, ectsLabel.getY(), 140,25);
         this.add(ects);
 
         typeLabel = new JLabel("Typ:");
@@ -144,7 +144,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             type.addItem(t);
         }
         type.setFont(standardTextFont);
-        type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 100,25);
+        type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 140,25);
         this.add(type);
 
         semestersOfferedLabel = new JLabel("Semester:");
@@ -156,7 +156,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         for(Semester s : Semester.values())
             semestersOffered.addItem(s);
         semestersOffered.setFont(standardTextFont);
-        semestersOffered.setBounds(semestersOfferedLabel.getX() + semestersOfferedLabel.getWidth() + 20, semestersOfferedLabel.getY(), 100,25);
+        semestersOffered.setBounds(semestersOfferedLabel.getX() + semestersOfferedLabel.getWidth() + 20, semestersOfferedLabel.getY(), 140,25);
         this.add(semestersOffered);
 
         moduleLabel = new JLabel("Gehört zu Modul:");
@@ -172,7 +172,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             log.error("Exception: " +e.getMessage());
         }
         module.setFont(standardTextFont);
-        module.setBounds(moduleLabel.getX() + moduleLabel.getWidth() + 20, moduleLabel.getY(), 100,25);
+        module.setBounds(moduleLabel.getX() + moduleLabel.getWidth() + 20, moduleLabel.getY(), 140,25);
         this.add(module);
 
         priorityLabel = new JLabel("Priorität:");
@@ -186,7 +186,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
 
 
         priority.setFont(standardTextFont);
-        priority.setBounds(priorityLabel.getX() + priorityLabel.getWidth() + 20, priorityLabel.getY(), 100,25);
+        priority.setBounds(priorityLabel.getX() + priorityLabel.getWidth() + 20, priorityLabel.getY(), 140,25);
         this.add(priority);
 
         completedLabel = new JLabel("Abgeschlossen:");
@@ -219,7 +219,11 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             type.setSelectedItem(metaLVA.getType());
             priority.setValue(metaLVA.getPriority());
             semestersOffered.setSelectedItem(metaLVA.getSemestersOffered());
-            module.setSelectedItem(metaLVA.getModule());   //todo same as every year...
+            for(int i = 0; i < module.getModel().getSize(); i++)
+                if (((ModuleSelectItem) module.getItemAt(i)).get().getId() == metaLVA.getModule()) {
+                    module.setSelectedIndex(i);
+                    break;
+                }
             completed.setSelected(metaLVA.isCompleted());
         }
     }
@@ -233,5 +237,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         public String toString() {
             return item.getName();
         }
+
+
     }
 }
