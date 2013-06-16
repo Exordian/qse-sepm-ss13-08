@@ -41,6 +41,8 @@ public class DateLabel extends JLabel{
                 this.setBackground(new Color(195, 255, 194));
                 //this.setForeground(new Color(163, 255, 114));
             }
+        } else {
+            // this.setForeground(Color.WHITE);
         }
     }
 

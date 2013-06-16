@@ -31,7 +31,7 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
         setLocation(CalStartCoordinateOfWhiteSpace);
         this.setLayout(layout);
         this.setVisible(true);
-
+        /*
         initPanel();
         try {
             setDates();
@@ -41,6 +41,27 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
 
         this.repaint();
         this.revalidate();
+        */
+    }
+
+    public void init() {
+        initPanel();
+        try {
+            setDates();
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
+        this.repaint();
+        this.revalidate();
+    }
+
+    public void goToDay(DateTime day) {
+        firstDay = day;
+        setDays();
+        refresh();
+        repaint();
+        revalidate();
     }
 
     @Override

@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -35,6 +36,11 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
     }
 
     @Override
+    public void init() {
+        calPanelMonth.init();
+    }
+
+    @Override
     public void refresh() {
         try {
             calPanelMonth.setDates();
@@ -56,6 +62,11 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
     @Override
     public void last() throws ServiceException {
         calPanelMonth.last();
+    }
+
+    @Override
+    public void goToDay(DateTime date) {
+        // TODO
     }
 
     @Override

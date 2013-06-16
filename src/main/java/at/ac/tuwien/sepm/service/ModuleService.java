@@ -9,6 +9,12 @@ import java.util.List;
  * @author Markus MUTH
  */
 public interface ModuleService {
+    public void startMergeSession();
+
+    public boolean stopMergeSession();
+
+    public boolean mergingNecessary();
+
     /**
      * Create a new Module. All containing MetaLVAs are also created.
      * @param toCreate The entity containing all

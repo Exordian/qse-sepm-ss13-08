@@ -13,6 +13,12 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface MetaLVAService {
+    public void startMergeSession();
+
+    public boolean stopMergeSession();
+
+    public boolean mergingNecessary();
+
     /**
     * Insert persistent a new MetaLVA. If there are problems, f. e. the
     * associated module does not exist, there will be thrown a ServiceException.

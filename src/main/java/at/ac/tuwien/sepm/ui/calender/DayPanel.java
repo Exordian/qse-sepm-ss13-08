@@ -1,8 +1,12 @@
 package at.ac.tuwien.sepm.ui.calender;
 
+import at.ac.tuwien.sepm.ui.CalendarPanel;
+import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import sun.misc.PerformanceLogger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +19,8 @@ import java.util.List;
 /**
  * @author Markus MUTH
  */
+
+@UI
 public class DayPanel extends JPanel {
     private JLabel title = new JLabel();
     private JPanel datePanel = new JPanel(new MigLayout("", "1[]1[]1[]1", "1[]"));
@@ -23,6 +29,9 @@ public class DayPanel extends JPanel {
     private int maxDateLabels;
     private TooMuchDatesLabel tmdl;
     private boolean isActual = false;
+
+    @Autowired
+    private CalendarPanel calPanel;
 
     public DayPanel(int maxDateLabels) {
         super(new MigLayout("", "1[]1[]1[]1", "1[]"));
@@ -34,6 +43,10 @@ public class DayPanel extends JPanel {
         this.tmdl.setFont(new Font("Arial", Font.PLAIN, 10));
         this.maxDateLabels=maxDateLabels;
         this.addMouseListeners();
+    }
+
+    public void setFontColors(Color color) {
+        title.setForeground(color);
     }
 
     public void setActual(boolean actual) {
@@ -115,7 +128,8 @@ public class DayPanel extends JPanel {
         class PrivateMouseListener extends MouseAdapter {
             public void mouseClicked(MouseEvent evt) {
                 if (evt.getClickCount() == 2) {
-                    new CalDisplayAllDatesFrame(getDates());
+                    //new CalDisplayAllDatesFrame(getDates());
+                    //calPanel.jumpToDate(date);
                 }
             }
 

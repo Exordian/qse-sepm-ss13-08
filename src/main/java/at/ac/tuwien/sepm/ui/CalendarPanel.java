@@ -9,8 +9,10 @@ import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 //import org.joda.time.DateTime;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -66,6 +68,12 @@ public class CalendarPanel extends StandardInsidePanel {
         createTop();
         this.revalidate();
         this.repaint();
+    }
+
+    @PostConstruct
+    public void initGenerators() {
+        calPanelWeek.init();
+        calPanelMonth.init();
     }
 
     public void showTodo(boolean show) {
@@ -276,5 +284,18 @@ public class CalendarPanel extends StandardInsidePanel {
     public void refresh() {
         calPanelMonth.refresh();
         calPanelWeek.refresh();
+    }
+
+    public void jumpToDate(DateTime anyDateOfWeek) {
+        calPanelWeek.goToDay(anyDateOfWeek);
+        changeImage(1);
+        remove(calPanelMonth);
+        remove(todoPanel);
+        add(calPanelWeek);
+        calPanelWeek.refresh();
+        activeView = calPanelWeek;
+        month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+        calPanelWeek.revalidate();
+        calPanelWeek.repaint();
     }
 }

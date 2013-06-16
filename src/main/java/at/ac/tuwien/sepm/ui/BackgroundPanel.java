@@ -58,6 +58,8 @@ public class BackgroundPanel extends JPanel {
         this.viewTodo=viewTodo;
         this.viewDeadline=viewDeadline;
 
+
+
         changeImage(1);
         createPropertiesButton();
         createTabButtons();

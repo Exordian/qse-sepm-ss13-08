@@ -24,52 +24,90 @@ public class ModuleServiceImpl implements ModuleService {
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
+    MergerImpl merger = new MergerImpl();
+
     @Autowired
     ModuleDao moduleDao;
 
     @Autowired
     MetaLVAService metaLVAService;
 
+    public void startMergeSession() {
+        merger.reset();
+        metaLVAService.startMergeSession();
+    }
+
+    public boolean stopMergeSession() {
+        if(mergingNecessary()) {
+            String logString = "module merger stopped - conflicts at storing following " + merger.getNewModules().size() + " module(s): \n";
+            for(Module s : merger.getNewModules()) {
+                logString = logString + "\t\t" + s.getName() + "\n";
+            }
+            logger.info(logString);
+            metaLVAService.stopMergeSession();
+            return true;
+        } else {
+            logger.info("module merger stopped - no conflicts");
+            metaLVAService.stopMergeSession();
+            return false;
+        }
+    }
+
+    public boolean mergingNecessary() {
+        return merger.moduleMergingNecessary() || metaLVAService.mergingNecessary();
+    }
+
     @Override
     public boolean create(Module toCreate) throws ServiceException, ValidationException {
+        boolean moduleCreated = false;
+        boolean metaLvasCreated = true;
+
         try {
-            boolean moduleCreated = moduleDao.create(toCreate);
-
-            boolean metaLvasCreated = true;
-            if(toCreate.getMetaLvas() != null) {
-                for (MetaLVA m : toCreate.getMetaLvas()) {
-                    m.setModule(toCreate.getId());
-                    metaLvasCreated = metaLvasCreated && metaLVAService.create(m);
-                }
-            }
-
-            return moduleCreated && metaLvasCreated;
-
-            /*
-            this.validateMetaLVA(toCreate);
-            boolean metaLvaCreated = metaLvaDao.create(toCreate);
-            toCreate.getLVAs().get(0).setId(toCreate.getId());
-            boolean lvaCreated = lvaDao.create(toCreate.getLVAs().get(0));
-            int lvaId = toCreate.getLVAs().get(0).getId();
-
-            return metaLvaCreated && lvaCreated; */
-        } catch(ServiceException e) {
-            logger.error("Exception: "+ e.getMessage());
-            throw new ValidationException("Exception: "+ e.getMessage());
+            moduleCreated = moduleDao.create(toCreate);
         } catch(DuplicateKeyException e) {
             logger.info("The module \"" + toCreate.getName() + "\" is already stored.");
             // TODO implement merger
-            return false;
+            Module newModule;
+            try {
+                newModule = moduleDao.readByName(toCreate.getName());
+            } catch (DataAccessException e1) {
+                logger.error("Exception: "+ e1.getMessage());
+                throw new ServiceException("Exception: " + e.getMessage(), e1);
+            }
+            if(newModule==null) {
+                logger.error("newModule == null");
+                throw new ServiceException("Internal error");
+            }
+            merger.add(newModule, toCreate);
+            moduleCreated = false;
         } catch(DataAccessException e) {
             logger.error("Exception: " + e.getClass() + "\t" + e.getMessage());
             throw new ServiceException("Exception: "+ e.getMessage());
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage());
             throw new ServiceException("Exception: "+ e.getMessage());
-        } catch (ValidationException e) {
-            logger.error("Exception: " + e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
         }
+
+        try {
+            if(toCreate.getMetaLvas() != null) {
+                int id = moduleDao.readByName(toCreate.getName()).getId();
+                //logger.debug("Amount of meta lvas stored in toCreate: " + toCreate.getMetaLvas().size());
+                for (MetaLVA m : toCreate.getMetaLvas()) {
+                    //logger.debug("Following meta lva is now being created: " + m.getNr() + "\t" + m.getName() + "\t\t\t" + m.toString());
+                    m.setModule(id);
+                    boolean b = metaLVAService.create(m);
+                    metaLvasCreated = metaLvasCreated &&  b;
+                    //logger.debug("Following meta lva has being created: "  + b + "\t" + m.getNr() + "\t" + m.getName());
+                }
+            } else {
+                logger.debug("Amount of meta lvas stored in toCreate: 0");
+            }
+        } catch(ServiceException e) {
+            logger.error("Exception: "+ e.getMessage());
+            throw new ServiceException("MetaLVA could not be created", e);
+        }
+
+        return moduleCreated && metaLvasCreated;
     }
 
     @Override

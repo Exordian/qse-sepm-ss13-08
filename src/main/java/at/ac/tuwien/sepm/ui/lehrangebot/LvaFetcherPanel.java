@@ -15,6 +15,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import sun.misc.PerformanceLogger;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -22,6 +23,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 @UI
@@ -107,16 +109,31 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         TreePath path = tissTree.getSelectionPath();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
         Object item = selectedNode.getUserObject();
+        ArrayList<String> failedModules = new ArrayList<String>();
         try {
             if(item instanceof ModuleSelectItem) {
+                moduleService.startMergeSession();
                 moduleService.create(((ModuleSelectItem)item).get());
+                moduleService.stopMergeSession();
+                if(moduleService.mergingNecessary()) {
+                    // TODO open merging window
+                }
             } else if(item instanceof CurriculumSelectItem) {
-                // TODO: Not always working, db contraint fails
+                moduleService.startMergeSession();
                 for(Module m : currentModules) {
                     moduleService.create(m);
                 }
+                moduleService.stopMergeSession();
+                if(moduleService.mergingNecessary()) {
+                    // TODO open merging window
+                }
             } else if(item instanceof MetaLvaSelectItem) {
+                metaLVAService.startMergeSession();
                 metaLVAService.create(((MetaLvaSelectItem) item).get());
+                metaLVAService.stopMergeSession();
+                if(metaLVAService.mergingNecessary()) {
+                    // TODO open merging window
+                }
             }
         } catch (ServiceException e) {
             log.error("metalva create failed");
@@ -198,5 +215,9 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         public String toString() {
             return item.getName();
         }
+    }
+
+    private class MergingNecessaryWindow extends JDialog {
+
     }
 }

@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ui.calender;
 
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.UI;
+import org.joda.time.DateTime;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,5 +17,7 @@ public interface CalendarInterface {
     public void semester();
     public void next() throws ServiceException;
     public void last() throws ServiceException;
+    public void goToDay(DateTime date);
+    public void init();
     String getTimeIntervalInfo();
 }
