@@ -105,6 +105,22 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         add(progressBar);
     }
 
+    private int startMergeDialog() {
+        Object[] options = {"Alte Daten beibehalten",
+                "Neue Daten übernehmen",
+                "Daten zusammenführen"};
+
+        return JOptionPane.showOptionDialog(new JFrame(),
+                "Einige Daten sind bereits abgespeichert, ein erneutes speichern würde diese Daten überschreiben." +
+                        "Wie wollen sie vorgehen?",
+                "Konflikte beim Speichern der Daten",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+    }
+
     private void performImport() {
         TreePath path = tissTree.getSelectionPath();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
@@ -116,7 +132,21 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 moduleService.create(((ModuleSelectItem)item).get());
                 moduleService.stopMergeSession();
                 if(moduleService.mergingNecessary()) {
-                    // TODO open merging window
+                    int option = startMergeDialog();
+                    if(option == 0) {
+                        // do nothing
+                    } else if(option == 1) {
+                        for(Module m : moduleService.getNewModulesWithMergeConflicts()) {
+                            log.debug("following module will be updated: " + m);
+                            moduleService.update(m);
+                        }
+                        for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
+                            log.debug("following meta lva will be updated: " + m);
+                            metaLVAService.update(m);
+                        }
+                    } else if(option == 2) {
+                        // TODO merge data
+                    }
                 }
             } else if(item instanceof CurriculumSelectItem) {
                 moduleService.startMergeSession();
@@ -125,14 +155,37 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 }
                 moduleService.stopMergeSession();
                 if(moduleService.mergingNecessary()) {
-                    // TODO open merging window
+                    int option = startMergeDialog();
+                    if(option == 0) {
+                        // do nothing
+                    } else if(option == 1) {
+                        for(Module m : moduleService.getNewModulesWithMergeConflicts()) {
+                            log.debug("following module will be updated: " + m);
+                            moduleService.update(m);
+                        }
+                        for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
+                            log.debug("following meta lva will be updated: " + m);
+                            metaLVAService.update(m);
+                        }
+                    } else if(option == 2) {
+                        // TODO merge data
+                    }
                 }
             } else if(item instanceof MetaLvaSelectItem) {
                 metaLVAService.startMergeSession();
                 metaLVAService.create(((MetaLvaSelectItem) item).get());
                 metaLVAService.stopMergeSession();
                 if(metaLVAService.mergingNecessary()) {
-                    // TODO open merging window
+                    int option = startMergeDialog();
+                    if(option == 0) {
+                        // do nothing
+                    } else if(option == 1) {
+                        for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
+                            metaLVAService.update(m);
+                        }
+                    } else if(option == 2) {
+                        // TODO merge data
+                    }
                 }
             }
         } catch (ServiceException e) {
@@ -218,6 +271,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
     }
 
     private class MergingNecessaryWindow extends JDialog {
+        private JPanel panel;
 
     }
 }

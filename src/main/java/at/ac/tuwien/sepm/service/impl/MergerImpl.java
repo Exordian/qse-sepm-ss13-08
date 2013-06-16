@@ -8,10 +8,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 
 /**
- * Author: MUTH Markus
- * Date: 6/16/13
- * Time: 5:25 PM
- * Description of class "MergerImpl":
+ * @author Markus MUTH
  */
 
 public class MergerImpl {

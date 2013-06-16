@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepm.service;
 
+import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +16,12 @@ public interface ModuleService {
     public boolean stopMergeSession();
 
     public boolean mergingNecessary();
+
+    public List<Module> getNewModulesWithMergeConflicts();
+
+    public List<MetaLVA> getNewMetaLvasWithMergeConflicts();
+
+    public boolean update(Module toUpdate) throws ServiceException;
 
     /**
      * Create a new Module. All containing MetaLVAs are also created.

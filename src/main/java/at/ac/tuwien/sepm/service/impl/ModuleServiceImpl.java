@@ -58,6 +58,16 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    public List<Module> getNewModulesWithMergeConflicts() {
+        return merger.getNewModules();
+    }
+
+    @Override
+    public List<MetaLVA> getNewMetaLvasWithMergeConflicts() {
+        return metaLVAService.getNewMetaLvasWithMergeConflicts();
+    }
+
+    @Override
     public boolean create(Module toCreate) throws ServiceException, ValidationException {
         boolean moduleCreated = false;
         boolean metaLvasCreated = true;
@@ -66,19 +76,18 @@ public class ModuleServiceImpl implements ModuleService {
             moduleCreated = moduleDao.create(toCreate);
         } catch(DuplicateKeyException e) {
             logger.info("The module \"" + toCreate.getName() + "\" is already stored.");
-            // TODO implement merger
-            Module newModule;
+            Module oldModule;
             try {
-                newModule = moduleDao.readByName(toCreate.getName());
+                oldModule = moduleDao.readByName(toCreate.getName());
             } catch (DataAccessException e1) {
                 logger.error("Exception: "+ e1.getMessage());
                 throw new ServiceException("Exception: " + e.getMessage(), e1);
             }
-            if(newModule==null) {
+            if(oldModule==null) {
                 logger.error("newModule == null");
                 throw new ServiceException("Internal error");
             }
-            merger.add(newModule, toCreate);
+            merger.add(oldModule, toCreate);
             moduleCreated = false;
         } catch(DataAccessException e) {
             logger.error("Exception: " + e.getClass() + "\t" + e.getMessage());
@@ -108,6 +117,18 @@ public class ModuleServiceImpl implements ModuleService {
         }
 
         return moduleCreated && metaLvasCreated;
+    }
+
+    @Override
+    public boolean update(Module toUpdate) throws ServiceException {
+        try {
+            moduleDao.update(toUpdate);
+        } catch (IOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        } catch (DataAccessException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+        return false;
     }
 
     @Override

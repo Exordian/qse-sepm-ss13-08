@@ -45,6 +45,11 @@ public class MetaLVAServiceImpl implements MetaLVAService {
         merger.reset();
     }
 
+    @Override
+    public List<MetaLVA> getNewMetaLvasWithMergeConflicts() {
+        return merger.getNewMetaLVAs();
+    }
+
     public boolean stopMergeSession() {
         if(mergingNecessary()) {
             String logString = "meta lva merger stopped - conflicts at storing following " + merger.getNewMetaLVAs().size() + " meta lva(s): \n";
@@ -103,17 +108,17 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             logger.error("Exception: "+ e.getMessage());
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DuplicateKeyException e) {
-            MetaLVA newMetaLva;
+            MetaLVA oldMetaLva;
             try {
-                newMetaLva = metaLvaDao.readByLvaNumber(toCreate.getNr());
+                oldMetaLva = metaLvaDao.readByLvaNumber(toCreate.getNr());
             } catch (DataAccessException e1) {
                 logger.error("Exception: "+ e1.getMessage());
                 throw new ServiceException("Exception: " + e.getMessage(), e1);
             }
-            if(newMetaLva==null) {
+            if(oldMetaLva==null) {
                 throw new ServiceException("Internal error");
             }
-            merger.add(newMetaLva, toCreate);
+            merger.add(oldMetaLva, toCreate);
             logger.info("The meta lva \""  + toCreate.getNr() + " - " + toCreate.getName() + "\" is already stored.\n");
             return false;
         } catch(DataAccessException e) {
