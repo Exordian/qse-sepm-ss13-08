@@ -31,14 +31,16 @@ public class DayPanel extends JPanel {
     private int maxDateLabels;
     private TooMuchDatesLabel tmdl;
     private boolean isActual = false;
+    private boolean showTime=false;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     private DateService dateService;
 
-    public DayPanel(int maxDateLabels, DateService dateService) {
+    public DayPanel(int maxDateLabels, DateService dateService, boolean showTime) {
         super(new MigLayout("", "1[]1[]1[]1", "1[]"));
         this.dateService=dateService;
+        this.showTime = showTime;
         dates = new ArrayList<DateLabel>();
         this.add(title, "wrap");
         this.add(datePanel, "grow, push, span ");

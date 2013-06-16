@@ -24,7 +24,7 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
 
     @Autowired
     public CalPanelWeek(CalService service,LVAService lvaService, DateService dateService) {
-        super(1,service,lvaService, dateService);
+        super(1,true,service,lvaService, dateService);
         super.firstDay = DateTime.now();
         layout = new MigLayout("", "1[]1[]1[]1", "1[]");
         loadFonts();

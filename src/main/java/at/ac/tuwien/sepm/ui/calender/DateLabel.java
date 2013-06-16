@@ -19,13 +19,17 @@ import java.awt.event.*;
 public class DateLabel extends JLabel{
     private static final int MAX_TEXT_LENGTH=20;
     private Date date;
+    private boolean showTime = false;
 
-    public DateLabel(Date date) {
+    public DateLabel(Date date, boolean showTime) {
         this.date=date;
+        this.showTime = showTime;
         if(date.getName()==null || date.getName().equals("") || consistsOf(' ', date.getName())){
             this.setText("...");
+        } else if (showTime) {
+            this.setText(formatStartDate(date.getTime().from()) + cutText(date.getName(), 5));
         } else {
-            this.setText(cutText(date.getName()));
+            this.setText(cutText(date.getName(), 0));
         }
         this.setFont(new Font("Arial", Font.PLAIN, 10));
         this.addMouseListener(new PrivateMouseListener());
@@ -62,6 +66,23 @@ public class DateLabel extends JLabel{
         return date.getTime();
     }
 
+    private String formatStartDate(DateTime d) {
+        String result = "";
+        if(d.getHourOfDay()<10) {
+            result = "0" + d.getHourOfDay();
+        } else {
+            result += d.getHourOfDay();
+        }
+        result += ":";
+        if(d.getMinuteOfHour()<10) {
+            result += "0" + d.getMinuteOfHour();
+        } else {
+            result += d.getHourOfDay();
+        }
+
+        return result + " - ";
+    }
+
     private boolean consistsOf(char c, String s) {
         for(int i=0; i<s.length(); i++) {
             if(c != s.charAt(i)) {
@@ -71,9 +92,9 @@ public class DateLabel extends JLabel{
         return true;
     }
 
-    private String cutText(String text) {
-        if(text.length() > MAX_TEXT_LENGTH) {
-            text = text.substring(0,17) + "...";
+    private String cutText(String text, int diff) {
+        if(text.length() > (MAX_TEXT_LENGTH-diff)) {
+            text = text.substring(0,MAX_TEXT_LENGTH-diff) + "...";
         }
         return text;
     }

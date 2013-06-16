@@ -31,7 +31,7 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
 
     @Autowired
     public CalPanelMonth(CalService service,LVAService lvaService, DateService dateService) {
-        super(5,service,lvaService, dateService);
+        super(5,false,service,lvaService, dateService);
         super.firstDay = new DateTime(DateTime.now().getYear(), DateTime.now().getMonthOfYear(), 1, 0, 0, 0, 0);
         layout = new MigLayout("", "1[]1[]1[]1", "1[]");
         loadFonts();

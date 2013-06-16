@@ -53,14 +53,16 @@ public abstract class CalAbstractView extends StandardInsidePanel {
     protected JLabel[] dayNames = new JLabel[7];                                // the day labels
     protected DateTime firstDay;                                                // the first day of the actual view
     protected int maxDateLabels;                                                // the amount of days shown of the previous month
+    protected boolean showTime = false;
 
     // -------------------------------------------------------------------------------------------------------------- //
 
-    public CalAbstractView(int weeks, CalService calService, LVAService lvaService, DateService dateService) {
+    public CalAbstractView(int weeks, boolean showTime, CalService calService, LVAService lvaService, DateService dateService) {
         this.calService = calService;
         this.lvaService=lvaService;
         this.dateService=dateService;
         WEEKS = weeks;
+        this.showTime=showTime;
         AMOUNT_DAYS_SHOWN = 7 * weeks;
         days = new DayPanel[AMOUNT_DAYS_SHOWN];
     }
@@ -101,11 +103,11 @@ public abstract class CalAbstractView extends StandardInsidePanel {
     protected void initDayPanels() {
         for(int y=0; y<days.length; y=y+7) {
             for(int x=0; x<7-1; x++) {
-                days[x+y] = new DayPanel(maxDateLabels, dateService);
+                days[x+y] = new DayPanel(maxDateLabels, dateService, showTime);
                 days[x+y].setMinimumSize(dayPanelDimension);
                 this.add(days[x + y]);
             }
-            days[y+6] = new DayPanel(maxDateLabels, dateService);
+            days[y+6] = new DayPanel(maxDateLabels, dateService, showTime);
             days[y+6].setMinimumSize(dayPanelDimension);
             this.add(days[y + 6], "wrap");
         }
@@ -123,10 +125,10 @@ public abstract class CalAbstractView extends StandardInsidePanel {
             List<DateEntity> l2 = calService.getAllNotLVADatesAt(day.getDate());
             LinkedList<DateLabel> r = new LinkedList<DateLabel>();
             for (Date d : l1) {
-                r.addLast(new DateLabel(d));
+                r.addLast(new DateLabel(d, showTime));
             }
             for (Date d : l2) {
-                r.addLast(new DateLabel(d));
+                r.addLast(new DateLabel(d, showTime));
             }
             day.setDateLabels(r);
             day.refreshDates();
