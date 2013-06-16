@@ -44,6 +44,8 @@ public class LvaPanel extends StandardInsidePanel {
     private Rectangle paneLva = new Rectangle(510,55,490,413);
 
     private JButton refresh;
+    private JButton addLva;
+    private JButton addMeta;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -84,6 +86,37 @@ public class LvaPanel extends StandardInsidePanel {
             }
         });
         this.add(refresh);
+
+        addMeta = new JButton("Erstellen");
+        addMeta.setFont(standardButtonFont);
+        addMeta.setBounds((int)paneMeta.getX(), (int)paneMeta.getY() + (int)paneMeta.getHeight()+8, 150,30);
+        addMeta.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PanelTube.backgroundPanel.viewMetaLva(null);
+            }
+        });
+        this.add(addMeta);
+        addLva = new JButton("Erstellen");
+        addLva.setFont(standardButtonFont);
+        addLva.setBounds((int)paneLva.getX() + (int)paneLva.getWidth()-150, (int)paneMeta.getY() + (int)paneMeta.getHeight()+8, 150,30);
+        addLva.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (metaLVAService.readAll() == null) {
+                        JOptionPane.showMessageDialog(LvaPanel.this, "Es muss eine MetaLva vorhanden sein, um eine semesterspezifische Lva erzeugen zu können.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        PanelTube.backgroundPanel.viewLva(null);
+                    }
+                } catch (ServiceException e1) {
+                    log.error("Exception: "+ e1.getMessage());
+                } catch (ValidationException e1) {
+                    log.error("Exception: "+ e1.getMessage());
+                }
+            }
+        });
+        this.add(addLva);
     }
 
     private void addContent() {

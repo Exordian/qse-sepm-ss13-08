@@ -41,20 +41,16 @@ public class MetaLVADisplayPanel extends JPanel {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                int r = MetaLVADisplayPanel.this.getTable().rowAtPoint(e.getPoint());
+                if (e.isPopupTrigger()) {
+                    JTable source = MetaLVADisplayPanel.this.getTable();
+                    int row = source.rowAtPoint( e.getPoint() );
+                    int column = source.columnAtPoint( e.getPoint() );
 
-                if (r >= 0 && r < MetaLVADisplayPanel.this.getTable().getRowCount()) {
-                    MetaLVADisplayPanel.this.getTable().setRowSelectionInterval(r, r);
-                    if (e.isPopupTrigger()) {
-                        JPopupMenu popup = new PopUpMenu(false);
-                        popup.show(e.getComponent(), e.getX(), e.getY());
-                    }
-                } else {
-                    MetaLVADisplayPanel.this.getTable().clearSelection();
-                    /*if (e.isPopupTrigger()) {
-                        JPopupMenu popup = new PopUpMenu(true);        //todo erstellen muss möglich sein auch ohne item
-                        popup.show(pane, e.getX(), e.getY());
-                    } */
+                    if (! source.isRowSelected(row))
+                        source.changeSelection(row, column, false, false);
+
+                    JPopupMenu popup = new PopUpMenu();
+                    popup.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
@@ -100,46 +96,25 @@ public class MetaLVADisplayPanel extends JPanel {
     }
 
     private class PopUpMenu extends JPopupMenu {
-        private JMenuItem button;
         private JMenuItem button2;
 
-        public PopUpMenu(boolean bol){
-            //if (bol) {
-                button = new JMenuItem("Erstellen");
-                button.addMouseListener(new MouseListener() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {}
-                    @Override
-                    public void mousePressed(MouseEvent e) {}
+        public PopUpMenu(){
+            button2 = new JMenuItem("Bearbeiten");
+            button2.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+                @Override
+                public void mousePressed(MouseEvent e) {}
 
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-                        PanelTube.backgroundPanel.viewMetaLva(null);
-                    }
-                    @Override
-                    public void mouseEntered(MouseEvent e) {}
-                    @Override
-                    public void mouseExited(MouseEvent e) {}
-                });
-            //} else {
-                button2 = new JMenuItem("Bearbeiten");
-                button2.addMouseListener(new MouseListener() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {}
-                    @Override
-                    public void mousePressed(MouseEvent e) {}
-
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-                        PanelTube.backgroundPanel.viewMetaLva(getSelectedMetaLVA());
-                    }
-                    @Override
-                    public void mouseEntered(MouseEvent e) {}
-                    @Override
-                    public void mouseExited(MouseEvent e) {}
-                });
-           // }
-            add(button);
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    PanelTube.backgroundPanel.viewMetaLva(getSelectedMetaLVA());
+                }
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+                @Override
+                public void mouseExited(MouseEvent e) {}
+            });
             add(button2);
         }
     }
