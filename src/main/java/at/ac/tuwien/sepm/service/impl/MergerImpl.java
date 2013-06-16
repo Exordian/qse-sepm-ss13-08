@@ -28,12 +28,14 @@ public class MergerImpl {
     }
 
     void add(MetaLVA oldMetaLVA, MetaLVA newMetaLva) {
+        newMetaLva.setId(oldMetaLVA.getId());
         oldMetaLVAs.add(oldMetaLVA);
         newMetaLVAs.add(newMetaLva);
         logger.debug("new meta lva pair added.");
     }
 
     void add(Module oldModule, Module newModule) {
+        newModule.setId(oldModule.getId());
         oldModules.add(oldModule);
         newModules.add(newModule);
         logger.debug("new module pair added.");

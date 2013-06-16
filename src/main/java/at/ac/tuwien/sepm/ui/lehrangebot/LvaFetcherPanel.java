@@ -30,6 +30,13 @@ import java.util.List;
 public class LvaFetcherPanel extends StandardInsidePanel {
     private static Logger log = LogManager.getLogger(LvaFetcherPanel.class);
 
+    private static final String MERGE_FRAME_TITLE = "Konflikte beim Speichern der Daten";
+    private static final String MERGE_FRAME_MESSAGE = "Einige Daten sind bereits abgespeichert, ein erneutes speichern " +
+            "würde diese\nDaten überschreiben. Wie wollen Sie vorgehen?";
+    private static final Object[] MERGE_FRAME_BUTTON_TEXT = new Object[] {"Alte Daten beibehalten",
+            "Neue Daten übernehmen",
+            "Daten zusammenführen"};
+
     private LvaFetcherService lvaFetcherService;
     private MetaLVAService metaLVAService;
     private ModuleService moduleService;
@@ -106,19 +113,14 @@ public class LvaFetcherPanel extends StandardInsidePanel {
     }
 
     private int startMergeDialog() {
-        Object[] options = {"Alte Daten beibehalten",
-                "Neue Daten übernehmen",
-                "Daten zusammenführen"};
-
         return JOptionPane.showOptionDialog(new JFrame(),
-                "Einige Daten sind bereits abgespeichert, ein erneutes speichern würde diese Daten überschreiben." +
-                        "Wie wollen sie vorgehen?",
-                "Konflikte beim Speichern der Daten",
+                MERGE_FRAME_MESSAGE,
+                MERGE_FRAME_TITLE,
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                options,
-                options[0]);
+                MERGE_FRAME_BUTTON_TEXT,
+                MERGE_FRAME_BUTTON_TEXT[0]);
     }
 
     private void performImport() {
@@ -137,15 +139,13 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                         // do nothing
                     } else if(option == 1) {
                         for(Module m : moduleService.getNewModulesWithMergeConflicts()) {
-                            log.debug("following module will be updated: " + m);
                             moduleService.update(m);
                         }
                         for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
-                            log.debug("following meta lva will be updated: " + m);
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        // TODO merge data
+                        // TODO open merge window
                     }
                 }
             } else if(item instanceof CurriculumSelectItem) {
@@ -160,15 +160,13 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                         // do nothing
                     } else if(option == 1) {
                         for(Module m : moduleService.getNewModulesWithMergeConflicts()) {
-                            log.debug("following module will be updated: " + m);
                             moduleService.update(m);
                         }
                         for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
-                            log.debug("following meta lva will be updated: " + m);
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        // TODO merge data
+                        // TODO open merge window
                     }
                 }
             } else if(item instanceof MetaLvaSelectItem) {
@@ -184,7 +182,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        // TODO merge data
+                        // TODO open merge window
                     }
                 }
             }
