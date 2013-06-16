@@ -63,15 +63,15 @@ public interface TodoService {
     public List<Todo> getAllTodos() throws ServiceException;
 
     /**
-     * Validate a Todo.
-     * @param  toValidate - todo which gets validated
-     * @throws ServiceException If todo is invalid
+     * Validate a to-do.
+     * @param  toValidate - to-do which gets validated
+     * @throws ServiceException If to-do is invalid
      *
      */
     public void validateTodo(Todo toValidate) throws ServiceException;
 
     /**
-     * Validate ID of a Todo
+     * Validate ID of a to-do
      * @param  id which gets validated
      * @throws ServiceException If id is invalid (<= 0)
      *

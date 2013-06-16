@@ -73,6 +73,17 @@ public class DayPanel extends JPanel {
 
     public void refreshDates() {
         deleteAllDates();
+        for(DateLabel l : dates) {
+            if (l.getDate() instanceof DateEntity)
+                if (((DateEntity)l.getDate()).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!")) {
+                    l.changeColor(isActual);
+                    datePanel.add(l, "w 100%, wrap");
+                    this.revalidate();
+                    this.repaint();
+                    return;
+                }
+        }
+
         if(dates.size() > maxDateLabels) {
             for(int i=0; i<maxDateLabels-1; i++) {
                 dates.get(i).changeColor(isActual);

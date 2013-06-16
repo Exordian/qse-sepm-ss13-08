@@ -128,7 +128,7 @@ public class CalendarPanel extends StandardInsidePanel {
                     activeView.last();
                     month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 } catch (ServiceException e) {
-                    // TODO
+                    JOptionPane.showMessageDialog(CalendarPanel.this, "Es ist ein Fehler beim Laden des Kalenders aufgetreten.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     month.setText("ERROR");
                 }
             }
@@ -146,7 +146,7 @@ public class CalendarPanel extends StandardInsidePanel {
                     activeView.next();
                     month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 } catch (ServiceException e) {
-                    // TODO
+                    JOptionPane.showMessageDialog(CalendarPanel.this, "Es ist ein Fehler beim Laden des Kalenders aufgetreten.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     month.setText("ERROR");
                 }
             }

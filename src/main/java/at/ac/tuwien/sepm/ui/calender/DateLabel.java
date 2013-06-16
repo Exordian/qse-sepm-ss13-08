@@ -76,7 +76,7 @@ public class DateLabel extends JLabel{
         return text;
     }
 
-    private Date getDate() {
+    public Date getDate() {
         return date;
     }
 
