@@ -128,6 +128,9 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     dateEntity.setName(title.getText());
                     dateEntity.setDescription(description.getText());
                     dateEntity.setIntersectable(intersectable.isSelected());
+                    if (convertDateAndTime(fromTime, from).isAfter(convertDateAndTime(toTime, to))) {
+                        JOptionPane.showMessageDialog(ViewDate.this, "Das Start-Datum muss vor dem End-Datum liegen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
                     dateEntity.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
                     if (dateEntity.getId() != null) {
                         if (dateService.readDateById(dateEntity.getId()) != null)

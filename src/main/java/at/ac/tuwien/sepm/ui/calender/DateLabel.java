@@ -38,8 +38,12 @@ public class DateLabel extends JLabel{
                 this.setBackground(new Color(223, 233, 255));
                 //this.setForeground(new Color(117, 190, 255));
             } else if (date instanceof DateEntity) {
-                this.setBackground(new Color(195, 255, 194));
-                //this.setForeground(new Color(163, 255, 114));
+                if (((DateEntity) date).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!")) {
+                    this.setBackground(new Color(246, 242, 122));
+                } else {
+                    this.setBackground(new Color(195, 255, 194));
+                    //this.setForeground(new Color(163, 255, 114));
+                }
             }
         } else {
             // this.setForeground(Color.WHITE);
@@ -74,7 +78,7 @@ public class DateLabel extends JLabel{
         return text;
     }
 
-    private Date getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -105,17 +109,17 @@ public class DateLabel extends JLabel{
 
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
-       // private JMenuItem attendance;
+        // private JMenuItem attendance;
         private JMenuItem showRoom;
         private JMenuItem share;
 
         public PopUpMenu(){
             edit = new JMenuItem("Bearbeiten");
-           // attendance = new JMenuItem("Anwesenheit");
+            // attendance = new JMenuItem("Anwesenheit");
             showRoom = new JMenuItem("Wegbeschreibung");
             share = new JMenuItem("Share");
             add(edit);
-           // add(attendance);
+            // add(attendance);
             add(showRoom);
             add(share);
             addActionListeners();
@@ -135,7 +139,7 @@ public class DateLabel extends JLabel{
            /* attendance.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    // TODO implement this
+                    // TOod implement this
                 }
             });*/
             showRoom.addMouseListener(new MouseAdapter() {

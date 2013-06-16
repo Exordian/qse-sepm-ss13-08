@@ -165,6 +165,9 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                     lvaDate.setType((LvaDateType) type.getSelectedItem());
                     lvaDate.setLva(((LvaSelectItem) lva.getSelectedItem()).get().getId());
                     lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
+                    if (convertDateAndTime(fromTime, from).isAfter(convertDateAndTime(toTime, to))) {
+                        JOptionPane.showMessageDialog(ViewLvaDate.this, "Das Start-Datum muss vor dem End-Datum liegen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
                     lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
                     if (lvaDate.getId() != null) {
                         if (lvaDateService.readById(lvaDate.getId()) != null)

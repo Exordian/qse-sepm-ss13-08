@@ -44,18 +44,15 @@ public class LvaDisplayPanel extends JPanel {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                int r = LvaDisplayPanel.this.getTable().rowAtPoint(e.getPoint());
-                if (r >= 0 && r < LvaDisplayPanel.this.getTable().getRowCount()) {
-                    LvaDisplayPanel.this.getTable().setRowSelectionInterval(r, r);
-                } else {
-                    LvaDisplayPanel.this.getTable().clearSelection();
-                }
+                if (e.isPopupTrigger()) {
+                    JTable source = LvaDisplayPanel.this.getTable();
+                    int row = source.rowAtPoint( e.getPoint() );
+                    int column = source.columnAtPoint( e.getPoint() );
 
-                int rowindex = LvaDisplayPanel.this.getTable().getSelectedRow();
-                if (rowindex < 0)
-                    return;
-                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
-                    JPopupMenu popup = new PopUpMenu(false);                     //todo erstellen muss möglich sein auch ohne item
+                    if (! source.isRowSelected(row))
+                        source.changeSelection(row, column, false, false);
+
+                    JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
@@ -103,28 +100,9 @@ public class LvaDisplayPanel extends JPanel {
     }
 
     private class PopUpMenu extends JPopupMenu {
-        private JMenuItem button;
         private JMenuItem button2;
 
-        public PopUpMenu(boolean bol){
-            //if (bol) {
-            button = new JMenuItem("Erstellen");
-            button.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    PanelTube.backgroundPanel.viewLva(null);
-                }
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
-            });
-            //} else {
+        public PopUpMenu(){
             button2 = new JMenuItem("Bearbeiten");
             button2.addMouseListener(new MouseListener() {
                 @Override
@@ -141,8 +119,6 @@ public class LvaDisplayPanel extends JPanel {
                 @Override
                 public void mouseExited(MouseEvent e) {}
             });
-            // }
-            add(button);
             add(button2);
         }
     }
