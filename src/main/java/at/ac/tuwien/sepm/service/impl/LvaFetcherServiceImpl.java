@@ -212,6 +212,7 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             String[] subhead = lvaContent.select(LVA_CONTENT_SUBHEAD).text().split(",");
             metaLVA.setType(LvaType.valueOf(subhead[1].trim()));
             metaLVA.setECTS(Float.parseFloat(subhead[3].trim().substring(0, subhead[3].length()-3))); // Kick EC
+            metaLVA.setPriority(5); // default for tiss lvas
             LVA lva = new LVA();
             List<LVA> lvaList = new ArrayList<>();
             lvaList.add(lva);
