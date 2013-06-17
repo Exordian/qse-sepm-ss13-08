@@ -146,6 +146,7 @@ public class PlanPanel extends StandardInsidePanel {
                         lvaDAO.update(lva);
 
                     } catch (IOException e1) {
+                        //JOptionPane.showMessageDialog(this, "Dieses TODO existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
                         e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 }

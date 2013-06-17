@@ -17,7 +17,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -147,7 +146,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 140,25);
         this.add(type);
 
-        semestersOfferedLabel = new JLabel("Semester:");
+        semestersOfferedLabel = new JLabel("angebotene Semester:");
         semestersOfferedLabel.setFont(standardTextFont);
         semestersOfferedLabel.setBounds(typeLabel.getX(), typeLabel.getY() + typeLabel.getHeight() + verticalSpace, 140,25);
         this.add(semestersOfferedLabel);

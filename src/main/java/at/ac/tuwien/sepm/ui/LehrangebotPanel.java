@@ -123,6 +123,7 @@ public class LehrangebotPanel extends StandardInsidePanel {
             tabs.get(i).setBorderPainted(false);
             this.add(tabs.get(i));
         }
+        tabs.get(3).setBorderPainted(true); //todo remove
     }
 
     private void changeImage(int nmb) {
