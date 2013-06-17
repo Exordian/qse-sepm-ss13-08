@@ -184,7 +184,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-            logger.debug("\tnew Solution found: \n" +LVAUtil.formatShortMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value);
+            logger.debug("new Solution found: \n" +LVAUtil.formatShortMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value);
 		    bestSolutionECTS=actualECTS;
         }else{
             //active for detailed debugging

@@ -42,7 +42,12 @@ public class LvaTable extends JTable {
     }
 
     private void init(int width){
-        model = new DefaultTableModel(new String[]{"Jahr","Semester","Typ","Name"},0);
+        model = new DefaultTableModel(new String[]{"Jahr","Semester","Typ","Name"},0){
+            @Override
+            public boolean isCellEditable(int row,int col){
+                return false;
+            }
+        };
 
         setModel(model);
         colWidth[3] = Math.max(0,colWidth[3]+(width-this.width));

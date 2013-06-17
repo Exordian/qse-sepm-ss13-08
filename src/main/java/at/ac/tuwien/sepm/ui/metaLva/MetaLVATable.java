@@ -33,8 +33,12 @@ public class MetaLVATable extends JTable{
         return colWidth[index];
     }
     private void init(int width){
-        model = new DefaultTableModel(new String[]{"Nr","Typ","Name","ECTS"},0);
-
+        model = new DefaultTableModel(new String[]{"Nr","Typ","Name","ECTS"},0){
+            @Override
+            public boolean isCellEditable(int row,int col){
+                return false;
+            }
+        };
         setModel(model);
         colWidth[2] = Math.max(0,colWidth[2]+(width-this.width));
 

@@ -116,14 +116,16 @@ public class LehrangebotPanel extends StandardInsidePanel {
             }
         });
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
             tabs.get(i).setOpaque(false);
             tabs.get(i).setContentAreaFilled(false);
             tabs.get(i).setBorderPainted(false);
             this.add(tabs.get(i));
         }
-        tabs.get(3).setBorderPainted(true); //todo remove
+        this.add(tabs.get(3)); //todo remove
+        tabs.get(3).setText("Module");
+        tabs.get(3).setFont(standardTextFont);
     }
 
     private void changeImage(int nmb) {
