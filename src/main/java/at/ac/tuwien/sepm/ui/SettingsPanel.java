@@ -231,12 +231,20 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Object[] options = {"Ja", "Abbrechen"};
-                JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-                //todo alle daten löschen
+
+                 if (JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
+                     propertyService.setProperty("user.firstYear", "");
+                     propertyService.setProperty("user.firstSemester", "");
+                     propertyService.setProperty("user.majorName", "");
+                     propertyService.setProperty("facebook.user", "");
+                     propertyService.setProperty("facebook.password", "");
+                     propertyService.setProperty("tiss.user", "");
+                     propertyService.setProperty("tiss.password", "");
+                    //todo alle anderen daten löschen?
+                 }
             }
         });
-
         this.add(deleteALL);
     }
 

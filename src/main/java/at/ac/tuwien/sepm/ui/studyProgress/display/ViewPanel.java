@@ -193,6 +193,7 @@ public class ViewPanel extends StandardInsidePanel {
         try {
             return service.firstYear();
         } catch (ServiceException e) {
+            JOptionPane.showMessageDialog(ViewPanel.this, "Sie müssen zuerst den in den Einstellungen angeben, wann Sie mit ihrem Studium begonnen haben!", "Fehler", JOptionPane.ERROR_MESSAGE);
             log.error(e.getMessage());
             return 0;
         }
