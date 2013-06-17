@@ -107,7 +107,8 @@ public class ModulePanel extends StandardInsidePanel {
             metaPane = new MetaLVADisplayPanel(new ArrayList<MetaLVA>(0), (int)paneMeta.getWidth(), (int)paneMeta.getHeight());
             metaPane.setBounds(paneMeta);
 
-            modulePane = new ModuleDisplayPanel(modules,metaPane, (int) paneModule.getWidth(), (int) paneModule.getHeight());
+            modulePane = new ModuleDisplayPanel(modules, (int) paneModule.getWidth(), (int) paneModule.getHeight());
+            modulePane.setMetaLVAPanel(metaPane);
             modulePane.setBounds(paneModule);
 
             this.add(modulePane);

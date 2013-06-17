@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui.metaLva;
 
+import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.HintTextField;
@@ -31,6 +32,7 @@ public class MetaLVADisplayPanel extends JPanel {
 
     private JScrollPane pane = new JScrollPane();
 
+    private LvaDisplayPanel lvaDisplayPanel;
 
     int tWidth;
     public MetaLVADisplayPanel(List<MetaLVA> lvas,int width,int height){
@@ -52,6 +54,7 @@ public class MetaLVADisplayPanel extends JPanel {
                     JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
+                refreshLVAs();
             }
         });
         int searchHeight = 20;
@@ -83,6 +86,7 @@ public class MetaLVADisplayPanel extends JPanel {
                     }
                 }
                 table.refreshMetaLVAs(filteredLVAs);
+                refreshLVAs();
                 pane.setViewportView(table);
                 revalidate();
                 repaint();
@@ -100,6 +104,15 @@ public class MetaLVADisplayPanel extends JPanel {
         searchType.setText("");
         searchECTS.setText("");
     }
+
+    public void setLvaDisplayPanel(LvaDisplayPanel lvaDisplayPanel) {
+        this.lvaDisplayPanel = lvaDisplayPanel;
+        refreshLVAs();
+    }
+    public LvaDisplayPanel getLvaDisplayPanel() {
+        return lvaDisplayPanel;
+    }
+
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem button2;
 
@@ -147,8 +160,17 @@ public class MetaLVADisplayPanel extends JPanel {
         }
         table.refreshMetaLVAs(filteredLVAs);
         pane.setViewportView(table);
+        refreshLVAs();
         revalidate();
         repaint();
+    }
+    private  void refreshLVAs(){
+        if(lvaDisplayPanel!=null){
+            lvaDisplayPanel.refresh(new ArrayList<LVA>(0));
+            if(table.getSelectedRowCount()>0){
+                lvaDisplayPanel.refresh(getSelectedMetaLVA().getLVAs());
+            }
+        }
     }
 }
 

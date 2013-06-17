@@ -129,6 +129,7 @@ public class LvaDisplayPanel extends JPanel {
 
     public void refresh(List<LVA> lvas) {
         table.refreshLVAs(lvas);
+        this.allLVAs=lvas;
     }
 
     public LvaTable getTable() {

@@ -33,10 +33,10 @@ public class ModuleDisplayPanel extends JPanel {
     private MetaLVADisplayPanel metaLVAPanel;
 
     int tWidth;
-    public ModuleDisplayPanel(List<Module> modules,MetaLVADisplayPanel metaPanel, int width, int height){
+    public ModuleDisplayPanel(List<Module> modules, int width, int height){
         this.tWidth =width;
         this.allModules = modules;
-        this.metaLVAPanel = metaPanel;
+        //this.metaLVAPanel = metaPanel;
         filteredModules = modules;
         table = new ModuleTable(modules,width);
         table.addMouseListener(new MouseAdapter() {
@@ -53,7 +53,7 @@ public class ModuleDisplayPanel extends JPanel {
                     JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
-                metaLVAPanel.refresh(table.getSelectedModule().getMetaLvas());
+                refreshMetaLVAs();
             }
         });
         int searchHeight = 20;
@@ -86,7 +86,9 @@ public class ModuleDisplayPanel extends JPanel {
                     }
                 }
                 table.refreshModules(filteredModules);
+                refreshMetaLVAs();
                 pane.setViewportView(table);
+
                 revalidate();
                 repaint();
             }
@@ -98,6 +100,13 @@ public class ModuleDisplayPanel extends JPanel {
     public MetaLVADisplayPanel getMetaLVAPanel(){
         return metaLVAPanel;
     }
+
+    public void setMetaLVAPanel(MetaLVADisplayPanel metaLVAPanel) {
+        this.metaLVAPanel = metaLVAPanel;
+        refreshMetaLVAs();
+    }
+
+
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem button2;
 
@@ -137,7 +146,18 @@ public class ModuleDisplayPanel extends JPanel {
     public void refresh(List<Module> modules) {
         table.refreshModules(modules);
         this.allModules=modules;
+        refreshMetaLVAs();
         //metaLVAPanel.clearSearch();
+    }
+    private void refreshMetaLVAs(){
+        System.out.println("panel==null: "+metaLVAPanel==null);
+        if(metaLVAPanel!=null){
+            metaLVAPanel.refresh(new ArrayList<MetaLVA>(0));
+            if(table.getSelectedRowCount()>0){
+                System.out.println("rowcount: "+table.getSelectedRowCount());
+                metaLVAPanel.refresh(getSelectedModule().getMetaLvas());
+            }
+        }
     }
 }
 

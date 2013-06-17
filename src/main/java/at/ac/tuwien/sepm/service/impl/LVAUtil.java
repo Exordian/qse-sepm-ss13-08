@@ -196,7 +196,7 @@ public class LVAUtil {
         for(int i=0;i<lva.size();i++){
             toReturn[i] = new boolean[lva.size()-i];
             for(int j=i;j<lva.size();j++){
-                if(nameIntersect && lva.get(i).getMetaLVA().getName().equals(lva.get(j).getMetaLVA().getName()) && lva.get(i).getMetaLVA().getType() == (lva.get(j).getMetaLVA().getType())){
+                if(nameIntersect && (lva.get(i).getMetaLVA().getName()!=null && lva.get(i).getMetaLVA().getName().equals(lva.get(j).getMetaLVA().getName())) && (lva.get(i).getMetaLVA().getType()!=null &&lva.get(i).getMetaLVA().getType() == (lva.get(j).getMetaLVA().getType()))){
                     toReturn[i][j-i]=true;
                 }else{
                     toReturn[i][j-i]=intersect(lva.get(i),lva.get(j),timeBetween,typesToIntersect,typesToIntersect,tolerance);
