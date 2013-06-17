@@ -187,22 +187,17 @@ public class LVAUtil {
      *  1
      *
      * @param lva the List of LVAs which shall be used for the intersect
+     * @param typesToIntersect the types used for this intersect
      * @return a boolean array with the result of the intersection.
      */
-    public static boolean[][] intersectAll(List<LVA> lva){
+    public static boolean[][] intersectToArray(List<LVA> lva,List<Integer> typesToIntersect,float tolerance){
         //String debug="";
         boolean[][] toReturn = new boolean[lva.size()][];
         for(int i=0;i<lva.size();i++){
             toReturn[i] = new boolean[lva.size()-i];
             for(int j=i;j<lva.size();j++){
-                toReturn[i][j-i]=intersectAllTypes(lva.get(i),lva.get(j));
-                /*if(toReturn[i][j-i]){
-                    debug+="1 ";
-                }else{
-                    debug+="0 ";
-                }*/
+                toReturn[i][j-i]=intersect(lva.get(i),lva.get(j),0,typesToIntersect,typesToIntersect,tolerance);
             }
-            //debug+="\n";
         }
         //logger.debug("toReturn: \n"+debug);
         //debug ="test:\n";
@@ -231,10 +226,43 @@ public class LVAUtil {
      * @return
      */
     public static boolean intersect(LVA a,LVA b,int secondsBetween, List<Integer> consideredTimesA,List<Integer> consideredTimesB){
+       return intersect(a,b,secondsBetween,consideredTimesA,consideredTimesB,0);
+    }
+
+    /**
+     *
+     * @param a the first LVA to use for the test
+     * @param b the second LVA to use for the test
+     * @param secondsBetween how many seconds may lie between the two LVAs. Negative values for allowing overlapping.
+     * @param consideredTimesA the types of TimeFrame in LVA a, which should be used for the test. See this classes constants
+     * @param consideredTimesB the types of TimeFrame in LVA b, which should be used for the test. See this classes constants
+     * @param tolerance the amount of allowed intersections
+     * @return
+     */
+    public static boolean intersect(LVA a,LVA b,int secondsBetween, List<Integer> consideredTimesA,List<Integer> consideredTimesB,float tolerance){
+        int totalLVAs=0;
         Iterator<LvaDate> iterA = iterator(a,consideredTimesA);
         Iterator<LvaDate> iterB = iterator(b,consideredTimesB);
+        if(consideredTimesA.contains(LVAUtil.LECTURE_TIMES) && a.getLectures()!=null){
+            totalLVAs+=a.getLectures().size();
+        }
+        if(consideredTimesA.contains(LVAUtil.EXERCISES_TIMES) && a.getExercises()!=null){
+            totalLVAs+=a.getExercises().size();
+        }
+        if(consideredTimesA.contains(LVAUtil.EXAM_TIMES) && a.getExams()!=null){
+            totalLVAs+=a.getExams().size();
+        }
+        if(consideredTimesB.contains(LVAUtil.LECTURE_TIMES) && b.getLectures()!=null){
+            totalLVAs+=b.getLectures().size();
+        }
+        if(consideredTimesB.contains(LVAUtil.EXERCISES_TIMES) && b.getExercises()!=null){
+            totalLVAs+=b.getExercises().size();
+        }
+        if(consideredTimesB.contains(LVAUtil.EXAM_TIMES) && b.getExams()!=null){
+            totalLVAs+=b.getExams().size();
+        }
 
-
+        int intersected=0;
         LvaDate tfA;
         LvaDate tfB;
         if(iterA.hasNext()&&iterB.hasNext()){
@@ -252,7 +280,15 @@ public class LVAUtil {
                     }
                     tfA=iterA.next();
                 }else{
-                    return true;
+                    intersected++;
+                    if(intersected>(totalLVAs*tolerance)){
+                        return true;
+                    }
+                    if(!iterA.hasNext() || !iterB.hasNext()){
+                        return false;
+                    }
+                    tfA=iterA.next();
+                    tfB=iterB.next();
                 }
             }
         }

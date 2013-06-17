@@ -1,21 +1,22 @@
 package at.ac.tuwien.sepm.service.impl;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
-import at.ac.tuwien.sepm.service.impl.LVAUtil;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class LVAUtilTest {
@@ -62,7 +63,11 @@ public class LVAUtilTest {
         assertTrue(LVAUtil.formatLVA(lvas,1).length()>0);
         assertTrue(LVAUtil.formatShortLVA(lvas,1).length()>0);
     }
+    @Ignore
+    @Test
+    public void testTolerance(){
 
+    }
     /**
      * tests if the hasNext() of the Iterator works as expected.
      */

@@ -15,9 +15,12 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 	private DependenceTree tree;
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private boolean[][] intersecting;
-
-
-    @Override public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
+    private long startedPlanning;
+    private int planningTolerance=10000;
+    private List<Integer> typesToIntersect;
+    private float intersectingTolerance = 0;
+    @Override
+    public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
         if(forced==null){
             forced = new ArrayList<MetaLVA>(0);
         }
@@ -36,11 +39,20 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
                 this.pool.add(lva);
             }
         }
+        Collections.sort(forced);
+        Collections.sort(pool);
         logger.debug("forced set:\n"+ LVAUtil.formatShortMetaLVA(this.forced, 1));
         logger.debug("pool set:\n"+LVAUtil.formatShortMetaLVA(this.pool, 1));
     }
 
-    @Override public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
+    @Override
+    public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
+        if(typesToIntersect==null){
+            typesToIntersect=new ArrayList<Integer>();
+            typesToIntersect.add(LVAUtil.LECTURE_TIMES);
+            typesToIntersect.add(LVAUtil.EXERCISES_TIMES);
+            typesToIntersect.add(LVAUtil.EXAM_TIMES);
+        }
 		tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
 		ArrayList<MetaLVA> roots = tree.getRoots();
 		ArrayList<MetaLVA> toPlan = new ArrayList<MetaLVA>(roots.size());
@@ -50,6 +62,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 			}
 		}
         ArrayList chosen = new ArrayList<Integer>();
+        int actualECTS = 0;
         for(MetaLVA mLVA :forced){
             if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
                 toPlan.add(mLVA);
@@ -57,34 +70,43 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             }
             if(mLVA.containsLVA(year, sem)){
                 chosen.add(toPlan.indexOf(mLVA));
+                actualECTS+=mLVA.getECTS();
             }
         }
-        computeSolution(toPlan,chosen,goalECTS);
+        computeSolution(toPlan,chosen,goalECTS,actualECTS);
         intersectAll(toPlan,year,sem);
-		recPlanning(toPlan,0,chosen,goalECTS,0,year,sem);
+        startedPlanning = System.currentTimeMillis();
+		recPlanning(toPlan,0,chosen,goalECTS,actualECTS);
 		if(bestSolution!=null)
 		return bestSolution;
         return new ArrayList<MetaLVA>();
 	}
 	private ArrayList<MetaLVA> bestSolution=null;
 	private float solutionValue=Float.NEGATIVE_INFINITY;
-	private void recPlanning(ArrayList<MetaLVA> all,int index,ArrayList<Integer> chosen,float goalECTS,float actualECTS,int year, Semester sem){
-		for(int i=index;i<all.size();i++){
+	private void recPlanning(ArrayList<MetaLVA> all,int index,ArrayList<Integer> chosen,float goalECTS,float actualECTS){
+        if(System.currentTimeMillis()-startedPlanning>planningTolerance){
+            return;
+        }
+        for(int i=index;i<all.size();i++){
+
+            if(actualECTS+all.get(i).getECTS()>(goalECTS+2)){
+                continue;
+            }
 			boolean intersect=false;
-            int lastJ=-1;
 			for(Integer j:chosen){
+
 				if(intersect(i,j)){
 					intersect=true;
-                    lastJ=j;
 					break;
 				}
 			}
 			if(!intersect){
 				chosen.add(i);
 				
-				computeSolution(all,chosen,goalECTS);
+				computeSolution(all,chosen,goalECTS,actualECTS+all.get(i).getECTS());
 
-                recPlanning(all,i+1,chosen, goalECTS,actualECTS+all.get(i).getECTS(),year,sem);
+
+                recPlanning(all,i+1,chosen, goalECTS,actualECTS+all.get(i).getECTS());
                 
                 chosen.remove(chosen.size()-1);
             }else{
@@ -97,7 +119,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         for(MetaLVA m : metaLVAs){
             lvas.add(m.getLVA(year,sem));
         }
-        intersecting = LVAUtil.intersectAll(lvas);
+        intersecting = LVAUtil.intersectToArray(lvas,typesToIntersect,intersectingTolerance);
         String debug = "";
         for(int y=0;y<lvas.size();y++){
             for(int x=0;x<lvas.size();x++){
@@ -115,19 +137,18 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
     private boolean intersect(int a, int b){
         if(a>b){
             return intersecting[b][a-b];
+        }else if(a==b){
+            return false;
         }
         return intersecting[a][b-a];
     }
-	private void computeSolution(ArrayList<MetaLVA> all,ArrayList<Integer> chosen,float goalECTS) {
-		float ects=0;
-		for(Integer i:chosen){
-			ects+=all.get(i).getECTS();
-		}
+	private void computeSolution(ArrayList<MetaLVA> all,ArrayList<Integer> chosen,float goalECTS,float actualECTS) {
+
 		float value=0;
 		for(Integer i:chosen){
-			value+=all.get(i).getECTS()*tree.getPriority(all.get(i))/ects;
+			value+=all.get(i).getECTS()*tree.getPriority(all.get(i))/actualECTS;
 		}
-		value-=Math.pow(Math.abs(goalECTS-ects),1.5);
+		value-=Math.pow(Math.abs(goalECTS-actualECTS),1.5);
 		if(value>solutionValue){
 			ArrayList<MetaLVA> newSolution = new ArrayList<MetaLVA>();
 			for(Integer i:chosen){
@@ -138,14 +159,25 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             logger.debug("new Solution found: \n" +LVAUtil.formatShortMetaLVA(newSolution, 1)+"\n\tsolution value: "+value);
 		}else{
             //active for detailed debugging
-			ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
+			/*ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
 			for(Integer i:chosen){
 				toDiscard.add(all.get(i));
 			}
-			//logger.debug("discarding set: " +toDiscard+"\nsolution value: "+value);
+			logger.debug("discarding set: " +toDiscard+"\nsolution value: "+value);*/
 
 		}
 	}
+
+
+    @Override
+    public void setTypesToIntersect(List<Integer> typesToIntersect) {
+        this.typesToIntersect = typesToIntersect;
+    }
+
+    @Override
+    public void setIntersectingTolerance(float intersectingTolerance) {
+        this.intersectingTolerance = intersectingTolerance;
+    }
 
     public static class DependenceTree implements Iterable<MetaLVA>{
 

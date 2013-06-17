@@ -74,6 +74,8 @@ public class PlanPanel extends StandardInsidePanel {
     private JCheckBox intersectCustomCheck;
     private JLabel considerStudyProgressCheckLabel;
     private JCheckBox considerStudyProgressCheck;
+    private JLabel toleranceLabel;
+    private JTextField toleranceText;
     private JLabel timeBetweenLabel;
     private JComboBox timeBetween;
     private String[] timeBetweenTextLabelStrings;
@@ -198,9 +200,24 @@ public class PlanPanel extends StandardInsidePanel {
                             customMetaLVA.setNr("-1");
                             forced.add(customMetaLVA);
                         }
-
-
+                        List<Integer> typesToIntersect = new ArrayList<Integer>();
+                        if(intersectVOCheck.isSelected()){
+                            typesToIntersect.add(LVAUtil.LECTURE_TIMES);
+                        }
+                        if(intersectUECheck.isSelected()){
+                            typesToIntersect.add(LVAUtil.EXERCISES_TIMES);
+                        }
+                        if(intersectExamCheck.isSelected()){
+                            typesToIntersect.add(LVAUtil.EXAM_TIMES);
+                        }
                         planer.setLVAs(forced, pool);
+                        planer.setTypesToIntersect(typesToIntersect);
+                        float tolerance = 0;
+                        try{
+                            tolerance=Float.parseFloat(toleranceText.getText().replace("%","").trim())/100;
+                        }catch(NumberFormatException e){ //ignore
+                        }
+                        planer.setIntersectingTolerance(tolerance);
                         ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
                         if(intersectCustomCheck.isSelected()){
                             solution.remove(customMetaLVA);
@@ -208,6 +225,13 @@ public class PlanPanel extends StandardInsidePanel {
 
 
                         logger.debug("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
+                        for(MetaLVA lvaA:solution){
+                            for(MetaLVA lvaB:solution){
+                                if(lvaA!=lvaB && LVAUtil.intersect(lvaA.getLVA(plannedYear,plannedSemester),lvaB.getLVA(plannedYear,plannedSemester),typesToIntersect,typesToIntersect)){
+                                    logger.debug("solution intersecting! LVA a: "+lvaA+", LVA b: "+lvaB);
+                                }
+                            }
+                        }
 
                         refreshMetaLVAs(solution);
 
@@ -220,52 +244,31 @@ public class PlanPanel extends StandardInsidePanel {
     }
 
     private void toggleAdvanced() {
-        if (advancedShown == false) {
-            intersectVOCheckLabel.setVisible(true);
-            intersectVOCheck.setVisible(true);
+            intersectVOCheckLabel.setVisible(!advancedShown);
+            intersectVOCheck.setVisible(!advancedShown);
 
-            intersectUECheckLabel.setVisible(true);
-            intersectUECheck.setVisible(true);
+            intersectUECheckLabel.setVisible(!advancedShown);
+            intersectUECheck.setVisible(!advancedShown);
 
-            intersectExamCheckLabel.setVisible(true);
-            intersectExamCheck.setVisible(true);
+            intersectExamCheckLabel.setVisible(!advancedShown);
+            intersectExamCheck.setVisible(!advancedShown);
 
-            intersectCustomCheckLabel.setVisible(true);
-            intersectCustomCheck.setVisible(true);
+            intersectCustomCheckLabel.setVisible(!advancedShown);
+            intersectCustomCheck.setVisible(!advancedShown);
 
-            considerStudyProgressCheck.setVisible(true);
-            considerStudyProgressCheckLabel.setVisible(true);
+            considerStudyProgressCheck.setVisible(!advancedShown);
+            considerStudyProgressCheckLabel.setVisible(!advancedShown);
 
-            timeBetweenLabel.setVisible(true);
-            timeBetween.setVisible(true);
+            toleranceLabel.setVisible(!advancedShown);
+            toleranceText.setVisible(!advancedShown);
 
-            timeBetweenTextLabel.setVisible(true);
+            timeBetweenLabel.setVisible(!advancedShown);
+            timeBetween.setVisible(!advancedShown);
+
+            timeBetweenTextLabel.setVisible(!advancedShown);
             if(showTimeBetweenText)
-                timeBetweenText.setVisible(true);
-            advancedShown=true;
-        } else {
-            intersectVOCheckLabel.setVisible(false);
-            intersectVOCheck.setVisible(false);
-
-            intersectUECheckLabel.setVisible(false);
-            intersectUECheck.setVisible(false);
-
-            intersectExamCheckLabel.setVisible(false);
-            intersectExamCheck.setVisible(false);
-
-            intersectCustomCheckLabel.setVisible(false);
-            intersectCustomCheck.setVisible(false);
-
-            considerStudyProgressCheck.setVisible(false);
-            considerStudyProgressCheckLabel.setVisible(false);
-
-            timeBetweenLabel.setVisible(false);
-            timeBetween.setVisible(false);
-
-            timeBetweenTextLabel.setVisible(false);
-            timeBetweenText.setVisible(false);
-            advancedShown=false;
-        }
+                timeBetweenText.setVisible(!advancedShown);
+            advancedShown=!advancedShown;
     }
 
     private void initTextAndLabels() {
@@ -357,7 +360,6 @@ public class PlanPanel extends StandardInsidePanel {
         intersectVOCheck.setBounds(intersectVOCheckLabel.getX()+intersectVOCheckLabel.getWidth()+5, intersectVOCheckLabel.getY()+5, 20, 20);
         this.add(intersectVOCheck);
         intersectVOCheck.setSelected(true);
-        intersectVOCheck.setEnabled(false);
 
         intersectUECheckLabel = new JLabel("Überprüfe Übungstermine auf Überschneidungen:");
         intersectUECheckLabel.setFont(standardTextFont);
@@ -369,7 +371,6 @@ public class PlanPanel extends StandardInsidePanel {
         intersectUECheck.setBounds(intersectUECheckLabel.getX()+intersectUECheckLabel.getWidth()+5, intersectUECheckLabel.getY()+5, 20, 20);
         this.add(intersectUECheck);
         intersectUECheck.setSelected(true);
-        intersectUECheck.setEnabled(false);
 
         intersectExamCheckLabel = new JLabel("Überprüfe Prüfungstermine auf Überschneidungen:");
         intersectExamCheckLabel.setFont(standardTextFont);
@@ -381,7 +382,6 @@ public class PlanPanel extends StandardInsidePanel {
         intersectExamCheck.setBounds(intersectExamCheckLabel.getX()+intersectExamCheckLabel.getWidth()+5, intersectExamCheckLabel.getY()+5, 20, 20);
         this.add(intersectExamCheck);
         intersectExamCheck.setSelected(true);
-        intersectExamCheck.setEnabled(false);
 
         intersectCustomCheckLabel = new JLabel("Überprüfe private Termine auf Überschneidungen:");
         intersectCustomCheckLabel.setFont(standardTextFont);
@@ -405,10 +405,20 @@ public class PlanPanel extends StandardInsidePanel {
         this.add(considerStudyProgressCheck);
         considerStudyProgressCheck.setSelected(true);
 
+        toleranceLabel = new JLabel("Prozent der Termine, die sich überschneiden dürfen:");
+        toleranceLabel.setFont(standardTextFont);
+        toleranceLabel.setBounds(considerStudyProgressCheckLabel.getX(), considerStudyProgressCheckLabel.getY()+considerStudyProgressCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
+        this.add(toleranceLabel);
+
+        toleranceText = new JTextField("20 %");
+        toleranceText.setBackground(new Color(0,0,0,0));
+        toleranceText.setBounds(toleranceLabel.getX()+toleranceLabel.getWidth()+5, toleranceLabel.getY()+5, 40, 20);
+        this.add(toleranceText);
+
 
         timeBetweenLabel = new JLabel("Zeit zwischen Terminen:");
         timeBetweenLabel.setFont(standardTextFont);
-        timeBetweenLabel.setBounds(considerStudyProgressCheckLabel.getX(), considerStudyProgressCheckLabel.getY()+considerStudyProgressCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
+        timeBetweenLabel.setBounds(toleranceLabel.getX(), toleranceLabel.getY()+toleranceLabel.getHeight()+verticalSpace, textWidth,textHeight);
         this.add(timeBetweenLabel);
 
         timeBetween= new JComboBox(new String[]{"exakte Zeiten verwenden","Termine dürfen sich überschneiden","Zwischen Terminen Zeit erzwingen"});

@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.service;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.service.Semester;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public interface IntelligentSemesterPlaner {
      *               but before adding LVAs to the solution, they will be tested on intersection.
      * @param pool all LVAs, which should be considered for the solution. LVAs which are completed will not be considered
      */
-    void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool);
+    public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool);
 
     /**
      * Plans a semester.
@@ -26,5 +25,9 @@ public interface IntelligentSemesterPlaner {
      * @param sem the semester (Semester.S OR Semester.W) which is to plan.
      * @return a List with the result
      */
-    ArrayList<MetaLVA> planSemester(float goalECTS, int year, Semester sem);
+    public ArrayList<MetaLVA> planSemester(float goalECTS, int year, Semester sem);
+
+    void setTypesToIntersect(List<Integer> typesToIntersect);
+
+    void setIntersectingTolerance(float intersectingTolerance);
 }
