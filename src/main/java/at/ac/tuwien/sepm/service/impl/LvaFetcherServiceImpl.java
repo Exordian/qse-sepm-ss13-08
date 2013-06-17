@@ -338,6 +338,17 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
             } catch (NullPointerException ex) {
                 log.info("LVA " + metaLVA.getName() + " has no exams");
             }
+            try {
+                List<MetaLVA> metaLVAs = new ArrayList<>();
+                for (Element e : lvaContent.select("h2:contains(Vorausgehende Lehrveranstaltungen)").get(0).nextElementSibling().getElementsByAttribute("href")) {
+                    MetaLVA metaLVA1 = new MetaLVA();
+                    metaLVA1.setNr(e.text().split(" ")[0]);
+                    metaLVAs.add(metaLVA1);
+                }
+                metaLVA.setPrecursor(metaLVAs);
+            } catch (NullPointerException | IndexOutOfBoundsException ex) {
+                log.info("LVA: " + metaLVA.getName() + " precursor found");
+            }
             log.info("Got LVA: " + lva.toString());
             return metaLVA;
         } catch (IOException e) {
