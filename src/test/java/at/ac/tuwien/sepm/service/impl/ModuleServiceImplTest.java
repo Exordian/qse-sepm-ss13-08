@@ -6,10 +6,7 @@ import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.dao.ModuleDao;
 import at.ac.tuwien.sepm.dao.hsqldb.TestHelper;
 import at.ac.tuwien.sepm.entity.*;
-import at.ac.tuwien.sepm.service.LvaType;
-import at.ac.tuwien.sepm.service.ModuleService;
-import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.service.*;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,4 +164,42 @@ public class ModuleServiceImplTest {
         assert(lvaDao.readById(0).getExams().size()==1);
         assert(lvaDao.readById(0).getDeadlines().size()==1);
     }
+
+    @Test
+    public void testRequiredModules() throws Exception {
+        List<Module> requiredModules = moduleService.getRequiredModules(ClassLoader.getSystemResource("033534-SP-2011-Bac_Software_und_Information_Engineering.pdf").getPath());
+        Assert.notNull(requiredModules);
+        Assert.isTrue(requiredModules.get(0).getName().contains("Algorithmen"));
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRequiredModulesNull() throws Exception {
+        List<Module> requiredModules = moduleService.getRequiredModules(null);
+    }
+
+
+    @Test(expected = ServiceException.class)
+    public void testRequiredModulesWat() throws Exception {
+        List<Module> requiredModules = moduleService.getRequiredModules("wat");
+    }
+
+    @Test
+    public void testOptionalModules() throws Exception {
+        List<Module> optionalModules = moduleService.getOptionalModules(ClassLoader.getSystemResource("033534-SP-2011-Bac_Software_und_Information_Engineering.pdf").getPath());
+        Assert.notNull(optionalModules);
+        Assert.isTrue(optionalModules.get(0).getName().equals("Deklaratives Problemlösen"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testOptionalModulesNull() throws Exception {
+        List<Module> optionalModules = moduleService.getOptionalModules(null);
+    }
+
+
+    @Test(expected = ServiceException.class)
+    public void testOptionalModulesWat() throws Exception {
+        List<Module> optionalModules = moduleService.getOptionalModules("wat");
+    }
+
 }

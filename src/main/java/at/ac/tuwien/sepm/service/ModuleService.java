@@ -37,4 +37,8 @@ public interface ModuleService {
      * @throws ServiceException If any error occurred.
      */
     List<Module> readAll() throws ServiceException;
+
+    List<Module> getRequiredModules(String pdfPath) throws ServiceException;
+
+    List<Module> getOptionalModules(String pdfPath) throws ServiceException;
 }

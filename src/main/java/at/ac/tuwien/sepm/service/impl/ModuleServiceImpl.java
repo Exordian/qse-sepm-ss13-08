@@ -8,13 +8,18 @@ import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Markus MUTH
@@ -138,6 +143,59 @@ public class ModuleServiceImpl implements ModuleService {
         } catch (DataAccessException e) {
             logger.error("Exception: " + e.getClass() + "\t" + e.getMessage());
             throw new ServiceException("Exception: "+ e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Module> getRequiredModules(String pdfPath) throws ServiceException {
+        try {
+            PDDocument pdf = PDDocument.load(pdfPath);
+            PDFTextStripper textStripper = new PDFTextStripper();
+            String text = textStripper.getText(pdf).split("Prüfungsfächer und zugehörige Module")[1].split("Kurzbeschreibung der Module")[0];
+
+            Pattern p = Pattern.compile("(\\*?)([\\S ]+) \\((\\d\\.\\d).*\\)");
+            Matcher m = p.matcher(text);
+
+            List<Module> reqModules = new ArrayList<>();
+            List<Module> optModules = new ArrayList<>();
+
+            while(m.find()) {
+                Module module = new Module();
+                module.setName(m.group(2));
+                if(!m.group(1).equals("*"))
+                    reqModules.add(module);
+                // ECTS: m.group(3)
+                // System.out.println(m.group(1));
+            }
+            return reqModules;
+        } catch (IOException e) {
+            throw new ServiceException("could not read pdf", e);
+        }
+    }
+
+    @Override
+    public List<Module> getOptionalModules(String pdfPath) throws ServiceException {
+        try {
+            PDDocument pdf = PDDocument.load(pdfPath);
+            PDFTextStripper textStripper = new PDFTextStripper();
+            String text = textStripper.getText(pdf).split("Prüfungsfächer und zugehörige Module")[1].split("Kurzbeschreibung der Module")[0];
+
+            Pattern p = Pattern.compile("(\\*?)([\\S ]+) \\((\\d\\.\\d).*\\)");
+            Matcher m = p.matcher(text);
+
+            List<Module> optModules = new ArrayList<>();
+
+            while(m.find()) {
+                Module module = new Module();
+                module.setName(m.group(2));
+                if(m.group(1).equals("*"))
+                    optModules.add(module);
+                // ECTS: m.group(3)
+                // System.out.println(m.group(1));
+            }
+            return optModules;
+        } catch (IOException e) {
+            throw new ServiceException("could not read pdf", e);
         }
     }
 }
