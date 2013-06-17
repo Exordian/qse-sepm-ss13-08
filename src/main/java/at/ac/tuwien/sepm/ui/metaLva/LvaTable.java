@@ -17,7 +17,7 @@ import java.util.List;
 @UI
 public class LvaTable extends JTable {
     List<LVA> lvas;
-    int[] colWidth = new int[]{35,62,43,410,40};
+    int[] colWidth = new int[]{35,62,30,410,40};
     int width = colWidth[0]+colWidth[1]+colWidth[2]+colWidth[3]+colWidth[4];
     DefaultTableModel model;
 

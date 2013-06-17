@@ -127,10 +127,11 @@ public class LvaPanel extends StandardInsidePanel {
             metaPane.setBounds(paneMeta);
             this.add(metaPane);
 
-            lvas = new ArrayList<LVA>();
-            lvas = lvaService.readAll();
-            lvaPane = new LvaDisplayPanel(lvas, (int)paneLva.getWidth(), (int)paneLva.getHeight());
+            //lvas = new ArrayList<LVA>();
+            //lvas = lvaService.readAll();
+            lvaPane = new LvaDisplayPanel(new ArrayList<LVA>(0), (int)paneLva.getWidth(), (int)paneLva.getHeight());
             lvaPane.setBounds(paneLva);
+            metaPane.setLvaDisplayPanel(lvaPane);
             this.add(lvaPane);
         } catch (ServiceException e) {
             log.error("Exception: "+ e.getMessage());
@@ -144,7 +145,7 @@ public class LvaPanel extends StandardInsidePanel {
     public void refresh() {
         try {
             metaPane.refresh(metaLVAService.readAll());
-            lvaPane.refresh(lvaService.readAll());
+            //lvaPane.refresh(new ArrayList<LVA>(0));
         } catch (ServiceException e) {
             log.error("Exception: " + e.getMessage());
         } catch (ValidationException e) {

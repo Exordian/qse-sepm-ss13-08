@@ -40,7 +40,7 @@ public class MetaLVADisplayPanel extends JPanel {
         this.allLVAs = lvas;
         filteredLVAs = lvas;
         table = new MetaLVATable(lvas,width);
-        table.addMouseListener(new MouseAdapter() {
+        table.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()||(e.getButton() == 3)) {

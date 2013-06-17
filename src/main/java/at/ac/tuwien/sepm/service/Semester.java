@@ -5,7 +5,7 @@ public enum Semester {
     public String toString(){
         switch(this){
             case W:
-                return "Winder";
+                return "Winter";
             case S:
                 return "Sommer";
             case W_S:
