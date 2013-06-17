@@ -138,6 +138,9 @@ public class LehrangebotPanel extends StandardInsidePanel {
                 case 3:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/lehri.png"));
                     break;
+                case 4:
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehri.png")); //todo change pic
+                    break;
                 default:
                     break;
             }

@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.HintTextField;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -110,7 +111,7 @@ public class ModuleDisplayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    //todo repair: PanelTube.backgroundPanel.viewMetaLva(getSelectedModules());
+                    PanelTube.backgroundPanel.viewModule(getSelectedModule());
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {}
@@ -125,7 +126,7 @@ public class ModuleDisplayPanel extends JPanel {
         return this.table;
     }
 
-    public Module getSelectedModules(){
+    public Module getSelectedModule(){
         return table.getSelectedModule();
     }
 

@@ -47,9 +47,9 @@ public class LVAServiceImplTest {
         lvaService.readByIdWithoutLvaDates(-1);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = ValidationException.class)
     public void testReadByYearAndSemesterNull() throws Exception {
-        lvaService.readByYearAndSemester(0,false);
+        lvaService.readByYearAndSemester(-1,false);
     }
 
     @Test(expected = ServiceException.class)

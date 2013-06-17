@@ -240,9 +240,9 @@ public class MetaLVA implements Comparable<MetaLVA>{
     @Override
     public int compareTo(MetaLVA o) {
         if(name!=null){
-        return (int)(Math.max((priority+1),1)*name.compareTo(o.name));
+            return (int)((o.priority-priority)*100);
         }else{
-            return (int)priority*100;
+            return (int)(o.priority-priority);
         }
     }
 }

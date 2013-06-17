@@ -234,8 +234,8 @@ public class PlanPanel extends StandardInsidePanel {
                             int timeBetween = 0;
                             try{
                                 if(timeBetweenDropdown.getSelectedIndex()==1){
-                                    timeBetween = Integer.parseInt(timeBetweenIntersectText.getText().replace("min","").trim())/60;
-                                }else{
+                                    timeBetween = -Integer.parseInt(timeBetweenIntersectText.getText().replace("min","").trim())/60;
+                                }else if(timeBetweenDropdown.getSelectedIndex()==2){
                                     timeBetween = Integer.parseInt(timeBetweenBufferText.getText().replace("min","").trim())/60;
                                 }
                             }catch(NumberFormatException e){
@@ -251,7 +251,7 @@ public class PlanPanel extends StandardInsidePanel {
                             logger.debug("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
                             for(MetaLVA lvaA:solution){
                                 for(MetaLVA lvaB:solution){
-                                    if(lvaA!=lvaB && LVAUtil.intersect(lvaA.getLVA(plannedYear,plannedSemester),lvaB.getLVA(plannedYear,plannedSemester),typesToIntersect,typesToIntersect)){
+                                    if(lvaA!=lvaB && LVAUtil.intersect(lvaA.getLVA(plannedYear,plannedSemester),lvaB.getLVA(plannedYear,plannedSemester),timeBetween,typesToIntersect,typesToIntersect,tolerance)){
                                         logger.debug("solution intersecting! LVA a: "+lvaA+", LVA b: "+lvaB);
                                     }
                                 }

@@ -16,7 +16,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private boolean[][] intersecting;
     private long startedPlanning;
-    private int planningTolerance=10000;
+    private int planningTimeTolerance =10000;
     private List<Integer> typesToIntersect;
     private float intersectingTolerance = 0;
     private boolean canceled;
@@ -45,8 +45,8 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
                 this.pool.add(lva);
             }
         }
-        Collections.sort(forced);
-        Collections.sort(pool);
+        Collections.shuffle(this.forced);
+        Collections.sort(this.forced);
         logger.debug("forced set:\n"+ LVAUtil.formatShortMetaLVA(this.forced, 2));
         logger.debug("pool set:\n"+LVAUtil.formatShortMetaLVA(this.pool, 2));
         logger.debug("finished setting LVAs. Time passed: "+(System.currentTimeMillis()-timeStarted)/1000f +" secounds");
@@ -70,6 +70,8 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 				toPlan.add(mLVA);
 			}
 		}
+        Collections.shuffle(toPlan);
+        Collections.sort(toPlan);
         ArrayList chosen = new ArrayList<Integer>();
         int actualECTS = 0;
         for(MetaLVA mLVA :forced){
@@ -93,10 +95,12 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         }
         return new ArrayList<MetaLVA>();
 	}
-	private ArrayList<MetaLVA> bestSolution=null;
+    private ArrayList<MetaLVA> bestSolution=null;
+    private float bestSolutionECTS=0;
+
 	private float solutionValue=Float.NEGATIVE_INFINITY;
 	private void recPlanning(ArrayList<MetaLVA> all,int index,ArrayList<Integer> chosen,float goalECTS,float actualECTS){
-        if(System.currentTimeMillis()-startedPlanning>planningTolerance){
+        if(System.currentTimeMillis()-startedPlanning> planningTimeTolerance){
             if(!canceled){
                 logger.debug("Time ran out. Providing best solution so far.");
             }
@@ -118,8 +122,11 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 			}
 			if(!intersect){
 				chosen.add(i);
-				
-				computeSolution(all,chosen,goalECTS,actualECTS+all.get(i).getECTS());
+				if(goalECTS-actualECTS<3 || goalECTS-bestSolutionECTS>3){
+                    computeSolution(all,chosen,goalECTS,actualECTS+all.get(i).getECTS());
+                }else{
+                    //logger.debug("skipping calculation. GoalECTS: "+goalECTS+", actualECTS: "+actualECTS+", bestSolutionECTS: "+bestSolutionECTS);
+                }
 
 
                 recPlanning(all,i+1,chosen, goalECTS,actualECTS+all.get(i).getECTS());
@@ -178,7 +185,8 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 			bestSolution=newSolution;
 			solutionValue=value;
             logger.debug("\tnew Solution found: \n" +LVAUtil.formatShortMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value);
-		}else{
+		    bestSolutionECTS=actualECTS;
+        }else{
             //active for detailed debugging
 			/*ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();
 			for(Integer i:chosen){

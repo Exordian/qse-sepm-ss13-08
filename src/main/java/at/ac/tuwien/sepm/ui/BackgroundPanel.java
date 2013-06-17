@@ -35,6 +35,7 @@ public class BackgroundPanel extends JPanel {
     private ViewTODO viewTodo;
     private ViewLva viewLva;
     private ViewMetaLva viewMetaLva;
+    private ViewModule viewModule;
     private Image image;
     private Component lastComponent;
 
@@ -44,10 +45,11 @@ public class BackgroundPanel extends JPanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,ViewModule viewModule) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
         this.viewMetaLva=viewMetaLva;
+        this.viewModule = viewModule;
         this.viewLva=viewLva;
         this.lehrPanel=lehrPanel;
         this.calPanel = calPanel;
@@ -121,6 +123,14 @@ public class BackgroundPanel extends JPanel {
         this.revalidate();
         this.repaint();
     }
+    public void viewModule(Module module) {
+        removeAddedPanels();
+        viewModule.setModule(module);
+        viewModule.setVisible(true);
+        this.add(viewModule);
+        this.revalidate();
+        this.repaint();
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -139,6 +149,7 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewTodo);
         this.remove(viewLva);
         this.remove(viewMetaLva);
+        this.remove(viewModule);
         this.remove(viewDeadline);
         this.remove(lehrPanel);
     }
