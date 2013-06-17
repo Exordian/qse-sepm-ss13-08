@@ -1,11 +1,11 @@
 package at.ac.tuwien.sepm.entity;
 
+import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.impl.LVAUtil;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.impl.LVAUtil;
 
 /**
  * 
@@ -13,7 +13,7 @@ import at.ac.tuwien.sepm.service.impl.LVAUtil;
  *
  */
 
-public class LVA {
+public class LVA implements Comparable<LVA>{
     private int id;
     private MetaLVA metaLVA=null;
     private String description=null;
@@ -346,5 +346,10 @@ public class LVA {
         result = 31 * result + (exams != null ? exams.hashCode() : 0);
         result = 31 * result + (deadlines != null ? deadlines.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public int compareTo(LVA o) {
+        return year-o.year; //todo: include semester and test ordering
     }
 }

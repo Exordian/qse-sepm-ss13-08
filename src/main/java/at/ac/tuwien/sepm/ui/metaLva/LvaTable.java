@@ -17,8 +17,8 @@ import java.util.List;
 @UI
 public class LvaTable extends JTable {
     List<LVA> lvas;
-    int[] colWidth = new int[]{35,62,43,410};
-    int width = colWidth[0]+colWidth[1]+colWidth[2]+colWidth[3];
+    int[] colWidth = new int[]{35,62,43,410,40};
+    int width = colWidth[0]+colWidth[1]+colWidth[2]+colWidth[3]+colWidth[4];
     DefaultTableModel model;
 
     public LvaTable(int width){
@@ -42,7 +42,7 @@ public class LvaTable extends JTable {
     }
 
     private void init(int width){
-        model = new DefaultTableModel(new String[]{"Jahr","Semester","Typ","Name"},0){
+        model = new DefaultTableModel(new String[]{"Jahr","Semester","Typ","Name","Note"},0){
             @Override
             public boolean isCellEditable(int row,int col){
                 return false;
@@ -52,8 +52,8 @@ public class LvaTable extends JTable {
         setModel(model);
         colWidth[3] = Math.max(0,colWidth[3]+(width-this.width));
 
-        for(int i=0;i<4;i++){
-            if(i!=2){
+        for(int i=0;i<5;i++){
+            if(i!=3){
                 getColumnModel().getColumn(i).setMinWidth(colWidth[i]);
                 getColumnModel().getColumn(i).setMaxWidth(colWidth[i]);
             }else{
@@ -64,8 +64,11 @@ public class LvaTable extends JTable {
 
     public void setLVAs(List<LVA> lvas){
         for(LVA lva: lvas){
-
-            model.addRow(new String[]{Integer.toString(lva.getYear()), lva.getSemester().toString(),lva.getMetaLVA().getType().toString(),lva.getMetaLVA().getName()});
+            String grade = ""+lva.getGrade();
+            if(lva.getGrade()==0){
+                grade="n.a.";
+            }
+            model.addRow(new String[]{Integer.toString(lva.getYear()), lva.getSemester().toString(),lva.getMetaLVA().getType().toString(),lva.getMetaLVA().getName(),grade});
         }
         this.lvas=lvas;
     }

@@ -30,6 +30,7 @@ public class LvaDisplayPanel extends JPanel {
     private JTextField searchSemester = new HintTextField("Semester");
     private JTextField searchType = new HintTextField("Typ");
     private JTextField searchName = new HintTextField("Name");
+    private JTextField searchGrade = new HintTextField("Note");
 
     private JPanel searchPanel = new JPanel();
 
@@ -73,16 +74,18 @@ public class LvaDisplayPanel extends JPanel {
         searchType.setPreferredSize(new Dimension(table.getColWidth(2), searchHeight));
         searchPanel.add(searchName);
         searchName.setPreferredSize(new Dimension(table.getColWidth(3), searchHeight));
+        searchPanel.add(searchGrade);
+        searchGrade.setPreferredSize(new Dimension(table.getColWidth(4), searchHeight));
         pane.setViewportView(table);
 
         pane.setPreferredSize(new Dimension(table.getPreferredSize().width, height-searchPanel.getHeight()));
         KeyListener listener = new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                logger.debug("searching for: (year: "+ searchYear.getText()+", semester:"+ searchSemester.getText()+", typ: " + searchType.getText()+", name: "+ searchName.getText()+")");
+                logger.debug("searching for: (year: "+ searchYear.getText()+", semester:"+ searchSemester.getText()+", typ: " + searchType.getText()+", name: "+ searchName.getText()+", grade: "+searchGrade.getText()+")");
                 filteredLVAs = new ArrayList<LVA>();
                 for (LVA m : allLVAs) {
-                    if (String.valueOf(m.getYear()).contains(searchYear.getText()) && m.getSemester().toString().contains(searchSemester.getText()) && m.getMetaLVA().getType().toString().contains(searchType.getText()) && (m.getMetaLVA().getName().contains(searchName.getText()))) {
+                    if (String.valueOf(m.getYear()).contains(searchYear.getText()) && m.getSemester().toString().contains(searchSemester.getText()) && m.getMetaLVA().getType().toString().contains(searchType.getText()) && (m.getMetaLVA().getName().contains(searchName.getText()))&& ((""+m.getGrade()).contains(searchGrade.getText()))) {
                         filteredLVAs.add(m);
                     }
                 }
@@ -97,6 +100,7 @@ public class LvaDisplayPanel extends JPanel {
         searchSemester.addKeyListener(listener);
         searchType.addKeyListener(listener);
         searchName.addKeyListener(listener);
+        searchGrade.addKeyListener(listener);
     }
 
     private class PopUpMenu extends JPopupMenu {
