@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
@@ -85,47 +84,17 @@ public class ModulePanel extends StandardInsidePanel {
     }
 
     private void addButtons() {
-        refresh = new JButton("Aktualisieren");
-        refresh.setFont(standardButtonFont);
-        refresh.setBounds((int)whiteSpace.getWidth()/2-75, (int)paneMeta.getY() + (int)paneMeta.getHeight()+8, 150,30);
-        refresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ModulePanel.this.refresh();
-            }
-        });
-        this.add(refresh);
 
         addModule = new JButton("Erstellen");
         addModule.setFont(standardButtonFont);
-        addModule.setBounds((int) paneMeta.getX(), (int) paneMeta.getY() + (int) paneMeta.getHeight() + 8, 150, 30);
+        addModule.setBounds((int) paneModule.getX(), (int) paneModule.getY() + (int) paneModule.getHeight() + 8, 150, 30);
         addModule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PanelTube.backgroundPanel.viewMetaLva(null);
+                PanelTube.backgroundPanel.viewModule(null);
             }
         });
         this.add(addModule);
-        addLva = new JButton("Erstellen");
-        addLva.setFont(standardButtonFont);
-        addLva.setBounds((int)paneMeta.getX() + (int)paneMeta.getWidth()-150, (int)paneMeta.getY() + (int)paneMeta.getHeight()+8, 150,30);
-        addLva.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {//todo
-                try {
-                    if (metaLVAService.readAll() == null) {
-                        JOptionPane.showMessageDialog(ModulePanel.this, "Es muss eine MetaLva vorhanden sein, um eine semesterspezifische Lva erzeugen zu können.", "Fehler", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        PanelTube.backgroundPanel.viewLva(null);
-                    }
-                } catch (ServiceException e1) {
-                    log.error("Exception: "+ e1.getMessage());
-                } catch (ValidationException e1) {
-                    log.error("Exception: "+ e1.getMessage());
-                }
-            }
-        });
-        this.add(addLva);
     }
 
     private void addContent() {

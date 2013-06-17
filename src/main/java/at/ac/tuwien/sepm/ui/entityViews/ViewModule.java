@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Flo
+ * User: Georg
  * Date: 04.06.13
  * Time: 13:57
  * To change this template use File | Settings | File Templates.
@@ -45,24 +45,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
     private MetaLVADisplayPanel metaLVADisplayPanel;
 
     private Rectangle paneModule = new Rectangle(520,95,490,413);
-    /*private JLabel ectsLabel;
-    private JSpinner ects;
 
-    private JLabel typeLabel;
-    private JComboBox type;
-
-    private JLabel priorityLabel;
-    private JSpinner priority;
-
-    private JLabel semestersOfferedLabel;
-    private JComboBox semestersOffered;
-
-    private JLabel moduleLabel;
-    private JComboBox module;
-
-    private JLabel completedLabel;
-    private JCheckBox completed;
-*/
     private JButton save;
 
     private ModuleService moduleService;
@@ -116,7 +99,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
                     }
                     module.setName(title.getText());
                     module.setDescription(description.getText());
-                    if (module.getId() != 0) {
+                    if (module.getId() != null) {
                         moduleService.update(module);
                     } else {
                         moduleService.create(module);
@@ -183,8 +166,9 @@ public class ViewModule extends StandardSimpleInsidePanel {
     public void setModule(Module module) {
         priority.setText("");
         if (module == null) {
+
             this.module = new Module();
-            module.setMetaLvas(new ArrayList<MetaLVA>(0));
+            this.module.setMetaLvas(new ArrayList<MetaLVA>(0));
             changeTitle("Neues Modul");
             description.setText("");
             priority.setHint("Keine LVA");
@@ -210,7 +194,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
             }
             description.setText(module.getDescription());
         }
-        metaLVADisplayPanel.refresh(module.getMetaLvas());
+        metaLVADisplayPanel.refresh(this.module.getMetaLvas());
     }
 
     private static class ModuleSelectItem extends SelectItem<Module> {

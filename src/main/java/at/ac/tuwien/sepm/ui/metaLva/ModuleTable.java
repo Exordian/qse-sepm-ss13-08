@@ -62,6 +62,7 @@ public class ModuleTable extends JTable{
             }
             model.addRow(new String[]{m.getName(),""+ ectsCount});
         }
+        this.modules = modules;
     }
 
     public void refreshModules(List<Module> list) {
