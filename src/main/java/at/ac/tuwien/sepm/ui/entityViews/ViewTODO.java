@@ -139,10 +139,11 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                 try {
                     todo.setName(title.getText());
                     todo.setDescription(description.getText());
-                    todo.setLva(((LvaSelectItem) lva.getSelectedItem()).get());
                     todo.setDone(done.isSelected());
                     if (privateDate.isSelected()){
                        // todo.setLva(-1);   wie kennzeichnen wir einen privaten termin?
+                    } else {
+                        todo.setLva(((LvaSelectItem) lva.getSelectedItem()).get());
                     }
                     if (todo.getId() != null) {
                         if (todoService.readById(todo.getId()) != null)

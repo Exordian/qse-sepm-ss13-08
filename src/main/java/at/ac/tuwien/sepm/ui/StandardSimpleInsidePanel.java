@@ -62,6 +62,8 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
         retButton.setContentAreaFilled(false);
         retButton.setBorderPainted(false);
         this.add(retButton);
+        revalidate();
+        repaint();
     }
 
     protected void addTitle(String s) {
@@ -80,6 +82,8 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
         } else {
             title2.setText(s);
         }
+        revalidate();
+        repaint();
     }
 
     protected void addEditableTitle(String s) {

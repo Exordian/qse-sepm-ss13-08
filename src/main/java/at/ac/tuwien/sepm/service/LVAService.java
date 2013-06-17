@@ -106,8 +106,29 @@ public interface LVAService {
     /**
      * Read all lvas.
      * @return An <code>List<LVA></code> containing all lvas.
-     * @throws ServiceException If the meta lva data could not be read because any error occured.
+     * @throws ServiceException If the lva data could not be read because any error occured.
      * @throws ValidationException if invalid parameters
      */
     public List<LVA> readAll() throws ServiceException, ValidationException;
+
+    /**
+     * Returns whether first lva in study progress was in winter semester
+     * @return true if the first lva in study progress is wintersemester else false or null if no
+     * @throws ServiceException If data could not be read
+     */
+    public boolean isFirstSemesterAWinterSemester() throws ServiceException;
+
+    /**
+     * Returns year of first lva in study progress
+     * @return year of lva in study progress
+     * @throws ServiceException If data could not be read
+     */
+    public int firstYear() throws ServiceException;
+
+    /**
+     * Returns number of semesters in study progress
+     * @return number of semesters in study progress else 0
+     * @throws ServiceException If date could not be read or if there are no lvas in study progress
+     */
+    public int numberOfSemestersInStudyProgress() throws ServiceException;
 }

@@ -18,15 +18,18 @@ public class StudiesPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
+    private JButton tab4;
     private PlanPanel planningPanel;
     private ExportPanel exportPanel;
     private ViewPanel viewPanel;
+    private GroupPanel groupPanel;
 
     @Autowired
-    public StudiesPanel(PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel) {
+    public StudiesPanel(PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel, GroupPanel groupPanel) {
         this.planningPanel = planningPanel;
         this.exportPanel = exportPanel;
         this.viewPanel = viewPanel;
+        this.groupPanel=groupPanel;
         add(viewPanel);
 
         init();
@@ -40,11 +43,13 @@ public class StudiesPanel extends StandardInsidePanel {
         tab1 = new JButton();
         tab2 = new JButton();
         tab3 = new JButton();
+        tab4 = new JButton();
 
         ArrayList<JButton> tabs = new ArrayList<JButton>();
         tabs.add(tab1);
         tabs.add(tab2);
         tabs.add(tab3);
+        tabs.add(tab4);
 
         tab1.setBounds(41,30,160,40);
         tab1.addActionListener(new ActionListener() {
@@ -53,7 +58,9 @@ public class StudiesPanel extends StandardInsidePanel {
                 changeImage(1);
                 remove(planningPanel);
                 remove(exportPanel);
+                remove(groupPanel);
                 add(viewPanel);
+                viewPanel.refresh();
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
             }
@@ -66,6 +73,7 @@ public class StudiesPanel extends StandardInsidePanel {
                 changeImage(2);
                 remove(exportPanel);
                 remove(viewPanel);
+                remove(groupPanel);
                 add(planningPanel);
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
@@ -80,12 +88,27 @@ public class StudiesPanel extends StandardInsidePanel {
                 add(exportPanel);
                 remove(viewPanel);
                 remove(planningPanel);
+                remove(groupPanel);
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
             }
         });
 
-        for (int i = 0; i < 3; i++) {
+        tab4.setBounds(41+160*3+396,30,160,40);
+        tab4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                changeImage(4);
+                remove(exportPanel);
+                remove(viewPanel);
+                remove(planningPanel);
+                add(groupPanel);
+                StudiesPanel.this.validate();
+                StudiesPanel.this.repaint();
+            }
+        });
+
+        for (int i = 0; i < 4; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
             tabs.get(i).setOpaque(false);
             tabs.get(i).setContentAreaFilled(false);
@@ -105,6 +128,9 @@ public class StudiesPanel extends StandardInsidePanel {
                     break;
                 case 3:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/stude.png"));
+                    break;
+                case 4:
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/studg.png"));
                     break;
                 default:
                     break;

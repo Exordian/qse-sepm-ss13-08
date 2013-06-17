@@ -59,9 +59,6 @@ public class BackgroundPanel extends JPanel {
         this.viewLVAdate=viewLVAdate;
         this.viewTodo=viewTodo;
         this.viewDeadline=viewDeadline;
-
-
-
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
@@ -202,6 +199,7 @@ public class BackgroundPanel extends JPanel {
                 propsPanel.setVisible(true);
                 BackgroundPanel.this.add(propsPanel);
                 BackgroundPanel.this.repaint();
+                BackgroundPanel.this.revalidate();
             }
         });
         this.add(properties);
@@ -223,6 +221,8 @@ public class BackgroundPanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
                 refresh();
+                repaint();
+                revalidate();
             }
         });
 
@@ -232,6 +232,8 @@ public class BackgroundPanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
                 refresh();
+                repaint();
+                revalidate();
             }
         });
 
@@ -241,6 +243,8 @@ public class BackgroundPanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
                 refresh();
+                repaint();
+                revalidate();
             }
         });
 

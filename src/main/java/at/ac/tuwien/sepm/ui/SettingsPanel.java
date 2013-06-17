@@ -2,7 +2,11 @@ package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.service.AuthService;
 import at.ac.tuwien.sepm.service.PropertyService;
+import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
+import at.ac.tuwien.sepm.ui.template.WideComboBox;
+import com.toedter.calendar.JYearChooser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -17,6 +21,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private JLabel facebookLogin;
     private JLabel defaultEcts;
     private JLabel pickMajor;
+    private JLabel begin;
 
     private JLabel nameLabelFacebook;
     private JLabel nameLabelTISS;
@@ -27,38 +32,41 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private JComboBox major;
     private JButton deleteALL;
 
+    private JYearChooser year;
+    private JComboBox semester;
+
     private JButton save;
 
-    private String loginNameFB;
-    private String loginPWDFB;
-
-    private String loginNameTISS;
-    private String loginPWDTISS;
-
-    @Autowired
     private PropertyService propertyService;
 
     @Autowired
     private AuthService authService;
 
-    public SettingsPanel() {
+    @Autowired
+    public SettingsPanel(PropertyService propertyService) {
+        this.propertyService=propertyService;
         init();
         addImage();
         addTitle("Einstellungen");
         addReturnButton();
         addContent();
         addSaveButton();
-        //todo studienanfang eingeben (erstes semester)
+        repaint();
+        revalidate();
     }
 
     private void addSaveButton() {
         save = new JButton("Speichern");
         save.setFont(standardButtonFont);
-        save.setBounds(deleteALL.getX() + deleteALL.getWidth()+100, deleteALL.getHeight() + deleteALL.getY() + 60, 110, 30);
+        save.setBounds(deleteALL.getX() + deleteALL.getWidth()+100, deleteALL.getHeight() + deleteALL.getY() + 50, 110, 30);
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo speichern
+                propertyService.setProperty("user.firstYear", Integer.toString(year.getYear()));
+                propertyService.setProperty("user.firstSemester", (String)semester.getSelectedItem());
+                propertyService.setProperty("user.majorName", (String)major.getSelectedItem());
+                setVisible(false);
+                PanelTube.backgroundPanel.showLastComponent();
             }
         });
         this.add(save);
@@ -70,9 +78,37 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         int verticalSpace = 10;
         int verticalSpaceVast = 40;
 
+        begin = new JLabel("Anfang des Studiums:");
+        begin.setFont(standardTextFont);
+        begin.setBounds((int)simpleWhiteSpace.getX()+70, (int)simpleWhiteSpace.getY()+30, textWidth, textHeight);
+        this.add(begin);
+
+        semester = new JComboBox();
+        semester.setFont(standardButtonFont);
+        semester.addItem("SS");
+        semester.addItem("WS");
+        if (propertyService.getProperty("user.firstSemester") != null) {
+            semester.setSelectedItem(propertyService.getProperty("user.firstSemester"));
+        } else {
+            semester.setSelectedItem("WS");
+        }
+
+        semester.setBounds(begin.getX() + begin.getWidth() -10, begin.getY(), 45,25);
+        this.add(semester);
+
+        year = new JYearChooser();
+        if (propertyService.getProperty("user.firstYear") != null) {
+            year.setYear(Integer.parseInt(propertyService.getProperty("user.firstYear")));
+        } else {
+            year.setYear(2013);
+        }
+        year.setFont(standardTextFont);
+        year.setBounds(semester.getX() + semester.getWidth() + 5, semester.getY(), 65,25);
+        this.add(year);
+
         tissLogin = new JLabel("TISS Login Daten");
         tissLogin.setFont(standardTextFont);
-        tissLogin.setBounds((int)simpleWhiteSpace.getX()+70, (int)simpleWhiteSpace.getY()+30, textWidth, textHeight);
+        tissLogin.setBounds(begin.getX(), begin.getHeight() + begin.getY() + 20, textWidth, textHeight);
         this.add(tissLogin);
 
         tiss = new JButton("eingeben");
@@ -102,10 +138,8 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                         super.windowClosed(e);
                         try {
                             authService.authenticate(temp.getName(), temp.getPassword());
-                            loginNameTISS = temp.getName();
                             nameLabelTISS.setText("Eingeloggt als: " + temp.getName());
                             propertyService.setProperty("tiss.user", temp.getName());
-                            loginPWDTISS = temp.getPassword();
                             propertyService.setProperty("tiss.password", temp.getPassword());
                         } catch (ServiceException ex) {
                             nameLabelTISS.setText("Login Daten ungültig");
@@ -121,7 +155,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
 
         facebookLogin = new JLabel("Facebook Login Daten");
         facebookLogin.setFont(standardTextFont);
-        facebookLogin.setBounds(tissLogin.getX(), tiss.getHeight() + tiss.getY() + verticalSpaceVast, textWidth, textHeight);
+        facebookLogin.setBounds(tissLogin.getX(), tiss.getHeight() + tiss.getY() + 20, textWidth, textHeight);
         this.add(facebookLogin);
 
         facebook = new JButton("eingeben");
@@ -149,10 +183,9 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
-                        loginNameFB = temp.getName();
                         nameLabelFacebook.setText("Eingeloggt als: " + temp.getName());
-                        loginPWDFB = temp.getPassword();
-                        //todo do with data whatever
+                        propertyService.setProperty("facebook.user", temp.getName());
+                        propertyService.setProperty("facebook.password", temp.getPassword());
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
                     }
@@ -176,12 +209,18 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         pickMajor.setBounds(tissLogin.getX(), ects.getHeight() + ects.getY() + verticalSpaceVast, textWidth, textHeight);
         this.add(pickMajor);
 
-        major = new JComboBox();
-        major.addItem("Teststudium1");
-        major.addItem("Teststudium2");
-        major.addItem("Teststudium3");
+        major = new WideComboBox();                 //todo echte studien einfügen ^.-
+        major.addItem("Bachelor - Teststudium 1");
+        major.addItem("Master - Teststudium 2");
+        major.addItem("Bachelor - Teststudium 3");
         major.setFont(standardButtonFont);
-        major.setBounds(pickMajor.getX() + pickMajor.getWidth() - 10, pickMajor.getY(), 150, textHeight);
+
+        if (propertyService.getProperty("user.majorName") != null) {
+            semester.setSelectedItem(propertyService.getProperty("user.majorName"));
+        } else {
+            semester.setSelectedIndex(0);
+        }
+        major.setBounds(pickMajor.getX() + pickMajor.getWidth() - 10, pickMajor.getY(), 250, textHeight);
         this.add(major);
 
 
@@ -199,8 +238,6 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         });
 
         this.add(deleteALL);
-        this.revalidate();
-        this.repaint();
     }
 
 }

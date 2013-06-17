@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.ui.studyProgress.display;
 
+import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+import at.ac.tuwien.sepm.ui.metaLva.LvaDisplayPanel;
 import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
 
 import javax.swing.*;
@@ -17,11 +19,11 @@ import java.util.List;
  */
 public class SemesterPanel extends StandardInsidePanel {
     private JLabel semesterTitle;
-    private List<MetaLVA> lvas;
-    private MetaLVADisplayPanel pane;
+    private List<LVA> lvas;
+    private LvaDisplayPanel pane;
     private int height;
 
-    public SemesterPanel(int x, int y, String title, ArrayList<MetaLVA> lvas) {
+    public SemesterPanel(int x, int y, String title, ArrayList<LVA> lvas) {
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
@@ -34,7 +36,7 @@ public class SemesterPanel extends StandardInsidePanel {
     }
 
     private void initLvaTable() {
-        pane = new MetaLVADisplayPanel(lvas, (int) whiteSpace.getWidth()-100, height);
+        pane = new LvaDisplayPanel(lvas, (int) whiteSpace.getWidth()-100, height);
         pane.setBounds(this.getX() + 50, semesterTitle.getY() + semesterTitle.getHeight() + 5, (int) whiteSpace.getWidth() - 100, height - semesterTitle.getHeight() - 5);
         this.add(pane);
     }
@@ -46,7 +48,7 @@ public class SemesterPanel extends StandardInsidePanel {
         this.add(semesterTitle);
     }
 
-    public void setLvas(List<MetaLVA> lvas) {
+    public void setLvas(List<LVA> lvas) {
         this.lvas = lvas;
         remove(pane);
         initLvaTable();
@@ -56,5 +58,4 @@ public class SemesterPanel extends StandardInsidePanel {
         semesterTitle.setText(title);
         this.repaint();
     }
-
 }

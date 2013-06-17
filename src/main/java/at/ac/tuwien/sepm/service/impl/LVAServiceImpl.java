@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.service.impl;
 import at.ac.tuwien.sepm.dao.LvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.LVAService;
+import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.ServiceException;
 import org.apache.log4j.LogManager;
@@ -21,6 +22,9 @@ import java.util.List;
 public class LVAServiceImpl implements LVAService {
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+
+    @Autowired
+    private PropertyService propertyService;
 
     @Autowired
     LvaDao lvaDao;
@@ -189,6 +193,47 @@ public class LVAServiceImpl implements LVAService {
         try {
             return lvaDao.readAll();
         } catch(DataAccessException e) {
+            logger.error("Exception: "+ e.getMessage());
+            throw new ServiceException("Exception: "+ e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isFirstSemesterAWinterSemester() throws ServiceException {
+        if (propertyService.getProperty("user.firstSemester") != null) {
+            return propertyService.getProperty("user.firstSemester") == "WS";
+        } else {
+            logger.error("Erstes Semester Property File wurde nicht gefunden.");
+            throw new ServiceException("Erstes Semester Property File wurde nicht gefunden.");
+        }
+    }
+
+    @Override
+    public int firstYear() throws ServiceException {
+        if (propertyService.getProperty("user.firstYear") != null) {
+            return Integer.parseInt(propertyService.getProperty("user.firstYear"));
+        } else {
+            logger.error("Erstes Jahr Property File wurde nicht gefunden.");
+            throw new ServiceException("Erstes Jahr Property File wurde nicht gefunden.");
+        }
+    }
+
+    @Override
+    public int numberOfSemestersInStudyProgress() throws ServiceException {
+        try {
+            int beginning = Integer.parseInt(propertyService.getProperty("user.firstYear"));
+            LVA temp = null;
+            for (LVA l : readAll()) {
+                if (temp == null)
+                    temp = l;
+                if(l.isInStudyProgress()) {
+                    if (l.getYear() >= temp.getYear())
+                        temp = l;
+                }
+            }
+            int x = temp.getYear()-beginning;
+            return x*2;
+        } catch (ValidationException e) {
             logger.error("Exception: "+ e.getMessage());
             throw new ServiceException("Exception: "+ e.getMessage());
         }

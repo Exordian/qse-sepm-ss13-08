@@ -42,9 +42,9 @@ public class LehrangebotPanel extends StandardInsidePanel {
         this.modulePanel=modulePanel;
         createTabButtons();
         changeImage(1);
-        this.add(studienplanPanel);
+        this.add(this.studienplanPanel);
+        this.validate();
         this.repaint();
-        this.revalidate();
     }
 
     private void createTabButtons() {
@@ -78,34 +78,6 @@ public class LehrangebotPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                remove(lvaFetcherPanel);
-                remove(studienplanPanel);
-                remove(modulePanel);
-                add(lvaPanel);
-                lvaPanel.refresh();
-                LehrangebotPanel.this.validate();
-                LehrangebotPanel.this.repaint();
-            }
-        });
-
-        tab3.setBounds(41+160*2,30,160,40);
-        tab3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                changeImage(3);
-                remove(studienplanPanel);
-                remove(lvaPanel);
-                remove(modulePanel);
-                add(lvaFetcherPanel);
-                LehrangebotPanel.this.validate();
-                LehrangebotPanel.this.repaint();
-            }
-        });
-        tab4.setBounds(41+160*3,30,160,40);
-        tab4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                changeImage(3);
                 remove(studienplanPanel);
                 remove(lvaPanel);
                 remove(lvaFetcherPanel);
@@ -116,32 +88,57 @@ public class LehrangebotPanel extends StandardInsidePanel {
             }
         });
 
-        for (int i = 0; i < 3; i++) {
+        tab3.setBounds(41+160*2,30,160,40);
+        tab3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                changeImage(3);
+                remove(lvaFetcherPanel);
+                remove(studienplanPanel);
+                remove(modulePanel);
+                add(lvaPanel);
+                lvaPanel.refresh();
+                LehrangebotPanel.this.validate();
+                LehrangebotPanel.this.repaint();
+            }
+        });
+        tab4.setBounds(41+160*3,30,160,40);
+        tab4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                changeImage(4);
+                remove(studienplanPanel);
+                remove(lvaPanel);
+                remove(modulePanel);
+                add(lvaFetcherPanel);
+                LehrangebotPanel.this.validate();
+                LehrangebotPanel.this.repaint();
+            }
+        });
+
+        for (int i = 0; i < 4; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
             tabs.get(i).setOpaque(false);
             tabs.get(i).setContentAreaFilled(false);
             tabs.get(i).setBorderPainted(false);
             this.add(tabs.get(i));
         }
-        this.add(tabs.get(3)); //todo remove
-        tabs.get(3).setText("Module");
-        tabs.get(3).setFont(standardTextFont);
     }
 
     private void changeImage(int nmb) {
-        try{
+        try {
             switch(nmb) {
                 case 1:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/lehrs.png"));
                     break;
                 case 2:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehrl.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehrm.png"));
                     break;
                 case 3:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehri.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehrl.png"));
                     break;
                 case 4:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehri.png")); //todo change pic
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/lehri.png"));
                     break;
                 default:
                     break;

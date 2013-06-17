@@ -50,6 +50,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
     private JTextArea additionalInfo2;
     private JTextField institute;
     private JTextField language;
+    private JSpinner grade;
 
     private LVA lva;
     private LVAService lvaService;
@@ -62,6 +63,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
     private JLabel metaLVALabel;
     private JLabel inStudyProgressLabel;
     private JLabel languageLabel;
+    private JLabel gradeLabel;
 
     @Autowired
     public ViewLva(LVAService lvaService, MetaLVAService metaLVAService) {
@@ -100,7 +102,9 @@ public class ViewLva extends StandardSimpleInsidePanel {
             semester.setSelectedItem(lva.getSemester());
             metaLVA.setSelectedItem(lva.getMetaLVA());   //todo
             year.setYear(lva.getYear());
-
+            if (lva.getGrade() != 0) {
+                grade.setValue(lva.getGrade());
+            }
             goals.setText(lva.getGoals());
             institute.setText(lva.getInstitute());
         }
@@ -125,7 +129,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
                     lva.setYear(year.getYear());
                     lva.setGoals(goals.getText());
                     lva.setInstitute(institute.getText());
-
+                    lva.setGrade((int)grade.getValue());
                     if (lva.getId() != 0) {
                         if (lvaService.readById(lva.getId()) != null)
                             lvaService.update(lva);
@@ -266,6 +270,18 @@ public class ViewLva extends StandardSimpleInsidePanel {
         language.setFont(standardTextFont);
         language.setBounds(languageLabel.getX() + languageLabel.getWidth() + 20, languageLabel.getY(), 100,25);
         this.add(language);
+
+
+        gradeLabel = new JLabel("Note:");
+        gradeLabel.setFont(standardTextFont);
+        gradeLabel.setBounds(languageLabel.getX(), languageLabel.getY() + languageLabel.getHeight() + verticalSpace*2, 130,25);
+        this.add(gradeLabel);
+
+        grade = new JSpinner();
+        grade.setModel(new SpinnerNumberModel(5,1,5,1));
+        grade.setFont(standardTextFont);
+        grade.setBounds(gradeLabel.getX() + gradeLabel.getWidth() + 20, gradeLabel.getY(), 50,25);
+        this.add(grade);
     }
 
     private static class MetaLvaSelectItem extends SelectItem<MetaLVA> {

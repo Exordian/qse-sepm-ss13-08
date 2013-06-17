@@ -182,8 +182,6 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         priority = new JSpinner();
         priority.setModel(new SpinnerNumberModel(5.,0.,10.,0.5));
         priority.setEditor(new JSpinner.NumberEditor(priority, "0.#"));
-
-
         priority.setFont(standardTextFont);
         priority.setBounds(priorityLabel.getX() + priorityLabel.getWidth() + 20, priorityLabel.getY(), 140,25);
         this.add(priority);

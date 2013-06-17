@@ -84,7 +84,6 @@ public class ModulePanel extends StandardInsidePanel {
     }
 
     private void addButtons() {
-
         addModule = new JButton("Erstellen");
         addModule.setFont(standardButtonFont);
         addModule.setBounds((int) paneModule.getX(), (int) paneModule.getY() + (int) paneModule.getHeight() + 8, 150, 30);
