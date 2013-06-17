@@ -44,7 +44,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
     private JLabel metaLVALabel;
     private MetaLVADisplayPanel metaLVADisplayPanel;
 
-    private Rectangle paneModule = new Rectangle(520,95,490,413);
+    private Rectangle paneModule = new Rectangle(520,95,490,465);
 
     private JButton save;
 
@@ -133,7 +133,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
 
         description = new JTextArea();
         description.setFont(standardTextFont);
-        description.setBounds(descriptionLabel.getX() + descriptionLabel.getWidth() + 20, descriptionLabel.getY(), 250, 25 * 10);
+        description.setBounds(descriptionLabel.getX() + descriptionLabel.getWidth() + 20, descriptionLabel.getY(), 250, 25 * 10 +80);
         description.setBorder(new JTextField().getBorder());
         this.add(description);
 
@@ -158,7 +158,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
         this.add(metaLVALabel);
 
         metaLVADisplayPanel = new MetaLVADisplayPanel(module.getMetaLvas(),(int)paneModule.getWidth(),(int)paneModule.getHeight());
-        metaLVADisplayPanel.setBounds(metaLVALabel.getX(),metaLVALabel.getY()+metaLVALabel.getHeight(),(int)paneModule.getWidth(),(int)paneModule.getHeight()-(metaLVALabel.getY()+metaLVALabel.getHeight()));
+        metaLVADisplayPanel.setBounds(metaLVALabel.getX(),metaLVALabel.getY()+metaLVALabel.getHeight()+20,(int)paneModule.getWidth(),(int)paneModule.getHeight()-(metaLVALabel.getY()+metaLVALabel.getHeight()));
         this.add(metaLVADisplayPanel);
 
     }
