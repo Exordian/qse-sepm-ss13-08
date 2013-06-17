@@ -24,6 +24,9 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 
     @Override
     public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
+        logger.debug("setting LVAs..");
+        long timeStarted= System.currentTimeMillis();
+
         if(forced==null){
             forced = new ArrayList<MetaLVA>(0);
         }
@@ -44,12 +47,15 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         }
         Collections.sort(forced);
         Collections.sort(pool);
-        logger.debug("forced set:\n"+ LVAUtil.formatShortMetaLVA(this.forced, 1));
-        logger.debug("pool set:\n"+LVAUtil.formatShortMetaLVA(this.pool, 1));
+        logger.debug("forced set:\n"+ LVAUtil.formatShortMetaLVA(this.forced, 2));
+        logger.debug("pool set:\n"+LVAUtil.formatShortMetaLVA(this.pool, 2));
+        logger.debug("finished setting LVAs. Time passed: "+(System.currentTimeMillis()-timeStarted)/1000f +" secounds");
     }
 
     @Override
     public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
+        logger.debug("start planning..");
+        startedPlanning = System.currentTimeMillis();
         if(typesToIntersect==null){
             typesToIntersect=new ArrayList<Integer>();
             typesToIntersect.add(LVAUtil.LECTURE_TIMES);
@@ -78,19 +84,21 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         }
         computeSolution(toPlan,chosen,goalECTS,actualECTS);
         intersectAll(toPlan,year,sem);
-        startedPlanning = System.currentTimeMillis();
+
         canceled = false;
 		recPlanning(toPlan,0,chosen,goalECTS,actualECTS);
-		if(bestSolution!=null)
-		return bestSolution;
+        logger.debug("finished planning. Time passed: "+(System.currentTimeMillis()-startedPlanning)/1000f +" secounds");
+		if(bestSolution!=null){
+		    return bestSolution;
+        }
         return new ArrayList<MetaLVA>();
 	}
 	private ArrayList<MetaLVA> bestSolution=null;
 	private float solutionValue=Float.NEGATIVE_INFINITY;
 	private void recPlanning(ArrayList<MetaLVA> all,int index,ArrayList<Integer> chosen,float goalECTS,float actualECTS){
         if(System.currentTimeMillis()-startedPlanning>planningTolerance){
-            if(canceled){
-                logger.debug("time ran out. Providing best solution so far.");
+            if(!canceled){
+                logger.debug("Time ran out. Providing best solution so far.");
             }
             canceled=true;
             return;
@@ -129,13 +137,18 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         }
         intersecting = LVAUtil.intersectToArray(lvas,timeBetween,typesToIntersect,intersectingTolerance);
         String debug = "";
+        String separator=" ";
+        if(intersecting.length>100){
+            separator="";
+        }
         for(int y=0;y<lvas.size();y++){
             for(int x=0;x<lvas.size();x++){
                if(intersect(x,y)){
-                   debug+="1 ";
+                   debug+="1";
                }else{
-                   debug+="0 ";
+                   debug+="0";
                }
+                debug+=separator;
             }
             debug+="\n";
         }
@@ -164,7 +177,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-            logger.debug("new Solution found: \n" +LVAUtil.formatShortMetaLVA(newSolution, 1)+"\n\tsolution value: "+value);
+            logger.debug("\tnew Solution found: \n" +LVAUtil.formatShortMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value);
 		}else{
             //active for detailed debugging
 			/*ArrayList<MetaLVA> toDiscard = new ArrayList<MetaLVA>();

@@ -110,6 +110,8 @@ public class DBDateDao extends DBBaseDao implements DateDao {
             lvaDates.add(l);
         }
         result.setLectures(lvaDates);
+        result.setExercises(lvaDates);
+        result.setExams(lvaDates);
 
         /*
         ArrayList<TimeFrame> times = new ArrayList<TimeFrame>();

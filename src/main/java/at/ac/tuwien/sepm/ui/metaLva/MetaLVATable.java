@@ -52,6 +52,7 @@ public class MetaLVATable extends JTable{
         for(MetaLVA lva: lvas){
             model.addRow(new String[]{lva.getNr(),lva.getType().toString(),lva.getName(),""+lva.getECTS()});
         }
+        this.lvas=lvas;
     }
 
     public void refreshMetaLVAs(List<MetaLVA> list) {

@@ -1,9 +1,9 @@
 package at.ac.tuwien.sepm.ui.metaLva;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.HintTextField;
-import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -17,13 +17,11 @@ import java.util.List;
  * Author: Lena Lenz
  */
 @UI
-public class MetaLVADisplayPanel extends JPanel {
+public class ModuleDisplayPanel extends JPanel {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
-    private List<MetaLVA> allLVAs;
-    private List<MetaLVA> filteredLVAs;
-    private MetaLVATable table;
-    private JTextField searchNr = new HintTextField("Nr");
-    private JTextField searchType = new HintTextField("Typ");
+    private List<Module> allModules;
+    private List<Module> filteredModules;
+    private ModuleTable table;
     private JTextField searchName = new HintTextField("Name");
     private JTextField searchECTS = new HintTextField("ECTS");
 
@@ -31,18 +29,20 @@ public class MetaLVADisplayPanel extends JPanel {
 
     private JScrollPane pane = new JScrollPane();
 
+    private MetaLVADisplayPanel metaLVAPanel;
 
     int tWidth;
-    public MetaLVADisplayPanel(List<MetaLVA> lvas,int width,int height){
+    public ModuleDisplayPanel(List<Module> modules,MetaLVADisplayPanel metaPanel, int width, int height){
         this.tWidth =width;
-        this.allLVAs = lvas;
-        filteredLVAs = lvas;
-        table = new MetaLVATable(lvas,width);
+        this.allModules = modules;
+        this.metaLVAPanel = metaPanel;
+        filteredModules = modules;
+        table = new ModuleTable(modules,width);
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) {
-                    JTable source = MetaLVADisplayPanel.this.getTable();
+                    JTable source = ModuleDisplayPanel.this.getTable();
                     int row = source.rowAtPoint( e.getPoint() );
                     int column = source.columnAtPoint( e.getPoint() );
 
@@ -52,6 +52,7 @@ public class MetaLVADisplayPanel extends JPanel {
                     JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
+                metaLVAPanel.refresh(table.getSelectedModule().getMetaLvas());
             }
         });
         int searchHeight = 20;
@@ -61,44 +62,40 @@ public class MetaLVADisplayPanel extends JPanel {
         searchPanel.setLayout(new FlowLayout(0,0,0));//.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         BoxLayout bl = new BoxLayout(this,BoxLayout.Y_AXIS);
         setLayout(bl);
-        searchPanel.add(searchNr);
-        searchNr.setPreferredSize(new Dimension(table.getColWidth(0), searchHeight));
-        searchPanel.add(searchType);
-        searchType.setPreferredSize(new Dimension(table.getColWidth(1), searchHeight));
         searchPanel.add(searchName);
-        searchName.setPreferredSize(new Dimension(table.getColWidth(2), searchHeight));
+        searchName.setPreferredSize(new Dimension(table.getColWidth(0), searchHeight));
         searchPanel.add(searchECTS);
-        searchECTS.setPreferredSize(new Dimension(table.getColWidth(3), searchHeight));
+        searchECTS.setPreferredSize(new Dimension(table.getColWidth(1), searchHeight));
+
         pane.setViewportView(table);
 
         pane.setPreferredSize(new Dimension(table.getPreferredSize().width, height-searchPanel.getHeight()));
         KeyListener listener = new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                logger.debug("searching for: (nr: "+searchNr.getText()+", type:"+searchType.getText()+", name: " + searchName.getText()+", ECTS: "+searchECTS.getText()+")");
-                filteredLVAs = new ArrayList<MetaLVA>();
-                for (MetaLVA m : allLVAs) {
-                    if (m.getNr().contains(searchNr.getText()) && m.getType().toString().contains(searchType.getText()) && m.getName().contains(searchName.getText()) &&(""+m.getECTS()).contains(searchECTS.getText())) {
-                        filteredLVAs.add(m);
+                logger.debug("name: " + searchName.getText()+", total ECTS: "+searchECTS.getText()+")");
+                filteredModules = new ArrayList<Module>();
+                for (Module m : allModules) {
+                    float ectsCount =0;
+                    for(MetaLVA mLVA : m.getMetaLvas()){
+                        ectsCount+=mLVA.getECTS();
+                    }
+                    if (m.getName().contains(searchName.getText()) &&(""+ectsCount).contains(searchECTS.getText())) {
+                        filteredModules.add(m);
                     }
                 }
-                table.refreshMetaLVAs(filteredLVAs);
+                table.refreshModules(filteredModules);
                 pane.setViewportView(table);
                 revalidate();
                 repaint();
             }
         };
 
-        searchNr.addKeyListener(listener);
-        searchType.addKeyListener(listener);
         searchName.addKeyListener(listener);
         searchECTS.addKeyListener(listener);
     }
-    public void clearSearch(){
-        searchNr.setText("");
-        searchName.setText("");
-        searchType.setText("");
-        searchECTS.setText("");
+    public MetaLVADisplayPanel getMetaLVAPanel(){
+        return metaLVAPanel;
     }
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem button2;
@@ -113,7 +110,7 @@ public class MetaLVADisplayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    PanelTube.backgroundPanel.viewMetaLva(getSelectedMetaLVA());
+                    //todo repair: PanelTube.backgroundPanel.viewMetaLva(getSelectedModules());
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {}
@@ -124,31 +121,22 @@ public class MetaLVADisplayPanel extends JPanel {
         }
     }
 
-    public MetaLVATable getTable() {
+    public ModuleTable getTable() {
         return this.table;
     }
 
-    public MetaLVA getSelectedMetaLVA(){
-        return table.getSelectedMetaLVA();
+    public Module getSelectedModules(){
+        return table.getSelectedModule();
     }
 
     public void removeSelectedMetaLVA() {
-        table.removeSelectedMetaLVA();
+        table.removeSelectedModule();
     }
 
-    public void refresh(List<MetaLVA> lvas) {
-        table.refreshMetaLVAs(lvas);
-        this.allLVAs=lvas;
-        filteredLVAs = new ArrayList<MetaLVA>();
-        for (MetaLVA m : allLVAs) {
-            if (m.getNr().contains(searchNr.getText()) && m.getType().toString().contains(searchType.getText()) && m.getName().contains(searchName.getText()) &&(""+m.getECTS()).contains(searchECTS.getText())) {
-                filteredLVAs.add(m);
-            }
-        }
-        table.refreshMetaLVAs(filteredLVAs);
-        pane.setViewportView(table);
-        revalidate();
-        repaint();
+    public void refresh(List<Module> modules) {
+        table.refreshModules(modules);
+        this.allModules=modules;
+        //metaLVAPanel.clearSearch();
     }
 }
 

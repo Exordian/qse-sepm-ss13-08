@@ -59,6 +59,7 @@ public class LvaTable extends JTable {
 
     public void setLVAs(List<LVA> lvas){
         for(LVA lva: lvas){
+
             model.addRow(new String[]{Integer.toString(lva.getYear()), lva.getSemester().toString(),lva.getMetaLVA().getType().toString(),lva.getMetaLVA().getName()});
         }
     }

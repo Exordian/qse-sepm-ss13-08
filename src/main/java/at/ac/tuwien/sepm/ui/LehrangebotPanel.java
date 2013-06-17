@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.ui.lehrangebot.LvaFetcherPanel;
 import at.ac.tuwien.sepm.ui.lehrangebot.LvaPanel;
+import at.ac.tuwien.sepm.ui.lehrangebot.ModulePanel;
 import at.ac.tuwien.sepm.ui.lehrangebot.StudienplanPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,17 +26,20 @@ public class LehrangebotPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
+    private JButton tab4;
 
     private StudienplanPanel studienplanPanel;
     private LvaFetcherPanel lvaFetcherPanel;
     private StandardInsidePanel lvaPanel;
+    private ModulePanel modulePanel;
 
     @Autowired
-    public LehrangebotPanel(StudienplanPanel studienplanPanel, LvaPanel lvaPanel, LvaFetcherPanel lvaFetcherPanel) {
+    public LehrangebotPanel(StudienplanPanel studienplanPanel, LvaPanel lvaPanel, LvaFetcherPanel lvaFetcherPanel, ModulePanel modulePanel) {
         init();
         this.studienplanPanel=studienplanPanel;
         this.lvaFetcherPanel=lvaFetcherPanel;
         this.lvaPanel=lvaPanel;
+        this.modulePanel=modulePanel;
         createTabButtons();
         changeImage(1);
         this.add(studienplanPanel);
@@ -47,11 +51,13 @@ public class LehrangebotPanel extends StandardInsidePanel {
         tab1 = new JButton();
         tab2 = new JButton();
         tab3 = new JButton();
+        tab4 = new JButton();
 
         ArrayList<JButton> tabs = new ArrayList<JButton>();
         tabs.add(tab1);
         tabs.add(tab2);
         tabs.add(tab3);
+        tabs.add(tab4);
 
         tab1.setBounds(41,30,160,40);
         tab1.addActionListener(new ActionListener() {
@@ -60,6 +66,7 @@ public class LehrangebotPanel extends StandardInsidePanel {
                 changeImage(1);
                 remove(lvaFetcherPanel);
                 remove(lvaPanel);
+                remove(modulePanel);
                 add(studienplanPanel);
                 LehrangebotPanel.this.validate();
                 LehrangebotPanel.this.repaint();
@@ -73,7 +80,9 @@ public class LehrangebotPanel extends StandardInsidePanel {
                 changeImage(2);
                 remove(lvaFetcherPanel);
                 remove(studienplanPanel);
+                remove(modulePanel);
                 add(lvaPanel);
+                lvaPanel.refresh();
                 LehrangebotPanel.this.validate();
                 LehrangebotPanel.this.repaint();
             }
@@ -86,13 +95,28 @@ public class LehrangebotPanel extends StandardInsidePanel {
                 changeImage(3);
                 remove(studienplanPanel);
                 remove(lvaPanel);
+                remove(modulePanel);
                 add(lvaFetcherPanel);
                 LehrangebotPanel.this.validate();
                 LehrangebotPanel.this.repaint();
             }
         });
+        tab4.setBounds(41+160*3,30,160,40);
+        tab4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                changeImage(3);
+                remove(studienplanPanel);
+                remove(lvaPanel);
+                remove(lvaFetcherPanel);
+                add(modulePanel);
+                modulePanel.refresh();
+                LehrangebotPanel.this.validate();
+                LehrangebotPanel.this.repaint();
+            }
+        });
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
             tabs.get(i).setOpaque(false);
             tabs.get(i).setContentAreaFilled(false);
