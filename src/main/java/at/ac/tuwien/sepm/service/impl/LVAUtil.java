@@ -190,13 +190,17 @@ public class LVAUtil {
      * @param typesToIntersect the types used for this intersect
      * @return a boolean array with the result of the intersection.
      */
-    public static boolean[][] intersectToArray(List<LVA> lva,int timeBetween,List<Integer> typesToIntersect,float tolerance){
+    public static boolean[][] intersectToArray(List<LVA> lva,int timeBetween,List<Integer> typesToIntersect,float tolerance,boolean nameIntersect){
         //String debug="";
         boolean[][] toReturn = new boolean[lva.size()][];
         for(int i=0;i<lva.size();i++){
             toReturn[i] = new boolean[lva.size()-i];
             for(int j=i;j<lva.size();j++){
-                toReturn[i][j-i]=intersect(lva.get(i),lva.get(j),timeBetween,typesToIntersect,typesToIntersect,tolerance);
+                if(nameIntersect && lva.get(i).getMetaLVA().getName().equals(lva.get(j).getMetaLVA().getName()) && lva.get(i).getMetaLVA().getType() == (lva.get(j).getMetaLVA().getType())){
+                    toReturn[i][j-i]=true;
+                }else{
+                    toReturn[i][j-i]=intersect(lva.get(i),lva.get(j),timeBetween,typesToIntersect,typesToIntersect,tolerance);
+                }
             }
         }
         //logger.debug("toReturn: \n"+debug);

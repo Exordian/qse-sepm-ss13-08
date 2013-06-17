@@ -142,7 +142,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         for(MetaLVA m : metaLVAs){
             lvas.add(m.getLVA(year,sem));
         }
-        intersecting = LVAUtil.intersectToArray(lvas,timeBetween,typesToIntersect,intersectingTolerance);
+        intersecting = LVAUtil.intersectToArray(lvas,timeBetween,typesToIntersect,intersectingTolerance,true);
         String debug = "";
         String separator=" ";
         if(intersecting.length>100){
@@ -184,7 +184,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-            logger.debug("new Solution found: \n" +LVAUtil.formatShortMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value);
+            logger.debug("new Solution found: \n" +LVAUtil.formatMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value);
 		    bestSolutionECTS=actualECTS;
         }else{
             //active for detailed debugging
