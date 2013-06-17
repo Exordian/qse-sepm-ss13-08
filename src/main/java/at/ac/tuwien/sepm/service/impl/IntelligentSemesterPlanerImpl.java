@@ -20,6 +20,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
     private List<Integer> typesToIntersect;
     private float intersectingTolerance = 0;
     private boolean canceled;
+    private int timeBetween=0;
 
     @Override
     public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
@@ -126,7 +127,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         for(MetaLVA m : metaLVAs){
             lvas.add(m.getLVA(year,sem));
         }
-        intersecting = LVAUtil.intersectToArray(lvas,typesToIntersect,intersectingTolerance);
+        intersecting = LVAUtil.intersectToArray(lvas,timeBetween,typesToIntersect,intersectingTolerance);
         String debug = "";
         for(int y=0;y<lvas.size();y++){
             for(int x=0;x<lvas.size();x++){
@@ -184,6 +185,11 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
     @Override
     public void setIntersectingTolerance(float intersectingTolerance) {
         this.intersectingTolerance = intersectingTolerance;
+    }
+
+    @Override
+    public void setAllowedTimeBetween(int time) {
+        timeBetween = time;
     }
 
     public static class DependenceTree implements Iterable<MetaLVA>{

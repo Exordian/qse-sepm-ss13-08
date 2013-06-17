@@ -78,10 +78,11 @@ public class PlanPanel extends StandardInsidePanel {
     private JLabel toleranceLabel;
     private JTextField toleranceText;
     private JLabel timeBetweenLabel;
-    private JComboBox timeBetween;
+    private JComboBox timeBetweenDropdown;
     private String[] timeBetweenTextLabelStrings;
     private JLabel timeBetweenTextLabel;
-    private JTextField timeBetweenText;
+    private JTextField timeBetweenIntersectText;
+    private JTextField timeBetweenBufferText;
     // </ advanced settings >
 
     private boolean advancedShown = true;
@@ -170,7 +171,7 @@ public class PlanPanel extends StandardInsidePanel {
         plan.setBounds((int) outputPlane.getX() - 130 - take.getWidth(), (int) outputPlane.getY() + (int) outputPlane.getHeight() - 40, 90, 40);
         progressBar.setIndeterminate(true);
         progressBar.setVisible(false);
-        progressBar.setBounds(plan.getX()-120,plan.getY(),100,20);
+        progressBar.setBounds(plan.getX()-(progressBar.getPreferredSize().width+20),plan.getY(),progressBar.getPreferredSize().width,progressBar.getPreferredSize().height);
         add(progressBar);
         plan.addActionListener(new ActionListener() {
             @Override
@@ -227,7 +228,18 @@ public class PlanPanel extends StandardInsidePanel {
                             float tolerance = 0;
                             try{
                                 tolerance=Float.parseFloat(toleranceText.getText().replace("%","").trim())/100;
-                            }catch(NumberFormatException e){ //ignore
+                            }catch(NumberFormatException e){
+                                //todo display error
+                            }
+                            int timeBetween = 0;
+                            try{
+                                if(timeBetweenDropdown.getSelectedIndex()==1){
+                                    timeBetween = Integer.parseInt(timeBetweenIntersectText.getText().replace("min","").trim())/60;
+                                }else{
+                                    timeBetween = Integer.parseInt(timeBetweenBufferText.getText().replace("min","").trim())/60;
+                                }
+                            }catch(NumberFormatException e){
+                                //todo display error
                             }
                             planer.setIntersectingTolerance(tolerance);
                             ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
@@ -260,7 +272,11 @@ public class PlanPanel extends StandardInsidePanel {
         progressBar.setVisible(inProgress);
         take.setEnabled(!inProgress);
     }
-    private void toggleAdvanced() {
+    private void toggleAdvanced(){
+        advancedShown=!advancedShown;
+        refreshAdvanced();
+    }
+    private void refreshAdvanced() {
             intersectVOCheckLabel.setVisible(!advancedShown);
             intersectVOCheck.setVisible(!advancedShown);
 
@@ -280,12 +296,24 @@ public class PlanPanel extends StandardInsidePanel {
             toleranceText.setVisible(!advancedShown);
 
             timeBetweenLabel.setVisible(!advancedShown);
-            timeBetween.setVisible(!advancedShown);
+            timeBetweenDropdown.setVisible(!advancedShown);
 
             timeBetweenTextLabel.setVisible(!advancedShown);
-            if(showTimeBetweenText)
-                timeBetweenText.setVisible(!advancedShown);
-            advancedShown=!advancedShown;
+            switch(timeBetweenDropdown.getSelectedIndex()){
+                case 1:
+                    timeBetweenIntersectText.setVisible(!advancedShown);
+                    timeBetweenBufferText.setVisible(false);
+                    break;
+                case 2:
+                    timeBetweenIntersectText.setVisible(false);
+                    timeBetweenBufferText.setVisible(!advancedShown);
+                    break;
+                default:
+                    timeBetweenIntersectText.setVisible(false);
+                    timeBetweenBufferText.setVisible(false);
+            }
+            repaint();
+            //advancedShown=!advancedShown;
     }
 
     private void initTextAndLabels() {
@@ -422,14 +450,14 @@ public class PlanPanel extends StandardInsidePanel {
         this.add(considerStudyProgressCheck);
         considerStudyProgressCheck.setSelected(true);
 
-        toleranceLabel = new JLabel("Prozent der Termine, die sich überschneiden dürfen:");
+        toleranceLabel = new JLabel("Prozent der Termine, die sich schneiden dürfen:");
         toleranceLabel.setFont(standardTextFont);
         toleranceLabel.setBounds(considerStudyProgressCheckLabel.getX(), considerStudyProgressCheckLabel.getY()+considerStudyProgressCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
         this.add(toleranceLabel);
 
         toleranceText = new JTextField("20 %");
         toleranceText.setBackground(new Color(0, 0, 0, 0));
-        toleranceText.setBounds(toleranceLabel.getX() + toleranceLabel.getWidth() + 5, toleranceLabel.getY() + 5, 40, 20);
+        toleranceText.setBounds(toleranceLabel.getX() + toleranceLabel.getWidth() + 5 -20, toleranceLabel.getY() + 5, 40, 20);
         this.add(toleranceText);
 
 
@@ -438,47 +466,40 @@ public class PlanPanel extends StandardInsidePanel {
         timeBetweenLabel.setBounds(toleranceLabel.getX(), toleranceLabel.getY()+toleranceLabel.getHeight()+verticalSpace, textWidth,textHeight);
         this.add(timeBetweenLabel);
 
-        timeBetween= new JComboBox(new String[]{"exakte Zeiten verwenden","Termine dürfen sich überschneiden","Zwischen Terminen Zeit erzwingen"});
-        timeBetween.setFont(standardButtonFont);
-        timeBetween.setBounds(timeBetweenLabel.getX()+timeBetweenLabel.getWidth()-197, timeBetweenLabel.getY(), 220, textHeight);
-        timeBetween.setSelectedIndex(0);
-        this.add(timeBetween);
+        timeBetweenDropdown = new JComboBox(new String[]{"exakte Zeiten verwenden","Termine dürfen sich überschneiden","Zwischen Terminen Zeit erzwingen"});
+        timeBetweenDropdown.setFont(standardButtonFont);
+        timeBetweenDropdown.setBounds(timeBetweenLabel.getX() + timeBetweenLabel.getWidth() - 197, timeBetweenLabel.getY(), 220, textHeight);
+        timeBetweenDropdown.setSelectedIndex(0);
+        this.add(timeBetweenDropdown);
 
         timeBetweenTextLabelStrings= new String[]{"","Zeit um die sich Termine schneiden dürfen:","Zeit die zwischen zwei Terminen liegen muss:"};
 
         timeBetweenTextLabel = new JLabel(timeBetweenTextLabelStrings[0]);
         timeBetweenTextLabel.setFont(standardTextFont);
-        timeBetweenTextLabel.setBounds(timeBetweenLabel.getX(), timeBetweenLabel.getY()+timeBetweenLabel.getHeight()+verticalSpace, textWidth,textHeight);
-        timeBetweenTextLabel.setVisible(false);
+        timeBetweenTextLabel.setBounds(timeBetweenLabel.getX(), timeBetweenLabel.getY() + timeBetweenLabel.getHeight() + verticalSpace, textWidth, textHeight);
+        //timeBetweenTextLabel.setVisible(false);
         this.add(timeBetweenTextLabel);
 
-        timeBetweenText = new JTextField("0");
-        timeBetweenText.setBounds(timeBetweenTextLabel.getX()+timeBetweenTextLabel.getWidth(), timeBetweenTextLabel.getY(), 21, textHeight);
-        timeBetweenText.setVisible(false);
-        this.add(timeBetweenText);
-        timeBetweenText.setEnabled(false);
+        timeBetweenIntersectText = new JTextField("0 min");
+        timeBetweenIntersectText.setBounds(timeBetweenTextLabel.getX() + timeBetweenTextLabel.getWidth() - 15, timeBetweenTextLabel.getY(), 41, textHeight);
+        //timeBetweenIntersectText.setVisible(false);
+        this.add(timeBetweenIntersectText);
 
-        timeBetween.addActionListener(new ActionListener() {
+        timeBetweenBufferText = new JTextField("0 min");
+        timeBetweenBufferText.setBounds(timeBetweenTextLabel.getX() + timeBetweenTextLabel.getWidth() - 15, timeBetweenTextLabel.getY(), 41, textHeight);
+        //timeBetweenBufferText.setVisible(false);
+        this.add(timeBetweenBufferText);
+        toggleAdvanced();
+
+        timeBetweenDropdown.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                switch(timeBetween.getSelectedIndex()){
-                    case 0:
-                        timeBetweenText.setVisible(false);
-                        showTimeBetweenText=false;
-                        break;
-                    case 1:
-                        timeBetweenText.setVisible(true);
-                        showTimeBetweenText=true;
-                        break;
-                    case 2:
-                        timeBetweenText.setVisible(true);
-                        showTimeBetweenText=true;
-                        break;
-                }
-                timeBetweenTextLabel.setText(timeBetweenTextLabelStrings[timeBetween.getSelectedIndex()]);
+                refreshAdvanced();
+                timeBetweenTextLabel.setText(timeBetweenTextLabelStrings[timeBetweenDropdown.getSelectedIndex()]);
             }
         });
         // </ advanced settings >
+
         this.repaint();
     }
 

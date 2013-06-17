@@ -30,4 +30,6 @@ public interface IntelligentSemesterPlaner {
     void setTypesToIntersect(List<Integer> typesToIntersect);
 
     void setIntersectingTolerance(float intersectingTolerance);
+
+    void setAllowedTimeBetween(int time);
 }
