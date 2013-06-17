@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -27,6 +28,11 @@ public class CalWeekGenerator extends JPanel implements CalendarInterface {
         this.setLayout(null);
         this.setOpaque(false);
         this.add(calPanelWeek);
+    }
+
+    @Override
+    public void init() {
+        calPanelWeek.init();
     }
 
     @Override
@@ -56,5 +62,10 @@ public class CalWeekGenerator extends JPanel implements CalendarInterface {
     @Override
     public String getTimeIntervalInfo() {
         return calPanelWeek.getTimeIntervalInfo();
+    }
+
+    @Override
+    public void goToDay(DateTime day) {
+        calPanelWeek.goToDay(day);
     }
 }

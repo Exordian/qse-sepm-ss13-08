@@ -155,4 +155,11 @@ public interface MetaLvaDao {
      * @throws DataAccessException If the meta lva data could not be read because any error occured.
      */
     public List<MetaLVA> readByModule(int module) throws DataAccessException;
+
+    /**
+     * Read all metalvas
+     * @return A list containing all metalvas.
+     * @throws DataAccessException if the date data could not be read because any error occurred.
+     */
+    public List<MetaLVA> readAll() throws DataAccessException;
 }

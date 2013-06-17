@@ -183,4 +183,14 @@ public class LVAServiceImpl implements LVAService {
             throw new ServiceException("invalid id!");
         }
     }
+
+    @Override
+    public List<LVA> readAll() throws ServiceException, ValidationException {
+        try {
+            return lvaDao.readAll();
+        } catch(DataAccessException e) {
+            logger.error("Exception: "+ e.getMessage());
+            throw new ServiceException("Exception: "+ e.getMessage());
+        }
+    }
 }

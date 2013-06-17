@@ -19,4 +19,21 @@ public abstract class SelectItem<E> {
     }
 
     public abstract String toString();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SelectItem)) return false;
+
+        SelectItem that = (SelectItem) o;
+
+        if (!item.equals(that.item)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return item.hashCode();
+    }
 }

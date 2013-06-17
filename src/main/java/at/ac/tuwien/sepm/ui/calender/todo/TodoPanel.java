@@ -31,6 +31,8 @@ public class TodoPanel extends StandardInsidePanel {
     private JButton showDeadline;
     private boolean showTodo = false;
 
+    private JScrollPane pane = new JScrollPane();
+
     @Autowired
     public TodoPanel(TodoService todoService, LvaDateService lvaDateService, TodoTable todoTable, DeadlineTable deadlineTable) {
         init();
@@ -50,7 +52,6 @@ public class TodoPanel extends StandardInsidePanel {
             logger.error(e.getMessage());
         }
 
-        todoTable.setBounds(0,66,(int)whiteSpaceCalendar.getX() + (int)whiteSpaceCalendar.getWidth(),273);
         todoTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -71,8 +72,12 @@ public class TodoPanel extends StandardInsidePanel {
             }
         });
 
-        this.add(deadlineTable);
-        deadlineTable.setBounds(0, 66, (int) whiteSpaceCalendar.getX() + (int) whiteSpaceCalendar.getWidth(), 273);
+        this.add(pane);
+        pane.setBounds(0, 64,(int) whiteSpaceCalendar.getWidth()-7, 322);
+        todoTable.setBounds(0,64,(int)whiteSpaceCalendar.getWidth()-7,322);
+        deadlineTable.setBounds(0, 64,(int) whiteSpaceCalendar.getWidth()-7, 322);
+        pane.setViewportView(deadlineTable);
+
         deadlineTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -94,7 +99,7 @@ public class TodoPanel extends StandardInsidePanel {
         });
     }
 
-    private class PopUpMenu extends JPopupMenu {
+        private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
 
         public PopUpMenu(){
@@ -125,7 +130,7 @@ public class TodoPanel extends StandardInsidePanel {
     public void addButtons() {
         add = new JButton("Hinzufügen");
         add.setFont(standardButtonFont);
-        add.setBounds((int)whiteSpaceCalendar.getWidth()/2-150, todoTable.getY() + todoTable.getHeight() + 20+50, 150,30);
+        add.setBounds((int)whiteSpaceCalendar.getWidth()/2-150, todoTable.getY() + todoTable.getHeight() + 20, 150,30);
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -186,13 +191,13 @@ public class TodoPanel extends StandardInsidePanel {
 
     private void changeTables() {
         if (showTodo) {
-            this.add(todoTable);
-            this.remove(deadlineTable);
+            pane.setViewportView(todoTable);
+            //this.remove(deadlineTable);
             PanelTube.calendarPanel.showTodo(true);
 
         } else {
-            this.remove(todoTable);
-            this.add(deadlineTable);
+           // this.remove(todoTable);
+            pane.setViewportView(deadlineTable);
             PanelTube.calendarPanel.showTodo(false);
         }
         this.repaint();

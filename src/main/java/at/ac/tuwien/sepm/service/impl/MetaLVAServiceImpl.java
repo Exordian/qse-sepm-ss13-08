@@ -30,6 +30,8 @@ public class MetaLVAServiceImpl implements MetaLVAService {
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
+    MergerImpl merger = new MergerImpl();
+
     @Autowired
     MetaLvaDao metaLvaDao;
 
@@ -38,6 +40,33 @@ public class MetaLVAServiceImpl implements MetaLVAService {
 
     @Autowired
     LvaDateDao lvaDateDao;
+
+    public void startMergeSession() {
+        merger.reset();
+    }
+
+    @Override
+    public List<MetaLVA> getNewMetaLvasWithMergeConflicts() {
+        return merger.getNewMetaLVAs();
+    }
+
+    public boolean stopMergeSession() {
+        if(mergingNecessary()) {
+            String logString = "meta lva merger stopped - conflicts at storing following " + merger.getNewMetaLVAs().size() + " meta lva(s): \n";
+            for(MetaLVA s : merger.getNewMetaLVAs()) {
+                logString = logString + "\t\t" + s.getNr() + "\t" + s.getName() + "\n";
+            }
+            logger.info(logString);
+            return true;
+        } else {
+            logger.info("meta lva merger stopped - no conflicts");
+            return false;
+        }
+    }
+
+    public boolean mergingNecessary() {
+        return merger.metaLvaMergingNecessary();
+    }
 
     @Override
     public boolean create(MetaLVA toCreate) throws ServiceException, ValidationException {
@@ -79,8 +108,18 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             logger.error("Exception: "+ e.getMessage());
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DuplicateKeyException e) {
-            logger.info("The meta lva \""  + toCreate.getNr() + " - " + toCreate.getName() + "\" is already stored.");
-            // TODO implement merger
+            MetaLVA oldMetaLva;
+            try {
+                oldMetaLva = metaLvaDao.readByLvaNumber(toCreate.getNr());
+            } catch (DataAccessException e1) {
+                logger.error("Exception: "+ e1.getMessage());
+                throw new ServiceException("Exception: " + e.getMessage(), e1);
+            }
+            if(oldMetaLva==null) {
+                throw new ServiceException("Internal error");
+            }
+            merger.add(oldMetaLva, toCreate);
+            logger.info("The meta lva \""  + toCreate.getNr() + " - " + toCreate.getName() + "\" is already stored.\n");
             return false;
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
@@ -236,10 +275,6 @@ public class MetaLVAServiceImpl implements MetaLVAService {
         String error_msg = "";
         boolean valid = true;
 
-        if(toValidate.getId() != null && toValidate.getId() <= 0 ) {
-            valid = false;
-            error_msg += "invalid id!\n";
-        }
         if(toValidate.getNr() == null) {
             valid = false;
             error_msg += "invalid Nr.!\n";
@@ -256,10 +291,7 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             valid = false;
             error_msg += "invalid semester!(null)\n";
         }
-
-        // TODO remove this line
-        valid = true;
-
+        valid=true;
         if(valid == false) {
             logger.error("Invalid MetaLVA: "+ error_msg);
             throw new ServiceException("Invalid MetaLVA: "+ error_msg);
@@ -271,6 +303,17 @@ public class MetaLVAServiceImpl implements MetaLVAService {
         if(id <= 0) {
             logger.error("invalid id!");
             throw new ServiceException("invalid id!");
+        }
+    }
+
+    @Override
+    public List<MetaLVA> readAll() throws ServiceException, ValidationException {
+        try {
+            List<MetaLVA> metaLVAList = metaLvaDao.readAll();
+            return metaLVAList;
+        }  catch(DataAccessException e) {
+            logger.error("Exception: "+ e.getMessage());
+            throw new ServiceException("Exception: "+ e.getMessage());
         }
     }
 

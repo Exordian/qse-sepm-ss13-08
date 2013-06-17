@@ -306,4 +306,20 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
 
         return true;
     }
+
+    @Override
+    public List<LVA> readAll() throws DataAccessException {
+        String stmt = "SELECT * FROM lva";
+        List<LVA> result = jdbcTemplate.query(stmt, RowMappers.getLvaRowMapper());
+
+        if(result.size()==0) {
+            return new ArrayList<LVA>();
+        }
+
+        for(int i=0; i<result.size(); i++) {
+            result.set(i, this.readById(result.get(i).getId()));
+        }
+
+        return result;
+    }
 }

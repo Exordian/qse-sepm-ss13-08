@@ -116,4 +116,12 @@ public interface LvaDao {
      * @throws DataAccessException If the lva could not be updated because any error occurred.
      */
     public boolean update(LVA toUpdate) throws IOException, DataAccessException;
+
+
+    /**
+     * Read all lvas
+     * @return A list containing all lvas.
+     * @throws DataAccessException if the date data could not be read because any error occurred.
+     */
+    public List<LVA> readAll() throws DataAccessException;
 }

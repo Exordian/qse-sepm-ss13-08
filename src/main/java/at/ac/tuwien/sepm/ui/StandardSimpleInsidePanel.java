@@ -26,7 +26,8 @@ import java.util.GregorianCalendar;
 public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
     protected JButton retButton;
     protected BackgroundPanel bgPanel;
-    protected JTextField title;
+    protected JTextField title;  //editable title
+    protected JLabel title2;     //non-editable title
 
     protected Rectangle simpleWhiteSpace = new Rectangle(98, 64, 922, 509);  //white space in simple inside panel
 
@@ -64,17 +65,21 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
     }
 
     protected void addTitle(String s) {
-        JLabel title = new JLabel(s);
-        title.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+35, (int)(size.getHeight()/2-image.getHeight(null)/2)-42,257,45);
-        title.setForeground(Color.WHITE);
-        title.setFont(standardTitleFont);
-        this.add(title);
+        title2 = new JLabel(s);
+        title2.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+35, (int)(size.getHeight()/2-image.getHeight(null)/2)-42,image.getWidth(null),45);
+        title2.setForeground(Color.WHITE);
+        title2.setFont(standardTitleFont);
+        this.add(title2);
         this.repaint();
         this.revalidate();
     }
 
     protected void changeTitle(String s) {
-        title.setText(s);
+        if (title2 == null) {
+            title.setText(s);
+        } else {
+            title2.setText(s);
+        }
     }
 
     protected void addEditableTitle(String s) {
@@ -125,6 +130,6 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
 
     //needed for return button
     public void setBgPanel(BackgroundPanel bgPanel) {
-      //  this.bgPanel=bgPanel;
+        //  this.bgPanel=bgPanel;
     }
 }

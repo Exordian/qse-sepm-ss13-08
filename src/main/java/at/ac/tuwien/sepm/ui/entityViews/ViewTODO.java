@@ -75,15 +75,15 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             changeTitle(todo.getName());
             description.setText(todo.getDescription());
             done.setSelected(todo.getDone());
-           /* try {
-                lva.setSelectedItem(lvaService.readById(todo.getLva().getId()));     //todo
+            try {
+                lva.setSelectedItem(lvaService.readById(todo.getLva().getId()));   //todo
             } catch (ServiceException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();
             } catch (ValidationException e) {
                 log.error("Problem beim Einlesen der zugehörigen MetaLva.");
                 e.printStackTrace();
-            }     */
+            }
             setDeleteButton(true);
         }
         refresh();
@@ -214,7 +214,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
 
         try {
             int year = DateTime.now().getYear();
-            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7);
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7 || DateTime.now().getMonthOfYear() < 2);
             lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
         } catch(ServiceException e) {
             log.error(e.getMessage());
@@ -257,7 +257,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
     public void refresh() {
         try {
             int year = DateTime.now().getYear();
-            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7);    //todo was is mit januar?
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7 || DateTime.now().getMonthOfYear() < 2);
             lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
         } catch(ServiceException e) {
             log.error(e.getMessage());

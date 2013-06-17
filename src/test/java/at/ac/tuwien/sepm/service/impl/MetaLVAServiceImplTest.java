@@ -157,5 +157,6 @@ public class MetaLVAServiceImplTest {
         assert(lvaDao.readById(0).getExercises().size()==1);
         assert(lvaDao.readById(0).getExams().size()==1);
         assert(lvaDao.readById(0).getDeadlines().size()==1);
+
     }
 }

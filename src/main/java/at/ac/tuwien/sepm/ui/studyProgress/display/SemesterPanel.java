@@ -26,7 +26,7 @@ public class SemesterPanel extends StandardInsidePanel {
         this.setOpaque(false);
         loadFonts();
         this.height=250;
-        setBounds(x-51, y, (int) whiteSpaceStud.getWidth(), height);
+        setBounds(x-51, y, (int) whiteSpace.getWidth(), height);
         initSemesterTitle();
         this.lvas = lvas;
         semesterTitle.setText(title);
@@ -34,8 +34,8 @@ public class SemesterPanel extends StandardInsidePanel {
     }
 
     private void initLvaTable() {
-        pane = new MetaLVADisplayPanel(lvas, (int) whiteSpaceStud.getWidth()-100, height);
-        pane.setBounds(this.getX() + 50, semesterTitle.getY() + semesterTitle.getHeight() + 5, (int) whiteSpaceStud.getWidth() - 100, height - semesterTitle.getHeight() - 5);
+        pane = new MetaLVADisplayPanel(lvas, (int) whiteSpace.getWidth()-100, height);
+        pane.setBounds(this.getX() + 50, semesterTitle.getY() + semesterTitle.getHeight() + 5, (int) whiteSpace.getWidth() - 100, height - semesterTitle.getHeight() - 5);
         this.add(pane);
     }
 

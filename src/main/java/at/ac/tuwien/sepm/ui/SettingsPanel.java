@@ -5,16 +5,14 @@ import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
 @UI
-public class PropertiesPanel extends StandardSimpleInsidePanel {
+public class SettingsPanel extends StandardSimpleInsidePanel {
     private JLabel tissLogin;
     private JLabel facebookLogin;
     private JLabel defaultEcts;
@@ -43,7 +41,7 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
     @Autowired
     private AuthService authService;
 
-    public PropertiesPanel() {
+    public SettingsPanel() {
         init();
         addImage();
         addTitle("Einstellungen");
@@ -112,8 +110,8 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
                         } catch (ServiceException ex) {
                             nameLabelTISS.setText("Login Daten ungültig");
                         }
-                        PropertiesPanel.this.revalidate();
-                        PropertiesPanel.this.setVisible(true);
+                        SettingsPanel.this.revalidate();
+                        SettingsPanel.this.setVisible(true);
                     }
                 });
             }
@@ -153,11 +151,10 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
                         super.windowClosed(e);
                         loginNameFB = temp.getName();
                         nameLabelFacebook.setText("Eingeloggt als: " + temp.getName());
-                        //todo do with name whatever
                         loginPWDFB = temp.getPassword();
-                        //todo do with password whatever
-                        PropertiesPanel.this.revalidate();
-                        PropertiesPanel.this.setVisible(true);
+                        //todo do with data whatever
+                        SettingsPanel.this.revalidate();
+                        SettingsPanel.this.setVisible(true);
                     }
                 });
             }
@@ -195,7 +192,7 @@ public class PropertiesPanel extends StandardSimpleInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Object[] options = {"Ja", "Abbrechen"};
-                JOptionPane.showOptionDialog(PropertiesPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
+                JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 //todo alle daten löschen
             }

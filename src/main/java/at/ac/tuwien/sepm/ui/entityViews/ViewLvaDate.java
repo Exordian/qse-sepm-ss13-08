@@ -45,16 +45,14 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
     private JLabel toLabel;
     private JLabel typeLabel;
     private JLabel attendanceRequiredLabel;
-    private JLabel attendedLabel;
-    private JLabel roomLabel;
+   // private JLabel attendedLabel;
     private WideComboBox lva;
     private List<LVA> lvas;
     private LVAService lvaService;
 
     private JCheckBox attendanceRequired;
-    private JCheckBox attended;
+   // private JCheckBox attended;
     private JComboBox type;
-    private Image room;
     private JDateChooser from;
     private JDateChooser to;
     private JSpinner fromTime;
@@ -86,7 +84,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             description.setText("Bitte Beschreibung einfügen");
             type.setSelectedItem(false);
             attendanceRequired.setSelected(true);
-            attended.setSelected(false);
+            //attended.setSelected(false);
             from.setDate(new Date());
             to.setDate(new Date());
             fromTime.setValue(new Date());
@@ -107,7 +105,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                 e.printStackTrace();
             }  */
             attendanceRequired.setSelected(lvaDate.getAttendanceRequired());
-            attended.setSelected(lvaDate.getWasAttendant());
+            //attended.setSelected(lvaDate.getWasAttendant());
             from.setDate(lvaDate.getStart().toDate());
             to.setDate(lvaDate.getStop().toDate());
             fromTime.setValue(lvaDate.getStart().toDate());
@@ -163,10 +161,13 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                 try {
                     lvaDate.setName(title.getText());
                     lvaDate.setDescription(description.getText());
-                    lvaDate.setWasAttendant(attended.isSelected());
+                    //lvaDate.setWasAttendant(attended.isSelected());
                     lvaDate.setType((LvaDateType) type.getSelectedItem());
                     lvaDate.setLva(((LvaSelectItem) lva.getSelectedItem()).get().getId());
                     lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
+                    if (convertDateAndTime(fromTime, from).isAfter(convertDateAndTime(toTime, to))) {
+                        JOptionPane.showMessageDialog(ViewLvaDate.this, "Das Start-Datum muss vor dem End-Datum liegen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
                     lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
                     if (lvaDate.getId() != null) {
                         if (lvaDateService.readById(lvaDate.getId()) != null)
@@ -261,7 +262,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         lva = new WideComboBox();
         try {
             int year = DateTime.now().getYear();
-            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7); //todo was is mit januar?
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7 || DateTime.now().getMonthOfYear() < 2);
             lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
         } catch(ServiceException e) {
             log.error(e.getMessage());
@@ -289,7 +290,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         this.add(attendanceRequired);
 
 
-        attendedLabel = new JLabel("War anwesend");
+        /*attendedLabel = new JLabel("War anwesend");
         attendedLabel.setFont(standardTextFont);
         attendedLabel.setBounds(attendanceRequiredLabel.getX(), attendanceRequiredLabel.getY() + attendanceRequiredLabel.getHeight() + verticalSpace*2, 180,25);
         this.add(attendedLabel);
@@ -303,7 +304,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         roomLabel = new JLabel("Raum");
         roomLabel.setFont(standardTextFont);
         roomLabel.setBounds(attendedLabel.getX(), attendedLabel.getY() + attendedLabel.getHeight() + verticalSpace*2, 100,25);
-        this.add(roomLabel);
+        this.add(roomLabel);  */
 
         this.revalidate();
         this.repaint();
@@ -324,7 +325,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
     public void refresh() {
         try {
             int year = DateTime.now().getYear();
-            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7); //todo was is mit januar?
+            boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7|| DateTime.now().getMonthOfYear() < 2);
             lvas = lvaService.readByYearAndSemester(year, isWinterSemester);
         } catch(ServiceException e) {
             log.error(e.getMessage());

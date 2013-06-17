@@ -31,7 +31,7 @@ public class BackgroundPanel extends JPanel {
     private StandardInsidePanel lehrPanel;
     private ViewDate viewDate;
     private ViewDeadline viewDeadline;
-    private ViewLvaDate viewLVA;
+    private ViewLvaDate viewLVAdate;
     private ViewTODO viewTodo;
     private ViewLva viewLva;
     private ViewMetaLva viewMetaLva;
@@ -44,17 +44,21 @@ public class BackgroundPanel extends JPanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, PropertiesPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVA, ViewTODO viewTodo, ViewDeadline viewDeadline) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
+        this.viewMetaLva=viewMetaLva;
+        this.viewLva=viewLva;
         this.lehrPanel=lehrPanel;
         this.calPanel = calPanel;
         this.studPanel = studPanel;
         this.propsPanel = propsPanel;
         this.viewDate = viewDate;
-        this.viewLVA=viewLVA;
+        this.viewLVAdate=viewLVAdate;
         this.viewTodo=viewTodo;
         this.viewDeadline=viewDeadline;
+
+
 
         changeImage(1);
         createPropertiesButton();
@@ -75,9 +79,9 @@ public class BackgroundPanel extends JPanel {
 
     public void viewLvaDate(LvaDate lvaDate) {
         removeAddedPanels();
-        viewLVA.setLVADateEntity(lvaDate);
-        viewLVA.setVisible(true);
-        this.add(viewLVA);
+        viewLVAdate.setLVADateEntity(lvaDate);
+        viewLVAdate.setVisible(true);
+        this.add(viewLVAdate);
         this.revalidate();
         this.repaint();
     }
@@ -131,8 +135,10 @@ public class BackgroundPanel extends JPanel {
         this.remove(calPanel);
         this.remove(studPanel);
         this.remove(viewDate);
-        this.remove(viewLVA);
+        this.remove(viewLVAdate);
         this.remove(viewTodo);
+        this.remove(viewLva);
+        this.remove(viewMetaLva);
         this.remove(viewDeadline);
         this.remove(lehrPanel);
     }

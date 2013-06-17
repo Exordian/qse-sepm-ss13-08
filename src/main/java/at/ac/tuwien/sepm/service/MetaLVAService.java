@@ -13,6 +13,14 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface MetaLVAService {
+    public void startMergeSession();
+
+    public boolean stopMergeSession();
+
+    public boolean mergingNecessary();
+
+    public List<MetaLVA> getNewMetaLvasWithMergeConflicts();
+
     /**
     * Insert persistent a new MetaLVA. If there are problems, f. e. the
     * associated module does not exist, there will be thrown a ServiceException.
@@ -139,6 +147,16 @@ public interface MetaLVAService {
      *
      */
     public void validateID(int id) throws ServiceException;
+
+    /**
+     * Read all meta lvas.
+     * @return An <code>List<MetaLVA></code> containing all meta lvas.
+     * @throws ServiceException If the meta lva data could not be read because any error occured.
+     * @throws ValidationException if invalid parameters
+     */
+    public List<MetaLVA> readAll() throws ServiceException, ValidationException;
+
+
 
     void delete(Integer id) throws ServiceException;
 }

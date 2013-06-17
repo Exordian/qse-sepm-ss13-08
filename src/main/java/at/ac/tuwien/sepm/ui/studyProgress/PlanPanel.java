@@ -96,7 +96,7 @@ public class PlanPanel extends StandardInsidePanel {
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
-        setBounds((int)StudStartCoordinateOfWhiteSpace.getX(), (int)StudStartCoordinateOfWhiteSpace.getY(),(int)whiteSpaceStud.getWidth(),(int)whiteSpaceStud.getHeight());
+        setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(),(int) whiteSpace.getWidth(),(int) whiteSpace.getHeight());
         initTextAndLabels();
         toggleAdvanced();
         initButtons();

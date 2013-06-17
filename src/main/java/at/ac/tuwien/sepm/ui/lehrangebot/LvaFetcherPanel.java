@@ -15,19 +15,27 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import sun.misc.PerformanceLogger;
 
-import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 @UI
 public class LvaFetcherPanel extends StandardInsidePanel {
     private static Logger log = LogManager.getLogger(LvaFetcherPanel.class);
+
+    private static final String MERGE_FRAME_TITLE = "Konflikte beim Speichern der Daten";
+    private static final String MERGE_FRAME_MESSAGE = "Einige Daten sind bereits abgespeichert, ein erneutes speichern " +
+            "würde diese\nDaten überschreiben. Wie wollen Sie vorgehen?";
+    private static final Object[] MERGE_FRAME_BUTTON_TEXT = new Object[] {"Alte Daten beibehalten",
+            "Neue Daten übernehmen",
+            "Daten zusammenführen"};
 
     private LvaFetcherService lvaFetcherService;
     private MetaLVAService metaLVAService;
@@ -49,7 +57,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         this.moduleService=moduleService;
         setLayout(new MigLayout());
         loadFonts();
-        setBounds((int)StudStartCoordinateOfWhiteSpace.getX(), (int)StudStartCoordinateOfWhiteSpace.getY(),(int)whiteSpaceStud.getWidth(),(int)whiteSpaceStud.getHeight());
+        setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(),(int) whiteSpace.getWidth(),(int) whiteSpace.getHeight());
         setBackground(Color.WHITE);
         initP();
         revalidate();
@@ -104,20 +112,79 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         add(progressBar);
     }
 
+    private int startMergeDialog() {
+        return JOptionPane.showOptionDialog(new JFrame(),
+                MERGE_FRAME_MESSAGE,
+                MERGE_FRAME_TITLE,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                MERGE_FRAME_BUTTON_TEXT,
+                MERGE_FRAME_BUTTON_TEXT[0]);
+    }
+
     private void performImport() {
         TreePath path = tissTree.getSelectionPath();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
         Object item = selectedNode.getUserObject();
+        ArrayList<String> failedModules = new ArrayList<String>();
         try {
             if(item instanceof ModuleSelectItem) {
+                moduleService.startMergeSession();
                 moduleService.create(((ModuleSelectItem)item).get());
+                moduleService.stopMergeSession();
+                if(moduleService.mergingNecessary()) {
+                    int option = startMergeDialog();
+                    if(option == 0) {
+                        // do nothing
+                    } else if(option == 1) {
+                        for(Module m : moduleService.getNewModulesWithMergeConflicts()) {
+                            moduleService.update(m);
+                        }
+                        for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
+                            metaLVAService.update(m);
+                        }
+                    } else if(option == 2) {
+                        // TODO open merge window
+                    }
+                }
             } else if(item instanceof CurriculumSelectItem) {
-                // TODO: Not always working, db contraint fails
+                moduleService.startMergeSession();
                 for(Module m : currentModules) {
                     moduleService.create(m);
                 }
+                moduleService.stopMergeSession();
+                if(moduleService.mergingNecessary()) {
+                    int option = startMergeDialog();
+                    if(option == 0) {
+                        // do nothing
+                    } else if(option == 1) {
+                        for(Module m : moduleService.getNewModulesWithMergeConflicts()) {
+                            moduleService.update(m);
+                        }
+                        for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
+                            metaLVAService.update(m);
+                        }
+                    } else if(option == 2) {
+                        // TODO open merge window
+                    }
+                }
             } else if(item instanceof MetaLvaSelectItem) {
+                metaLVAService.startMergeSession();
                 metaLVAService.create(((MetaLvaSelectItem) item).get());
+                metaLVAService.stopMergeSession();
+                if(metaLVAService.mergingNecessary()) {
+                    int option = startMergeDialog();
+                    if(option == 0) {
+                        // do nothing
+                    } else if(option == 1) {
+                        for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
+                            metaLVAService.update(m);
+                        }
+                    } else if(option == 2) {
+                        // TODO open merge window
+                    }
+                }
             }
         } catch (ServiceException e) {
             log.error("metalva create failed");
@@ -199,5 +266,10 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         public String toString() {
             return item.getName();
         }
+    }
+
+    private class MergingNecessaryWindow extends JDialog {
+        private JPanel panel;
+
     }
 }

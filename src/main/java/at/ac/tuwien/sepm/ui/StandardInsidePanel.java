@@ -17,8 +17,8 @@ public abstract class StandardInsidePanel extends JPanel {
     protected final Rectangle whiteSpaceCalendar = new Rectangle(904, 460); //only width and height of whitespace
     protected final Point CalStartCoordinateOfWhiteSpace = new Point(39, 57);  //x, y of cal whitespace
 
-    protected final Rectangle whiteSpaceStud = new Rectangle(1014, 517);  //only width and height of whitespace
-    protected final Point StudStartCoordinateOfWhiteSpace = new Point(51, 79); //x, y of stud whitespace
+    protected final Rectangle whiteSpace = new Rectangle(1014, 517);  //only width and height of whitespace
+    protected final Point startCoordinateOfWhiteSpace = new Point(51, 79); //x, y of stud whitespace
 
     protected Font standardTitleFont;
     protected Font standardTextFont;

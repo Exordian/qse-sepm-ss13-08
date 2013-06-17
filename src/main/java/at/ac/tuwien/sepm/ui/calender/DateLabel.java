@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.TimeFrame;
-import at.ac.tuwien.sepm.ui.UIHelper;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
@@ -19,13 +18,17 @@ import java.awt.event.*;
 public class DateLabel extends JLabel{
     private static final int MAX_TEXT_LENGTH=20;
     private Date date;
+    private boolean showTime = false;
 
-    public DateLabel(Date date) {
+    public DateLabel(Date date, boolean showTime) {
         this.date=date;
+        this.showTime = showTime;
         if(date.getName()==null || date.getName().equals("") || consistsOf(' ', date.getName())){
             this.setText("...");
+        } else if (showTime) {
+            this.setText(formatStartDate(date.getTime().from()) + cutText(date.getName(), 5));
         } else {
-            this.setText(cutText(date.getName()));
+            this.setText(cutText(date.getName(), 0));
         }
         this.setFont(new Font("Arial", Font.PLAIN, 10));
         this.addMouseListener(new PrivateMouseListener());
@@ -38,9 +41,15 @@ public class DateLabel extends JLabel{
                 this.setBackground(new Color(223, 233, 255));
                 //this.setForeground(new Color(117, 190, 255));
             } else if (date instanceof DateEntity) {
-                this.setBackground(new Color(195, 255, 194));
-                //this.setForeground(new Color(163, 255, 114));
+                if (((DateEntity) date).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!")) {
+                    this.setBackground(new Color(246, 242, 122));
+                } else {
+                    this.setBackground(new Color(195, 255, 194));
+                    //this.setForeground(new Color(163, 255, 114));
+                }
             }
+        } else {
+            // this.setForeground(Color.WHITE);
         }
     }
 
@@ -56,6 +65,23 @@ public class DateLabel extends JLabel{
         return date.getTime();
     }
 
+    private String formatStartDate(DateTime d) {
+        String result = "";
+        if(d.getHourOfDay()<10) {
+            result = "0" + d.getHourOfDay();
+        } else {
+            result += d.getHourOfDay();
+        }
+        result += ":";
+        if(d.getMinuteOfHour()<10) {
+            result += "0" + d.getMinuteOfHour();
+        } else {
+            result += d.getHourOfDay();
+        }
+
+        return result + " - ";
+    }
+
     private boolean consistsOf(char c, String s) {
         for(int i=0; i<s.length(); i++) {
             if(c != s.charAt(i)) {
@@ -65,14 +91,14 @@ public class DateLabel extends JLabel{
         return true;
     }
 
-    private String cutText(String text) {
-        if(text.length() > MAX_TEXT_LENGTH) {
-            text = text.substring(0,17) + "...";
+    private String cutText(String text, int diff) {
+        if(text.length() > (MAX_TEXT_LENGTH-diff)) {
+            text = text.substring(0,MAX_TEXT_LENGTH-diff) + "...";
         }
         return text;
     }
 
-    private Date getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -103,17 +129,17 @@ public class DateLabel extends JLabel{
 
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
-        private JMenuItem attendance;
+        // private JMenuItem attendance;
         private JMenuItem showRoom;
         private JMenuItem share;
 
         public PopUpMenu(){
             edit = new JMenuItem("Bearbeiten");
-            attendance = new JMenuItem("Anwesenheit");
+            // attendance = new JMenuItem("Anwesenheit");
             showRoom = new JMenuItem("Wegbeschreibung");
             share = new JMenuItem("Share");
             add(edit);
-            add(attendance);
+            // add(attendance);
             add(showRoom);
             add(share);
             addActionListeners();
@@ -130,18 +156,20 @@ public class DateLabel extends JLabel{
                     }
                 }
             });
-            attendance.addMouseListener(new MouseAdapter() {
+           /* attendance.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    // TODO implement this
+                    // TOod implement this
                 }
-            });
+            });*/
             showRoom.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if(date instanceof LvaDate) {
                         if(!PanelTube.backgroundPanel.openRoomBrowser(((LvaDate) date).getRoom()))
-                            JOptionPane.showMessageDialog(PopUpMenu.this, "Keine Wegbeschreibung gefunden.", "Wegbeschreibung", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(PopUpMenu.this, "Keine Wegbeschreibung gefunden.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(PopUpMenu.this, "Es existieren keine Wegbeschreibungen zu privaten Terminen.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             });
