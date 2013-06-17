@@ -42,7 +42,8 @@ public class ModuleDisplayPanel extends JPanel {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
+                if (e.isPopupTrigger() || (e.getButton() == 3)) {
+                    logger.debug("TEST rechtsklick");
                     JTable source = ModuleDisplayPanel.this.getTable();
                     int row = source.rowAtPoint( e.getPoint() );
                     int column = source.columnAtPoint( e.getPoint() );
@@ -150,11 +151,11 @@ public class ModuleDisplayPanel extends JPanel {
         //metaLVAPanel.clearSearch();
     }
     private void refreshMetaLVAs(){
-        System.out.println("panel==null: "+metaLVAPanel==null);
+        //System.out.println("panel==null: "+metaLVAPanel==null);
         if(metaLVAPanel!=null){
             metaLVAPanel.refresh(new ArrayList<MetaLVA>(0));
             if(table.getSelectedRowCount()>0){
-                System.out.println("rowcount: "+table.getSelectedRowCount());
+                //System.out.println("rowcount: "+table.getSelectedRowCount());
                 metaLVAPanel.refresh(getSelectedModule().getMetaLvas());
             }
         }

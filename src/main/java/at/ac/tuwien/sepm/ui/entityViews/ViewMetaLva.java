@@ -43,7 +43,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     private JComboBox semestersOffered;
 
     private JLabel moduleLabel;
-    private JComboBox module;
+    private JComboBox moduleDropdown;
 
     private JLabel completedLabel;
     private JCheckBox completed;
@@ -82,7 +82,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     metaLVA.setName(title.getText());
                     metaLVA.setCompleted(completed.isSelected());
                     metaLVA.setECTS(((Number)ects.getValue()).floatValue());
-                    metaLVA.setModule(((ModuleSelectItem)module.getSelectedItem()).get().getId());
+                    metaLVA.setModule(((ModuleSelectItem) moduleDropdown.getSelectedItem()).get().getId());
                     metaLVA.setNr(nr.getText());
                     metaLVA.setPriority(((Number)priority.getValue()).floatValue());
                     metaLVA.setSemestersOffered((Semester)semestersOffered.getSelectedItem());
@@ -163,16 +163,16 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         moduleLabel.setBounds(semestersOfferedLabel.getX(), semestersOfferedLabel.getY() + semestersOfferedLabel.getHeight() + verticalSpace, 140,25);
         this.add(moduleLabel);
 
-        module = new WideComboBox();
+        moduleDropdown = new WideComboBox();
         try {
             for (Module m :  moduleService.readAll())
-                module.addItem(new ModuleSelectItem(m));
+                moduleDropdown.addItem(new ModuleSelectItem(m));
         } catch (ServiceException e) {
             log.error("Exception: " +e.getMessage());
         }
-        module.setFont(standardTextFont);
-        module.setBounds(moduleLabel.getX() + moduleLabel.getWidth() + 20, moduleLabel.getY(), 140,25);
-        this.add(module);
+        moduleDropdown.setFont(standardTextFont);
+        moduleDropdown.setBounds(moduleLabel.getX() + moduleLabel.getWidth() + 20, moduleLabel.getY(), 140, 25);
+        this.add(moduleDropdown);
 
         priorityLabel = new JLabel("Priorität:");
         priorityLabel.setFont(standardTextFont);
@@ -208,7 +208,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             type.setSelectedIndex(0);
             priority.setValue(1);
             semestersOffered.setSelectedIndex(0);
-            module.setSelectedIndex(0);
+            moduleDropdown.setSelectedIndex(0);
             completed.setSelected(false);
         } else {
             this.metaLVA=metaLVA;
@@ -218,9 +218,9 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             type.setSelectedItem(metaLVA.getType());
             priority.setValue(metaLVA.getPriority());
             semestersOffered.setSelectedItem(metaLVA.getSemestersOffered());
-            for(int i = 0; i < module.getModel().getSize(); i++)
-                if (((ModuleSelectItem) module.getItemAt(i)).get().getId() == metaLVA.getModule()) {
-                    module.setSelectedIndex(i);
+            for(int i = 0; i < moduleDropdown.getModel().getSize(); i++)
+                if (((ModuleSelectItem) moduleDropdown.getItemAt(i)).get().getId() == metaLVA.getModule()) {
+                    moduleDropdown.setSelectedIndex(i);
                     break;
                 }
             completed.setSelected(metaLVA.isCompleted());

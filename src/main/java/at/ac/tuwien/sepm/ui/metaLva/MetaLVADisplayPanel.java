@@ -43,7 +43,7 @@ public class MetaLVADisplayPanel extends JPanel {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
+                if (e.isPopupTrigger()||(e.getButton() == 3)) {
                     JTable source = MetaLVADisplayPanel.this.getTable();
                     int row = source.rowAtPoint( e.getPoint() );
                     int column = source.columnAtPoint( e.getPoint() );
