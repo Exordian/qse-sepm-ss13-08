@@ -47,7 +47,6 @@ public class CalendarPanel extends StandardInsidePanel {
 
     private boolean showTodo = false;
 
-
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired

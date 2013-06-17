@@ -142,6 +142,23 @@ class RowMappers {
         };
     }
 
+
+    static RowMapper<TissExam> getPendingRegistrationMapper() {
+        return new RowMapper<TissExam>() {
+            @Override
+            public TissExam mapRow(ResultSet rs, int rowNum) throws SQLException {
+                TissExam entity = new TissExam();
+                entity.setId(rs.getInt(1));
+                entity.setLvanr(rs.getString(2));
+                entity.setName(rs.getString(3));
+                entity.setMode(rs.getString(4));
+                entity.setStartRegistration(timestampToDateTimeConverter(rs.getTimestamp(5)));
+                entity.setEndRegistration(timestampToDateTimeConverter(rs.getTimestamp(6)));
+                return entity;
+            }
+        };
+    }
+
     static RowMapper<Track> getTrackRowMapper() {
         return new RowMapper<Track>() {
             @Override
