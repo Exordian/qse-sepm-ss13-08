@@ -19,6 +19,8 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
     private int planningTolerance=10000;
     private List<Integer> typesToIntersect;
     private float intersectingTolerance = 0;
+    private boolean canceled;
+
     @Override
     public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
         if(forced==null){
@@ -76,6 +78,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         computeSolution(toPlan,chosen,goalECTS,actualECTS);
         intersectAll(toPlan,year,sem);
         startedPlanning = System.currentTimeMillis();
+        canceled = false;
 		recPlanning(toPlan,0,chosen,goalECTS,actualECTS);
 		if(bestSolution!=null)
 		return bestSolution;
@@ -85,6 +88,10 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 	private float solutionValue=Float.NEGATIVE_INFINITY;
 	private void recPlanning(ArrayList<MetaLVA> all,int index,ArrayList<Integer> chosen,float goalECTS,float actualECTS){
         if(System.currentTimeMillis()-startedPlanning>planningTolerance){
+            if(canceled){
+                logger.debug("time ran out. Providing best solution so far.");
+            }
+            canceled=true;
             return;
         }
         for(int i=index;i<all.size();i++){
