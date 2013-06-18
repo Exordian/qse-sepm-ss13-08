@@ -63,6 +63,9 @@ public class BackgroundPanel extends JPanel {
         createPropertiesButton();
         createTabButtons();
 
+        properties.doClick();//todo remove when wizard is implemented
+
+
         log.info("Background Panel initialized.");
     }
 
