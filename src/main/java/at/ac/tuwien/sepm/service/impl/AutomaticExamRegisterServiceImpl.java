@@ -118,6 +118,8 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
             Elements groups = examListDoc.select("div .groupWrapper");
 
             for(Element group : groups) {
+                if(group.select("input[value=Abmelden]").size() > 0)
+                    continue;
                 TissExam tissExam = new TissExam();
                 tissExam.setLvanr(lvanr);
                 tissExam.setName(group.select(".groupHeaderWrapper span").first().text().trim());
