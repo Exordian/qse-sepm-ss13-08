@@ -26,7 +26,7 @@ public class DeadlineTable extends JTable {
     private LVAService lvaService;
 
     List<LvaDate> deadlineList;
-    int[] colWidth = new int[]{80,80,200,80,50};
+    int[] colWidth = new int[]{100,80,200,80,30};
     int width = colWidth[0] + colWidth[1] + colWidth[2] + colWidth[3] + colWidth[4];
     DefaultTableModel model;
 

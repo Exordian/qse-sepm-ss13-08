@@ -19,7 +19,7 @@ import java.util.List;
 @Scope("singleton")
 public class TodoTable extends JTable {
     List<Todo> todoList;
-    int[] colWidth = new int[]{80,80,200,50};
+    int[] colWidth = new int[]{80,80,220,30};
     int width = colWidth[0] + colWidth[1] + colWidth[2] + colWidth[3];
     DefaultTableModel model;
 
@@ -37,7 +37,7 @@ public class TodoTable extends JTable {
     private void setTodos(List<Todo> list) {
         this.todoList = list;
         for(Todo todo: todoList) {
-            model.addRow(new String[] {todo.getLva().getMetaLVA().getName(), todo.getName(), todo.getDescription(), todo.getDone().toString()});
+            model.addRow(new String[] {todo.getLva().getMetaLVA().getName(), todo.getName(), todo.getDescription(), todo.getDone()? "Ja" : "Nein"});
         }
     }
 

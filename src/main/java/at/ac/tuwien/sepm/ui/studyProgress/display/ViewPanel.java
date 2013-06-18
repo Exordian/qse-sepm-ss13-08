@@ -12,6 +12,8 @@ import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 @UI
+@Scope("singleton")
 public class ViewPanel extends StandardInsidePanel {
     private JLabel majorName = new JLabel("Bachelor - Teststudium");
     private JButton fwd;
@@ -91,6 +94,7 @@ public class ViewPanel extends StandardInsidePanel {
         this.add(semesterList);
     } */
 
+    @Scheduled(fixedDelay = 5000)
     public void refresh() {
         try {
             ArrayList<LVA> temp = new ArrayList<>();
@@ -105,8 +109,6 @@ public class ViewPanel extends StandardInsidePanel {
             log.error(e.getMessage());
         }
     }
-
-
 
     private void initButtons() {
         fwd = new JButton();

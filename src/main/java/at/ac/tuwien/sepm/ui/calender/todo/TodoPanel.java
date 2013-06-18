@@ -9,6 +9,8 @@ import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +21,7 @@ import java.awt.event.*;
  */
 
 @UI
+@Scope("singleton")
 public class TodoPanel extends StandardInsidePanel {
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private TodoService todoService;
@@ -26,7 +29,6 @@ public class TodoPanel extends StandardInsidePanel {
     private TodoTable todoTable;
     private DeadlineTable deadlineTable;
     private JButton add;
-    private JButton refresh;
     private JButton showTODO;
     private JButton showDeadline;
     private boolean showTodo = false;
@@ -73,8 +75,13 @@ public class TodoPanel extends StandardInsidePanel {
         });
 
         this.add(pane);
-        pane.setBounds(0, 64,(int) whiteSpaceCalendar.getWidth()-7, 322);
+        pane.setBounds(0, 64, (int) whiteSpaceCalendar.getWidth() - 7, 322);
         todoTable.setBounds(0,64,(int)whiteSpaceCalendar.getWidth()-7,322);
+
+        pane.getViewport().setBackground(Color.WHITE);
+        todoTable.getTableHeader().setBackground(Color.WHITE);
+        deadlineTable.getTableHeader().setBackground(Color.WHITE);
+
         deadlineTable.setBounds(0, 64,(int) whiteSpaceCalendar.getWidth()-7, 322);
         pane.setViewportView(deadlineTable);
 
@@ -130,7 +137,7 @@ public class TodoPanel extends StandardInsidePanel {
     public void addButtons() {
         add = new JButton("Hinzufügen");
         add.setFont(standardButtonFont);
-        add.setBounds((int)whiteSpaceCalendar.getWidth()/2-150, todoTable.getY() + todoTable.getHeight() + 20, 150,30);
+        add.setBounds((int)whiteSpaceCalendar.getWidth()/2-75, todoTable.getY() + todoTable.getHeight() + 20, 150,30);
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,21 +149,6 @@ public class TodoPanel extends StandardInsidePanel {
             }
         });
         this.add(add);
-
-        refresh = new JButton("Aktualisieren");
-        refresh.setFont(standardButtonFont);
-        refresh.setBounds(add.getX()+add.getWidth()+10, add.getY(), 150,30);
-        refresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (showTodo) {
-                    todoTable.refreshTodos(todoService);
-                } else {
-                    deadlineTable.refreshDeadlines(serviceDeadlines);
-                }
-            }
-        });
-        this.add(refresh);
 
         showTODO=new JButton();
         showTODO.setBounds(469,22,122,29);
@@ -187,6 +179,15 @@ public class TodoPanel extends StandardInsidePanel {
         showDeadline.setContentAreaFilled(false);
         showDeadline.setBorderPainted(false);
         this.add(showDeadline);
+    }
+
+    @Scheduled(fixedDelay = 5000)
+    public void refresh() {
+        if (showTodo) {
+            todoTable.refreshTodos(todoService);
+        } else {
+            deadlineTable.refreshDeadlines(serviceDeadlines);
+        }
     }
 
     private void changeTables() {

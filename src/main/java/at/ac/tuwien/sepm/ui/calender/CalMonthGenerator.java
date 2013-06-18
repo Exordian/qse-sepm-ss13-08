@@ -6,6 +6,8 @@ import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.swing.*;
 
@@ -17,6 +19,7 @@ import javax.swing.*;
  * To change this template use File | Settings | File Templates.
  */
 @UI
+@Scope("singleton")
 public class CalMonthGenerator extends JPanel implements CalendarInterface {
     private CalPanelMonth calPanelMonth;
     private static final Logger logger = Logger.getLogger(CalMonthGenerator.class);
@@ -41,6 +44,7 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
     }
 
     @Override
+    @Scheduled(fixedDelay = 5000)
     public void refresh() {
         try {
             calPanelMonth.setDates();

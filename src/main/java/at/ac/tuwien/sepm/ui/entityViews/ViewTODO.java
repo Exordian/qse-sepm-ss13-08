@@ -203,6 +203,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             }
         });
         privateDate.setBounds(privateLabel.getX() + privateLabel.getWidth() + 5, privateLabel.getY(), 20, 20);
+        privateDate.setVisible(false);  //todo remove
         this.add(privateDate);
 
 

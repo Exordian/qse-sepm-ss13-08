@@ -221,7 +221,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
     }
     @Override
     public LVA readByIdWithoutLvaDates(int id) throws DataAccessException {
-        if(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM date WHERE id=?", RowMappers.getIntegerRowMapper(), id) != 1){
+        if(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM lva WHERE id=?", RowMappers.getIntegerRowMapper(), id) != 1){
             return null;
         }
 
