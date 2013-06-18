@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.ui.lehrangebot.StudienplanPanel;
 import at.ac.tuwien.sepm.ui.studyProgress.*;
 import at.ac.tuwien.sepm.ui.studyProgress.display.ViewPanel;
@@ -24,12 +25,15 @@ public class StudiesPanel extends StandardInsidePanel {
     private ViewPanel viewPanel;
     private GroupPanel groupPanel;
 
+    private PropertyService propertyService;
+
     @Autowired
-    public StudiesPanel(PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel, GroupPanel groupPanel) {
+    public StudiesPanel(PropertyService propertyService, PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel, GroupPanel groupPanel) {
         this.planningPanel = planningPanel;
         this.exportPanel = exportPanel;
         this.viewPanel = viewPanel;
         this.groupPanel=groupPanel;
+        this.propertyService = propertyService;
         add(viewPanel);
 
         init();
@@ -98,6 +102,10 @@ public class StudiesPanel extends StandardInsidePanel {
         tab4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                if(propertyService.getProperty("tiss.user") == null || propertyService.getProperty("tiss.user").isEmpty()) {
+                    JOptionPane.showMessageDialog(StudiesPanel.this, "Um dieses Modul nutzen zu können müssen Sie die TISS Kennungsdaten unter Einstellungen angeben", "Anmeldungen", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 changeImage(4);
                 remove(exportPanel);
                 remove(viewPanel);
