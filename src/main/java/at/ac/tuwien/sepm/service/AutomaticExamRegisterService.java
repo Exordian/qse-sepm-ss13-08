@@ -10,4 +10,6 @@ public interface AutomaticExamRegisterService {
     List<TissExam> listExamsForLva(String lvanr) throws ServiceException;
 
     void addRegistration(TissExam tissExam) throws ServiceException;
+
+    List<TissExam> getPendingExamRegistrations();
 }

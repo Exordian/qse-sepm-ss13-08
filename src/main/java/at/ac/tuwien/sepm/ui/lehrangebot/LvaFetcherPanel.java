@@ -15,7 +15,6 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import sun.misc.PerformanceLogger;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -33,7 +32,8 @@ public class LvaFetcherPanel extends StandardInsidePanel {
     private static final String MERGE_FRAME_TITLE = "Konflikte beim Speichern der Daten";
     private static final String MERGE_FRAME_MESSAGE = "Einige Daten sind bereits abgespeichert, ein erneutes speichern " +
             "würde diese\nDaten überschreiben. Wie wollen Sie vorgehen?";
-    private static final Object[] MERGE_FRAME_BUTTON_TEXT = new Object[] {"Alte Daten beibehalten",
+    private static final Object[] MERGE_FRAME_BUTTON_TEXT = new Object[] {
+            "Alte Daten beibehalten",
             "Neue Daten übernehmen",
             "Daten zusammenführen"};
 
@@ -83,7 +83,6 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         treeView = new JScrollPane(tissTree);
         treeView.setFont(standardTextFont);
         treeView.setMinimumSize(new Dimension((int) this.getBounds().getWidth() - 145, 20));
-
 
         fetchProgram.addActionListener(new AbstractAction() {
             @Override

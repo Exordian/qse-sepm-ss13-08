@@ -126,6 +126,8 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
                 tissExam.setEndRegistration(DateTime.parse(group.getElementsByAttributeValueContaining("id", "appEnd").first().text(), tissDateFormat));
                 tissExamList.add(tissExam);
             }
+        } catch(IllegalArgumentException e) {
+            log.warn("lva exam has invalid data "+lvanr);
         } catch (IOException e) {
             throw new ServiceException("connection failed", e);
         }
@@ -171,6 +173,11 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
                 log.error("no internet connection - register failing", e1);
             }
         }
+    }
+
+    @Override
+    public List<TissExam> getPendingExamRegistrations() {
+        return pendingRegistrationDao.readAllTissExams();
     }
 
     private String getCurrentSemester() {
