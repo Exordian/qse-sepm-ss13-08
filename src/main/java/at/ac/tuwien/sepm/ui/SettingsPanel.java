@@ -97,7 +97,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         this.add(semester);
 
         year = new JYearChooser();
-        if (propertyService.getProperty("user.firstYear") != null) {
+        if (propertyService.getProperty("user.firstYear") != null && !propertyService.getProperty("user.firstYear").isEmpty()) {
             year.setYear(Integer.parseInt(propertyService.getProperty("user.firstYear")));
         } else {
             year.setYear(2013);
@@ -231,7 +231,6 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Object[] options = {"Ja", "Abbrechen"};
-
                  if (JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
                          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
                      propertyService.setProperty("user.firstYear", "");
