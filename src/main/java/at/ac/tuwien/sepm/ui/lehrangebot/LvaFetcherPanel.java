@@ -162,7 +162,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        System.out.println("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),0));
+                        logger.info("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),1));
                         PanelTube.backgroundPanel.viewMerge(metaLVAService.getOldMetaLvasWithMergeConflicts(), metaLVAService.getNewMetaLvasWithMergeConflicts());
                     }
                 }
@@ -174,6 +174,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 moduleService.stopMergeSession();
                 if(moduleService.mergingNecessary()) {
                     int option = startMergeDialog();
+                    logger.debug("user pressed option "+option);
                     if(option == 0) {
                         // do nothing
                     } else if(option == 1) {
@@ -184,7 +185,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        System.out.println("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),0));
+                        logger.info("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),1));
                         PanelTube.backgroundPanel.viewMerge(metaLVAService.getOldMetaLvasWithMergeConflicts(), metaLVAService.getNewMetaLvasWithMergeConflicts());
 
                     }
@@ -195,6 +196,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 metaLVAService.stopMergeSession();
                 if(metaLVAService.mergingNecessary()) {
                     int option = startMergeDialog();
+                    logger.debug("user pressed option "+option);
                     if(option == 0) {
                         // do nothing
                     } else if(option == 1) {
@@ -202,7 +204,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        System.out.println("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),0));
+                        logger.info("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),1));
                         PanelTube.backgroundPanel.viewMerge(metaLVAService.getOldMetaLvasWithMergeConflicts(), metaLVAService.getNewMetaLvasWithMergeConflicts());
 
                     }
