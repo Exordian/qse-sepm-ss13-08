@@ -27,7 +27,7 @@ public class SemesterPanel extends StandardInsidePanel {
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
-        this.height=250;
+        this.height=380;
         setBounds(x-51, y, (int) whiteSpace.getWidth(), height);
         initSemesterTitle();
         this.lvas = lvas;

@@ -5,12 +5,13 @@ import at.ac.tuwien.sepm.ui.UI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @UI
 public class ExamTable extends JTable {
     List<TissExam> exams;
-    int[] colWidth = new int[]{35,62,30,410,40};
+    int[] colWidth = new int[]{58,160, 88,94,90};
     int width = colWidth[0]+colWidth[1]+colWidth[2]+colWidth[3]+colWidth[4];
     DefaultTableModel model;
 
@@ -43,21 +44,16 @@ public class ExamTable extends JTable {
         };
 
         setModel(model);
-        colWidth[3] = Math.max(0,colWidth[3]+(width-this.width));
+        //colWidth[3] = Math.max(0,colWidth[3]+(width-this.width));
 
         for(int i=0;i<5;i++){
-            if(i!=3){
-                getColumnModel().getColumn(i).setMinWidth(colWidth[i]);
-                getColumnModel().getColumn(i).setMaxWidth(colWidth[i]);
-            }else{
-                getColumnModel().getColumn(i).setPreferredWidth(colWidth[i]);
-            }
+            getColumnModel().getColumn(i).setPreferredWidth(colWidth[i]);
         }
     }
 
     public void setExams(List<TissExam> exams){
         for(TissExam e: exams){
-            model.addRow(new String[]{e.getLvanr(), e.getName(), e.getMode(), e.getStartRegistration().toString(),e.getEndRegistration().toString()});
+            model.addRow(new String[]{e.getLvanr(), e.getName(), e.getMode(), new SimpleDateFormat("dd.MM.yy HH:mm").format(e.getStartRegistration().toDate()),new SimpleDateFormat("dd.MM.yy HH:mm").format(e.getEndRegistration().toDate())});
         }
         this.exams=exams;
     }

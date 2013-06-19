@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.calender;
+package at.ac.tuwien.sepm.ui.calender.cal;
 
 import at.ac.tuwien.sepm.service.CalService;
 import at.ac.tuwien.sepm.service.DateService;

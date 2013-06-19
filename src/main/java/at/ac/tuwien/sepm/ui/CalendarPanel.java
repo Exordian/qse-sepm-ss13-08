@@ -1,9 +1,10 @@
 package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.ui.calender.CalMonthGenerator;
-import at.ac.tuwien.sepm.ui.calender.CalWeekGenerator;
-import at.ac.tuwien.sepm.ui.calender.CalendarInterface;
+import at.ac.tuwien.sepm.ui.calender.ImportPanel;
+import at.ac.tuwien.sepm.ui.calender.cal.CalMonthGenerator;
+import at.ac.tuwien.sepm.ui.calender.cal.CalWeekGenerator;
+import at.ac.tuwien.sepm.ui.calender.cal.CalendarInterface;
 import at.ac.tuwien.sepm.ui.calender.todo.TodoPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
@@ -57,7 +58,6 @@ public class CalendarPanel extends StandardInsidePanel {
         this.calPanelWeek=calPanelWeek;
         this.activeView=calPanelWeek;
         this.todoPanel=todoPanel;
-
         add(calPanelWeek);
 
         createTabButtons();
@@ -105,7 +105,7 @@ public class CalendarPanel extends StandardInsidePanel {
         importBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo import button
+                PanelTube.backgroundPanel.viewImport();
             }
         });
 
@@ -235,18 +235,18 @@ public class CalendarPanel extends StandardInsidePanel {
         try{
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(new File("src/main/resources/img/calw.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/calw.png"));
                     toggleComponents("show");
                     break;
                 case 2:
-                    image = ImageIO.read(new File("src/main/resources/img/calm.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/calm.png"));
                     toggleComponents("show");
                     break;
                 case 3:
                     if (showTodo) {
-                        image = ImageIO.read(new File("src/main/resources/img/caldt.png"));
+                        image = ImageIO.read(ClassLoader.getSystemResource("img/caldt.png"));
                     } else {
-                        image = ImageIO.read(new File("src/main/resources/img/caldd.png"));
+                        image = ImageIO.read(ClassLoader.getSystemResource("img/caldd.png"));
                     }
                     toggleComponents("hide");
                     break;

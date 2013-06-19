@@ -1,7 +1,6 @@
-package at.ac.tuwien.sepm.ui.calender;
+package at.ac.tuwien.sepm.ui.calender.cal;
 
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -20,29 +19,34 @@ import javax.swing.*;
  */
 @UI
 @Scope("singleton")
-public class CalWeekGenerator extends JPanel implements CalendarInterface {
-    private CalPanelWeek calPanelWeek;
-    private static final Logger logger = Logger.getLogger(CalWeekGenerator.class);
+public class CalMonthGenerator extends JPanel implements CalendarInterface {
+    private CalPanelMonth calPanelMonth;
+    private static final Logger logger = Logger.getLogger(CalMonthGenerator.class);
+
 
 
     @Autowired
-    public CalWeekGenerator(CalPanelWeek calPanelWeek) {
-        this.calPanelWeek=calPanelWeek;
+    public CalMonthGenerator(CalPanelMonth calPanelMonth) {
+
+        //braucht man, damit man den kalender frei verschieben kann
+        //das verschieben passiert dann in calpanelmonth
+        //das muss bei der wochenansicht auch so gemacht werden
+        this.calPanelMonth=calPanelMonth;
         this.setLayout(null);
         this.setOpaque(false);
-        this.add(calPanelWeek);
+        this.add(calPanelMonth);
     }
 
     @Override
     public void init() {
-        calPanelWeek.init();
+        calPanelMonth.init();
     }
 
     @Override
     @Scheduled(fixedDelay = 5000)
     public void refresh() {
         try {
-            calPanelWeek.setDates();
+            calPanelMonth.setDates();
         } catch (ServiceException e) {
             logger.error(e);
         }
@@ -50,26 +54,26 @@ public class CalWeekGenerator extends JPanel implements CalendarInterface {
 
     @Override
     public void semester() {
-        calPanelWeek.semester();
+        calPanelMonth.semester();
     }
 
     @Override
     public void next() throws ServiceException {
-        calPanelWeek.next();
+        calPanelMonth.next();
     }
 
     @Override
     public void last() throws ServiceException {
-        calPanelWeek.last();
+        calPanelMonth.last();
+    }
+
+    @Override
+    public void goToDay(DateTime date) {
+        // TODO
     }
 
     @Override
     public String getTimeIntervalInfo() {
-        return calPanelWeek.getTimeIntervalInfo();
-    }
-
-    @Override
-    public void goToDay(DateTime day) {
-        calPanelWeek.goToDay(day);
+        return calPanelMonth.getTimeIntervalInfo();
     }
 }

@@ -34,4 +34,5 @@ public interface PropertyService {
      */
     void save();
 
+    void removeProperty(String key);
 }

@@ -1,12 +1,13 @@
 package at.ac.tuwien.sepm.ui.studyProgress;
 
-import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.entity.TissExam;
+import at.ac.tuwien.sepm.entity.TissExamState;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import at.ac.tuwien.sepm.ui.UI;
@@ -15,8 +16,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,8 +24,8 @@ import java.util.List;
 
 @UI
 @Scope("singleton")
-public class GroupPanel extends StandardInsidePanel {
-    private Logger log = LogManager.getLogger(GroupPanel.class);
+public class RegisterExamPanel extends StandardInsidePanel {
+    private Logger log = LogManager.getLogger(RegisterExamPanel.class);
 
     private AutomaticExamRegisterService automaticExamRegisterService;
     private MetaLVAService metaLVAService;
@@ -44,7 +43,7 @@ public class GroupPanel extends StandardInsidePanel {
 
 
     @Autowired
-    public GroupPanel(AutomaticExamRegisterService automaticExamRegisterService, MetaLVAService metaLVAService, DateService dateService) {
+    public RegisterExamPanel(AutomaticExamRegisterService automaticExamRegisterService, MetaLVAService metaLVAService, DateService dateService) {
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
@@ -60,12 +59,12 @@ public class GroupPanel extends StandardInsidePanel {
     private void addTitles() {
         JLabel examList = new JLabel("Prüfungen");
         examList.setFont(standardSmallerTitleFont);
-        examList.setBounds((int) whiteSpace.getWidth() / 2 - (int) paneExams.getWidth() / 2 - 75, 5, 150, 30);
+        examList.setBounds((int) whiteSpace.getWidth() / 2 - (int) paneExams.getWidth() / 2 - 75, 5, 150, 35);
         this.add(examList);
 
         JLabel pendingRegistrations = new JLabel("Anmeldungen");
         pendingRegistrations.setFont(standardSmallerTitleFont);
-        pendingRegistrations.setBounds((int) whiteSpace.getWidth() / 2 + (int) panePending.getWidth() / 2 - 90, 5, 180, 30);
+        pendingRegistrations.setBounds((int) whiteSpace.getWidth() / 2 + (int) panePending.getWidth() / 2 - 90, 5, 180, 35);
         this.add(pendingRegistrations);
     }
 
@@ -76,7 +75,7 @@ public class GroupPanel extends StandardInsidePanel {
         refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GroupPanel.this.refresh();
+                RegisterExamPanel.this.refresh();
             }
         });
         this.add(refresh);
@@ -90,7 +89,7 @@ public class GroupPanel extends StandardInsidePanel {
                 try {
                     automaticExamRegisterService.addRegistration(examPanel.getSelectedExam());
                 } catch (ServiceException e1) {
-                    JOptionPane.showMessageDialog(GroupPanel.this, "Anmeldung fehlgeschlagen", "Prüfungsanmeldung", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Anmeldung fehlgeschlagen", SmallInfoPanel.Error);
                 }
             }
         });
@@ -133,7 +132,10 @@ public class GroupPanel extends StandardInsidePanel {
                 List<TissExam> tissExamList = new ArrayList<>();
                 for(MetaLVA metaLVA : metaLVAService.readUncompletedByYearSemesterStudyProgress(dateService.getCurrentYear(),dateService.getCurrentSemester(),true)) {
                     try {
-                        tissExamList.addAll(automaticExamRegisterService.listExamsForLva(metaLVA.getNr()));
+                        List<TissExam> lvaExamList = automaticExamRegisterService.listExamsForLva(metaLVA.getNr());
+                        for(TissExam exam : lvaExamList)
+                            if(exam.getTissExamState() == TissExamState.NOT_REGISTERED)
+                                tissExamList.add(exam);
                     } catch (ServiceException e) {
                         log.info("no exams for "+metaLVA.getNr());
                     }

@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
@@ -94,14 +95,15 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     } else {
                         metaLVAService.create(metaLVA);
                     }
+                    PanelTube.backgroundPanel.viewInfoText("Die Lva wurde gespeichert.", SmallInfoPanel.Info);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("MetaLvaEntity is invalid.");
-                    JOptionPane.showMessageDialog(ViewMetaLva.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("MetaLvaEntity is invalid.");
-                    JOptionPane.showMessageDialog(ViewMetaLva.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });

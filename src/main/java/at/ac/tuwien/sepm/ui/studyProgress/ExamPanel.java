@@ -23,9 +23,9 @@ public class ExamPanel extends JPanel {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private ExamTable table;
     private JTextField searchLvaNr = new HintTextField("LVA");
-    private JTextField searchExamName = new HintTextField("Name");
+    private JTextField searchExamName = new HintTextField("Prüfung");
     private JTextField searchMode = new HintTextField("Modus");
-    private JTextField searchStartTime = new HintTextField("Beginn");
+    private JTextField searchStartTime = new HintTextField("Anmeldebeginn");
     private JTextField searchEndTime = new HintTextField("Anmeldeende");
 
     private JPanel searchPanel = new JPanel();

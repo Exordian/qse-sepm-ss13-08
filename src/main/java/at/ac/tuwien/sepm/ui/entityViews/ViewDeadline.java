@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
@@ -82,7 +83,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             done.setSelected(deadline.getWasAttendant());
             calTime.setDate(deadline.getStart().toDate());
             time.setValue(deadline.getStart().toDate());
-            for(int i = 0; i < lva.getModel().getSize(); i++)                                    //todo
+            for(int i = 0; i < lva.getModel().getSize(); i++)
                 if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == deadline.getLva()) {
                     lva.setSelectedIndex(i);
                     break;
@@ -116,18 +117,19 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewDeadline.this, "Wollen sie diese Deadline wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             lvaDateService.delete(deadline.getId());
+                            PanelTube.backgroundPanel.viewInfoText("Die Deadline wurde gelöscht.", SmallInfoPanel.Info);
                         }
                         setVisible(false);
                         PanelTube.backgroundPanel.showLastComponent();
                     } else {
-                        JOptionPane.showMessageDialog(ViewDeadline.this, "Diese Deadline existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        PanelTube.backgroundPanel.viewInfoText("Diese Deadline existiert nicht in der Datenbank.", SmallInfoPanel.Error);
                     }
                 } catch (ServiceException e) {
                     log.error("Deadline is invalid.");
-                    JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("Deadline is invalid.");
-                    JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -154,14 +156,15 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                     } else {
                         lvaDateService.create(deadline);
                     }
+                    PanelTube.backgroundPanel.viewInfoText("Die Deadline wurde gespeichert.", SmallInfoPanel.Info);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("Deadline is invalid.");
-                    JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("Deadline is invalid.");
-                    JOptionPane.showMessageDialog(ViewDeadline.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });

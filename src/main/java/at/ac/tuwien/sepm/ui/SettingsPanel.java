@@ -1,15 +1,17 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.service.AuthService;
-import at.ac.tuwien.sepm.service.PropertyService;
-import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.entity.Curriculum;
+import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
+import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import com.toedter.calendar.JYearChooser;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -38,12 +40,15 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private JButton save;
 
     private PropertyService propertyService;
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+    private CreateCurriculumService createCurriculumService;
 
     @Autowired
     private AuthService authService;
 
     @Autowired
-    public SettingsPanel(PropertyService propertyService) {
+    public SettingsPanel(PropertyService propertyService, CreateCurriculumService createCurriculumService) {
+        this.createCurriculumService=createCurriculumService;
         this.propertyService=propertyService;
         init();
         addImage();
@@ -65,7 +70,9 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 propertyService.setProperty("user.firstYear", Integer.toString(year.getYear()));
                 propertyService.setProperty("user.firstSemester", (String)semester.getSelectedItem());
                 propertyService.setProperty("user.majorName", (String)major.getSelectedItem());
+                propertyService.setProperty("user.defaultECTS", ects.getText());
                 setVisible(false);
+                PanelTube.backgroundPanel.viewInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Info);
                 PanelTube.backgroundPanel.showLastComponent();
             }
         });
@@ -116,7 +123,10 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         tiss.setBounds(tissLogin.getX(), tissLogin.getY() + tissLogin.getHeight() + verticalSpace, textWidth - 20, textHeight);
 
         nameLabelTISS = new JLabel();
-        nameLabelTISS.setFont(standardTextFont);
+        if (propertyService.getProperty("tiss.user") != null && !propertyService.getProperty("tiss.user").isEmpty()) {
+            nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty("tiss.user"));
+        }
+        nameLabelTISS.setFont(standardTextFont.deriveFont(Font.BOLD));
         nameLabelTISS.setBounds(tiss.getX()+tiss.getWidth()+30, tiss.getY(), 500, textHeight);
         this.add(nameLabelTISS);
 
@@ -152,7 +162,6 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         });
         this.add(tiss);
 
-
         facebookLogin = new JLabel("Facebook Login Daten");
         facebookLogin.setFont(standardTextFont);
         facebookLogin.setBounds(tissLogin.getX(), tiss.getHeight() + tiss.getY() + 20, textWidth, textHeight);
@@ -163,7 +172,10 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         facebook.setBounds(facebookLogin.getX(), facebookLogin.getY() + facebookLogin.getHeight() + verticalSpace, textWidth-20, textHeight);
 
         nameLabelFacebook= new JLabel();
-        nameLabelFacebook.setFont(standardTextFont);
+        if (propertyService.getProperty("facebook.user") != null && !propertyService.getProperty("facebook.user").isEmpty()) {
+            nameLabelFacebook.setText("Eingeloggt als: " + propertyService.getProperty("facebook.user"));
+        }
+        nameLabelFacebook.setFont(standardTextFont.deriveFont(Font.BOLD));
         nameLabelFacebook.setBounds(facebook.getX()+facebook.getWidth()+30, facebook.getY(), 500, textHeight);
         this.add(nameLabelFacebook);
 
@@ -199,7 +211,12 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         defaultEcts.setBounds(tissLogin.getX(), facebook.getHeight() + facebook.getY() + verticalSpaceVast, textWidth, textHeight);
         this.add(defaultEcts);
 
-        ects = new JTextField("30");
+        ects = new JTextField();
+        if (propertyService.getProperty("user.defaultECTS") != null && !propertyService.getProperty("user.defaultECTS").isEmpty()) {
+            ects.setText(propertyService.getProperty("user.defaultECTS"));
+        } else {
+            ects.setText("30");
+        }
         ects.setFont(standardButtonFont);
         ects.setBounds(defaultEcts.getX() + defaultEcts.getWidth() - 10, defaultEcts.getY(), 25, textHeight);
         this.add(ects);
@@ -209,13 +226,19 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         pickMajor.setBounds(tissLogin.getX(), ects.getHeight() + ects.getY() + verticalSpaceVast, textWidth, textHeight);
         this.add(pickMajor);
 
-        major = new WideComboBox();                 //todo echte studien einfügen ^.-
-        major.addItem("Bachelor - Teststudium 1");
-        major.addItem("Master - Teststudium 2");
-        major.addItem("Bachelor - Teststudium 3");
+        major = new WideComboBox();
+        try {
+            if (!createCurriculumService.readAllCurriculum().isEmpty())
+                for (Curriculum c : createCurriculumService.readAllCurriculum())
+                    major.addItem(new CurriculumSelectItem(c));
+            else
+                major.addItem("Bitte Importieren sie ein Studium!");
+        } catch (ServiceException e) {
+            log.error("Error: " + e.getMessage());
+        }
         major.setFont(standardButtonFont);
 
-        if (propertyService.getProperty("user.majorName") != null) {
+        if (propertyService.getProperty("user.majorName") != null && !propertyService.getProperty("user.majorName").isEmpty()) {
             semester.setSelectedItem(propertyService.getProperty("user.majorName"));
         } else {
             semester.setSelectedIndex(0);
@@ -231,20 +254,33 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Object[] options = {"Ja", "Abbrechen"};
-                 if (JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
-                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
-                     propertyService.setProperty("user.firstYear", "");
-                     propertyService.setProperty("user.firstSemester", "");
-                     propertyService.setProperty("user.majorName", "");
-                     propertyService.setProperty("facebook.user", "");
-                     propertyService.setProperty("facebook.password", "");
-                     propertyService.setProperty("tiss.user", "");
-                     propertyService.setProperty("tiss.password", "");
-                    //todo alle anderen daten löschen?
-                 }
+                if (JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
+                    propertyService.removeProperty("user.firstYear");
+                    propertyService.removeProperty("user.firstSemester");
+                    propertyService.removeProperty("user.majorName");
+                    propertyService.removeProperty("facebook.user");
+                    propertyService.removeProperty("facebook.password");
+                    propertyService.removeProperty("tiss.user");
+                    propertyService.removeProperty("tiss.password");
+                    propertyService.removeProperty("user.defaultECTS");
+
+                    //todo alle datenbank daten löschen
+                    System.exit(0);
+                }
             }
         });
         this.add(deleteALL);
     }
 
+    private static class CurriculumSelectItem extends SelectItem<Curriculum> {
+        CurriculumSelectItem(Curriculum item) {
+            super(item);
+        }
+
+        @Override
+        public String toString() {
+            return item.getName();
+        }
+    }
 }

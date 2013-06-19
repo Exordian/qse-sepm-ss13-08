@@ -9,6 +9,7 @@ public class TissExam {
     private String mode;
     private DateTime startRegistration;
     private DateTime endRegistration;
+    private TissExamState tissExamState;
 
     public int getId() {
         return id;
@@ -55,5 +56,13 @@ public class TissExam {
 
     public void setEndRegistration(DateTime endRegistration) {
         this.endRegistration = endRegistration;
+    }
+
+    public TissExamState getTissExamState() {
+        return tissExamState;
+    }
+
+    public void setTissExamState(TissExamState tissExamState) {
+        this.tissExamState = tissExamState;
     }
 }

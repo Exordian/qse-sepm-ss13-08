@@ -4,12 +4,14 @@ import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -60,16 +62,23 @@ public class ViewDate extends StandardSimpleInsidePanel {
         this.revalidate();
     }
 
-    public void setDateEntity(DateEntity dateEntity) {
+    public void setDateEntity(DateEntity dateEntity, DateTime dateTime) {
         if (dateEntity == null) {
             this.dateEntity=new DateEntity();
             changeTitle("Neuer Termin");
             description.setText("Bitte Beschreibung einfügen");
             intersectable.setSelected(true);
-            from.setDate(new Date());
-            to.setDate(new Date());
-            fromTime.setValue(new Date());
-            toTime.setValue(new Date());
+            if (dateTime != null) {
+                from.setDate(dateTime.toDate());
+                to.setDate(dateTime.toDate());
+                fromTime.setValue(dateTime.toDate());
+                toTime.setValue(dateTime.toDate());
+            } else {
+                from.setDate(new Date());
+                to.setDate(new Date());
+                fromTime.setValue(new Date());
+                toTime.setValue(new Date());
+            }
             setDeleteButton(false);
         } else {
             this.dateEntity=dateEntity;
@@ -104,15 +113,16 @@ public class ViewDate extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewDate.this, "Wollen sie diesen Termin wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             dateService.deleteDate(dateEntity.getId());
+                            PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gelöscht.", SmallInfoPanel.Info);
                         }
                     } else {
-                        JOptionPane.showMessageDialog(ViewDate.this, "Dieser Termin ist noch nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        PanelTube.backgroundPanel.viewInfoText("Dieser Termin ist noch nicht in der Datenbank.", SmallInfoPanel.Error);
                     }
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("DateEntity is invalid.");
-                    JOptionPane.showMessageDialog(ViewDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -129,7 +139,8 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     dateEntity.setDescription(description.getText());
                     dateEntity.setIntersectable(intersectable.isSelected());
                     if (convertDateAndTime(fromTime, from).isAfter(convertDateAndTime(toTime, to))) {
-                        JOptionPane.showMessageDialog(ViewDate.this, "Das Start-Datum muss vor dem End-Datum liegen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        PanelTube.backgroundPanel.viewInfoText("Das Start-Datum muss vor dem End-Datum liegen.", SmallInfoPanel.Info);
+                        return;
                     }
                     dateEntity.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
                     if (dateEntity.getId() != null) {
@@ -138,11 +149,12 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     } else {
                         dateService.createDate(dateEntity);
                     }
+                    PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gespeichert.", SmallInfoPanel.Info);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("DateEntity is invalid.");
-                    JOptionPane.showMessageDialog(ViewDate.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });

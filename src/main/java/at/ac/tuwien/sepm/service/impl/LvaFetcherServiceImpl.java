@@ -46,7 +46,6 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
 
     private static final String ACADEMICPROG_TABLE_ACADEMICPROG_ROW_DESC_PATH = ".studyCodeNameColumn a";
 
-
     @Override
     public List<Curriculum> getAcademicPrograms() throws ServiceException {
         return getAcademicPrograms(false);
@@ -188,8 +187,6 @@ public class LvaFetcherServiceImpl implements LvaFetcherService {
     private static final String LVA_CONTENT = "div#contentInner";
     private static final String LVA_CONTENT_HEAD = "h1";
     private static final String LVA_CONTENT_SUBHEAD = "div#subHeader";
-
-    private static final String REGEX_SINGLE_DATE = "^(\\d)+\\.(\\d)+\\.(\\d)+$";
 
     private String flattenLvaNr(String lvaNr) {
         return lvaNr.replace(".", "").replace(" ", "");

@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
@@ -90,7 +91,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
                                         metaLVA.setPriority(newPriority);
                                         metaLVAService.update(metaLVA);
                                     }
-                                }else{
+                                } else {
                                     throw new EscapeException();
                                 }
                                 break;
@@ -104,17 +105,18 @@ public class ViewModule extends StandardSimpleInsidePanel {
                     } else {
                         moduleService.create(module);
                     }
+                    PanelTube.backgroundPanel.viewInfoText("Das Modul wurde gespeichert.", SmallInfoPanel.Info);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("Module is invalid.");
-                    JOptionPane.showMessageDialog(ViewModule.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("Module is invalid.");
-                    JOptionPane.showMessageDialog(ViewModule.this, "Die Angaben sind ungültig.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (NumberFormatException e){
                     log.error("Input priority is invalid.");
-                    JOptionPane.showMessageDialog(ViewModule.this, "Die angegebene Priorität ist ungültig!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Die angegebene Priorität ist ungültig!", SmallInfoPanel.Error);
                 } catch (EscapeException ignore){
                     log.info("user cancelled saving");
                 }

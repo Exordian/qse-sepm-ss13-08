@@ -127,13 +127,4 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
         Date newDate = calendar.getTime();
         return new DateTime(newDate);
     }
-
-    public BackgroundPanel getBgPanel() {
-        return this.bgPanel;
-    }
-
-    //needed for return button
-    public void setBgPanel(BackgroundPanel bgPanel) {
-        //  this.bgPanel=bgPanel;
-    }
 }

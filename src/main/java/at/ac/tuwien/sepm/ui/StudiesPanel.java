@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.service.PropertyService;
-import at.ac.tuwien.sepm.ui.lehrangebot.StudienplanPanel;
 import at.ac.tuwien.sepm.ui.studyProgress.*;
 import at.ac.tuwien.sepm.ui.studyProgress.display.ViewPanel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +22,16 @@ public class StudiesPanel extends StandardInsidePanel {
     private PlanPanel planningPanel;
     private ExportPanel exportPanel;
     private ViewPanel viewPanel;
-    private GroupPanel groupPanel;
+    private RegisterExamPanel registerExamPanel;
 
     private PropertyService propertyService;
 
     @Autowired
-    public StudiesPanel(PropertyService propertyService, PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel, GroupPanel groupPanel) {
+    public StudiesPanel(PropertyService propertyService, PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel, RegisterExamPanel registerExamPanel) {
         this.planningPanel = planningPanel;
         this.exportPanel = exportPanel;
         this.viewPanel = viewPanel;
-        this.groupPanel=groupPanel;
+        this.registerExamPanel = registerExamPanel;
         this.propertyService = propertyService;
         add(viewPanel);
 
@@ -62,7 +61,7 @@ public class StudiesPanel extends StandardInsidePanel {
                 changeImage(1);
                 remove(planningPanel);
                 remove(exportPanel);
-                remove(groupPanel);
+                remove(registerExamPanel);
                 add(viewPanel);
                 viewPanel.refresh();
                 StudiesPanel.this.validate();
@@ -77,7 +76,7 @@ public class StudiesPanel extends StandardInsidePanel {
                 changeImage(2);
                 remove(exportPanel);
                 remove(viewPanel);
-                remove(groupPanel);
+                remove(registerExamPanel);
                 add(planningPanel);
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
@@ -92,7 +91,7 @@ public class StudiesPanel extends StandardInsidePanel {
                 add(exportPanel);
                 remove(viewPanel);
                 remove(planningPanel);
-                remove(groupPanel);
+                remove(registerExamPanel);
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
             }
@@ -110,7 +109,7 @@ public class StudiesPanel extends StandardInsidePanel {
                 remove(exportPanel);
                 remove(viewPanel);
                 remove(planningPanel);
-                add(groupPanel);
+                add(registerExamPanel);
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
             }

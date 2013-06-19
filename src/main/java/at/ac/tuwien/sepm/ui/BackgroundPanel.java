@@ -3,10 +3,12 @@ package at.ac.tuwien.sepm.ui;
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.RoomFinderService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.ui.calender.ImportPanel;
 import at.ac.tuwien.sepm.ui.entityViews.*;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -39,6 +41,9 @@ public class BackgroundPanel extends JPanel {
     private ViewModule viewModule;
     private Image image;
     private Component lastComponent;
+    private int lastImage;
+    private ImportPanel importPanel;
+    private SmallInfoPanel smallInfoPanel;
 
     @Autowired
     RoomFinderService roomFinderService;
@@ -46,12 +51,16 @@ public class BackgroundPanel extends JPanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,ViewModule viewModule,ViewMerge viewMerge) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate,
+                           ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,
+                           ViewModule viewModule, ImportPanel importPanel, SmallInfoPanel smallInfoPanel,ViewMerge viewMerge) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
         this.viewMerge = viewMerge;
+        this.importPanel=importPanel;
         this.viewMetaLva=viewMetaLva;
         this.viewModule = viewModule;
+        this.smallInfoPanel=smallInfoPanel;
         this.viewLva=viewLva;
         this.lehrPanel=lehrPanel;
         this.calPanel = calPanel;
@@ -65,13 +74,15 @@ public class BackgroundPanel extends JPanel {
         createPropertiesButton();
         createTabButtons();
 
+        properties.doClick();//todo remove when wizard is implemented
+
         log.info("Background Panel initialized.");
     }
 
     //wenn neue entity erzeugt werden soll ->  viewDate(null)
-    public void viewDate(DateEntity dateEntity) {
+    public void viewDate(DateEntity dateEntity, DateTime dateTime) {
         removeAddedPanels();
-        viewDate.setDateEntity(dateEntity);
+        viewDate.setDateEntity(dateEntity, dateTime);
         viewDate.setVisible(true);
         this.add(viewDate);
         this.revalidate();
@@ -87,9 +98,9 @@ public class BackgroundPanel extends JPanel {
         this.repaint();
     }
 
-    public void viewLvaDate(LvaDate lvaDate) {
+    public void viewLvaDate(LvaDate lvaDate, DateTime dateTime) {
         removeAddedPanels();
-        viewLVAdate.setLVADateEntity(lvaDate);
+        viewLVAdate.setLVADateEntity(lvaDate, dateTime);
         viewLVAdate.setVisible(true);
         this.add(viewLVAdate);
         this.revalidate();
@@ -140,6 +151,43 @@ public class BackgroundPanel extends JPanel {
         this.repaint();
     }
 
+    public void viewImport() {
+        removeAddedPanels();
+        importPanel.setVisible(true);
+        this.add(importPanel);
+        this.revalidate();
+        this.repaint();
+    }
+
+    /*
+    *   String s = text im infopanel (max. 75 chars)
+    *   int nmb = icon
+    *   (1 = SmallInfoPanel.Error,
+    *   2 = SmallInfoPanel.Info,
+    *   3 = SmallInfoPanel.Warning)
+    */
+    public void viewInfoText(String s, int nmb) {
+        smallInfoPanel.setVisible(true);
+        smallInfoPanel.setInfoText(s, nmb);
+        this.add(smallInfoPanel);
+        this.revalidate();
+        this.repaint();
+        hideInfoText();
+    }
+
+
+    void hideInfoText() {
+        Timer timer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                smallInfoPanel.setVisible(false);
+                BackgroundPanel.this.remove(smallInfoPanel);
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -160,6 +208,7 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewModule);
         this.remove(viewDeadline);
         this.remove(lehrPanel);
+        this.remove(importPanel);
     }
 
     private void addPanel(Component c) {
@@ -169,6 +218,7 @@ public class BackgroundPanel extends JPanel {
 
     public void showLastComponent() {
         this.add(lastComponent);
+        changeImage(lastImage);
     }
 
     private void changeImage(int nmb) {
@@ -177,22 +227,28 @@ public class BackgroundPanel extends JPanel {
             switch(nmb) {
                 case 1:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/cal.jpg"));
+                    lastImage = 1;
                     this.addPanel(calPanel);
                     break;
                 case 2:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/stud.jpg"));
+                    lastImage = 2;
                     this.addPanel(studPanel);
                     break;
                 case 3:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/lehr.jpg"));
+                    lastImage = 3;
                     this.addPanel(lehrPanel);
+                    break;
+                case 4:
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));
                     break;
                 default:
                     break;
             }
             this.repaint();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error: " + e.getMessage());
         }
     }
 
@@ -207,6 +263,7 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 removeAddedPanels();
+                changeImage(4);
                 propsPanel.setVisible(true);
                 BackgroundPanel.this.add(propsPanel);
                 BackgroundPanel.this.repaint();
