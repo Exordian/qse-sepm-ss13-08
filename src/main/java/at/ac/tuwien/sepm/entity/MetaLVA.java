@@ -159,6 +159,9 @@ public class MetaLVA implements Comparable<MetaLVA>{
     }
     public String toString(){
         String toReturn="<MetaLVA:";
+        if(id!=null){
+            toReturn+=" id:"+id;
+        }
         if(nr!=null){
             toReturn+=" nr:"+nr;
         }
@@ -178,6 +181,9 @@ public class MetaLVA implements Comparable<MetaLVA>{
     }
     public String toShortString(){
         String toReturn="<MetaLVA:";
+        if(id!=null){
+             toReturn+=" id:"+id;
+        }
         if(nr!=null){
             if(nr.length()>3){
                 toReturn+=" nr:"+".."+nr.substring(4);

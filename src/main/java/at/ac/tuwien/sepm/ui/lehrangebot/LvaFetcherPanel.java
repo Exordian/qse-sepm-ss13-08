@@ -7,8 +7,10 @@ import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.impl.LVAUtil;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
@@ -27,7 +29,7 @@ import java.util.List;
 
 @UI
 public class LvaFetcherPanel extends StandardInsidePanel {
-    private static Logger log = LogManager.getLogger(LvaFetcherPanel.class);
+    private static Logger logger = LogManager.getLogger(LvaFetcherPanel.class);
 
     private static final String MERGE_FRAME_TITLE = "Konflikte beim Speichern der Daten";
     private static final String MERGE_FRAME_MESSAGE = "Einige Daten sind bereits abgespeichert, ein erneutes speichern " +
@@ -72,7 +74,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 if (((c.getName().startsWith("Bachelor")) || (c.getName().startsWith("Master"))) && ((c.getName().contains("nformatik") || c.getName().contains("Software")) && !c.getName().contains("Geod")))
                     academicPrograms.addItem(new CurriculumSelectItem(c));
         } catch (ServiceException e) {
-            log.info("no academic prorgams");
+            logger.info("no academic prorgams");
         }
         academicPrograms.setMinimumSize(new Dimension((int)this.getBounds().getWidth()-145, 20));
 
@@ -87,6 +89,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         fetchProgram.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                //performImport();
                 refreshTree();
             }
         });
@@ -123,6 +126,20 @@ public class LvaFetcherPanel extends StandardInsidePanel {
     }
 
     private void performImport() {
+        //temp
+/*
+            List<MetaLVA> temp = new ArrayList<MetaLVA>(0);
+            try {
+                temp = metaLVAService.readAll();
+            } catch (ServiceException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ValidationException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        PanelTube.backgroundPanel.viewMerge(temp,temp);
+            if(true)
+                return;*/
+        //temp
         TreePath path = tissTree.getSelectionPath();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
         Object item = selectedNode.getUserObject();
@@ -134,6 +151,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 moduleService.stopMergeSession();
                 if(moduleService.mergingNecessary()) {
                     int option = startMergeDialog();
+                    logger.debug("user pressed option "+option);
                     if(option == 0) {
                         // do nothing
                     } else if(option == 1) {
@@ -144,7 +162,8 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        // TODO open merge window
+                        System.out.println("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),0));
+                        PanelTube.backgroundPanel.viewMerge(metaLVAService.getOldMetaLvasWithMergeConflicts(), metaLVAService.getNewMetaLvasWithMergeConflicts());
                     }
                 }
             } else if(item instanceof CurriculumSelectItem) {
@@ -165,7 +184,9 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        // TODO open merge window
+                        System.out.println("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),0));
+                        PanelTube.backgroundPanel.viewMerge(metaLVAService.getOldMetaLvasWithMergeConflicts(), metaLVAService.getNewMetaLvasWithMergeConflicts());
+
                     }
                 }
             } else if(item instanceof MetaLvaSelectItem) {
@@ -181,14 +202,16 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                             metaLVAService.update(m);
                         }
                     } else if(option == 2) {
-                        // TODO open merge window
+                        System.out.println("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),0));
+                        PanelTube.backgroundPanel.viewMerge(metaLVAService.getOldMetaLvasWithMergeConflicts(), metaLVAService.getNewMetaLvasWithMergeConflicts());
+
                     }
                 }
             }
         } catch (ServiceException e) {
-            log.error("metalva create failed");
+            logger.error("metalva create failed");
         } catch (ValidationException e) {
-            log.error("tried to import invalid lva");
+            logger.error("tried to import invalid lva");
         }
     }
 
@@ -228,7 +251,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 progressBar.setVisible(false);
                 importb.setEnabled(true);
             } catch (ServiceException e) {
-                log.info("couldn't build LvaTree", e);
+                logger.info("couldn't build LvaTree", e);
             }
             return null;
         }

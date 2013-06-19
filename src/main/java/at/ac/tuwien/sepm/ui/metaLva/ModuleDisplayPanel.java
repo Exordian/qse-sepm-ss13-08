@@ -82,7 +82,7 @@ public class ModuleDisplayPanel extends JPanel {
                     for(MetaLVA mLVA : m.getMetaLvas()){
                         ectsCount+=mLVA.getECTS();
                     }
-                    if (m.getName().contains(searchName.getText()) &&(""+ectsCount).contains(searchECTS.getText())) {
+                    if (m.getName().toLowerCase().contains(searchName.getText().toLowerCase()) &&(""+ectsCount).toLowerCase().contains(searchECTS.getText().toLowerCase())) {
                         filteredModules.add(m);
                     }
                 }

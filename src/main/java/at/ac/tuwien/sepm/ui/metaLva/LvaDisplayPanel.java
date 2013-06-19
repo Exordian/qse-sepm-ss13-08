@@ -85,7 +85,7 @@ public class LvaDisplayPanel extends JPanel {
                 logger.debug("searching for: (year: "+ searchYear.getText()+", semester:"+ searchSemester.getText()+", typ: " + searchType.getText()+", name: "+ searchName.getText()+", grade: "+searchGrade.getText()+")");
                 filteredLVAs = new ArrayList<LVA>();
                 for (LVA m : allLVAs) {
-                    if (String.valueOf(m.getYear()).contains(searchYear.getText()) && m.getSemester().toString().contains(searchSemester.getText()) && m.getMetaLVA().getType().toString().contains(searchType.getText()) && (m.getMetaLVA().getName().contains(searchName.getText()))&& ((""+m.getGrade()).contains(searchGrade.getText()))) {
+                    if (String.valueOf(m.getYear()).toLowerCase().contains(searchYear.getText().toLowerCase()) && m.getSemester().toString().toLowerCase().contains(searchSemester.getText().toLowerCase()) && m.getMetaLVA().getType().toString().toLowerCase().contains(searchType.getText().toLowerCase()) && (m.getMetaLVA().getName().toLowerCase().contains(searchName.getText().toLowerCase()))&& ((""+m.getGrade()).toLowerCase().contains(searchGrade.getText().toLowerCase()))) {
                         filteredLVAs.add(m);
                     }
                 }

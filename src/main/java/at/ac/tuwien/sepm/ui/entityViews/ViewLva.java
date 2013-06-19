@@ -23,11 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -159,6 +154,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
         goals.setWrapStyleWord(true);
         goals.setFont(standardTextFont);
         goals.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        goals.setCaretPosition(0);
         JScrollPane scroll = new JScrollPane(goals);
         scroll.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
         this.add(scroll);
@@ -168,6 +164,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
         content.setWrapStyleWord(true);
         content.setFont(standardTextFont);
         content.setBounds(goals.getX(), goals.getY()+goals.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        content.setCaretPosition(0);
         scroll = new JScrollPane(content);
         scroll.setBounds(goals.getX(), goals.getY()+goals.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
         this.add(scroll);
@@ -177,6 +174,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
         additionalInfo1.setWrapStyleWord(true);
         additionalInfo1.setFont(standardTextFont);
         additionalInfo1.setBounds(goals.getX(), content.getY()+content.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        additionalInfo1.setCaretPosition(0);
         scroll = new JScrollPane(additionalInfo1);
         scroll.setBounds(goals.getX(), content.getY()+content.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
         this.add(scroll);
@@ -186,6 +184,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
         additionalInfo2.setWrapStyleWord(true);
         additionalInfo2.setFont(standardTextFont);
         additionalInfo2.setBounds(goals.getX(), additionalInfo1.getY()+additionalInfo1.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        additionalInfo2.setCaretPosition(0);
         scroll = new JScrollPane(additionalInfo2);
         scroll.setBounds(goals.getX(), additionalInfo1.getY()+additionalInfo1.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
         this.add(scroll);

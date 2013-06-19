@@ -77,7 +77,6 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         for(MetaLVA mLVA :forced){
             if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
                 toPlan.add(mLVA);
-
             }
             if(mLVA.containsLVA(year, sem)){
                 chosen.add(toPlan.indexOf(mLVA));
@@ -90,7 +89,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         canceled = false;
 		recPlanning(toPlan,0,chosen,goalECTS,actualECTS);
         logger.debug("finished planning. Time passed: "+(System.currentTimeMillis()-startedPlanning)/1000f +" secounds");
-		if(bestSolution!=null){
+        if(bestSolution!=null){
 		    return bestSolution;
         }
         return new ArrayList<MetaLVA>();
@@ -171,20 +170,20 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         return intersecting[a][b-a];
     }
 	private void computeSolution(ArrayList<MetaLVA> all,ArrayList<Integer> chosen,float goalECTS,float actualECTS) {
-
-		float value=0;
+        float value=0;
 		for(Integer i:chosen){
 			value+=all.get(i).getECTS()*tree.getPriority(all.get(i))/actualECTS;
 		}
-		value-=Math.pow(Math.abs(goalECTS-actualECTS),1.5);
-		if(value>solutionValue){
+		//value-=(Math.pow(Math.abs(goalECTS-actualECTS),1.5);
+        value-=15f*(Math.abs(goalECTS-actualECTS)/Math.max(goalECTS,0.01));
+        if(value>solutionValue){
 			ArrayList<MetaLVA> newSolution = new ArrayList<MetaLVA>();
 			for(Integer i:chosen){
 				newSolution.add(all.get(i));
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-            logger.debug("new Solution found: \n" +LVAUtil.formatMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value);
+            logger.debug("new Solution found: \n" +LVAUtil.formatMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value+", with : "+actualECTS+" ECTS");
 		    bestSolutionECTS=actualECTS;
         }else{
             //active for detailed debugging

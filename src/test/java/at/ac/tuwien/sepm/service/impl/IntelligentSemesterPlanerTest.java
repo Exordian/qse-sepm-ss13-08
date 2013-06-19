@@ -1,20 +1,20 @@
 package at.ac.tuwien.sepm.service.impl;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.IntelligentSemesterPlaner;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.TimeFrame;
-import at.ac.tuwien.sepm.service.impl.IntelligentSemesterPlanerImpl;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class IntelligentSemesterPlanerTest {
@@ -60,7 +60,10 @@ public class IntelligentSemesterPlanerTest {
         ArrayList<MetaLVA> forced = new ArrayList<MetaLVA>(1);
         forced.add(pool.get(0));
         planer.setLVAs(forced, pool);
-        assertTrue(planer.planSemester(0,2013, Semester.S).size()==1);
+        List<MetaLVA> planned = planer.planSemester(0,2013, Semester.S);
+        System.out.println(LVAUtil.formatMetaLVA(planned,0));
+        System.out.println(planned.size());
+        assertTrue(planned.size()==1);
         assertTrue(planer.planSemester(0,2013, Semester.S).get(0)==pool.get(0));
     }
     /**

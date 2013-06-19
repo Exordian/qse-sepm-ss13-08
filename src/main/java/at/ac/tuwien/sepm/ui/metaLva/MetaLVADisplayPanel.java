@@ -81,7 +81,7 @@ public class MetaLVADisplayPanel extends JPanel {
                 logger.debug("searching for: (nr: "+searchNr.getText()+", type:"+searchType.getText()+", name: " + searchName.getText()+", ECTS: "+searchECTS.getText()+")");
                 filteredLVAs = new ArrayList<MetaLVA>();
                 for (MetaLVA m : allLVAs) {
-                    if (m.getNr().contains(searchNr.getText()) && m.getType().toString().contains(searchType.getText()) && m.getName().contains(searchName.getText()) &&(""+m.getECTS()).contains(searchECTS.getText())) {
+                    if (m.getNr().toLowerCase().contains(searchNr.getText().toLowerCase()) && m.getType().toString().toLowerCase().contains(searchType.getText().toLowerCase()) && m.getName().toLowerCase().contains(searchName.getText().toLowerCase()) &&(""+m.getECTS()).toLowerCase().contains(searchECTS.getText().toLowerCase())) {
                         filteredLVAs.add(m);
                     }
                 }
@@ -154,7 +154,7 @@ public class MetaLVADisplayPanel extends JPanel {
         this.allLVAs=lvas;
         filteredLVAs = new ArrayList<MetaLVA>();
         for (MetaLVA m : allLVAs) {
-            if (m.getNr().contains(searchNr.getText()) && m.getType().toString().contains(searchType.getText()) && m.getName().contains(searchName.getText()) &&(""+m.getECTS()).contains(searchECTS.getText())) {
+            if (m.getNr().toLowerCase().contains(searchNr.getText()) && m.getType().toString().toLowerCase().contains(searchType.getText()) && m.getName().toLowerCase().contains(searchName.getText()) &&(""+m.getECTS()).toLowerCase().contains(searchECTS.getText())) {
                 filteredLVAs.add(m);
             }
         }

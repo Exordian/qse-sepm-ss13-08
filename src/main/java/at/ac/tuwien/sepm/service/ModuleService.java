@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +19,10 @@ public interface ModuleService {
     public List<Module> getNewModulesWithMergeConflicts();
 
     public List<MetaLVA> getNewMetaLvasWithMergeConflicts();
+
+    public List<Module> getOldModulesWithMergeConflicts();
+
+    public List<MetaLVA> getOldMetaLvasWithMergeConflicts();
 
     public boolean update(Module toUpdate) throws ServiceException;
 

@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.service.RoomFinderService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.entityViews.*;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 @UI
 public class BackgroundPanel extends JPanel {
@@ -29,6 +29,7 @@ public class BackgroundPanel extends JPanel {
     private StandardInsidePanel studPanel;
     private StandardInsidePanel propsPanel;
     private StandardInsidePanel lehrPanel;
+    private ViewMerge viewMerge;
     private ViewDate viewDate;
     private ViewDeadline viewDeadline;
     private ViewLvaDate viewLVAdate;
@@ -45,9 +46,10 @@ public class BackgroundPanel extends JPanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,ViewModule viewModule) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,ViewModule viewModule,ViewMerge viewMerge) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
+        this.viewMerge = viewMerge;
         this.viewMetaLva=viewMetaLva;
         this.viewModule = viewModule;
         this.viewLva=viewLva;
@@ -72,6 +74,15 @@ public class BackgroundPanel extends JPanel {
         viewDate.setDateEntity(dateEntity);
         viewDate.setVisible(true);
         this.add(viewDate);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void viewMerge(List<MetaLVA> oldMetaLVAs, List<MetaLVA> newMetaLVAs) {
+        removeAddedPanels();
+        viewMerge.setIntersectingMetaLVAs(oldMetaLVAs, newMetaLVAs);
+        viewMerge.setVisible(true);
+        this.add(viewMerge);
         this.revalidate();
         this.repaint();
     }

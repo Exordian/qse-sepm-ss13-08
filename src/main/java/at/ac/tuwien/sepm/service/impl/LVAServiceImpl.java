@@ -135,7 +135,7 @@ public class LVAServiceImpl implements LVAService {
         }
         try {
             this.validateID(toUpdate.getId());
-            this.validateLVA(toUpdate);
+            //this.validateLVA(toUpdate);
             boolean updated = lvaDao.update(toUpdate);
             return updated;
         } catch(ServiceException e) {

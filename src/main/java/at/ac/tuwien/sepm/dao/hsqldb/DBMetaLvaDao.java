@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ import java.util.List;
  */
 @Repository
 public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
-    private static final int MAX_LENGTH_NUMBER=10;
+    private static final int MAX_LENGTH_NUMBER=30;
     private static final int MAX_LENGTH_NAME=200;
 
     @Autowired

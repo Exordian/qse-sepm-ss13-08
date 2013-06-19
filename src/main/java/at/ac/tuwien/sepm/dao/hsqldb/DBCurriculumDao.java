@@ -17,7 +17,7 @@ import java.util.List;
 public class DBCurriculumDao extends DBBaseDao implements CurriculumDao {
     private static final int MAX_LENGTH_NAME=200;
     private static final int MAX_LENGTH_DESCRIPTION=500;
-    private static final int MAX_LENGTH_NUMBER=10;
+    private static final int MAX_LENGTH_NUMBER=30;
     private static final int MAX_LENGTH_TITLE=30;
 
     @Autowired

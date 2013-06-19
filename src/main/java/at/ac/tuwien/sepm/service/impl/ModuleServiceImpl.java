@@ -71,6 +71,15 @@ public class ModuleServiceImpl implements ModuleService {
     public List<MetaLVA> getNewMetaLvasWithMergeConflicts() {
         return metaLVAService.getNewMetaLvasWithMergeConflicts();
     }
+    @Override
+    public List<Module> getOldModulesWithMergeConflicts() {
+        return merger.getOldModules();
+    }
+
+    @Override
+    public List<MetaLVA> getOldMetaLvasWithMergeConflicts() {
+        return metaLVAService.getOldMetaLvasWithMergeConflicts();
+    }
 
     @Override
     public boolean create(Module toCreate) throws ServiceException, ValidationException {

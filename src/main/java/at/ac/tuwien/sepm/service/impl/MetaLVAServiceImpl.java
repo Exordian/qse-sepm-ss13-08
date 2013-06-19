@@ -50,6 +50,11 @@ public class MetaLVAServiceImpl implements MetaLVAService {
         return merger.getNewMetaLVAs();
     }
 
+    @Override
+    public List<MetaLVA> getOldMetaLvasWithMergeConflicts() {
+        return merger.getOldMetaLVAs();
+    }
+
     public boolean stopMergeSession() {
         if(mergingNecessary()) {
             String logString = "meta lva merger stopped - conflicts at storing following " + merger.getNewMetaLVAs().size() + " meta lva(s): \n";

@@ -77,16 +77,16 @@ public class ModulePanel extends StandardInsidePanel {
         metaTitle.setBounds((int)whiteSpace.getWidth()/2-(int)paneMeta.getWidth()/2-75, 5, 150,30);
         this.add(metaTitle);
 
-        JLabel lvatitle = new JLabel("MetaLVAs");
+        JLabel lvatitle = new JLabel("enthaltene LVAs");
         lvatitle.setFont(standardSmallerTitleFont);
         lvatitle.setBounds((int)whiteSpace.getWidth()/2+(int)paneMeta.getWidth()/2-90, 5, 180,30);
         this.add(lvatitle);
     }
 
     private void addButtons() {
-        addModule = new JButton("Erstellen");
+        addModule = new JButton("Modul erstellen");
         addModule.setFont(standardButtonFont);
-        addModule.setBounds((int) paneModule.getX(), (int) paneModule.getY() + (int) paneModule.getHeight() + 8, 150, 30);
+        addModule.setBounds((int) paneModule.getX(), (int) paneModule.getY() + (int) paneModule.getHeight() + 8, 200, 30);
         addModule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

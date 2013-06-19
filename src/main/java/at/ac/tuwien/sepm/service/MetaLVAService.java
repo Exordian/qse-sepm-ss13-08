@@ -21,6 +21,8 @@ public interface MetaLVAService {
 
     public List<MetaLVA> getNewMetaLvasWithMergeConflicts();
 
+    public List<MetaLVA> getOldMetaLvasWithMergeConflicts();
+
     /**
     * Insert persistent a new MetaLVA. If there are problems, f. e. the
     * associated module does not exist, there will be thrown a ServiceException.
