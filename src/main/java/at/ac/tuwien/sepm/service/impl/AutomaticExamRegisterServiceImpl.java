@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.dao.PendingRegistrationDao;
 import at.ac.tuwien.sepm.entity.TissExam;
+import at.ac.tuwien.sepm.entity.TissExamState;
 import at.ac.tuwien.sepm.service.AutomaticExamRegisterService;
 import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.ServiceException;
@@ -118,14 +119,16 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
             Elements groups = examListDoc.select("div .groupWrapper");
 
             for(Element group : groups) {
-                if(group.select("input[value=Abmelden]").size() > 0)
-                    continue;
                 TissExam tissExam = new TissExam();
                 tissExam.setLvanr(lvanr);
                 tissExam.setName(group.select(".groupHeaderWrapper span").first().text().trim());
                 tissExam.setMode(group.getElementsByAttributeValueContaining("id", "examMode").first().text());
                 tissExam.setStartRegistration(DateTime.parse(group.getElementsByAttributeValueContaining("id", "appBegin").first().text(), tissDateFormat));
                 tissExam.setEndRegistration(DateTime.parse(group.getElementsByAttributeValueContaining("id", "appEnd").first().text(), tissDateFormat));
+                if(group.select("input[value=Abmelden]").size() > 0)
+                    tissExam.setTissExamState(TissExamState.REGISTERED);
+                else
+                    tissExam.setTissExamState(TissExamState.NOT_REGISTERED);
                 tissExamList.add(tissExam);
             }
         } catch(IllegalArgumentException e) {
