@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import net.miginfocom.swing.MigLayout;
 import org.joda.time.DateTime;
@@ -129,19 +130,13 @@ public class DateLabel extends JLabel{
 
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
-        // private JMenuItem attendance;
         private JMenuItem showRoom;
-        private JMenuItem share;
 
         public PopUpMenu(){
             edit = new JMenuItem("Bearbeiten");
-            // attendance = new JMenuItem("Anwesenheit");
             showRoom = new JMenuItem("Wegbeschreibung");
-            share = new JMenuItem("Share");
             add(edit);
-            // add(attendance);
             add(showRoom);
-            add(share);
             addActionListeners();
         }
 
@@ -156,27 +151,15 @@ public class DateLabel extends JLabel{
                     }
                 }
             });
-           /* attendance.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    // TOod implement this
-                }
-            });*/
             showRoom.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if(date instanceof LvaDate) {
                         if(!PanelTube.backgroundPanel.openRoomBrowser(((LvaDate) date).getRoom()))
-                            JOptionPane.showMessageDialog(PopUpMenu.this, "Keine Wegbeschreibung gefunden.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                            PanelTube.backgroundPanel.viewInfoText("Keine Wegbeschreibung gefunden.", SmallInfoPanel.Info);
                     } else {
-                        JOptionPane.showMessageDialog(PopUpMenu.this, "Es existieren keine Wegbeschreibungen zu privaten Terminen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        PanelTube.backgroundPanel.viewInfoText("Es existieren keine Wegbeschreibungen zu privaten Terminen.", SmallInfoPanel.Warning);
                     }
-                }
-            });
-            share.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    // TODO implement this
                 }
             });
 

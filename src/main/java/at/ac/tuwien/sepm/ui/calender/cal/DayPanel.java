@@ -2,8 +2,11 @@ package at.ac.tuwien.sepm.ui.calender.cal;
 
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.service.DateService;
+import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
+import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
@@ -30,14 +33,16 @@ public class DayPanel extends JPanel {
     private TooMuchDatesLabel tmdl;
     private boolean isActual = false;
     private boolean showTime=false;
+    private LVAService lvaService;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     private DateService dateService;
 
-    public DayPanel(int maxDateLabels, DateService dateService, boolean showTime) {
+    public DayPanel(int maxDateLabels, DateService dateService, LVAService lvaService, boolean showTime) {
         super(new MigLayout("", "1[]1[]1[]1", "1[]"));
         this.dateService=dateService;
+        this.lvaService=lvaService;
         this.showTime = showTime;
         dates = new ArrayList<DateLabel>();
         this.add(title, "wrap");
@@ -218,7 +223,17 @@ public class DayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    PanelTube.backgroundPanel.viewLvaDate(null,date);
+                    try {
+                        if (!lvaService.readAll().isEmpty()) {
+                            PanelTube.backgroundPanel.viewLvaDate(null,date);
+                        } else {
+                            PanelTube.backgroundPanel.viewInfoText("Es existieren noch keine Lehrveranstaltungen.", SmallInfoPanel.Error);
+                        }
+                    } catch (ServiceException e1) {
+                        log.error(e1.getMessage());
+                    } catch (ValidationException e1) {
+                        log.error(e1.getMessage());
+                    }
                 }
 
                 @Override
