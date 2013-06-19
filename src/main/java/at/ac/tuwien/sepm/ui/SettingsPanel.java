@@ -70,6 +70,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 propertyService.setProperty("user.firstYear", Integer.toString(year.getYear()));
                 propertyService.setProperty("user.firstSemester", (String)semester.getSelectedItem());
                 propertyService.setProperty("user.majorName", (String)major.getSelectedItem());
+                propertyService.setProperty("user.defaultECTS", ects.getText());
                 setVisible(false);
                 PanelTube.backgroundPanel.showLastComponent();
             }
@@ -160,7 +161,6 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         });
         this.add(tiss);
 
-
         facebookLogin = new JLabel("Facebook Login Daten");
         facebookLogin.setFont(standardTextFont);
         facebookLogin.setBounds(tissLogin.getX(), tiss.getHeight() + tiss.getY() + 20, textWidth, textHeight);
@@ -210,7 +210,12 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         defaultEcts.setBounds(tissLogin.getX(), facebook.getHeight() + facebook.getY() + verticalSpaceVast, textWidth, textHeight);
         this.add(defaultEcts);
 
-        ects = new JTextField("30");
+        ects = new JTextField();
+        if (propertyService.getProperty("user.defaultECTS") != null && !propertyService.getProperty("user.defaultECTS").isEmpty()) {
+            ects.setText(propertyService.getProperty("user.defaultECTS"));
+        } else {
+            ects.setText("30");
+        }
         ects.setFont(standardButtonFont);
         ects.setBounds(defaultEcts.getX() + defaultEcts.getWidth() - 10, defaultEcts.getY(), 25, textHeight);
         this.add(ects);
@@ -250,16 +255,17 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 Object[] options = {"Ja", "Abbrechen"};
                 if (JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
-                    propertyService.setProperty("user.firstYear", "");
-                    propertyService.setProperty("user.firstSemester", "");
-                    propertyService.setProperty("user.majorName", "");
-                    propertyService.setProperty("facebook.user", "");
-                    propertyService.setProperty("facebook.password", "");
-                    propertyService.setProperty("tiss.user", "");
-                    propertyService.setProperty("tiss.password", "");
+                    propertyService.removeProperty("user.firstYear");
+                    propertyService.removeProperty("user.firstSemester");
+                    propertyService.removeProperty("user.majorName");
+                    propertyService.removeProperty("facebook.user");
+                    propertyService.removeProperty("facebook.password");
+                    propertyService.removeProperty("tiss.user");
+                    propertyService.removeProperty("tiss.password");
+                    propertyService.removeProperty("user.defaultECTS");
 
-
-                    //todo alle anderen daten löschen?
+                    //todo alle datenbank daten löschen
+                    System.exit(0);
                 }
             }
         });
