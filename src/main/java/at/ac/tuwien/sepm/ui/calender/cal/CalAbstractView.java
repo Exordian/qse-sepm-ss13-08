@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.ui.calender;
+package at.ac.tuwien.sepm.ui.calender.cal;
 
 import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.entity.DateEntity;
@@ -7,13 +7,10 @@ import at.ac.tuwien.sepm.service.CalService;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.service.impl.CalServiceImpl;
-import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 //import net.miginfocom.swing.MigLayout;
 import at.ac.tuwien.sepm.ui.UI;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;

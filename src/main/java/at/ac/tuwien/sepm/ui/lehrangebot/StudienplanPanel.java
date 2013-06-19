@@ -6,6 +6,8 @@ import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,8 @@ public class StudienplanPanel extends StandardInsidePanel {
     private JScrollPane spane;
     private JComboBox<CurriculumComboBoxItem> ccurr;
     private DefaultComboBoxModel<CurriculumComboBoxItem> mcurr;
+
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
     public StudienplanPanel(CreateCurriculumService service) {
@@ -105,8 +109,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                         }
                     }
                 } catch (ServiceException e1) {
-                    e1.printStackTrace();
-                    // JOptionPane.showMessageDialog(new JFrame(), e1.getMessage());
+                    log.error("Error: " + e1.getMessage());
                     return;
                 }
                 fillTable();
@@ -136,7 +139,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         try {
             l = service.readAllCurriculum();
         } catch (ServiceException e) {
-            // JOptionPane.showMessageDialog(new JFrame(), e.getMessage());
+            log.error("Error: " + e.getMessage());
             return;
         }
 
@@ -202,7 +205,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         try {
             list = service.readAllModules();
         } catch (ServiceException e) {
-            //JOptionPane.showMessageDialog(new JFrame(), e.getMessage());
+            log.error("Error: " + e.getMessage());
             return;
         }
 
@@ -213,7 +216,7 @@ public class StudienplanPanel extends StandardInsidePanel {
             try {
                 mMap = service.readModuleByCurriculum(cid);
             } catch (ServiceException e) {
-                //JOptionPane.showMessageDialog(new JFrame(), e.getMessage());
+                log.error("Error: " + e.getMessage());
                 return;
             }
 
@@ -408,7 +411,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                     try {
                         service.createCurriculum(curriculum);
                     } catch (ServiceException e1) {
-                        JOptionPane.showMessageDialog(new JFrame(), e1.getMessage());
+                        log.error("Error: " + e1.getMessage());
                     }
 
                     fillCurriculumComboBox();

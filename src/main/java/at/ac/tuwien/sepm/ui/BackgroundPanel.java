@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ui;
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.RoomFinderService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.ui.calender.ImportPanel;
 import at.ac.tuwien.sepm.ui.entityViews.*;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 
@@ -38,6 +39,7 @@ public class BackgroundPanel extends JPanel {
     private ViewModule viewModule;
     private Image image;
     private Component lastComponent;
+    private ImportPanel importPanel;
 
     @Autowired
     RoomFinderService roomFinderService;
@@ -45,9 +47,10 @@ public class BackgroundPanel extends JPanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,ViewModule viewModule) {
+    public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate, ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,ViewModule viewModule, ImportPanel importPanel) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
+        this.importPanel=importPanel;
         this.viewMetaLva=viewMetaLva;
         this.viewModule = viewModule;
         this.viewLva=viewLva;
@@ -132,6 +135,14 @@ public class BackgroundPanel extends JPanel {
         this.repaint();
     }
 
+    public void viewImport() {
+        removeAddedPanels();
+        importPanel.setVisible(true);
+        this.add(importPanel);
+        this.revalidate();
+        this.repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -152,6 +163,7 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewModule);
         this.remove(viewDeadline);
         this.remove(lehrPanel);
+        this.remove(importPanel);
     }
 
     private void addPanel(Component c) {

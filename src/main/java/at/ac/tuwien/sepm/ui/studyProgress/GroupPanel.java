@@ -60,12 +60,12 @@ public class GroupPanel extends StandardInsidePanel {
     private void addTitles() {
         JLabel examList = new JLabel("Prüfungen");
         examList.setFont(standardSmallerTitleFont);
-        examList.setBounds((int) whiteSpace.getWidth() / 2 - (int) paneExams.getWidth() / 2 - 75, 5, 150, 30);
+        examList.setBounds((int) whiteSpace.getWidth() / 2 - (int) paneExams.getWidth() / 2 - 75, 5, 150, 35);
         this.add(examList);
 
         JLabel pendingRegistrations = new JLabel("Anmeldungen");
         pendingRegistrations.setFont(standardSmallerTitleFont);
-        pendingRegistrations.setBounds((int) whiteSpace.getWidth() / 2 + (int) panePending.getWidth() / 2 - 90, 5, 180, 30);
+        pendingRegistrations.setBounds((int) whiteSpace.getWidth() / 2 + (int) panePending.getWidth() / 2 - 90, 5, 180, 35);
         this.add(pendingRegistrations);
     }
 
