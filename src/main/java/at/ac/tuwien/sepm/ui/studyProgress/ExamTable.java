@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.ui.UI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @UI
@@ -56,8 +57,9 @@ public class ExamTable extends JTable {
     }
 
     public void setExams(List<TissExam> exams){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yy HH:mm");
         for(TissExam e: exams){
-            model.addRow(new String[]{e.getLvanr(), e.getName(), e.getMode(), e.getStartRegistration().toString(),e.getEndRegistration().toString()});
+            model.addRow(new String[]{e.getLvanr(), e.getName(), e.getMode(), simpleDateFormat.format(e.getStartRegistration()),simpleDateFormat.format(e.getEndRegistration())});
         }
         this.exams=exams;
     }

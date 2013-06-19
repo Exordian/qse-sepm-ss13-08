@@ -58,4 +58,10 @@ public class PropertyServiceImpl implements PropertyService {
     public String getProperty(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
+
+    @Override
+    public void removeProperty(String key) {
+        properties.remove(key);
+        save();
+    }
 }

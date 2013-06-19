@@ -40,4 +40,9 @@ public class PropertyServiceImplTest {
         propertyService.load();
         Assert.isTrue(propertyService.getProperty("saved").equals("true"));
     }
+
+    @Test
+    public void testRemoveProperty() {
+        propertyService.removeProperty("saved");
+    }
 }
