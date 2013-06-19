@@ -168,6 +168,8 @@ public class ModuleServiceImpl implements ModuleService {
                 // System.out.println(m.group(1));
             }
             return reqModules;
+        } catch (NullPointerException e) {
+            throw new ServiceException("wrong pdf", e);
         } catch (IOException e) {
             throw new ServiceException("could not read pdf", e);
         }
@@ -194,6 +196,8 @@ public class ModuleServiceImpl implements ModuleService {
                 // System.out.println(m.group(1));
             }
             return optModules;
+        } catch (NullPointerException e) {
+            throw new ServiceException("wrong pdf", e);
         } catch (IOException e) {
             throw new ServiceException("could not read pdf", e);
         }

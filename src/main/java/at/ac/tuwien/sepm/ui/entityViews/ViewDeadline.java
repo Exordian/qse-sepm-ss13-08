@@ -82,7 +82,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
             done.setSelected(deadline.getWasAttendant());
             calTime.setDate(deadline.getStart().toDate());
             time.setValue(deadline.getStart().toDate());
-            for(int i = 0; i < lva.getModel().getSize(); i++)                                    //todo
+            for(int i = 0; i < lva.getModel().getSize(); i++)
                 if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == deadline.getLva()) {
                     lva.setSelectedIndex(i);
                     break;

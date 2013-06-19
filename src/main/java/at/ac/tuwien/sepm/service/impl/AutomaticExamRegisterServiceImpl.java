@@ -108,12 +108,12 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
         List<TissExam> tissExamList = new ArrayList<>();
 
         try {
-            Document doc = Jsoup.connect(BASE_URL+String.format(EDU_DETAIL_URL, getCurrentSemester(), lvanr)).cookies(zidAuthService.getTISSCookies()).get();
+            Document doc = Jsoup.connect(BASE_URL+String.format(EDU_DETAIL_URL, getCurrentSemester(), lvanr)).timeout(timeout).cookies(zidAuthService.getTISSCookies()).get();
             if(doc.select("#examDateLink").size() == 0)
                 throw new ServiceException("no exams for this lva");
             String examListLink = doc.select("#examDateLink a").attr("href");
 
-            Document examListDoc = Jsoup.connect(BASE_URL+examListLink).cookies(zidAuthService.getTISSCookies()).get();
+            Document examListDoc = Jsoup.connect(BASE_URL+examListLink).cookies(zidAuthService.getTISSCookies()).timeout(timeout).get();
 
             Elements groups = examListDoc.select("div .groupWrapper");
 

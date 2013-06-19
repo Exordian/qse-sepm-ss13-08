@@ -57,9 +57,9 @@ public class ExamTable extends JTable {
     }
 
     public void setExams(List<TissExam> exams){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yy HH:mm");
+        //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yy HH:mm");
         for(TissExam e: exams){
-            model.addRow(new String[]{e.getLvanr(), e.getName(), e.getMode(), simpleDateFormat.format(e.getStartRegistration()),simpleDateFormat.format(e.getEndRegistration())});
+            model.addRow(new String[]{e.getLvanr(), e.getName(), e.getMode(), e.getStartRegistration().toString(),e.getEndRegistration().toString()});
         }
         this.exams=exams;
     }

@@ -67,7 +67,7 @@ public class TodoPanel extends StandardInsidePanel {
                 int rowindex = TodoPanel.this.todoTable.getSelectedRow();
                 if (rowindex < 0)
                     return;
-                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
+                if ((e.isPopupTrigger() || e.getButton() == 3) && e.getComponent() instanceof JTable ) {
                     JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -98,7 +98,7 @@ public class TodoPanel extends StandardInsidePanel {
                 int rowindex = TodoPanel.this.deadlineTable.getSelectedRow();
                 if (rowindex < 0)
                     return;
-                if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
+                if ((e.isPopupTrigger() || e.getButton()==3) && e.getComponent() instanceof JTable) {
                     JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -111,12 +111,7 @@ public class TodoPanel extends StandardInsidePanel {
 
         public PopUpMenu(){
             edit = new JMenuItem("Bearbeiten");
-            edit.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
+            edit.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if(showTodo) {
@@ -125,10 +120,6 @@ public class TodoPanel extends StandardInsidePanel {
                         PanelTube.backgroundPanel.viewDeadline(deadlineTable.getSelectedDeadline());
                     }
                 }
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
             });
             add(edit);
         }
