@@ -5,7 +5,9 @@ import at.ac.tuwien.sepm.entity.TissExam;
 import at.ac.tuwien.sepm.entity.TissExamState;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import at.ac.tuwien.sepm.ui.UI;
@@ -87,7 +89,7 @@ public class RegisterExamPanel extends StandardInsidePanel {
                 try {
                     automaticExamRegisterService.addRegistration(examPanel.getSelectedExam());
                 } catch (ServiceException e1) {
-                    JOptionPane.showMessageDialog(RegisterExamPanel.this, "Anmeldung fehlgeschlagen", "Prüfungsanmeldung", JOptionPane.ERROR_MESSAGE);
+                    PanelTube.backgroundPanel.viewInfoText("Anmeldung fehlgeschlagen", SmallInfoPanel.Error);
                 }
             }
         });

@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.metaLva.LvaDisplayPanel;
@@ -108,7 +109,7 @@ public class LvaPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (metaLVAService.readAll() == null) {
-                        JOptionPane.showMessageDialog(LvaPanel.this, "Es muss eine MetaLva vorhanden sein, um eine semesterspezifische Lva erzeugen zu können.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        PanelTube.backgroundPanel.viewInfoText("Es muss eine MetaLva existieren.", SmallInfoPanel.Error);
                     } else {
                         PanelTube.backgroundPanel.viewLva(null);
                     }
