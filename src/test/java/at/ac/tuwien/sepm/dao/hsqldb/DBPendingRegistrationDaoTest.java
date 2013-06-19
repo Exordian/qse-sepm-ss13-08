@@ -22,21 +22,23 @@ public class DBPendingRegistrationDaoTest {
     @Autowired
     PendingRegistrationDao pendingRegistrationDao;
 
+    private TissExam tissExam;
+
     @Before
     public void setUp() throws Exception {
         TestHelper.drop();
         TestHelper.create();
-    }
 
-    @Test
-    public void testCreateValid() throws Exception {
-        TissExam tissExam = new TissExam();
+        tissExam = new TissExam();
         tissExam.setLvanr("123.123");
         tissExam.setName("wat");
         tissExam.setMode("Schriftlich");
         tissExam.setStartRegistration(new DateTime(10));
         tissExam.setEndRegistration(new DateTime(20));
+    }
 
+    @Test
+    public void testCreateValid() throws Exception {
         pendingRegistrationDao.create(tissExam);
     }
 
@@ -48,6 +50,7 @@ public class DBPendingRegistrationDaoTest {
 
     @Test
     public void testReadAllTissExams() throws Exception {
+        pendingRegistrationDao.create(tissExam);
         List<TissExam> tissExamList = pendingRegistrationDao.readAllTissExams();
         assertFalse(tissExamList.isEmpty());
         assertTrue(tissExamList.size() == 1);
@@ -56,6 +59,7 @@ public class DBPendingRegistrationDaoTest {
 
     @Test
     public void testDelete() throws Exception {
+        pendingRegistrationDao.create(tissExam);
         assertTrue(pendingRegistrationDao.delete(0));
         assertFalse(pendingRegistrationDao.delete(0));
     }
