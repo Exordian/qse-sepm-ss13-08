@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.ui.template.PanelTube;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -60,16 +61,23 @@ public class ViewDate extends StandardSimpleInsidePanel {
         this.revalidate();
     }
 
-    public void setDateEntity(DateEntity dateEntity) {
+    public void setDateEntity(DateEntity dateEntity, DateTime dateTime) {
         if (dateEntity == null) {
             this.dateEntity=new DateEntity();
             changeTitle("Neuer Termin");
             description.setText("Bitte Beschreibung einfügen");
             intersectable.setSelected(true);
-            from.setDate(new Date());
-            to.setDate(new Date());
-            fromTime.setValue(new Date());
-            toTime.setValue(new Date());
+            if (dateTime != null) {
+                from.setDate(dateTime.toDate());
+                to.setDate(dateTime.toDate());
+                fromTime.setValue(dateTime.toDate());
+                toTime.setValue(dateTime.toDate());
+            } else {
+                from.setDate(new Date());
+                to.setDate(new Date());
+                fromTime.setValue(new Date());
+                toTime.setValue(new Date());
+            }
             setDeleteButton(false);
         } else {
             this.dateEntity=dateEntity;

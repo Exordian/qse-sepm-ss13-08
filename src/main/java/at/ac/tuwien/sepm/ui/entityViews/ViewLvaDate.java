@@ -77,7 +77,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         addButtons();
     }
 
-    public void setLVADateEntity(LvaDate lvaDate) {
+    public void setLVADateEntity(LvaDate lvaDate, DateTime dateTime) {
         if (lvaDate == null) {
             this.lvaDate = new LvaDate();
             changeTitle("Neuer Lva Termin");
@@ -85,10 +85,17 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             type.setSelectedItem(false);
             attendanceRequired.setSelected(true);
             //attended.setSelected(false);
-            from.setDate(new Date());
-            to.setDate(new Date());
-            fromTime.setValue(new Date());
-            toTime.setValue(new Date());
+            if (dateTime != null) {
+                from.setDate(dateTime.toDate());
+                to.setDate(dateTime.toDate());
+                fromTime.setValue(dateTime.toDate());
+                toTime.setValue(dateTime.toDate());
+            } else {
+                from.setDate(new Date());
+                to.setDate(new Date());
+                fromTime.setValue(new Date());
+                toTime.setValue(new Date());
+            }
             setDeleteButton(false);
         } else {
             this.lvaDate=lvaDate;

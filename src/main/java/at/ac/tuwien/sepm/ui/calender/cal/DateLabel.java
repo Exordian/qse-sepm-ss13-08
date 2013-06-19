@@ -150,9 +150,9 @@ public class DateLabel extends JLabel{
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if(date instanceof LvaDate) {
-                        PanelTube.backgroundPanel.viewLvaDate((LvaDate)date);
+                        PanelTube.backgroundPanel.viewLvaDate((LvaDate)date, null);
                     } else if(date instanceof DateEntity) {
-                        PanelTube.backgroundPanel.viewDate((DateEntity)date);
+                        PanelTube.backgroundPanel.viewDate((DateEntity)date, null);
                     }
                 }
             });

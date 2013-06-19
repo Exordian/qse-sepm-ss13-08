@@ -200,7 +200,7 @@ public class DayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    PanelTube.backgroundPanel.viewDate(null);
+                    PanelTube.backgroundPanel.viewDate(null, date);
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {}
@@ -218,7 +218,7 @@ public class DayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    PanelTube.backgroundPanel.viewLvaDate(null);
+                    PanelTube.backgroundPanel.viewLvaDate(null,date);
                 }
 
                 @Override

@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.ui.template.PanelTube;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
@@ -73,18 +74,18 @@ public class BackgroundPanel extends JPanel {
     }
 
     //wenn neue entity erzeugt werden soll ->  viewDate(null)
-    public void viewDate(DateEntity dateEntity) {
+    public void viewDate(DateEntity dateEntity, DateTime dateTime) {
         removeAddedPanels();
-        viewDate.setDateEntity(dateEntity);
+        viewDate.setDateEntity(dateEntity, dateTime);
         viewDate.setVisible(true);
         this.add(viewDate);
         this.revalidate();
         this.repaint();
     }
 
-    public void viewLvaDate(LvaDate lvaDate) {
+    public void viewLvaDate(LvaDate lvaDate, DateTime dateTime) {
         removeAddedPanels();
-        viewLVAdate.setLVADateEntity(lvaDate);
+        viewLVAdate.setLVADateEntity(lvaDate, dateTime);
         viewLVAdate.setVisible(true);
         this.add(viewLVAdate);
         this.revalidate();
