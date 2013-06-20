@@ -5,9 +5,11 @@ import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -143,6 +145,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                         metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                     }
                 }else{
+                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich.", SmallInfoPanel.Info);
                     //todo finished merging, inform user and quit
                 }
             }
@@ -191,7 +194,8 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 if( metaLVAPanel.getTable().getRowCount()>0){
                     metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                 }else{
-                    //todo finished merging, inform user and quit 
+                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich.", SmallInfoPanel.Info);
+                    //todo finished merging, inform user and quit
                 }
             }
         });
@@ -219,6 +223,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 if( metaLVAPanel.getTable().getRowCount()>0){
                     metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                 }else{
+                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich.", SmallInfoPanel.Info);
                     //todo finished merging, inform user and quit 
                 }
             }
@@ -394,7 +399,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                     toReturn.setECTS(currentOld.getECTS());
                 }
             }catch(NumberFormatException e){
-                //todo tell user about wrong formated float
+                PanelTube.backgroundPanel.viewInfoText("Die Zahl ist so nicht gueltig..", SmallInfoPanel.Warning);
                 e.printStackTrace();
                 throw new EscapeException();
             }

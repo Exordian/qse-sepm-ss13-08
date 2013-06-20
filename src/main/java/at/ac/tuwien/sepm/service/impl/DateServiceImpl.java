@@ -165,7 +165,7 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public int getCurrentYear() {
+    public int getCurrentYearOfSemester() {
         int temp = new DateTime(System.currentTimeMillis()).getYear();
         if (DateTime.now().getMonthOfYear() < 2) {
               temp--;

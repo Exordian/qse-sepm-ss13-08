@@ -130,7 +130,7 @@ public class RegisterExamPanel extends StandardInsidePanel {
         protected Void doInBackground() throws Exception {
             try {
                 List<TissExam> tissExamList = new ArrayList<>();
-                for(MetaLVA metaLVA : metaLVAService.readUncompletedByYearSemesterStudyProgress(dateService.getCurrentYear(),dateService.getCurrentSemester(),true)) {
+                for(MetaLVA metaLVA : metaLVAService.readUncompletedByYearSemesterStudyProgress(dateService.getCurrentYearOfSemester(),dateService.getCurrentSemester(),true)) {
                     try {
                         List<TissExam> lvaExamList = automaticExamRegisterService.listExamsForLva(metaLVA.getNr());
                         for(TissExam exam : lvaExamList)

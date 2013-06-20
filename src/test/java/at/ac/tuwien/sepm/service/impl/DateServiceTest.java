@@ -120,7 +120,7 @@ public class DateServiceTest {
     }
     @Test
     public void checkIfYearIsGreaterZero() throws Exception{
-        assertTrue(dateService.getCurrentYear() > 0);
+        assertTrue(dateService.getCurrentYearOfSemester() > 0);
     }
     @Test
     public void checkIfSemesterIsSOrW() throws Exception{
