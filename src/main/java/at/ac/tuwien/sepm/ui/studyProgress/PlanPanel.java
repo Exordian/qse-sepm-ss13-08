@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.DateService;
+import at.ac.tuwien.sepm.service.EscapeException;
 import at.ac.tuwien.sepm.service.IntelligentSemesterPlaner;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.impl.IntelligentSemesterPlanerImpl;
@@ -154,7 +155,7 @@ public class PlanPanel extends StandardInsidePanel {
                         //logger.debug("adding to studyProgress: "+temp);
                         try {
                             lvaDAO.update(temp);
-                            PanelTube.backgroundPanel.viewInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Info);//todo erfolg
+                            PanelTube.backgroundPanel.viewInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Success);
                             refreshMetaLVAs(new ArrayList<MetaLVA>(0));
                         } catch (IOException e1) {
                             logger.error(e1);
@@ -205,72 +206,80 @@ public class PlanPanel extends StandardInsidePanel {
                         @Override
                         public void run(){
                             planningInProgress(true);
-
-                            float goalECTS = Float.parseFloat(desiredECTSText.getText());
-                            //boolean vointersect =  intersectVOCheck.isSelected();
-                            plannedYear = Integer.parseInt(yearText.getText());
-                            plannedSemester = Semester.S;
-                            if (semesterDrop.getSelectedIndex() == 0) {
-                                plannedSemester = Semester.W;
-                            }
-                            List<MetaLVA> forced;
-                            List<MetaLVA> pool= metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,false);
-                            if (considerStudyProgressCheck.isSelected()){
-                                forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
-                            }else{
-                                forced = new ArrayList<>();
-                                pool.addAll(metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
-                            }
-                            MetaLVA customMetaLVA = new MetaLVA();
-
-                            if(intersectCustomCheck.isSelected()){
-                                customMetaLVA.setLVA(dateDAO.readNotToIntersectByYearSemester(plannedYear,plannedSemester));
-                                logger.debug(customMetaLVA.getLVA(plannedYear,plannedSemester));
-                                customMetaLVA.setName("custom dates");
-                                customMetaLVA.setNr("-1");
-                                forced.add(customMetaLVA);
-                            }
-                            List<Integer> typesToIntersect = new ArrayList<Integer>();
-                            if(intersectVOCheck.isSelected()){
-                                typesToIntersect.add(LVAUtil.LECTURE_TIMES);
-                            }
-                            if(intersectUECheck.isSelected()){
-                                typesToIntersect.add(LVAUtil.EXERCISES_TIMES);
-                            }
-                            if(intersectExamCheck.isSelected()){
-                                typesToIntersect.add(LVAUtil.EXAM_TIMES);
-                            }
-                            planer.setLVAs(forced, pool);
-                            planer.setTypesToIntersect(typesToIntersect);
-                            float tolerance = 0;
                             try{
-                                tolerance=Float.parseFloat(toleranceText.getText().replace("%","").trim())/100;
-
-                            int timeBetween = 0;
-                            try{
-                                if(timeBetweenDropdown.getSelectedIndex()==1){
-                                    timeBetween = -Integer.parseInt(timeBetweenIntersectText.getText().replace("min","").trim())/60;
-                                }else if(timeBetweenDropdown.getSelectedIndex()==2){
-                                    timeBetween = Integer.parseInt(timeBetweenBufferText.getText().replace("min","").trim())/60;
+                                float goalECTS = Float.parseFloat(desiredECTSText.getText());
+                                //boolean vointersect =  intersectVOCheck.isSelected();
+                                plannedYear = Integer.parseInt(yearText.getText());
+                                plannedSemester = Semester.S;
+                                if (semesterDrop.getSelectedIndex() == 0) {
+                                    plannedSemester = Semester.W;
                                 }
-                            }catch(NumberFormatException e){
-                                //todo display error
-                            }
-                            planer.setIntersectingTolerance(tolerance);
-                            ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
-                            if(intersectCustomCheck.isSelected()){
-                                solution.remove(customMetaLVA);
-                            }
+                                List<MetaLVA> forced;
+                                List<MetaLVA> pool= metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,false);
+                                if (considerStudyProgressCheck.isSelected()){
+                                    forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
+                                }else{
+                                    forced = new ArrayList<>();
+                                    pool.addAll(metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
+                                }
+                                if(pool.isEmpty()){
+                                    throw new EscapeException("Es wurden keine LVAs im gewünschten Semester gefunden");
+                                }
+                                MetaLVA customMetaLVA = new MetaLVA();
+
+                                if(intersectCustomCheck.isSelected()){
+                                    customMetaLVA.setLVA(dateDAO.readNotToIntersectByYearSemester(plannedYear,plannedSemester));
+                                    logger.debug(customMetaLVA.getLVA(plannedYear,plannedSemester));
+                                    customMetaLVA.setName("custom dates");
+                                    customMetaLVA.setNr("-1");
+                                    forced.add(customMetaLVA);
+                                }
+                                List<Integer> typesToIntersect = new ArrayList<Integer>();
+                                if(intersectVOCheck.isSelected()){
+                                    typesToIntersect.add(LVAUtil.LECTURE_TIMES);
+                                }
+                                if(intersectUECheck.isSelected()){
+                                    typesToIntersect.add(LVAUtil.EXERCISES_TIMES);
+                                }
+                                if(intersectExamCheck.isSelected()){
+                                    typesToIntersect.add(LVAUtil.EXAM_TIMES);
+                                }
+                                planer.setLVAs(forced, pool);
+                                planer.setTypesToIntersect(typesToIntersect);
+                                float tolerance = 0;
+                                try{
+                                    tolerance=Float.parseFloat(toleranceText.getText().replace("%","").trim())/100;
+                                }catch(NumberFormatException e){
+                                    throw new EscapeException("Bitte geben sie für Toleranz einen gültigen Wert an!");
+                                }
+                                    int timeBetween = 0;
+                                try{
+                                    if(timeBetweenDropdown.getSelectedIndex()==1){
+                                        timeBetween = -Integer.parseInt(timeBetweenIntersectText.getText().replace("min","").trim())/60;
+                                    }else if(timeBetweenDropdown.getSelectedIndex()==2){
+                                        timeBetween = Integer.parseInt(timeBetweenBufferText.getText().replace("min","").trim())/60;
+                                    }
+                                }catch(NumberFormatException e){
+                                    throw new EscapeException("Bitte geben sie für \"Zeit zwischen LVAs\" einen gültigen Wert an!");
+
+                                }
+                                planer.setIntersectingTolerance(tolerance);
+                                ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
+                                if(intersectCustomCheck.isSelected()){
+                                    solution.remove(customMetaLVA);
+                                }
 
 
-                            logger.debug("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
+                                logger.debug("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
 
 
-                            refreshMetaLVAs(solution);
-                            planningInProgress(false);
-                            }catch(NumberFormatException e){
-                                PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+                                refreshMetaLVAs(solution);
+                                planningInProgress(false);
 
+                            }catch(EscapeException e){
+                                PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
+
+                                planningInProgress(false);
                             }
                         }
                     }.start();
@@ -415,20 +424,20 @@ public class PlanPanel extends StandardInsidePanel {
 
         intersectVOCheck = new JCheckBox();
         intersectVOCheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
-        intersectVOCheck.setBackground(new Color(0,0,0,0));
-        intersectVOCheck.setBounds(intersectVOCheckLabel.getX()+intersectVOCheckLabel.getWidth()+5, intersectVOCheckLabel.getY()+5, 20, 20);
+        intersectVOCheck.setBackground(new Color(0, 0, 0, 0));
+        intersectVOCheck.setBounds(intersectVOCheckLabel.getX() + intersectVOCheckLabel.getWidth() + 5, intersectVOCheckLabel.getY() + 5, 20, 20);
         this.add(intersectVOCheck);
         intersectVOCheck.setSelected(true);
 
         intersectUECheckLabel = new JLabel("Überprüfe Übungstermine auf Überschneidungen:");
         intersectUECheckLabel.setFont(standardTextFont);
-        intersectUECheckLabel.setBounds(intersectVOCheckLabel.getX(), intersectVOCheckLabel.getY()+intersectVOCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
+        intersectUECheckLabel.setBounds(intersectVOCheckLabel.getX(), intersectVOCheckLabel.getY() + intersectVOCheckLabel.getHeight() + verticalSpace, textWidth, textHeight);
         this.add(intersectUECheckLabel);
 
         intersectUECheck = new JCheckBox();
         intersectUECheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
-        intersectUECheck.setBackground(new Color(0,0,0,0));
-        intersectUECheck.setBounds(intersectUECheckLabel.getX()+intersectUECheckLabel.getWidth()+5, intersectUECheckLabel.getY()+5, 20, 20);
+        intersectUECheck.setBackground(new Color(0, 0, 0, 0));
+        intersectUECheck.setBounds(intersectUECheckLabel.getX() + intersectUECheckLabel.getWidth() + 5, intersectUECheckLabel.getY() + 5, 20, 20);
         this.add(intersectUECheck);
         intersectUECheck.setSelected(true);
 
@@ -439,19 +448,19 @@ public class PlanPanel extends StandardInsidePanel {
 
         intersectExamCheck = new JCheckBox();
         intersectExamCheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
-        intersectExamCheck.setBackground(new Color(0,0,0,0));
+        intersectExamCheck.setBackground(new Color(0, 0, 0, 0));
         intersectExamCheck.setBounds(intersectExamCheckLabel.getX()+intersectExamCheckLabel.getWidth()+5, intersectExamCheckLabel.getY()+5, 20, 20);
         this.add(intersectExamCheck);
         intersectExamCheck.setSelected(true);
 
         intersectCustomCheckLabel = new JLabel("Überprüfe private Termine auf Überschneidungen:");
         intersectCustomCheckLabel.setFont(standardTextFont);
-        intersectCustomCheckLabel.setBounds(intersectExamCheckLabel.getX(), intersectExamCheckLabel.getY()+intersectExamCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
+        intersectCustomCheckLabel.setBounds(intersectExamCheckLabel.getX(), intersectExamCheckLabel.getY() + intersectExamCheckLabel.getHeight() + verticalSpace, textWidth, textHeight);
         this.add(intersectCustomCheckLabel);
 
         intersectCustomCheck = new JCheckBox();
         intersectCustomCheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
-        intersectCustomCheck.setBackground(new Color(0,0,0,0));
+        intersectCustomCheck.setBackground(new Color(0, 0, 0, 0));
         intersectCustomCheck.setBounds(intersectCustomCheckLabel.getX()+intersectCustomCheckLabel.getWidth()+5, intersectCustomCheckLabel.getY()+5, 20, 20);
         this.add(intersectCustomCheck);
 
