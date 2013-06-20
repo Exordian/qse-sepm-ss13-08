@@ -31,8 +31,8 @@ public abstract class CalAbstractView extends StandardInsidePanel {
 
     // layout config ------------------------------------------------------------------------------------------------ //
 
-    protected Color COLOR_OF_ACTUAL_MONTH = new Color(255, 255, 255);           // color of day panles which represent a date in the actual month
-    protected Color COLOR_OF_NOT_ACTUAL_MONTH = new Color(220, 220, 220);       // color of day panles which represent a date in an not actual month
+    protected Color COLOR_OF_CURRENT_MONTH = new Color(255, 255, 255);           // color of day panles which represent a date in the actual month
+    protected Color COLOR_OF_NOT_CURRENT_MONTH = new Color(220, 220, 220);       // color of day panles which represent a date in an not actual month
     protected Color dayNameLabelForegroundColor = new Color(0, 0, 0);           // font color of the weekday name jlabels
     protected Color dayNameLabelBackgroundColor = new Color(255, 255, 255);     // background color of the weekday name jlabels
     //protected Color backgroundColor = UIManager.getColor("Panel.background");   // the color of the lines between the day panels

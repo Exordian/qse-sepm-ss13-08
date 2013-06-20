@@ -206,6 +206,7 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewLva);
         this.remove(viewMetaLva);
         this.remove(viewModule);
+        this.remove(viewMerge);
         this.remove(viewDeadline);
         this.remove(lehrPanel);
         this.remove(importPanel);
