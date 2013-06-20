@@ -16,7 +16,7 @@ import java.awt.event.*;
 /**
  * @author Markus MUTH
  */
-public class DateLabel extends JLabel{
+public class DateLabel extends JLabel implements Comparable<DateLabel>{
     private static final int MAX_TEXT_LENGTH=20;
     private Date date;
     private boolean showTime = false;
@@ -101,6 +101,11 @@ public class DateLabel extends JLabel{
 
     public Date getDate() {
         return date;
+    }
+
+    @Override
+    public int compareTo(DateLabel o) {
+        return date.getTime().from().compareTo(o.getTime().from());
     }
 
     class PrivateMouseListener extends MouseAdapter {

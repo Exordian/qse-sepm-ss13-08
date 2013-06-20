@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 import javax.swing.*;
 import java.awt.*;
 //import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -127,6 +128,7 @@ public abstract class CalAbstractView extends StandardInsidePanel {
             for (Date d : l2) {
                 r.addLast(new DateLabel(d, showTime));
             }
+            Collections.sort(r);
             day.setDateLabels(r);
             day.refreshDates();
         }
