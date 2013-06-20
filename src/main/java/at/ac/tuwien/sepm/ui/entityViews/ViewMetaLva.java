@@ -268,7 +268,5 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         public String toString() {
             return item.getName();
         }
-
-
     }
 }

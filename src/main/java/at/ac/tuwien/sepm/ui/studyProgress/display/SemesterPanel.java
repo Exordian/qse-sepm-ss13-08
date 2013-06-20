@@ -49,9 +49,7 @@ public class SemesterPanel extends StandardInsidePanel {
     }
 
     public void setLvas(List<LVA> lvas) {
-        this.lvas = lvas;
-        remove(pane);
-        initLvaTable();
+        pane.refresh(lvas);
     }
 
     public void setSemesterTitle(String title) {

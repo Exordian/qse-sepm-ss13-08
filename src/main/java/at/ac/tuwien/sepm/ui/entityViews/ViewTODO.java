@@ -76,13 +76,11 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             changeTitle(todo.getName());
             description.setText(todo.getDescription());
             done.setSelected(todo.getDone());
-            try {
-                lva.setSelectedItem(lvaService.readById(todo.getLva().getId()));   //todo
-            } catch (ServiceException e) {
-                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
-            } catch (ValidationException e) {
-                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
-            }
+            for(int i = 0; i < lva.getModel().getSize(); i++)        //todo
+                if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == todo.getLva().getId()) {
+                    lva.setSelectedIndex(i);
+                    break;
+                }
             setDeleteButton(true);
         }
         refresh();
