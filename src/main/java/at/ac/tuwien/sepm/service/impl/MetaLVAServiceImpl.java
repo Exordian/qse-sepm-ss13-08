@@ -78,36 +78,41 @@ public class MetaLVAServiceImpl implements MetaLVAService {
         try {
             this.validateMetaLVA(toCreate);
             boolean metaLvaCreated = metaLvaDao.create(toCreate);
-            toCreate.getLVAs().get(0).setId(toCreate.getId());
-            boolean lvaCreated = lvaDao.create(toCreate.getLVAs().get(0));
-            int lvaId = toCreate.getLVAs().get(0).getId();
 
-            boolean datesCreated = true;
-            if(toCreate.getLVAs().get(0).getLectures() != null) {
-                for(LvaDate d : toCreate.getLVAs().get(0).getLectures()) {
-                    d.setLva(lvaId);
-                    datesCreated = datesCreated && lvaDateDao.create(d);
-                }
-            }
-            if(toCreate.getLVAs().get(0).getExercises() != null) {
-                for(LvaDate d : toCreate.getLVAs().get(0).getExercises()) {
-                    d.setLva(lvaId);
-                    datesCreated = datesCreated && lvaDateDao.create(d);
-                }
-            }
-            if(toCreate.getLVAs().get(0).getExams() != null) {
-                for(LvaDate d : toCreate.getLVAs().get(0).getExams()) {
-                    d.setLva(lvaId);
-                    datesCreated = datesCreated && lvaDateDao.create(d);
-                }
-            }
-            if(toCreate.getLVAs().get(0).getDeadlines() != null) {
-                for(LvaDate d : toCreate.getLVAs().get(0).getDeadlines()) {
-                    d.setLva(lvaId);
-                    datesCreated = datesCreated && lvaDateDao.create(d);
-                }
-            }
+            boolean lvaCreated=false;
+            if(toCreate.getLVAs()!=null && toCreate.getLVAs().size()>0){
+                toCreate.getLVAs().get(0).setId(toCreate.getId());
 
+                lvaCreated = lvaDao.create(toCreate.getLVAs().get(0));
+                int lvaId = toCreate.getLVAs().get(0).getId();
+
+
+                boolean datesCreated = true;
+                if(toCreate.getLVAs().get(0).getLectures() != null) {
+                    for(LvaDate d : toCreate.getLVAs().get(0).getLectures()) {
+                        d.setLva(lvaId);
+                        datesCreated = datesCreated && lvaDateDao.create(d);
+                    }
+                }
+                if(toCreate.getLVAs().get(0).getExercises() != null) {
+                    for(LvaDate d : toCreate.getLVAs().get(0).getExercises()) {
+                        d.setLva(lvaId);
+                        datesCreated = datesCreated && lvaDateDao.create(d);
+                    }
+                }
+                if(toCreate.getLVAs().get(0).getExams() != null) {
+                    for(LvaDate d : toCreate.getLVAs().get(0).getExams()) {
+                        d.setLva(lvaId);
+                        datesCreated = datesCreated && lvaDateDao.create(d);
+                    }
+                }
+                if(toCreate.getLVAs().get(0).getDeadlines() != null) {
+                    for(LvaDate d : toCreate.getLVAs().get(0).getDeadlines()) {
+                        d.setLva(lvaId);
+                        datesCreated = datesCreated && lvaDateDao.create(d);
+                    }
+                }
+            }
             return metaLvaCreated && lvaCreated;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());

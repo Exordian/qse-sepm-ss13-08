@@ -248,7 +248,8 @@ public class ViewMerge extends StandardSimpleInsidePanel {
 
         mergePanel = new MetaLVAMergePanel(intersectLabel.getWidth(),(takeOld.getY()+takeOld.getHeight())-intersectLabel.getY());
         this.add(mergePanel);
-        mergePanel.setBounds(intersectLabel.getX(),oldDataLabel.getY()+oldDataLabel.getHeight(),intersectLabel.getWidth(),(metaLVAPanel.getY()+metaLVAPanel.getHeight())-mergePanel.getY());
+        int tempYPos=oldDataLabel.getY()+oldDataLabel.getHeight();
+        mergePanel.setBounds(intersectLabel.getX(),tempYPos,intersectLabel.getWidth(),(metaLVAPanel.getY()+metaLVAPanel.getHeight())-tempYPos);
 
 
     }

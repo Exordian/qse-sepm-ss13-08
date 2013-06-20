@@ -9,6 +9,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -39,6 +41,12 @@ public class ModuleDisplayPanel extends JPanel {
         //this.metaLVAPanel = metaPanel;
         filteredModules = modules;
         table = new ModuleTable(modules,width);
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                refreshMetaLVAs();
+            }
+        });
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -54,7 +62,6 @@ public class ModuleDisplayPanel extends JPanel {
                     JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
-                refreshMetaLVAs();
             }
         });
         int searchHeight = 20;

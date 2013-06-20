@@ -33,6 +33,7 @@ public class DateLabel extends JLabel implements Comparable<DateLabel>{
         }
         this.setFont(new Font("Arial", Font.PLAIN, 10));
         this.addMouseListener(new PrivateMouseListener());
+
     }
 
     public void changeColor (boolean isActualMonth) {

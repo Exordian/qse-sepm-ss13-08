@@ -16,11 +16,11 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,12 +68,12 @@ public class LvaPanel extends StandardInsidePanel {
     }
 
     private void addTitles() {
-        JLabel metaTitle = new JLabel("Lvas");
+        JLabel metaTitle = new JLabel("LVAs");
         metaTitle.setFont(standardSmallerTitleFont);
         metaTitle.setBounds((int)whiteSpace.getWidth()/2-(int)paneMeta.getWidth()/2-75, 5, 150,30);
         this.add(metaTitle);
 
-        JLabel lvatitle = new JLabel("Lvas pro Jahr");
+        JLabel lvatitle = new JLabel("einzelne Semester");
         lvatitle.setFont(standardSmallerTitleFont);
         lvatitle.setBounds((int)whiteSpace.getWidth()/2+(int)paneLva.getWidth()/2-90, 5, 180,30);
         this.add(lvatitle);
@@ -146,15 +146,27 @@ public class LvaPanel extends StandardInsidePanel {
 
 
     @Override
-    @Scheduled(fixedDelay = 20000)
-    public void refresh() {
-        try {
-            metaPane.refresh(metaLVAService.readAll());
-            //lvaPane.refresh(new ArrayList<LVA>(0));
-        } catch (ServiceException e) {
-            log.error("Exception: " + e.getMessage());
-        } catch (ValidationException e) {
-            log.error("Exception: " + e.getMessage());
-        }
+    //@Scheduled(fixedDelay = 20000)
+    public synchronized void refresh() {
+        //threading, so the user doesn't have to wait for the window to pop up
+        new Thread(){
+            @Override
+            public void run(){
+                try {
+                    log.info("Thread for loading LVAs started");
+                    metaLVAs = metaLVAService.readAll();
+                    log.info("loaded LVAs");
+                    //lvaPane.refresh(new ArrayList<LVA>(0));
+                } catch (ServiceException e) {
+                    log.info("Exception caught while loading LVAs");
+                    log.error("Exception: " + e.getMessage());
+                } catch (ValidationException e) {
+                    log.info("Exception caught while loading LVAs");
+                    log.error("Exception: " + e.getMessage());
+                }
+                metaPane.refresh(metaLVAs);
+            }
+        }.start();
+
     }
 }

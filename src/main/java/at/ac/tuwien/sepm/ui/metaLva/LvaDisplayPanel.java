@@ -42,6 +42,7 @@ public class LvaDisplayPanel extends JPanel {
         this.allLVAs = lvas;
         filteredLVAs = lvas;
         table = new LvaTable(lvas,width);
+
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {

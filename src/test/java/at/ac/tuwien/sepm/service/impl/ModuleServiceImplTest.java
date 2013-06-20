@@ -173,7 +173,7 @@ public class ModuleServiceImplTest {
 
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = ServiceException.class)
     public void testRequiredModulesNull() throws Exception {
         List<Module> requiredModules = moduleService.getRequiredModules(null);
     }
@@ -191,7 +191,7 @@ public class ModuleServiceImplTest {
         Assert.isTrue(optionalModules.get(0).getName().equals("Deklaratives Problemlösen"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = ServiceException.class)
     public void testOptionalModulesNull() throws Exception {
         List<Module> optionalModules = moduleService.getOptionalModules(null);
     }

@@ -74,13 +74,15 @@ public class ModulePanel extends StandardInsidePanel {
     private void addTitles() {
         JLabel metaTitle = new JLabel("Module");
         metaTitle.setFont(standardSmallerTitleFont);
+        int center = modulePane.getX()+modulePane.getWidth()/2;
         metaTitle.setBounds((int)whiteSpace.getWidth()/2-(int)paneMeta.getWidth()/2-75, 5, 150,30);
         this.add(metaTitle);
 
-        JLabel lvatitle = new JLabel("enthaltene LVAs");
-        lvatitle.setFont(standardSmallerTitleFont);
-        lvatitle.setBounds((int)whiteSpace.getWidth()/2+(int)paneMeta.getWidth()/2-90, 5, 180,30);
-        this.add(lvatitle);
+        JLabel lvaTitle = new JLabel("enthaltene LVAs");
+        lvaTitle.setFont(standardSmallerTitleFont);
+        center = metaPane.getX()+metaPane.getWidth()/2;
+        lvaTitle.setBounds(center - lvaTitle.getPreferredSize().width/2, 5, lvaTitle.getPreferredSize().width,30);
+        this.add(lvaTitle);
     }
 
     private void addButtons() {
@@ -97,36 +99,37 @@ public class ModulePanel extends StandardInsidePanel {
     }
 
     private void addContent() {
-        try {
-            metaLVAs = new ArrayList<MetaLVA>();
-            //metaLVAs = metaLVAService.readAll();
-            modules = moduleService.readAll();
+        metaLVAs = new ArrayList<MetaLVA>();
+        metaPane = new MetaLVADisplayPanel(new ArrayList<MetaLVA>(0), (int)paneMeta.getWidth(), (int)paneMeta.getHeight());
+        modulePane = new ModuleDisplayPanel(new ArrayList<Module>(0), (int) paneModule.getWidth(), (int) paneModule.getHeight());
+        modulePane.setMetaLVAPanel(metaPane);
+        modulePane.setBounds(paneModule);
+        metaPane.setBounds(paneMeta);
+
+        this.add(modulePane);
+        this.add(metaPane);
 
 
-            metaPane = new MetaLVADisplayPanel(new ArrayList<MetaLVA>(0), (int)paneMeta.getWidth(), (int)paneMeta.getHeight());
-            metaPane.setBounds(paneMeta);
 
-            modulePane = new ModuleDisplayPanel(modules, (int) paneModule.getWidth(), (int) paneModule.getHeight());
-            modulePane.setMetaLVAPanel(metaPane);
-            modulePane.setBounds(paneModule);
-
-            this.add(modulePane);
-            this.add(metaPane);
-
-
-        } catch (ServiceException e) {
-            log.error("Exception: "+ e.getMessage());
-        }
     }
 
 
     @Override
     public void refresh() {
-        try {
-            modulePane.refresh(moduleService.readAll());
-            //lvaPane.refresh(lvaService.readAll());
-        } catch (ServiceException e) {
-            log.error("Exception: " + e.getMessage());
-        }
+        new Thread(){
+            @Override
+            public void run(){
+                try {
+                    log.info("Thread for loading LVAs started");
+                    modules = moduleService.readAll();
+                    log.info("loaded LVAs");
+                    //lvaPane.refresh(new ArrayList<LVA>(0));
+                } catch (ServiceException e) {
+                    log.info("Exception caught while loading LVAs");
+                    log.error("Exception: " + e.getMessage());
+                }
+                modulePane.refresh(modules);
+            }
+        }.start();
     }
 }

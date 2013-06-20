@@ -135,17 +135,17 @@ public class LVAServiceImpl implements LVAService {
         }
         try {
             this.validateID(toUpdate.getId());
-            //this.validateLVA(toUpdate);
+            this.validateLVA(toUpdate);
             boolean updated = lvaDao.update(toUpdate);
             return updated;
         } catch(ServiceException e) {
-            logger.error("Exception: "+ e.getMessage());
+            logger.error("Exception: "+ e.getMessage()+"\nLVA which threw Exception: "+toUpdate);
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
-            logger.error("Exception: "+ e.getMessage());
+            logger.error("Exception: "+ e.getMessage()+"\nLVA which threw Exception: "+toUpdate);
             throw new ServiceException("Exception: "+ e.getMessage());
         } catch(IOException e) {
-            logger.error("Exception: "+ e.getMessage());
+            logger.error("Exception: "+ e.getMessage()+"\nLVA which threw Exception: "+toUpdate);
             throw new ServiceException("Exception: "+ e.getMessage());
         }
     }

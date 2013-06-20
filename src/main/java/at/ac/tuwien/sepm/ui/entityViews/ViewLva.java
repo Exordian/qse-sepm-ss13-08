@@ -2,10 +2,7 @@ package at.ac.tuwien.sepm.ui.entityViews;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.service.LVAService;
-import at.ac.tuwien.sepm.service.MetaLVAService;
-import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
@@ -16,6 +13,7 @@ import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import com.toedter.calendar.JYearChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -24,6 +22,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,17 +36,18 @@ import java.awt.event.ItemListener;
 public class ViewLva extends StandardSimpleInsidePanel {
     private JButton save;
 
-    private JComboBox metaLVA;
+    private JComboBox metaLVAInput;
     private JYearChooser year;
-    private JComboBox semester;
-    private JCheckBox inStudyProgress;
+    private JComboBox semesterInput;
+    private JCheckBox inStudyProgressInput;
     private JTextArea goals;
     private JTextArea content;
     private JTextArea additionalInfo1;
     private JTextArea additionalInfo2;
     private JTextField institute;
-    private JTextField language;
+    private JTextField languageInput;
     private JSpinner grade;
+    private WideComboBox gradeInput;
 
     private LVA lva;
     private LVAService lvaService;
@@ -61,6 +62,8 @@ public class ViewLva extends StandardSimpleInsidePanel {
     private JLabel languageLabel;
     private JLabel gradeLabel;
 
+    private List<MetaLVA> allMetaLVAs;
+    private HashMap<Integer,Integer> keyIndexMetaLVAJCombo;
     @Autowired
     public ViewLva(LVAService lvaService, MetaLVAService metaLVAService) {
         this.lvaService=lvaService;
@@ -77,34 +80,46 @@ public class ViewLva extends StandardSimpleInsidePanel {
     }
 
     public void setLva(LVA lva) {
+        metaLVAInput.removeAllItems();
+        try {
+            allMetaLVAs =metaLVAService.readAll();
+            for (MetaLVA t : allMetaLVAs) {
+                metaLVAInput.addItem(new MetaLvaSelectItem(t));
+            }
+        } catch (ServiceException e) {
+            log.error("Exception: "+ e.getMessage());
+        } catch (ValidationException e) {
+            log.error("Exception: " + e.getMessage());
+        }
         if (lva == null) {
             this.lva=new LVA();
             changeTitle("Neue Lva");
-            inStudyProgress.setSelected(false);
+            inStudyProgressInput.setSelected(false);
             additionalInfo1.setText("Bitte Infos einfügen");
             additionalInfo2.setText("Bitte Infos einfügen");
             content.setText("Bitte Inhalt einfügen");
-            semester.setSelectedIndex(1);
-            year.setYear(2013);
+            gradeInput.setSelectedIndex(0);
+            semesterInput.setSelectedIndex(1);
+            year.setYear(new DateTime(System.currentTimeMillis()).getYear());
             goals.setText("Bitte Ziele einfügen");
         } else {
+            log.info("test");
             this.lva=lva;
             changeTitle(lva.getMetaLVA().getName());
-            inStudyProgress.setSelected(lva.isInStudyProgress());
+            inStudyProgressInput.setSelected(lva.isInStudyProgress());
             additionalInfo1.setText(lva.getAdditionalInfo1());
             additionalInfo2.setText(lva.getAdditionalInfo2());
             content.setText(lva.getContent());
-            language.setText(lva.getLanguage());
-            semester.setSelectedItem(lva.getSemester());
-            for(int i = 0; i < metaLVA.getModel().getSize(); i++)
-                if (((MetaLvaSelectItem) metaLVA.getItemAt(i)).get().getId() == lva.getMetaLVA().getId()) {
-                    metaLVA.setSelectedIndex(i);
+            languageInput.setText(lva.getLanguage());
+            semesterInput.setSelectedItem(lva.getSemester());
+            for(int i = 0; i < metaLVAInput.getModel().getSize(); i++){
+                if (((MetaLvaSelectItem) metaLVAInput.getItemAt(i)).get().getId() == lva.getMetaLVA().getId()) {
+                    metaLVAInput.setSelectedIndex(i);
                     break;
                 }
-            year.setYear(lva.getYear());
-            if (lva.getGrade() != 0) {
-                grade.setValue(lva.getGrade());
             }
+            year.setYear(lva.getYear());
+            gradeInput.setSelectedItem(lva.getGradeEnum());
             goals.setText(lva.getGoals());
             institute.setText(lva.getInstitute());
         }
@@ -118,18 +133,18 @@ public class ViewLva extends StandardSimpleInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    lva.setMetaLVA(((MetaLvaSelectItem) metaLVA.getSelectedItem()).get());
-                    lva.setInStudyProgress(inStudyProgress.isSelected());
+                    lva.setMetaLVA(((MetaLvaSelectItem) metaLVAInput.getSelectedItem()).get());
+                    lva.setInStudyProgress(inStudyProgressInput.isSelected());
                     lva.setAdditionalInfo1(additionalInfo1.getText());
                     lva.setAdditionalInfo2(additionalInfo2.getText());
                     lva.setContent(content.getText());
-                    lva.setLanguage(language.getText());
+                    lva.setLanguage(languageInput.getText());
                     lva.setDescription("");
-                    lva.setSemester(Semester.values()[semester.getSelectedIndex()]);
+                    lva.setSemester(Semester.values()[semesterInput.getSelectedIndex()]);
                     lva.setYear(year.getYear());
                     lva.setGoals(goals.getText());
                     lva.setInstitute(institute.getText());
-                    lva.setGrade((int)grade.getValue());
+                    lva.setGrade((Grade) gradeInput.getSelectedItem());
                     if (lva.getId() != 0) {
                         if (lvaService.readById(lva.getId()) != null)
                             lvaService.update(lva);
@@ -153,100 +168,110 @@ public class ViewLva extends StandardSimpleInsidePanel {
 
 
     private void addContent() {
-        int verticalSpace = 10;
-
+        int bigSpace = 20;
+        int smallSpace = 10;
+        int labelLeftX = (int)simpleWhiteSpace.getX() + bigSpace;
+        int labelLeftWidth = 110;
+        int inputLeftX =  labelLeftX+labelLeftWidth+smallSpace;
+        int inputLeftWidth=150;
+        int inputRightX = inputLeftX+inputLeftWidth+bigSpace;//(int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3;
+        int inputRightWidth=(int)(simpleWhiteSpace.getX()+simpleWhiteSpace.getWidth())-(inputRightX+bigSpace);
+        int textHeight = 25;
+        
         goals = new JTextArea();
         goals.setLineWrap(true);
         goals.setWrapStyleWord(true);
         goals.setFont(standardTextFont);
-        goals.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        goals.setBounds(inputRightX, (int)simpleWhiteSpace.getY()+bigSpace,inputRightWidth,(int)simpleWhiteSpace.getHeight()/4-25);
         goals.setCaretPosition(0);
         JScrollPane scroll = new JScrollPane(goals);
-        scroll.setBounds((int)simpleWhiteSpace.getX()+(int)simpleWhiteSpace.getWidth()*1/3, (int)simpleWhiteSpace.getY()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        scroll.setBounds(inputRightX, (int)simpleWhiteSpace.getY()+bigSpace,inputRightWidth,(int)simpleWhiteSpace.getHeight()/4-25);
         this.add(scroll);
 
         content = new JTextArea();
         content.setLineWrap(true);
         content.setWrapStyleWord(true);
         content.setFont(standardTextFont);
-        content.setBounds(goals.getX(), goals.getY()+goals.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        content.setBounds(inputRightX, goals.getY()+goals.getHeight()+bigSpace,inputRightWidth,(int)simpleWhiteSpace.getHeight()/4-25);
         content.setCaretPosition(0);
         scroll = new JScrollPane(content);
-        scroll.setBounds(goals.getX(), goals.getY()+goals.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        scroll.setBounds(inputRightX, goals.getY()+goals.getHeight()+bigSpace,inputRightWidth,(int)simpleWhiteSpace.getHeight()/4-25);
         this.add(scroll);
 
         additionalInfo1 = new JTextArea();
         additionalInfo1.setLineWrap(true);
         additionalInfo1.setWrapStyleWord(true);
         additionalInfo1.setFont(standardTextFont);
-        additionalInfo1.setBounds(goals.getX(), content.getY()+content.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        additionalInfo1.setBounds(inputRightX, content.getY()+content.getHeight()+bigSpace,inputRightWidth,(int)simpleWhiteSpace.getHeight()/4-25);
         additionalInfo1.setCaretPosition(0);
         scroll = new JScrollPane(additionalInfo1);
-        scroll.setBounds(goals.getX(), content.getY()+content.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        scroll.setBounds(inputRightX, content.getY()+content.getHeight()+bigSpace,inputRightWidth,(int)simpleWhiteSpace.getHeight()/4-25);
         this.add(scroll);
 
         additionalInfo2 = new JTextArea();
         additionalInfo2.setLineWrap(true);
         additionalInfo2.setWrapStyleWord(true);
         additionalInfo2.setFont(standardTextFont);
-        additionalInfo2.setBounds(goals.getX(), additionalInfo1.getY()+additionalInfo1.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        additionalInfo2.setBounds(inputRightX, additionalInfo1.getY()+additionalInfo1.getHeight()+bigSpace,inputRightWidth,(int)simpleWhiteSpace.getHeight()/4-25);
         additionalInfo2.setCaretPosition(0);
         scroll = new JScrollPane(additionalInfo2);
-        scroll.setBounds(goals.getX(), additionalInfo1.getY()+additionalInfo1.getHeight()+20,(int)simpleWhiteSpace.getWidth()*2/3 - 20,(int)simpleWhiteSpace.getHeight()/4-25);
+        scroll.setBounds(inputRightX, additionalInfo1.getY()+additionalInfo1.getHeight()+bigSpace,inputRightWidth,(int)simpleWhiteSpace.getHeight()/4-25);
         this.add(scroll);
 
         yearLabel = new JLabel("Jahr:");
         yearLabel.setFont(standardTextFont);
-        yearLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10,130,25);
+        yearLabel.setBounds(labelLeftX,(int)simpleWhiteSpace.getY() + bigSpace,labelLeftWidth,textHeight);
         this.add(yearLabel);
 
         year = new JYearChooser();
         year.setYear(2013);
         year.setFont(standardTextFont);
-        year.setBounds(yearLabel.getX() + yearLabel.getWidth() + 20, yearLabel.getY(), 65,25);
+        year.setBounds(inputLeftX, yearLabel.getY(), inputLeftWidth,textHeight);
         this.add(year);
 
         semesterLabel = new JLabel("Semester:");
         semesterLabel.setFont(standardTextFont);
-        semesterLabel.setBounds(yearLabel.getX(), yearLabel.getY() + yearLabel.getHeight() + verticalSpace, 130,25);
+        semesterLabel.setBounds(labelLeftX, yearLabel.getY() + yearLabel.getHeight() + smallSpace, labelLeftWidth,textHeight);
         this.add(semesterLabel);
 
-        semester = new WideComboBox();
+        semesterInput = new WideComboBox();
         for (Semester t : Semester.values()) {
-            semester.addItem(t);
+            semesterInput.addItem(t);
         }
-        semester.setFont(standardTextFont);
-        semester.setBounds(semesterLabel.getX() + semesterLabel.getWidth() + 20, semesterLabel.getY(), 100,25);
-        this.add(semester);
+        semesterInput.setFont(standardTextFont);
+        semesterInput.setBounds(inputLeftX, semesterLabel.getY(), inputLeftWidth,textHeight);
+        this.add(semesterInput);
 
         instituteLabel = new JLabel("Institut:");
         instituteLabel.setFont(standardTextFont);
-        instituteLabel.setBounds(semesterLabel.getX(), semesterLabel.getY() + semesterLabel.getHeight() + verticalSpace, 130,25);
+        instituteLabel.setBounds(labelLeftX, semesterLabel.getY() + semesterLabel.getHeight() + smallSpace, labelLeftWidth,textHeight);
         this.add(instituteLabel);
 
         institute = new JTextField();
         institute.setFont(standardTextFont);
-        institute.setBounds(instituteLabel.getX() + instituteLabel.getWidth() + 20, instituteLabel.getY(), 100,25);
+        institute.setBounds(inputLeftX, instituteLabel.getY(), inputLeftWidth,textHeight);
         this.add(institute);
 
         metaLVALabel = new JLabel("MetaLVA:");
         metaLVALabel.setFont(standardTextFont);
-        metaLVALabel.setBounds(instituteLabel.getX(), instituteLabel.getY() + instituteLabel.getHeight() + verticalSpace, 130,25);
+        metaLVALabel.setBounds(labelLeftX, instituteLabel.getY() + instituteLabel.getHeight() + smallSpace, labelLeftWidth,textHeight);
         this.add(metaLVALabel);
 
-        metaLVA = new WideComboBox();
+        metaLVAInput = new WideComboBox();
+
         try {
-            for (MetaLVA t : metaLVAService.readAll()) {
-                metaLVA.addItem(new MetaLvaSelectItem(t));
+            allMetaLVAs =metaLVAService.readAll();
+            for (MetaLVA t : allMetaLVAs) {
+                metaLVAInput.addItem(new MetaLvaSelectItem(t));
             }
         } catch (ServiceException e) {
             log.error("Exception: "+ e.getMessage());
         } catch (ValidationException e) {
             log.error("Exception: " + e.getMessage());
         }
-        metaLVA.setFont(standardTextFont);
-        metaLVA.setBounds(metaLVALabel.getX() + metaLVALabel.getWidth() + 20, metaLVALabel.getY(), 100, 25);
-        metaLVA.addItemListener(new ItemListener() {
+        metaLVAInput.setFont(standardTextFont);
+        metaLVAInput.setBounds(inputLeftX, metaLVALabel.getY(), inputLeftWidth,textHeight);
+        metaLVAInput.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
                 if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
@@ -254,39 +279,42 @@ public class ViewLva extends StandardSimpleInsidePanel {
                 }
             }
         });
-        this.add(metaLVA);
+        this.add(metaLVAInput);
 
         inStudyProgressLabel = new JLabel("Im Studienprogress:");
         inStudyProgressLabel.setFont(standardTextFont);
-        inStudyProgressLabel.setBounds(metaLVALabel.getX(), metaLVALabel.getY() + metaLVALabel.getHeight() + verticalSpace, 170,25);
+        inStudyProgressLabel.setBounds(labelLeftX, metaLVALabel.getY() + metaLVALabel.getHeight() + smallSpace, inStudyProgressLabel.getPreferredSize().width,textHeight);
         this.add(inStudyProgressLabel);
 
-        inStudyProgress = new JCheckBox();
-        inStudyProgress.setBackground(new Color(0,0,0,0));
-        inStudyProgress.setBounds(inStudyProgressLabel.getX() + inStudyProgressLabel.getWidth() + 20 -30, inStudyProgressLabel.getY(), 20, 20);
-        this.add(inStudyProgress);
+        inStudyProgressInput = new JCheckBox();
+        inStudyProgressInput.setBackground(new Color(0, 0, 0, 0));
+        inStudyProgressInput.setBounds(inStudyProgressLabel.getX()+ inStudyProgressLabel.getWidth()+smallSpace, inStudyProgressLabel.getY(), inStudyProgressInput.getPreferredSize().width,textHeight);
+        this.add(inStudyProgressInput);
 
         languageLabel = new JLabel("Sprache:");
         languageLabel.setFont(standardTextFont);
-        languageLabel.setBounds(inStudyProgressLabel.getX(), inStudyProgressLabel.getY() + inStudyProgressLabel.getHeight() + verticalSpace, 130,25);
+        languageLabel.setBounds(labelLeftX, inStudyProgressLabel.getY() + inStudyProgressLabel.getHeight() + smallSpace, labelLeftWidth,textHeight);
         this.add(languageLabel);
 
-        language = new JTextField();
-        language.setFont(standardTextFont);
-        language.setBounds(languageLabel.getX() + languageLabel.getWidth() + 20, languageLabel.getY(), 100,25);
-        this.add(language);
-
+        languageInput = new JTextField();
+        languageInput.setFont(standardTextFont);
+        languageInput.setBounds(inputLeftX, languageLabel.getY(), inputLeftWidth,textHeight);
+        this.add(languageInput);
 
         gradeLabel = new JLabel("Note:");
         gradeLabel.setFont(standardTextFont);
-        gradeLabel.setBounds(languageLabel.getX(), languageLabel.getY() + languageLabel.getHeight() + verticalSpace*2, 130,25);
+        gradeLabel.setBounds(labelLeftX, languageLabel.getY() + languageLabel.getHeight() + smallSpace*2, labelLeftWidth,textHeight);
         this.add(gradeLabel);
 
-        grade = new JSpinner();
+        /*grade = new JSpinner();
         grade.setModel(new SpinnerNumberModel(5,1,5,1));
         grade.setFont(standardTextFont);
-        grade.setBounds(gradeLabel.getX() + gradeLabel.getWidth() + 20, gradeLabel.getY(), 50,25);
-        this.add(grade);
+        grade.setBounds(gradeLabel.getX() + gradeLabel.getWidth() + 20, gradeLabel.getY(), 50,textHeight);
+        this.add(grade);*/
+        gradeInput = Grade.getComboBox();
+        gradeInput.setFont(standardTextFont);
+        gradeInput.setBounds(inputLeftX, gradeLabel.getY(), inputLeftWidth,textHeight);
+        this.add(gradeInput);
     }
 
     private static class MetaLvaSelectItem extends SelectItem<MetaLVA> {
