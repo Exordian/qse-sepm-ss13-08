@@ -128,7 +128,7 @@ public class DBTodoDao extends DBBaseDao implements TodoDao {
         List<Todo> result = jdbcTemplate.query(query, RowMappers.getTodoRowMapper());
         for(int i=0; i<result.size(); i++) {
             result.set(i, readById(result.get(i).getId()));
-            //if(result.get(i).getLva() != null)    //todo privater termin = null aber es kommt immer lva = lva mit id 0 anstatt null
+            //if(result.get(i).getLva() != null)    //todo bei privatem termin ist lva = null, aber hier wird eine lva rausgezogen
                 result.get(i).getLva().setMetaLVA(metaLvaDao.readById(result.get(i).getLva().getMetaLVA().getId()));
             //else
            //     result.get(i).setLva(null);
