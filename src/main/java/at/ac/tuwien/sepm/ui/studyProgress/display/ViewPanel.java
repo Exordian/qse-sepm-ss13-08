@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.ui.studyProgress.display;
 
-import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
-import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.ServiceException;
@@ -17,8 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -205,7 +201,7 @@ public class ViewPanel extends StandardInsidePanel {
 
     public int getFirstYear() {
         try {
-            return service.firstYear();
+            return service.firstYearInStudyProgress();
         } catch (ServiceException e) {
             //JOptionPane.showMessageDialog(ViewPanel.this, "Sie müssen zuerst den in den Einstellungen angeben, wann Sie mit ihrem Studium begonnen haben!", "Fehler", JOptionPane.ERROR_MESSAGE);
             log.error(e.getMessage());

@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.ui.calender.ImportPanel;
 import at.ac.tuwien.sepm.ui.calender.cal.CalMonthGenerator;
 import at.ac.tuwien.sepm.ui.calender.cal.CalWeekGenerator;
 import at.ac.tuwien.sepm.ui.calender.cal.CalendarInterface;
@@ -46,14 +46,17 @@ public class CalendarPanel extends StandardInsidePanel {
     private CalendarInterface activeView;
     private TodoPanel todoPanel;
 
+    private LVAService lvaService;
+
     private boolean showTodo = false;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel) {
+    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel, LVAService lvaService) {
         init();
         PanelTube.calendarPanel=this;
+        this.lvaService=lvaService;
         this.calPanelMonth=calPanelMonth;
         this.calPanelWeek=calPanelWeek;
         this.activeView=calPanelWeek;
@@ -89,13 +92,26 @@ public class CalendarPanel extends StandardInsidePanel {
         semester = new JComboBox();
         semester.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5+295, (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 90, 20);
         semester.setFont(standardButtonFont);
-        semester.addItem("WS2011");
-        semester.addItem("SS2011");
-        semester.addItem("WS2012");
-        semester.addItem("SS2012");
-
+        refreshTop();
         this.add(month);
         this.add(semester);
+    }
+
+    private void refreshTop() {
+        try {
+            boolean winterSem = lvaService.isFirstSemesterAWinterSemester();
+            int semesters = lvaService.numberOfSemestersInStudyProgress();
+            int year = lvaService.firstYearInStudyProgress();
+            for (int x = 0; x < semesters; x++) {
+                semester.addItem(winterSem ? "WS" : "SS" + year);
+                if (winterSem) {
+                    year++;
+                }
+                winterSem = !winterSem;
+            }
+        } catch (ServiceException e) {
+            PanelTube.backgroundPanel.viewInfoText("Die Anzahl der Semester konnte nicht geladen werden.", SmallInfoPanel.Error);
+        }
     }
 
     private void createImportButton() {
@@ -283,6 +299,7 @@ public class CalendarPanel extends StandardInsidePanel {
     public void refresh() {
         calPanelMonth.refresh();
         calPanelWeek.refresh();
+        refreshTop();
     }
 
     public void jumpToDate(DateTime anyDateOfWeek) {

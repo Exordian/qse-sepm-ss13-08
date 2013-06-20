@@ -123,7 +123,7 @@ public interface LVAService {
      * @return year of lva in study progress
      * @throws ServiceException If data could not be read
      */
-    public int firstYear() throws ServiceException;
+    public int firstYearInStudyProgress() throws ServiceException;
 
     /**
      * Returns number of semesters in study progress
