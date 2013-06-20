@@ -54,7 +54,7 @@ public class DayPanel extends JPanel {
         this.addMouseListeners();
     }
 
-    public void setActual(boolean actual) {
+    public void setCurrent(boolean actual) {
         this.isActual = actual;
     }
 

@@ -93,7 +93,7 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
         if(d.getMinuteOfHour()<10) {
             result += "0" + d.getMinuteOfHour();
         } else {
-            result += d.getHourOfDay();
+            result += d.getMinuteOfHour();
         }
 
         return result;
