@@ -19,18 +19,16 @@ import java.awt.event.*;
 public class DateLabel extends JTextPane implements Comparable<DateLabel>{
     private static final int MAX_TEXT_LENGTH=20;
     private Date date;
-    private boolean showTime = false;
+    private boolean twoLine = false;
 
-    public DateLabel(Date date, boolean showTime) {
+    public DateLabel(Date date, boolean twoLine) {
         this.date=date;
-        this.showTime = showTime;
+        this.twoLine = twoLine;
         setContentType("text/html");
         if(date.getName()==null || date.getName().trim().equals("")){
             this.setText("...");
-            setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
-        } else if (showTime) {
+        } else if (twoLine) {
             this.setText("<nobr><font size=2 face=\"Arial\"><b>"+formatStartDate(date.getTime().from())+" - "+formatStartDate(date.getTime().to()) +"</b><br>"+ date.getName()+"</font></nobr>");
-            setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
         } else {
             this.setText("<nobr><font size=2 face=\"Arial\">"+cutText(date.getName(), 0)+"</font></b>");
             setBorder(BorderFactory.createEmptyBorder());
@@ -48,8 +46,15 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
     public void changeColor (boolean isActualMonth) {
         if(isActualMonth) {
             this.setOpaque(true);
+            if(twoLine){
+                setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
+            }else{
+                setBorder(BorderFactory.createEmptyBorder());
+            }
             if(date instanceof LvaDate) {
                 this.setBackground(new Color(223, 233, 255));
+
+
                 //this.setForeground(new Color(117, 190, 255));
             } else if (date instanceof DateEntity) {
                 if (((DateEntity) date).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!")) {
@@ -60,7 +65,8 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
                 }
             }
         } else {
-            // this.setForeground(Color.WHITE);
+            setBorder(BorderFactory.createEmptyBorder());
+            setOpaque(false);
         }
     }
 
