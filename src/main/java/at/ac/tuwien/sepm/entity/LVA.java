@@ -240,7 +240,7 @@ public class LVA implements Comparable<LVA>{
     }
     @Override
     public String toString(){
-        String toReturn="<LVA:";
+        String toReturn="<LVA: id:"+id;
         if(metaLVA!=null && metaLVA.getName()!=null){
             toReturn+=" metaLVA:"+metaLVA.getName();
         }

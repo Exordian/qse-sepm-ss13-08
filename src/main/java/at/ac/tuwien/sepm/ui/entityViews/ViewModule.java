@@ -19,6 +19,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,12 +37,14 @@ import java.util.ArrayList;
 public class ViewModule extends StandardSimpleInsidePanel {
     //private JLabel nameLabel;
     //private JTextField name;
+    private JLabel nameLabel;
+    private HintTextField nameInput;
 
     private JLabel descriptionLabel;
-    private JTextArea description;
+    private JTextArea descriptionInput;
 
     private JTextArea priorityLabel;
-    private HintTextField priority;
+    private HintTextField priorityInput;
 
     private JLabel metaLVALabel;
     private MetaLVADisplayPanel metaLVADisplayPanel;
@@ -63,7 +67,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
         addImage();
         this.module = new Module();
         module.setMetaLvas(new ArrayList<MetaLVA>(0));
-        addEditableTitle("Neues Modul");
+        addTitle("Neues Modul");
         addReturnButton();
         addContent();
         addButtons();
@@ -80,8 +84,8 @@ public class ViewModule extends StandardSimpleInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
 
-                    if(!priority.getText().trim().equals("")){
-                        float newPriority = Float.parseFloat(priority.getText());
+                    if(!priorityInput.getText().trim().equals("")){
+                        float newPriority = Float.parseFloat(priorityInput.getText());
 
                         for(MetaLVA mLVA : module.getMetaLvas()){
                             if(mLVA.getPriority()>(newPriority+0.001) || mLVA.getPriority()<(newPriority-0.001)){
@@ -99,7 +103,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
                         }
                     }
                     module.setName(title.getText());
-                    module.setDescription(description.getText());
+                    module.setDescription(descriptionInput.getText());
                     if (module.getId() != null) {
                         moduleService.update(module);
                     } else {
@@ -127,17 +131,46 @@ public class ViewModule extends StandardSimpleInsidePanel {
 
     private void addContent() {
         int verticalSpace = 10;
+        nameLabel = new JLabel("Name:");
+        nameLabel.setFont(standardTextFont);
+        nameLabel.setBounds((int) simpleWhiteSpace.getX() + 20, (int) paneModule.getY(), 110, 25);
+
+        this.add(nameLabel);
+
+        nameInput = new HintTextField("");
+        nameInput.setFont(standardTextFont);
+        nameInput.setBounds(nameLabel.getX() + nameLabel.getWidth() + 20, nameLabel.getY(), 250, 25);
+        //nameInput.setBorder(new JTextField().getBorder());
+        nameInput.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changeTitle(nameInput.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changeTitle(nameInput.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                changeTitle(nameInput.getText());
+            }
+        });
+
+        this.add(nameInput);
+
 
         descriptionLabel = new JLabel("Beschreibung:");
         descriptionLabel.setFont(standardTextFont);
-        descriptionLabel.setBounds((int) simpleWhiteSpace.getX() + 20, (int) paneModule.getY(), 110, 25);
+        descriptionLabel.setBounds( nameLabel.getX(), nameLabel.getY()+nameLabel.getHeight()+verticalSpace, 110, 25);
         this.add(descriptionLabel);
 
-        description = new JTextArea();
-        description.setFont(standardTextFont);
-        description.setBounds(descriptionLabel.getX() + descriptionLabel.getWidth() + 20, descriptionLabel.getY(), 250, 25 * 10 +80);
-        description.setBorder(new JTextField().getBorder());
-        this.add(description);
+        descriptionInput = new JTextArea();
+        descriptionInput.setFont(standardTextFont);
+        descriptionInput.setBounds(descriptionLabel.getX() + descriptionLabel.getWidth() + 20, descriptionLabel.getY(), 250, 25 * 10 );
+        descriptionInput.setBorder(new JTextField().getBorder());
+        this.add(descriptionInput);
 
         priorityLabel = new JTextArea("Priorität\nder LVAs:");
         priorityLabel.setEditable(false);
@@ -145,14 +178,14 @@ public class ViewModule extends StandardSimpleInsidePanel {
         priorityLabel.setOpaque(false);
         priorityLabel.setFocusable(false);
         priorityLabel.setFont(standardTextFont);
-        priorityLabel.setBounds(descriptionLabel.getX(), descriptionLabel.getY() + description.getHeight() + verticalSpace, 110, 25*2);
+        priorityLabel.setBounds(descriptionLabel.getX(), descriptionLabel.getY() + descriptionInput.getHeight() + verticalSpace, 110, 25 * 2);
         this.add(priorityLabel);
 
-        priority = new HintTextField("");
+        priorityInput = new HintTextField("");
         //priority.setText("5");
-        priority.setFont(standardTextFont);
-        priority.setBounds(priorityLabel.getX() + priorityLabel.getWidth() + 20, priorityLabel.getY()+(25), 250, 25 );
-        this.add(priority);
+        priorityInput.setFont(standardTextFont);
+        priorityInput.setBounds(priorityLabel.getX() + priorityLabel.getWidth() + 20, priorityLabel.getY() + (25), 250, 25);
+        this.add(priorityInput);
 
         metaLVALabel = new JLabel("LVAs in diesem Modul:");
         metaLVALabel.setFont(standardTextFont);
@@ -166,19 +199,22 @@ public class ViewModule extends StandardSimpleInsidePanel {
     }
 
     public void setModule(Module module) {
-        priority.setText("");
+        priorityInput.setText("");
         if (module == null) {
 
             this.module = new Module();
             this.module.setMetaLvas(new ArrayList<MetaLVA>(0));
             changeTitle("Neues Modul");
-            description.setText("");
-            priority.setHint("Keine LVA");
+            nameInput.setText("Neues Modul");
+            descriptionInput.setText("");
+            priorityInput.setHint("Keine LVA");
         } else {
             this.module = module;
             changeTitle(module.getName());
+            nameInput.setText(module.getName());
+
             if(module.getMetaLvas().isEmpty()){
-                priority.setHint("Keine LVAs in diesem Modul");
+                priorityInput.setHint("Keine LVAs in diesem Modul");
             }else{
                 boolean prioritiesMatch = true;
                 float foundPriority = module.getMetaLvas().get(0).getPriority();
@@ -189,12 +225,12 @@ public class ViewModule extends StandardSimpleInsidePanel {
                     }
                 }
                 if(prioritiesMatch){
-                    priority.setText("" + foundPriority);
+                    priorityInput.setText("" + foundPriority);
                 }else{
-                    priority.setHint("verschiedene Werte");
+                    priorityInput.setHint("verschiedene Werte");
                 }
             }
-            description.setText(module.getDescription());
+            descriptionInput.setText(module.getDescription());
         }
         metaLVADisplayPanel.refresh(this.module.getMetaLvas());
     }

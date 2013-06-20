@@ -24,6 +24,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -61,6 +63,8 @@ public class ViewLva extends StandardSimpleInsidePanel {
     private JLabel languageLabel;
     private JLabel gradeLabel;
 
+    private List<MetaLVA> allMetaLVAs;
+    private HashMap<Integer,Integer> keyIndexMetaLVAJCombo;
     @Autowired
     public ViewLva(LVAService lvaService, MetaLVAService metaLVAService) {
         this.lvaService=lvaService;
@@ -231,8 +235,10 @@ public class ViewLva extends StandardSimpleInsidePanel {
         this.add(metaLVALabel);
 
         metaLVA = new WideComboBox();
+
         try {
-            for (MetaLVA t : metaLVAService.readAll()) {
+            allMetaLVAs =metaLVAService.readAll();
+            for (MetaLVA t : allMetaLVAs) {
                 metaLVA.addItem(new MetaLvaSelectItem(t));
             }
         } catch (ServiceException e) {

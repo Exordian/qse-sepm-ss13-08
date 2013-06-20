@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +32,9 @@ import java.awt.event.ActionListener;
 public class ViewMetaLva extends StandardSimpleInsidePanel {
     private JLabel nrLabel;
     private JTextField nr;
+
+    private JLabel nameLabel;
+    private JTextField nameInput;
 
     private JLabel ectsLabel;
     private JSpinner ects;
@@ -64,7 +69,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         init();
         addImage();
         this.metaLVA = new MetaLVA();
-        addEditableTitle("Neue Lva");
+        addTitle("Neue Lva");
         addReturnButton();
         addContent();
         addButtons();
@@ -112,10 +117,35 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
 
     private void addContent() {
         int verticalSpace = 10;
+        nameLabel = new JLabel("Name:");
+        nameLabel.setFont(standardTextFont);
+        nameLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10,140,25);
+        this.add(nameLabel);
 
+        nameInput = new JTextField();
+        nameInput.setFont(standardTextFont);
+        nameInput.setBounds(nameLabel.getX() + nameLabel.getWidth() + 20, nameLabel.getY(), 140,25);
+        nameInput.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changeTitle(nameInput.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changeTitle(nameInput.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                changeTitle(nameInput.getText());
+            }
+        });
+        this.add(nameInput);
+        
         nrLabel = new JLabel("Lva Nummer:");
         nrLabel.setFont(standardTextFont);
-        nrLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10,140,25);
+        nrLabel.setBounds(nameLabel.getX(), nameLabel.getY() + nameLabel.getHeight() + verticalSpace, 140,25);
         this.add(nrLabel);
 
         nr = new JTextField();
@@ -202,7 +232,8 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     public void setMetaLva(MetaLVA metaLVA) {
         if (metaLVA == null) {
             this.metaLVA = new MetaLVA();
-            changeTitle("Neue Lva");
+            changeTitle("Neue LVA");
+            nameInput.setText("Neue LVA");
             nr.setText("");
             ects.setValue(0);
             type.setSelectedIndex(0);
@@ -213,6 +244,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         } else {
             this.metaLVA=metaLVA;
             changeTitle(metaLVA.getName());
+            nameInput.setText(metaLVA.getName());
             nr.setText(metaLVA.getNr());
             ects.setValue(metaLVA.getECTS());
             type.setSelectedItem(metaLVA.getType());
