@@ -158,7 +158,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                     } else {
                         todoService.create(todo);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Das Todo wurde gespeichert.", SmallInfoPanel.Info);
+                    PanelTube.backgroundPanel.viewInfoText("Das Todo wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
