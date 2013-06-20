@@ -338,7 +338,7 @@ public class PlanPanel extends StandardInsidePanel {
         yearTextLabel.setFont(standardTextFont);
         this.add(yearTextLabel);
 
-        yearText = new JTextField(""+dateService.getCurrentYear());
+        yearText = new JTextField(""+dateService.getCurrentYearOfSemester());
         yearText.setBounds(yearTextLabel.getX() + yearTextLabel.getWidth() +5, yearTextLabel.getY(), 50, textHeight);
         yearText.setFont(standardTextFont);
         this.add(yearText);

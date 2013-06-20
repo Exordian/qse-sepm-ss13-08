@@ -165,9 +165,11 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public int getCurrentYear() {
-        //todo not just return the year, but also check for the semester first!!
-        DateTime currentTime = new DateTime(System.currentTimeMillis());
-        return currentTime.getYear();
+    public int getCurrentYearOfSemester() {
+        int temp = new DateTime(System.currentTimeMillis()).getYear();
+        if (DateTime.now().getMonthOfYear() < 2) {
+              temp--;
+        }
+        return temp;
     }
 }

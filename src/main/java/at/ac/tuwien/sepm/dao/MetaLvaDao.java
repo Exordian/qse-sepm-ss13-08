@@ -83,9 +83,11 @@ public interface MetaLvaDao {
      */
     public MetaLVA readByLvaNumber(String lvaNumber) throws DataAccessException;
 
-    /**todo check text for errors
-     * Return all MetaLVAs, which have no completed LVA, have no LVA in the specified year and semester and where the
-     * perhaps existing lva from the specified year and semester is included in the study progress or not.
+    /**
+     * Return all MetaLVAs, which
+     * have no completed LVA,
+     * have no LVA in the specified year and semester and
+     * where the perhaps existing lva from the specified year and semester is included in the study progress or not.
      * @param year The year.
      * @param semester The semester. Must be <code>Semester.S</code> of <code>Semester.W</code>.
      * @param isInStudyProgress <code>true</code> if the returned list should only contain meta lvas which have actual

@@ -88,8 +88,8 @@ public interface DateService {
     public Semester getCurrentSemester();
 
     /**
-     * returns the current year
+     * returns the current year of this semester
      * @return the current year
      */
-    public int getCurrentYear();
+    public int getCurrentYearOfSemester();
 }

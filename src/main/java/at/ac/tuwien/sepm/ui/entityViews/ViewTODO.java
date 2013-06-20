@@ -212,7 +212,6 @@ public class ViewTODO extends StandardSimpleInsidePanel {
         this.add(lvaLabel);
 
         lva = new WideComboBox();
-
         try {
             int year = DateTime.now().getYear();
             boolean isWinterSemester = (DateTime.now().getMonthOfYear() > 7 || DateTime.now().getMonthOfYear() < 2);
