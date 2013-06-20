@@ -9,6 +9,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -20,8 +22,8 @@ import java.util.List;
 @UI
 public class MetaLVADisplayPanel extends JPanel {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
-    private List<MetaLVA> allLVAs;
-    private List<MetaLVA> filteredLVAs;
+    private List<MetaLVA> allMetaLVAs;
+    private List<MetaLVA> filteredMetaLVAs;
     private MetaLVATable table;
     private JTextField searchNr = new HintTextField("Nr");
     private JTextField searchType = new HintTextField("Typ");
@@ -37,9 +39,16 @@ public class MetaLVADisplayPanel extends JPanel {
     int tWidth;
     public MetaLVADisplayPanel(List<MetaLVA> lvas,int width,int height){
         this.tWidth =width;
-        this.allLVAs = lvas;
-        filteredLVAs = lvas;
+        this.allMetaLVAs = lvas;
+        filteredMetaLVAs = lvas;
         table = new MetaLVATable(lvas,width);
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+
+                refreshLVAs();
+            }
+        });
         table.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -54,7 +63,6 @@ public class MetaLVADisplayPanel extends JPanel {
                     JPopupMenu popup = new PopUpMenu();
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
-                refreshLVAs();
             }
         });
         int searchHeight = 20;
@@ -79,13 +87,13 @@ public class MetaLVADisplayPanel extends JPanel {
             @Override
             public void keyReleased(KeyEvent e) {
                 logger.debug("searching for: (nr: "+searchNr.getText()+", type:"+searchType.getText()+", name: " + searchName.getText()+", ECTS: "+searchECTS.getText()+")");
-                filteredLVAs = new ArrayList<MetaLVA>();
-                for (MetaLVA m : allLVAs) {
+                filteredMetaLVAs = new ArrayList<MetaLVA>();
+                for (MetaLVA m : allMetaLVAs) {
                     if (m.getNr().toLowerCase().contains(searchNr.getText().toLowerCase()) && m.getType().toString().toLowerCase().contains(searchType.getText().toLowerCase()) && m.getName().toLowerCase().contains(searchName.getText().toLowerCase()) &&(""+m.getECTS()).toLowerCase().contains(searchECTS.getText().toLowerCase())) {
-                        filteredLVAs.add(m);
+                        filteredMetaLVAs.add(m);
                     }
                 }
-                table.refreshMetaLVAs(filteredLVAs);
+                table.refreshMetaLVAs(filteredMetaLVAs);
                 refreshLVAs();
                 pane.setViewportView(table);
                 revalidate();
@@ -150,15 +158,15 @@ public class MetaLVADisplayPanel extends JPanel {
     }
 
     public void refresh(List<MetaLVA> lvas) {
-        table.refreshMetaLVAs(lvas);
-        this.allLVAs=lvas;
-        filteredLVAs = new ArrayList<MetaLVA>();
-        for (MetaLVA m : allLVAs) {
+        //table.refreshMetaLVAs(lvas);
+        this.allMetaLVAs =lvas;
+        filteredMetaLVAs = new ArrayList<MetaLVA>();
+        for (MetaLVA m : allMetaLVAs) {
             if (m.getNr().toLowerCase().contains(searchNr.getText()) && m.getType().toString().toLowerCase().contains(searchType.getText()) && m.getName().toLowerCase().contains(searchName.getText()) &&(""+m.getECTS()).toLowerCase().contains(searchECTS.getText())) {
-                filteredLVAs.add(m);
+                filteredMetaLVAs.add(m);
             }
         }
-        table.refreshMetaLVAs(filteredLVAs);
+        table.refreshMetaLVAs(filteredMetaLVAs);
         pane.setViewportView(table);
         refreshLVAs();
         revalidate();

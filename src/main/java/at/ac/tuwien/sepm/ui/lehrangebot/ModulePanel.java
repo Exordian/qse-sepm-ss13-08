@@ -109,19 +109,7 @@ public class ModulePanel extends StandardInsidePanel {
         this.add(modulePane);
         this.add(metaPane);
 
-        new Thread(){
-            @Override
-            public void run(){
-                try {
-                    modules = moduleService.readAll();
-                } catch (ServiceException e) {
-                    //TODO fill me <3
-                    log.error("Exception: "+ e.getMessage());
-                }
-                modulePane.refresh(modules);
 
-            }
-        }.start();
 
     }
 
@@ -132,10 +120,15 @@ public class ModulePanel extends StandardInsidePanel {
             @Override
             public void run(){
                 try {
-                    modulePane.refresh(moduleService.readAll());
+                    log.info("Thread for loading LVAs started");
+                    modules = moduleService.readAll();
+                    log.info("loaded LVAs");
+                    //lvaPane.refresh(new ArrayList<LVA>(0));
                 } catch (ServiceException e) {
+                    log.info("Exception caught while loading LVAs");
                     log.error("Exception: " + e.getMessage());
                 }
+                modulePane.refresh(modules);
             }
         }.start();
     }

@@ -85,7 +85,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    metaLVA.setName(title.getText());
+                    metaLVA.setName(nameInput.getText());
                     metaLVA.setCompleted(completed.isSelected());
                     metaLVA.setECTS(((Number)ects.getValue()).floatValue());
                     metaLVA.setModule(((ModuleSelectItem) moduleDropdown.getSelectedItem()).get().getId());
@@ -94,7 +94,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     metaLVA.setSemestersOffered((Semester)semestersOffered.getSelectedItem());
                     metaLVA.setType((LvaType)type.getSelectedItem());
 
-                    if (metaLVA.getId() != 0) {
+                    if (metaLVA.getId() != null) {
                         if (metaLVAService.readById(metaLVA.getId()) != null)
                             metaLVAService.update(metaLVA);
                     } else {

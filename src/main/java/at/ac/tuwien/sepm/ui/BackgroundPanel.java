@@ -40,7 +40,7 @@ public class BackgroundPanel extends JPanel {
     private ViewMetaLva viewMetaLva;
     private ViewModule viewModule;
     private Image image;
-    private Component lastComponent;
+    private StandardInsidePanel lastComponent;
     private int lastImage;
     private ImportPanel importPanel;
     private SmallInfoPanel smallInfoPanel;
@@ -211,7 +211,7 @@ public class BackgroundPanel extends JPanel {
         this.remove(importPanel);
     }
 
-    private void addPanel(Component c) {
+    private void addPanel(StandardInsidePanel c) {
         this.add(c);
         lastComponent = c;
     }
@@ -219,6 +219,7 @@ public class BackgroundPanel extends JPanel {
     public void showLastComponent() {
         this.add(lastComponent);
         changeImage(lastImage);
+        lastComponent.refresh();
     }
 
     private void changeImage(int nmb) {

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.entity;
 
+import at.ac.tuwien.sepm.service.Grade;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.impl.LVAUtil;
 
@@ -21,6 +22,7 @@ public class LVA implements Comparable<LVA>{
     private Semester semester=null;
     private int grade=0;
 
+    private Grade gradeEnum;
     private boolean inStudyProgress;
     private String goals;
     private String content;
@@ -230,12 +232,27 @@ public class LVA implements Comparable<LVA>{
         this.exercises = new ArrayList<LvaDate>(exercises);
     }
 
+    public Grade getGradeEnum() {
+        return gradeEnum;
+    }
 
+    public void setGrade(Grade toSet) {
+        this.gradeEnum=toSet;
+        grade = toSet.ordinal();
+        if(grade>5){
+            grade=0;
+        }
+    }
     public int getGrade() {
         return grade;
     }
 
     public void setGrade(int grade) {
+        if(grade>0 && grade <=5){
+            gradeEnum = Grade.getGrade(grade);
+        }else{
+            gradeEnum=Grade.NOT_SET;
+        }
         this.grade = grade;
     }
     @Override
