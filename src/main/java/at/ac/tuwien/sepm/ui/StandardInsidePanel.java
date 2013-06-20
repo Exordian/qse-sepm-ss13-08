@@ -4,6 +4,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +55,15 @@ public abstract class StandardInsidePanel extends JPanel {
             log.info("Probleme beim Font laden.");
             e.printStackTrace();
         }
+    }
+
+    protected ChangeListener dONTFUCKINGBUGSWINGListener() {
+        return new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                repaint();
+            }
+        };
     }
 
     protected void init() {

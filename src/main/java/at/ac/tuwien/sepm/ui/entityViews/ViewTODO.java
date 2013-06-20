@@ -18,6 +18,8 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -80,7 +82,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             done.setSelected(todo.getDone());
             if (todo.getLva() != null) {
                 for(int i = 0; i < lva.getModel().getSize(); i++)        //todo
-                    if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == todo.getLva().getId()) {
+                    if (((LvaSelectItem) lva.getItemAt(i)).get() == todo.getLva()) {
                         lva.setSelectedIndex(i);
                         break;
                     }
@@ -191,6 +193,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
 
         privateDate = new JCheckBox();
         privateDate.setSelected(false);
+        privateDate.addChangeListener(dONTFUCKINGBUGSWINGListener());
         privateDate.setBackground(new Color(0, 0, 0, 0));
         privateDate.addActionListener(new ActionListener() {
             @Override
@@ -243,8 +246,9 @@ public class ViewTODO extends StandardSimpleInsidePanel {
 
         done = new JCheckBox();
         done.setSelected(todo.getDone() != null ? todo.getDone() : false);
-        done.setBackground(new Color(0,0,0,0));
+        done.setBackground(new Color(0, 0, 0, 0));
         done.setBounds(doneLabel.getX() + doneLabel.getWidth() + 5, doneLabel.getY(), 20, 20);
+        done.addChangeListener(dONTFUCKINGBUGSWINGListener());
         this.add(done);
     }
 

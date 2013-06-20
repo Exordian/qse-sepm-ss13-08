@@ -42,7 +42,7 @@ public abstract class StandardSimpleInsidePanel extends StandardInsidePanel {
     protected void addReturnButton() {
         retButton = new JButton();
         retButton.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2)), (int)(size.getHeight()/2-image.getHeight(null)/2)-33, 25, 25);
-
+        retButton.addChangeListener(dONTFUCKINGBUGSWINGListener());
         try {
             Image img = ImageIO.read(ClassLoader.getSystemResource("img/backbutton.png"));
             retButton.setIcon(new ImageIcon(img));

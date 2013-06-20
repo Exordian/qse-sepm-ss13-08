@@ -232,6 +232,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
         this.add(doneLabel);
 
         done = new JCheckBox();
+        done.addChangeListener(dONTFUCKINGBUGSWINGListener());
         done.setSelected(deadline.getWasAttendant() != null ? deadline.getWasAttendant() : false);
         done.setBackground(new Color(0, 0, 0, 0));
         done.setBounds(doneLabel.getX() + doneLabel.getWidth() + 10, doneLabel.getY(), 20, 20);

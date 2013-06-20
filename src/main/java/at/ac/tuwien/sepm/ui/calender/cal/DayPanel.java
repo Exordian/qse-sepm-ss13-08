@@ -254,7 +254,7 @@ public class DayPanel extends JPanel {
                 public void mouseReleased(MouseEvent e) {
                     DateEntity dateEntity = new DateEntity();
                     dateEntity.setName("Freier Tag");
-                    dateEntity.setTime(new TimeFrame(new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 0, 0, 0, 0), new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 59, 59, 59, 0)));
+                    dateEntity.setTime(new TimeFrame(new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 0, 0, 0, 0), new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 23, 59, 59, 0)));
                     dateEntity.setIntersectable(false);
                     dateEntity.setDescription("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!");
                     try {
@@ -263,7 +263,6 @@ public class DayPanel extends JPanel {
                         log.error(e1.getMessage());
                     }
                 }
-
                 @Override
                 public void mouseEntered(MouseEvent e) {}
                 @Override

@@ -220,6 +220,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
         this.add(intersectLabel);
 
         intersectable = new JCheckBox();
+        intersectable.addChangeListener(dONTFUCKINGBUGSWINGListener());
         intersectable.setSelected(dateEntity.getIntersectable() != null ? dateEntity.getIntersectable() : false);
         intersectable.setBackground(new Color(0,0,0,0));
         intersectable.setBounds(intersectLabel.getX() + intersectLabel.getWidth() + 5, intersectLabel.getY(), 20, 20);
