@@ -29,7 +29,7 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
-    @Autowired
+    @Autowired(required = true)
     public CalPanelMonth(CalService service,LVAService lvaService, DateService dateService) {
         super(5,false,service,lvaService, dateService);
         super.firstDay = new DateTime(DateTime.now().getYear(), DateTime.now().getMonthOfYear(), 1, 0, 0, 0, 0);

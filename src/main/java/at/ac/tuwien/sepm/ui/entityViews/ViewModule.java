@@ -96,7 +96,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
                                         metaLVAService.update(metaLVA);
                                     }
                                 } else {
-                                    throw new EscapeException();
+                                    throw new EscapeException("");
                                 }
                                 break;
                             }

@@ -30,6 +30,7 @@ public class CalWeekGenerator extends JPanel implements CalendarInterface {
         this.setLayout(null);
         this.setOpaque(false);
         this.add(calPanelWeek);
+        calPanelWeek.init();
     }
 
     @Override

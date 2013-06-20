@@ -35,6 +35,7 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
         this.setLayout(null);
         this.setOpaque(false);
         this.add(calPanelMonth);
+        calPanelMonth.init();
     }
 
     @Override
