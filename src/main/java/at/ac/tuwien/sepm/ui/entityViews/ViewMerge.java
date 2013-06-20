@@ -166,7 +166,9 @@ public class ViewMerge extends StandardSimpleInsidePanel {
         metaLVAPanel.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                mergePanel.refresh(oldIntersectingMetaLVAs.get(metaLVAPanel.getTable().getSelectedRow()),newIntersectingMetaLVAs.get(metaLVAPanel.getTable().getSelectedRow()));
+                if(metaLVAPanel.getTable().getSelectedRowCount()>0){
+                    mergePanel.refresh(oldIntersectingMetaLVAs.get(metaLVAPanel.getTable().getSelectedRow()),newIntersectingMetaLVAs.get(metaLVAPanel.getTable().getSelectedRow()));
+                }
             }
         });
 

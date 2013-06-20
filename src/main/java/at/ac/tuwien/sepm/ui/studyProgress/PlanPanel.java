@@ -6,13 +6,15 @@ import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.DateService;
-import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.IntelligentSemesterPlaner;
+import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.impl.IntelligentSemesterPlanerImpl;
 import at.ac.tuwien.sepm.service.impl.LVAUtil;
-import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +23,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -139,29 +141,44 @@ public class PlanPanel extends StandardInsidePanel {
                 //todo warning alert: all data from year x, sem y will be overriden
                 List<LVA> toRemove = lvaDAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,true);
                 logger.debug("deleting from studyProgress:\n"+LVAUtil.formatShortLVA(toRemove,1));
-                for(LVA lva:toRemove){
+                try {
+                    for(LVA lva:toRemove){
                     //logger.debug("deleting from studyProgress: "+lva);
-                    lva.setInStudyProgress(false);
-                    try {
+                        lva.setInStudyProgress(false);
                         lvaDAO.update(lva);
-
-                    } catch (IOException e1) {
-                        //JOptionPane.showMessageDialog(this, "Dieses TODO existiert nicht in der Datenbank.", "Fehler", JOptionPane.ERROR_MESSAGE);
-                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
+                    out:
+                    for(MetaLVA m:plannedMetaLVAs){
+                        LVA temp = m.getLVA(plannedYear,plannedSemester);
+                        temp.setInStudyProgress(true);
+                        //logger.debug("adding to studyProgress: "+temp);
+                        try {
+                            lvaDAO.update(temp);
+                            PanelTube.backgroundPanel.viewInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Info);//todo erfolg
+                            refreshMetaLVAs(new ArrayList<MetaLVA>(0));
+                        } catch (IOException e1) {
+                            logger.error(e1);
+                            PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+                            for(MetaLVA m2:plannedMetaLVAs){    //rollback
+                                LVA temp2 = m.getLVA(plannedYear,plannedSemester);
+                                if(m2==m){
+                                    break out;
+                                }
+                                temp2.setInStudyProgress(false);
+                                try {
+                                    lvaDAO.update(temp2);
+                                } catch (IOException e2) {
+                                    logger.error(e2);
+                                }
+                            }
+                        }
+                    }
+                } catch (IOException e1) {
+                    PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
                 }
+
                 logger.debug("adding to studyProgress: \n"+LVAUtil.formatShortDetailedMetaLVA(plannedMetaLVAs, 1));
-                for(MetaLVA m:plannedMetaLVAs){
 
-                    LVA temp = m.getLVA(plannedYear,plannedSemester);
-                    temp.setInStudyProgress(true);
-                    //logger.debug("adding to studyProgress: "+temp);
-                    try {
-                        lvaDAO.update(temp);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-                }
 
             }
         });
@@ -228,9 +245,7 @@ public class PlanPanel extends StandardInsidePanel {
                             float tolerance = 0;
                             try{
                                 tolerance=Float.parseFloat(toleranceText.getText().replace("%","").trim())/100;
-                            }catch(NumberFormatException e){
-                                //todo display error
-                            }
+
                             int timeBetween = 0;
                             try{
                                 if(timeBetweenDropdown.getSelectedIndex()==1){
@@ -249,16 +264,14 @@ public class PlanPanel extends StandardInsidePanel {
 
 
                             logger.debug("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
-                            for(MetaLVA lvaA:solution){
-                                for(MetaLVA lvaB:solution){
-                                    if(lvaA!=lvaB && LVAUtil.intersect(lvaA.getLVA(plannedYear,plannedSemester),lvaB.getLVA(plannedYear,plannedSemester),timeBetween,typesToIntersect,typesToIntersect,tolerance)){
-                                        logger.debug("solution intersecting! LVA a: "+lvaA+", LVA b: "+lvaB);
-                                    }
-                                }
-                            }
+
 
                             refreshMetaLVAs(solution);
                             planningInProgress(false);
+                            }catch(NumberFormatException e){
+                                PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+
+                            }
                         }
                     }.start();
                 }

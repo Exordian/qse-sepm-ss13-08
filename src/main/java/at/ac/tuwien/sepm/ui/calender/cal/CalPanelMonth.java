@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.service.CalService;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
-//import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
@@ -13,8 +12,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 import java.util.Locale;
+
+//import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 
 /**
  * @author Markus MUTH
@@ -137,6 +137,7 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
             days[a].setDate(new DateTime(firstDay.getYear(), firstDay.getMonthOfYear(), i, 0, 0, 0, 0));
             days[a].setBackground(COLOR_OF_CURRENT_MONTH);
             days[a].setCurrent(true);
+
             a++;
         }
 

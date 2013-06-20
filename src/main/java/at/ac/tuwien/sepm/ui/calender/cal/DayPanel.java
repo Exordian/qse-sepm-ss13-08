@@ -31,7 +31,7 @@ public class DayPanel extends JPanel {
     private DateTime date;
     private int maxDateLabels;
     private TooMuchDatesLabel tmdl;
-    private boolean isActual = false;
+    private boolean isCurrent = false;
     private boolean showTime=false;
     private LVAService lvaService;
 
@@ -54,12 +54,12 @@ public class DayPanel extends JPanel {
         this.addMouseListeners();
     }
 
-    public void setCurrent(boolean actual) {
-        this.isActual = actual;
+    public void setCurrent(boolean current) {
+        this.isCurrent = current;
     }
 
-    public boolean getActual() {
-        return this.isActual;
+    public boolean getCurrent() {
+        return this.isCurrent;
     }
 
     public void setDate(DateTime date) {
@@ -81,7 +81,7 @@ public class DayPanel extends JPanel {
         for(DateLabel l : dates) {
             if (l.getDate() instanceof DateEntity)
                 if (((DateEntity)l.getDate()).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!")) {
-                    l.changeColor(isActual);
+                    l.changeColor(isCurrent);
                     datePanel.add(l, "w 100%, wrap");
                     this.revalidate();
                     this.repaint();
@@ -91,14 +91,14 @@ public class DayPanel extends JPanel {
 
         if(dates.size() > maxDateLabels) {
             for(int i=0; i<maxDateLabels-1; i++) {
-                dates.get(i).changeColor(isActual);
+                dates.get(i).changeColor(isCurrent);
                 datePanel.add(dates.get(i), "w 100%, wrap");
             }
             tmdl.setText(dates.size()-maxDateLabels+1);
             datePanel.add(tmdl);
         } else {
             for(DateLabel l : dates) {
-                l.changeColor(isActual);
+                l.changeColor(isCurrent);
                 datePanel.add(l, "w 100%, wrap");
             }
         }
