@@ -158,10 +158,10 @@ public class TodoServiceImpl implements TodoService {
         String error_msg = "";
         boolean valid = true;
 
-        if(toValidate.getLva() == null) {
+        /*if(toValidate.getLva() == null) {   //wenn null dann privates to-do
             valid = false;
             error_msg += "invalid LVA!\n";
-        }
+        } */
         if(toValidate.getName() == null ) {
             valid = false;
             error_msg += "invalid name!\n";

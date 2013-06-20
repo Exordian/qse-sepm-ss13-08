@@ -37,7 +37,8 @@ public class TodoTable extends JTable {
     private void setTodos(List<Todo> list) {
         this.todoList = list;
         for(Todo todo: todoList) {
-            model.addRow(new String[] {todo.getLva().getMetaLVA().getName(), todo.getName(), todo.getDescription(), todo.getDone()? "Ja" : "Nein"});
+            String s = todo.getLva() == null? "Privater Termin" : todo.getLva().getMetaLVA().getName();
+            model.addRow(new String[] {s, todo.getName(), todo.getDescription(), todo.getDone()? "Ja" : "Nein"});
         }
     }
 

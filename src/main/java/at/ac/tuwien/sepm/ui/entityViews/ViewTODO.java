@@ -65,6 +65,8 @@ public class ViewTODO extends StandardSimpleInsidePanel {
     }
 
     public void setTodo(Todo todo) {
+        lva.setVisible(true);
+        lvaLabel.setVisible(true);
         if(todo == null) {
             this.todo = new Todo();
             changeTitle("Neues Todo");
@@ -76,11 +78,16 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             changeTitle(todo.getName());
             description.setText(todo.getDescription());
             done.setSelected(todo.getDone());
-            for(int i = 0; i < lva.getModel().getSize(); i++)        //todo
-                if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == todo.getLva().getId()) {
-                    lva.setSelectedIndex(i);
-                    break;
-                }
+            if (todo.getLva() != null) {
+                for(int i = 0; i < lva.getModel().getSize(); i++)        //todo
+                    if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == todo.getLva().getId()) {
+                        lva.setSelectedIndex(i);
+                        break;
+                    }
+            } else {
+                lva.setVisible(false);
+                lvaLabel.setVisible(false);
+            }
             setDeleteButton(true);
         }
         refresh();
@@ -139,7 +146,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                     todo.setDescription(description.getText());
                     todo.setDone(done.isSelected());
                     if (privateDate.isSelected()){
-                       // todo.setLva(-1);   wie kennzeichnen wir einen privaten termin?
+                        todo.setLva(null);
                     } else {
                         todo.setLva(((LvaSelectItem) lva.getSelectedItem()).get());
                     }
@@ -202,7 +209,6 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             }
         });
         privateDate.setBounds(privateLabel.getX() + privateLabel.getWidth() + 5, privateLabel.getY(), 20, 20);
-        privateDate.setVisible(false);  //todo remove
         this.add(privateDate);
 
 
