@@ -110,8 +110,10 @@ public class CalendarPanel extends StandardInsidePanel {
                 winterSem = !winterSem;
             }
         } catch (ServiceException e) {
-            // TODO implement the PanelTube
-            //PanelTube.backgroundPanel.viewInfoText("Die Anzahl der Semester konnte nicht geladen werden.", SmallInfoPanel.Error);
+            // TODO find a solution for this workaround ... if this is the solution: delete this TO DO
+            if(PanelTube.backgroundPanel != null) {
+                PanelTube.backgroundPanel.viewInfoText("Die Anzahl der Semester konnte nicht geladen werden.", SmallInfoPanel.Error);
+            }
         }
     }
 
