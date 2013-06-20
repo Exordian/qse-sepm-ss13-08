@@ -22,6 +22,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -124,24 +125,18 @@ public class LvaPanel extends StandardInsidePanel {
     }
 
     private void addContent() {
-        try {
-            metaLVAs = new ArrayList<MetaLVA>();
-            metaLVAs = metaLVAService.readAll();
-            metaPane = new MetaLVADisplayPanel(metaLVAs, (int)paneMeta.getWidth(), (int)paneMeta.getHeight());
-            metaPane.setBounds(paneMeta);
-            this.add(metaPane);
+        metaLVAs = new ArrayList<MetaLVA>();
+        //metaLVAs = metaLVAService.readAll();
+        metaPane = new MetaLVADisplayPanel(metaLVAs, (int)paneMeta.getWidth(), (int)paneMeta.getHeight());
+        metaPane.setBounds(paneMeta);
+        this.add(metaPane);
 
-            //lvas = new ArrayList<LVA>();
-            //lvas = lvaService.readAll();
-            lvaPane = new LvaDisplayPanel(new ArrayList<LVA>(0), (int)paneLva.getWidth(), (int)paneLva.getHeight());
-            lvaPane.setBounds(paneLva);
-            metaPane.setLvaDisplayPanel(lvaPane);
-            this.add(lvaPane);
-        } catch (ServiceException e) {
-            log.error("Exception: "+ e.getMessage());
-        } catch (ValidationException e) {
-            log.error("Exception: " + e.getMessage());
-        }
+        //lvas = new ArrayList<LVA>();
+        //lvas = lvaService.readAll();
+        lvaPane = new LvaDisplayPanel(new ArrayList<LVA>(0), (int)paneLva.getWidth(), (int)paneLva.getHeight());
+        lvaPane.setBounds(paneLva);
+        metaPane.setLvaDisplayPanel(lvaPane);
+        this.add(lvaPane);
     }
 
 
@@ -155,6 +150,7 @@ public class LvaPanel extends StandardInsidePanel {
                 try {
                     log.info("Thread for loading LVAs started");
                     metaLVAs = metaLVAService.readAll();
+                    Collections.sort(metaLVAs,MetaLVA.getAlphabeticalNameComparator());
                     log.info("loaded LVAs");
                     //lvaPane.refresh(new ArrayList<LVA>(0));
                 } catch (ServiceException e) {

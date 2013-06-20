@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.entity;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -84,5 +84,14 @@ public class Module {
                 ", description='" + description + '\'' +
                 ", completeall=" + completeall +
                 '}';
+    }
+
+    public static Comparator<Module> getAlphabeticalNameComparator(){
+        return new Comparator<Module>() {
+            @Override
+            public int compare(Module o1, Module o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        };
     }
 }

@@ -20,6 +20,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -99,18 +100,16 @@ public class ModulePanel extends StandardInsidePanel {
     }
 
     private void addContent() {
-        metaLVAs = new ArrayList<MetaLVA>();
-        metaPane = new MetaLVADisplayPanel(new ArrayList<MetaLVA>(0), (int)paneMeta.getWidth(), (int)paneMeta.getHeight());
-        modulePane = new ModuleDisplayPanel(new ArrayList<Module>(0), (int) paneModule.getWidth(), (int) paneModule.getHeight());
+        metaLVAs = new ArrayList<MetaLVA>(0);
+        metaPane = new MetaLVADisplayPanel(metaLVAs, (int)paneMeta.getWidth(), (int)paneMeta.getHeight());
+        modules =new ArrayList<Module>(0);
+        modulePane = new ModuleDisplayPanel(modules, (int) paneModule.getWidth(), (int) paneModule.getHeight());
         modulePane.setMetaLVAPanel(metaPane);
         modulePane.setBounds(paneModule);
         metaPane.setBounds(paneMeta);
 
         this.add(modulePane);
         this.add(metaPane);
-
-
-
     }
 
 
@@ -122,6 +121,7 @@ public class ModulePanel extends StandardInsidePanel {
                 try {
                     log.info("Thread for loading LVAs started");
                     modules = moduleService.readAll();
+                    Collections.sort(modules,Module.getAlphabeticalNameComparator());
                     log.info("loaded LVAs");
                     //lvaPane.refresh(new ArrayList<LVA>(0));
                 } catch (ServiceException e) {

@@ -16,7 +16,7 @@ import java.awt.event.*;
 /**
  * @author Markus MUTH
  */
-public class DateLabel extends JLabel implements Comparable<DateLabel>{
+public class DateLabel extends JTextPane implements Comparable<DateLabel>{
     private static final int MAX_TEXT_LENGTH=20;
     private Date date;
     private boolean showTime = false;
@@ -24,15 +24,24 @@ public class DateLabel extends JLabel implements Comparable<DateLabel>{
     public DateLabel(Date date, boolean showTime) {
         this.date=date;
         this.showTime = showTime;
-        if(date.getName()==null || date.getName().equals("") || consistsOf(' ', date.getName())){
+        setContentType("text/html");
+        if(date.getName()==null || date.getName().trim().equals("")){
             this.setText("...");
+            setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
         } else if (showTime) {
-            this.setText(formatStartDate(date.getTime().from()) + cutText(date.getName(), 5));
+            this.setText("<nobr><font size=2 face=\"Arial\"><b>"+formatStartDate(date.getTime().from())+" - "+formatStartDate(date.getTime().to()) +"</b><br>"+ date.getName()+"</font></nobr>");
+            setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
         } else {
-            this.setText(cutText(date.getName(), 0));
+            this.setText("<nobr><font size=2 face=\"Arial\">"+cutText(date.getName(), 0)+"</font></b>");
+            setBorder(BorderFactory.createEmptyBorder());
         }
-        this.setFont(new Font("Arial", Font.PLAIN, 10));
+        //this.setFont(new Font("Arial", Font.PLAIN, 10));
         this.addMouseListener(new PrivateMouseListener());
+
+        setEditable(false);
+        //setWrapStyleWord(false);
+        setAutoscrolls(false);
+        setFocusable(false);
 
     }
 
@@ -81,7 +90,7 @@ public class DateLabel extends JLabel implements Comparable<DateLabel>{
             result += d.getHourOfDay();
         }
 
-        return result + " - ";
+        return result;
     }
 
     private boolean consistsOf(char c, String s) {

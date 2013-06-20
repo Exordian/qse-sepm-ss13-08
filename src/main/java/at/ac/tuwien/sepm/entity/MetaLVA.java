@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -250,5 +251,21 @@ public class MetaLVA implements Comparable<MetaLVA>{
         }else{
             return (int)(o.priority-priority);
         }
+    }
+    public static Comparator<MetaLVA> getAlphabeticalNameComparator(){
+        return new Comparator<MetaLVA>() {
+            @Override
+            public int compare(MetaLVA o1, MetaLVA o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        };
+    }
+    public static Comparator<MetaLVA> getNrComparator(){
+        return new Comparator<MetaLVA>() {
+            @Override
+            public int compare(MetaLVA o1, MetaLVA o2) {
+                return o1.getNr().compareTo(o2.getNr());
+            }
+        };
     }
 }
