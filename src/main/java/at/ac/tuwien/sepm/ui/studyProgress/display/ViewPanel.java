@@ -45,6 +45,7 @@ public class ViewPanel extends StandardInsidePanel {
     private PropertyService propertyService;
 
     private int semesterAnz = 6;
+    private int currSemester = 1;
     private int year = 2013;
     private boolean isWinterSemester = true;
 
@@ -111,7 +112,8 @@ public class ViewPanel extends StandardInsidePanel {
                     temp.add(l);
             }
             semester.setLvas(temp);
-            semester.setSemesterTitle(semesterAnz + ". Semester");
+            String tempo = isWinterSemester? "WS" : "SS";
+            semester.setSemesterTitle(currSemester + ". Semester (" + year + ", " + tempo + ")");
         } catch (ServiceException e) {
             log.error(e.getMessage());
         } catch (ValidationException e) {
@@ -144,6 +146,7 @@ public class ViewPanel extends StandardInsidePanel {
                     if (!isWinterSemester)
                         year--;
                     isWinterSemester = !isWinterSemester;
+                    currSemester--;
                     refresh();
                 }
                 // }
@@ -164,6 +167,7 @@ public class ViewPanel extends StandardInsidePanel {
                     if (isWinterSemester)
                         year++;
                     isWinterSemester = !isWinterSemester;
+                    currSemester++;
                     refresh();
                 }
                 //  }
@@ -174,8 +178,7 @@ public class ViewPanel extends StandardInsidePanel {
     }
 
     private void initSemesterPanel() {
-        ArrayList<LVA> test = new ArrayList<LVA>();
-        semester = new SemesterPanel(this.getX(), majorName.getY() + majorName.getHeight() + 30, "1. Semester", test);
+        semester = new SemesterPanel(this.getX(), majorName.getY() + majorName.getHeight() + 30, "1. Semester", new ArrayList<LVA>());
         this.add(semester);
     }
 

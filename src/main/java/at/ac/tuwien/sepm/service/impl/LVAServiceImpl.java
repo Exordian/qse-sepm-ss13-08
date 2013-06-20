@@ -201,7 +201,7 @@ public class LVAServiceImpl implements LVAService {
     @Override
     public boolean isFirstSemesterAWinterSemester() throws ServiceException {
         if (propertyService.getProperty("user.firstSemester") != null&&!propertyService.getProperty("user.firstSemester").isEmpty()) {
-            return propertyService.getProperty("user.firstSemester") == "WS";
+            return propertyService.getProperty("user.firstSemester").equals("WS");
         } else {
             logger.error("Erstes Semester Property File wurde nicht gefunden.");
             throw new ServiceException("Erstes Semester Property File wurde nicht gefunden.");
