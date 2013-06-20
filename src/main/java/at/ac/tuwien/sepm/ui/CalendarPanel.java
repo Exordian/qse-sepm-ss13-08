@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.service.ICalendarService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.calender.CalMonthGenerator;
 import at.ac.tuwien.sepm.ui.calender.CalWeekGenerator;
@@ -12,15 +13,17 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 //import java.util.Locale;
 
@@ -32,6 +35,7 @@ public class CalendarPanel extends StandardInsidePanel {
     private JButton fwd;
     private JButton bwd;
     private JButton importBtn;
+    private JButton exportBtn;
     private JLabel month;
     private JComboBox semester;
 
@@ -45,9 +49,17 @@ public class CalendarPanel extends StandardInsidePanel {
     private CalendarInterface activeView;
     private TodoPanel todoPanel;
 
+    private static final String OVERWRITE_FILE_MESSAGE = "Die angegebene Datei existiert bereits.\nSoll diese überschrieben werden?";
+    private static final String OVERWRITE_FILE_TITLE = "Soll die Datei überschrieben werden?";
+    private static final String[] OVERWRITE_FILE_BUTTON_TEXT = {"Ja", "Nein"};
+    private JFileChooser jfc;
+
     private boolean showTodo = false;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+
+    @Autowired
+    private ICalendarService iCalendarService;
 
     @Autowired
     public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel) {
@@ -62,6 +74,8 @@ public class CalendarPanel extends StandardInsidePanel {
 
         createTabButtons();
         createNavButtons();
+        createICalFileChooser();
+        createExportButton();
         createImportButton();
         changeImage(1);
         createTop();
@@ -98,18 +112,109 @@ public class CalendarPanel extends StandardInsidePanel {
         this.add(semester);
     }
 
+    private void createICalFileChooser() {
+        jfc = new JFileChooser();
+        jfc.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f==null) {
+                    return false;
+                }
+
+                MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
+                mimetypesFileTypeMap.addMimeTypes("text/calendar ics iCal ifb iFBf ical");
+                String mimeType = mimetypesFileTypeMap.getContentType(f);
+
+                if (f.isDirectory()) {
+                    return true;
+                } else if(mimeType.equals("text/calendar")) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            @Override
+            public String getDescription() {
+                if(System.getProperty("user.language").equals("de")) {
+                    return "Kalender Dateien";
+                }
+                return "Calendar files";
+            }
+        });
+    }
+
+    private int openExistingFileDialog () {
+        return JOptionPane.showOptionDialog(new JFrame(),
+                OVERWRITE_FILE_MESSAGE,
+                OVERWRITE_FILE_TITLE,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                OVERWRITE_FILE_BUTTON_TEXT,
+                OVERWRITE_FILE_BUTTON_TEXT[1]);
+    }
+
     private void createImportButton() {
-        importBtn = new JButton("Importieren");
-        importBtn.setBounds(910, 581, 110, 38);
+        importBtn = new JButton("iCalendar importieren");
+        importBtn.setBounds(845, 581, 175, 38);
         importBtn.setFont(standardButtonFont);
         importBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //todo import button
+                log.debug("import button pressed ...");
+
+                if(jfc.showOpenDialog(CalendarPanel.this) == JFileChooser.APPROVE_OPTION) {
+                    File file = jfc.getSelectedFile();
+                    try {
+                        iCalendarService.icalImport(file);
+                    } catch (ServiceException e) {
+                        // TODO inform user about this
+                    }
+                }
+                // TODO inform user about successful creation of the calendar
             }
         });
 
         this.add(importBtn);
+    }
+
+    private void createExportButton() {
+        exportBtn = new JButton("Als iCalendar speichern");
+        exportBtn.setBounds(669, 581, 175, 38);
+        exportBtn.setFont(standardButtonFont);
+        exportBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                log.debug("export button pressed ...");
+
+                int jfcChosen=-1;
+                int dialogChosen=-1;
+                boolean existingFileChoosed=false;
+                do {
+                    existingFileChoosed=false;
+                    jfcChosen = jfc.showSaveDialog(CalendarPanel.this);
+                    if(jfcChosen == JFileChooser.APPROVE_OPTION) {
+                        File file = jfc.getSelectedFile();
+
+                        if(file.exists() && file.isFile()) {
+                            existingFileChoosed = true;
+                            dialogChosen = openExistingFileDialog();
+                        }
+                        if (!file.exists() || dialogChosen==0) {
+                            try {
+                                iCalendarService.icalExport(file);
+                            } catch (ServiceException e) {
+                                // TODO inform user about this
+                            }
+                        }
+                    }
+                } while(jfcChosen == JFileChooser.APPROVE_OPTION && dialogChosen==1);
+                // TODO inform user about successful creation of the calendar
+            }
+        });
+
+        this.add(exportBtn);
     }
 
     private void createNavButtons() {
@@ -267,12 +372,14 @@ public class CalendarPanel extends StandardInsidePanel {
                 fwd.setVisible(true);
                 bwd.setVisible(true);
                 importBtn.setVisible(true);
+                exportBtn.setVisible(true);
             } else if (s.equals("hide")) {
                 month.setVisible(false);
                 semester.setVisible(false);
                 fwd.setVisible(false);
                 bwd.setVisible(false);
                 importBtn.setVisible(false);
+                exportBtn.setVisible(false);
             } else {
                 //troll out loud
             }
