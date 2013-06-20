@@ -22,6 +22,7 @@ public class SmallInfoPanel extends StandardInsidePanel {
     public static int Error = 1;
     public static int Info = 2;
     public static int Warning = 3;
+    public static int Success = 4;
 
     public SmallInfoPanel() {
         this.setLayout(null);
@@ -62,6 +63,9 @@ public class SmallInfoPanel extends StandardInsidePanel {
                     break;
                 case 3:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/warning.png"));
+                    break;
+                case 4:
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/success.png"));
                     break;
                 default:
                     break;

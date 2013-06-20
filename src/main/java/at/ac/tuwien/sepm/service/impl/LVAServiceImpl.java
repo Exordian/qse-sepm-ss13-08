@@ -234,9 +234,8 @@ public class LVAServiceImpl implements LVAService {
                 }
                 int x = temp.getYear()-beginning;
                 if (x == 0) {
-                    return x+1;
+                    return isFirstSemesterAWinterSemester()? 2 : 1;
                 } else {
-
                     return x*2;
                 }
             } else {
