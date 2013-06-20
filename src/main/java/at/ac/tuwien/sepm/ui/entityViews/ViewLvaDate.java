@@ -257,7 +257,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             type.addItem(t);
         }
         type.setFont(standardTextFont);
-        type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 100,25);
+        type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 200,25);
         this.add(type);
 
 
