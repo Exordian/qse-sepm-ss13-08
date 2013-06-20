@@ -414,6 +414,7 @@ public class PlanPanel extends StandardInsidePanel {
         this.add(intersectVOCheckLabel);
 
         intersectVOCheck = new JCheckBox();
+        intersectVOCheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
         intersectVOCheck.setBackground(new Color(0,0,0,0));
         intersectVOCheck.setBounds(intersectVOCheckLabel.getX()+intersectVOCheckLabel.getWidth()+5, intersectVOCheckLabel.getY()+5, 20, 20);
         this.add(intersectVOCheck);
@@ -425,6 +426,7 @@ public class PlanPanel extends StandardInsidePanel {
         this.add(intersectUECheckLabel);
 
         intersectUECheck = new JCheckBox();
+        intersectUECheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
         intersectUECheck.setBackground(new Color(0,0,0,0));
         intersectUECheck.setBounds(intersectUECheckLabel.getX()+intersectUECheckLabel.getWidth()+5, intersectUECheckLabel.getY()+5, 20, 20);
         this.add(intersectUECheck);
@@ -436,6 +438,7 @@ public class PlanPanel extends StandardInsidePanel {
         this.add(intersectExamCheckLabel);
 
         intersectExamCheck = new JCheckBox();
+        intersectExamCheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
         intersectExamCheck.setBackground(new Color(0,0,0,0));
         intersectExamCheck.setBounds(intersectExamCheckLabel.getX()+intersectExamCheckLabel.getWidth()+5, intersectExamCheckLabel.getY()+5, 20, 20);
         this.add(intersectExamCheck);
@@ -447,6 +450,7 @@ public class PlanPanel extends StandardInsidePanel {
         this.add(intersectCustomCheckLabel);
 
         intersectCustomCheck = new JCheckBox();
+        intersectCustomCheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
         intersectCustomCheck.setBackground(new Color(0,0,0,0));
         intersectCustomCheck.setBounds(intersectCustomCheckLabel.getX()+intersectCustomCheckLabel.getWidth()+5, intersectCustomCheckLabel.getY()+5, 20, 20);
         this.add(intersectCustomCheck);
@@ -458,6 +462,7 @@ public class PlanPanel extends StandardInsidePanel {
         this.add(considerStudyProgressCheckLabel);
 
         considerStudyProgressCheck = new JCheckBox();
+        considerStudyProgressCheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
         considerStudyProgressCheck.setBackground(new Color(0,0,0,0));
         considerStudyProgressCheck.setBounds(considerStudyProgressCheckLabel.getX()+considerStudyProgressCheckLabel.getWidth()+5, considerStudyProgressCheckLabel.getY()+5, 20, 20);
         this.add(considerStudyProgressCheck);
@@ -515,5 +520,4 @@ public class PlanPanel extends StandardInsidePanel {
 
         this.repaint();
     }
-
 }

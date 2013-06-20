@@ -224,6 +224,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         this.add(completedLabel);
 
         completed = new JCheckBox();
+        completed.addChangeListener(dONTFUCKINGBUGSWINGListener());
         completed.setBackground(new Color(0,0,0,0));
         completed.setBounds(completedLabel.getX() + completedLabel.getWidth() + 20, completedLabel.getY(), 20, 20);
         this.add(completed);

@@ -209,7 +209,6 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         this.add(scroll);
 
 
-
         fromLabel = new JLabel("Von");
         fromLabel.setFont(standardTextFont);
         fromLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10,50,25);
@@ -257,7 +256,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             type.addItem(t);
         }
         type.setFont(standardTextFont);
-        type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 100,25);
+        type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 200,25);
         this.add(type);
 
 
@@ -291,6 +290,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         this.add(attendanceRequiredLabel);
 
         attendanceRequired = new JCheckBox();
+        attendanceRequired.addChangeListener(dONTFUCKINGBUGSWINGListener());
         attendanceRequired.setSelected(lvaDate.getAttendanceRequired() != null ? lvaDate.getAttendanceRequired() : false);
         attendanceRequired.setBackground(new Color(0,0,0,0));
         attendanceRequired.setBounds(attendanceRequiredLabel.getX() + attendanceRequiredLabel.getWidth() + 5, attendanceRequiredLabel.getY(), 20, 20);

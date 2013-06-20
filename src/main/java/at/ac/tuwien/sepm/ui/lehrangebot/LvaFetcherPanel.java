@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.LVAUtil;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
@@ -252,8 +253,10 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 progressBar.setIndeterminate(false);
                 progressBar.setVisible(false);
                 importb.setEnabled(true);
+                PanelTube.backgroundPanel.viewInfoText("Die Lvas wurden fertig geladen.", SmallInfoPanel.Info);
             } catch (ServiceException e) {
                 logger.info("couldn't build LvaTree", e);
+                PanelTube.backgroundPanel.viewInfoText("Die Lvas konnten nicht geladen werden.", SmallInfoPanel.Error);
             }
             return null;
         }

@@ -74,9 +74,9 @@ public class LvaPanel extends StandardInsidePanel {
         metaTitle.setBounds((int)whiteSpace.getWidth()/2-(int)paneMeta.getWidth()/2-75, 5, 150,30);
         this.add(metaTitle);
 
-        JLabel lvatitle = new JLabel("einzelne Semester");
+        JLabel lvatitle = new JLabel("pro Semester");
         lvatitle.setFont(standardSmallerTitleFont);
-        lvatitle.setBounds((int)whiteSpace.getWidth()/2+(int)paneLva.getWidth()/2-90, 5, 180,30);
+        lvatitle.setBounds((int)whiteSpace.getWidth()/2+(int)paneLva.getWidth()/2-110, 5, 220,30);
         this.add(lvatitle);
     }
 

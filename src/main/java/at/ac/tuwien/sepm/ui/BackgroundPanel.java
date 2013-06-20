@@ -164,7 +164,8 @@ public class BackgroundPanel extends JPanel {
     *   int nmb = icon
     *   (1 = SmallInfoPanel.Error,
     *   2 = SmallInfoPanel.Info,
-    *   3 = SmallInfoPanel.Warning)
+    *   3 = SmallInfoPanel.Warning
+    *   4 = SmallInfoPanel.Success)
     */
     public void viewInfoText(String s, int nmb) {
         smallInfoPanel.setVisible(true);

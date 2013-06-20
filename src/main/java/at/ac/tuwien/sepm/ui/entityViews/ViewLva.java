@@ -287,6 +287,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
         this.add(inStudyProgressLabel);
 
         inStudyProgressInput = new JCheckBox();
+        inStudyProgressInput.addChangeListener(dONTFUCKINGBUGSWINGListener());
         inStudyProgressInput.setBackground(new Color(0, 0, 0, 0));
         inStudyProgressInput.setBounds(inStudyProgressLabel.getX()+ inStudyProgressLabel.getWidth()+smallSpace, inStudyProgressLabel.getY(), inStudyProgressInput.getPreferredSize().width,textHeight);
         this.add(inStudyProgressInput);

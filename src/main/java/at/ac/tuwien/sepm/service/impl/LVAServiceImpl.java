@@ -209,7 +209,7 @@ public class LVAServiceImpl implements LVAService {
     }
 
     @Override
-    public int firstYear() throws ServiceException {
+    public int firstYearInStudyProgress() throws ServiceException {
         if (propertyService.getProperty("user.firstYear") != null && !propertyService.getProperty("user.firstYear").isEmpty()) {
             return Integer.parseInt(propertyService.getProperty("user.firstYear"));
         } else {
@@ -233,8 +233,11 @@ public class LVAServiceImpl implements LVAService {
                     }
                 }
                 int x = temp.getYear()-beginning;
-                return x*2;
-
+                if (x == 0) {
+                    return isFirstSemesterAWinterSemester()? 2 : 1;
+                } else {
+                    return x*2;
+                }
             } else {
                 logger.error("Erstes Jahr Property File wurde nicht gefunden.");
                 throw new ValidationException("Erstes Jahr Property File wurde nicht gefunden.");
