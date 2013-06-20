@@ -44,7 +44,7 @@ public class ViewPanel extends StandardInsidePanel {
     private LVAService service;
     private PropertyService propertyService;
 
-    //private int semesterAnz = 6;
+    private int semesterAnz = 6;
     private int year = 2013;
     private boolean isWinterSemester = true;
 
@@ -59,7 +59,7 @@ public class ViewPanel extends StandardInsidePanel {
         loadFonts();
         setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(), (int) whiteSpace.getWidth(), (int) whiteSpace.getHeight());
         setMajorName();
-        //setSemesterAnzahl();
+        setSemesterAnzahl();
         year = getFirstYear();
         setIsWinterSemester();
         initMajorName();
@@ -96,6 +96,14 @@ public class ViewPanel extends StandardInsidePanel {
 
     @Scheduled(fixedDelay = 5000)
     public void refresh() {
+        if (semesterAnz <= 1) {
+            bwd.setVisible(false);
+            fwd.setVisible(false);
+        } else {
+            bwd.setVisible(true);
+            fwd.setVisible(true);
+
+        }
         try {
             ArrayList<LVA> temp = new ArrayList<>();
             for (LVA l : service.readByYearAndSemester(year, isWinterSemester)) {
@@ -103,6 +111,7 @@ public class ViewPanel extends StandardInsidePanel {
                     temp.add(l);
             }
             semester.setLvas(temp);
+            semester.setSemesterTitle(semesterAnz + ". Semester");
         } catch (ServiceException e) {
             log.error(e.getMessage());
         } catch (ValidationException e) {
@@ -183,13 +192,13 @@ public class ViewPanel extends StandardInsidePanel {
         }
     }
 
-   /* public void setSemesterAnzahl() {
+    public void setSemesterAnzahl() {
         try {
             this.semesterAnz = service.numberOfSemestersInStudyProgress();
         } catch (ServiceException e) {
             log.error(e.getMessage());
         }
-    }*/
+    }
 
     public int getFirstYear() {
         try {

@@ -69,7 +69,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 propertyService.setProperty("user.firstYear", Integer.toString(year.getYear()));
                 propertyService.setProperty("user.firstSemester", (String)semester.getSelectedItem());
-                propertyService.setProperty("user.majorName", (String)major.getSelectedItem());
+                propertyService.setProperty("user.majorName", ((CurriculumSelectItem)major.getSelectedItem()).toString());
                 propertyService.setProperty("user.defaultECTS", ects.getText());
                 setVisible(false);
                 PanelTube.backgroundPanel.viewInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Info);

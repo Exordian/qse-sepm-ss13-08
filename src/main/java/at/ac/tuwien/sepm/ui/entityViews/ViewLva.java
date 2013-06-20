@@ -96,7 +96,11 @@ public class ViewLva extends StandardSimpleInsidePanel {
             content.setText(lva.getContent());
             language.setText(lva.getLanguage());
             semester.setSelectedItem(lva.getSemester());
-            metaLVA.setSelectedItem(lva.getMetaLVA());   //todo
+            for(int i = 0; i < metaLVA.getModel().getSize(); i++)
+                if (((MetaLvaSelectItem) metaLVA.getItemAt(i)).get().getId() == lva.getMetaLVA().getId()) {
+                    metaLVA.setSelectedIndex(i);
+                    break;
+                }
             year.setYear(lva.getYear());
             if (lva.getGrade() != 0) {
                 grade.setValue(lva.getGrade());

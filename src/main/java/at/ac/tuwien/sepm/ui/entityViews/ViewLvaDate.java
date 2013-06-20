@@ -103,15 +103,11 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             changeTitle(lvaDate.getName());
             description.setText(lvaDate.getDescription());
             type.setSelectedItem(lvaDate.getType());
-           /* try {
-                lva.setSelectedItem(lvaService.readById(lvaDate.getLva()));     //todo
-            } catch (ServiceException e) {
-                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
-                e.printStackTrace();
-            } catch (ValidationException e) {
-                log.error("Problem beim Einlesen der zugehörigen MetaLva.");
-                e.printStackTrace();
-            }  */
+            for(int i = 0; i < lva.getModel().getSize(); i++)           //todo
+                if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == lvaDate.getLva()) {
+                    lva.setSelectedIndex(i);
+                    break;
+                }
             attendanceRequired.setSelected(lvaDate.getAttendanceRequired());
             //attended.setSelected(lvaDate.getWasAttendant());
             from.setDate(lvaDate.getStart().toDate());

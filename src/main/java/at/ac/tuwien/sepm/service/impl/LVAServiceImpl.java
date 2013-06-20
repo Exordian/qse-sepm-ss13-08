@@ -221,18 +221,24 @@ public class LVAServiceImpl implements LVAService {
     @Override
     public int numberOfSemestersInStudyProgress() throws ServiceException {
         try {
-            int beginning = Integer.parseInt(propertyService.getProperty("user.firstYear"));
-            LVA temp = null;
-            for (LVA l : readAll()) {
-                if (temp == null)
-                    temp = l;
-                if(l.isInStudyProgress()) {
-                    if (l.getYear() >= temp.getYear())
+            if ((propertyService.getProperty("user.firstYear") != null && !propertyService.getProperty("user.firstYear").isEmpty()) && !readAll().isEmpty()) {
+                int beginning = Integer.parseInt(propertyService.getProperty("user.firstYear"));
+                LVA temp = null;
+                for (LVA l : readAll()) {
+                    if (temp == null)
                         temp = l;
+                    if(l.isInStudyProgress()) {
+                        if (l.getYear() >= temp.getYear())
+                            temp = l;
+                    }
                 }
+                int x = temp.getYear()-beginning;
+                return x*2;
+
+            } else {
+                logger.error("Erstes Jahr Property File wurde nicht gefunden.");
+                throw new ValidationException("Erstes Jahr Property File wurde nicht gefunden.");
             }
-            int x = temp.getYear()-beginning;
-            return x*2;
         } catch (ValidationException e) {
             logger.error("Exception: "+ e.getMessage());
             throw new ServiceException("Exception: "+ e.getMessage());
