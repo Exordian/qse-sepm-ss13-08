@@ -113,7 +113,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewDate.this, "Wollen sie diesen Termin wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             dateService.deleteDate(dateEntity.getId());
-                            PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gelöscht.", SmallInfoPanel.Info);
+                            PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gelöscht.", SmallInfoPanel.Success);
                         }
                     } else {
                         PanelTube.backgroundPanel.viewInfoText("Dieser Termin ist noch nicht in der Datenbank.", SmallInfoPanel.Error);
@@ -139,7 +139,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     dateEntity.setDescription(description.getText());
                     dateEntity.setIntersectable(intersectable.isSelected());
                     if (convertDateAndTime(fromTime, from).isAfter(convertDateAndTime(toTime, to))) {
-                        PanelTube.backgroundPanel.viewInfoText("Das Start-Datum muss vor dem End-Datum liegen.", SmallInfoPanel.Info);
+                        PanelTube.backgroundPanel.viewInfoText("Das Start-Datum muss vor dem End-Datum liegen.", SmallInfoPanel.Warning);
                         return;
                     }
                     dateEntity.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));

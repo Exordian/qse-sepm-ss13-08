@@ -100,7 +100,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     } else {
                         metaLVAService.create(metaLVA);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Die Lva wurde gespeichert.", SmallInfoPanel.Info);
+                    PanelTube.backgroundPanel.viewInfoText("Die Lva wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {

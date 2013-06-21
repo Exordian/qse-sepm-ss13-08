@@ -151,7 +151,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
                     } else {
                         lvaService.create(lva);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Die Lva wurde gespeichert.", SmallInfoPanel.Info);
+                    PanelTube.backgroundPanel.viewInfoText("Die Lva wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {

@@ -109,7 +109,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
                     } else {
                         moduleService.create(module);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Das Modul wurde gespeichert.", SmallInfoPanel.Info);
+                    PanelTube.backgroundPanel.viewInfoText("Das Modul wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {

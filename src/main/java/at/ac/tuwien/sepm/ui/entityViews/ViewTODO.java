@@ -7,10 +7,10 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TodoService;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
-import at.ac.tuwien.sepm.ui.template.PanelTube;
-import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
+import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -18,12 +18,9 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -119,7 +116,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewTODO.this, "Wollen sie dieses TODO wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             todoService.delete(todo.getId());
-                            PanelTube.backgroundPanel.viewInfoText("Das Todo wurde gelöscht.", SmallInfoPanel.Info);
+                            PanelTube.backgroundPanel.viewInfoText("Das Todo wurde gelöscht.", SmallInfoPanel.Success);
                             setVisible(false);
                             PanelTube.backgroundPanel.showLastComponent();
                         }

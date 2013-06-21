@@ -3,13 +3,16 @@ package at.ac.tuwien.sepm.ui.entityViews;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
-import at.ac.tuwien.sepm.service.*;
+import at.ac.tuwien.sepm.service.LVAService;
+import at.ac.tuwien.sepm.service.LvaDateService;
+import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
-import at.ac.tuwien.sepm.ui.template.PanelTube;
-import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
+import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import com.toedter.calendar.JDateChooser;
 import org.apache.log4j.LogManager;
@@ -21,7 +24,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -117,7 +119,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewDeadline.this, "Wollen sie diese Deadline wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             lvaDateService.delete(deadline.getId());
-                            PanelTube.backgroundPanel.viewInfoText("Die Deadline wurde gelöscht.", SmallInfoPanel.Info);
+                            PanelTube.backgroundPanel.viewInfoText("Die Deadline wurde gelöscht.", SmallInfoPanel.Success);
                         }
                         setVisible(false);
                         PanelTube.backgroundPanel.showLastComponent();
@@ -156,7 +158,7 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                     } else {
                         lvaDateService.create(deadline);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Die Deadline wurde gespeichert.", SmallInfoPanel.Info);
+                    PanelTube.backgroundPanel.viewInfoText("Die Deadline wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {

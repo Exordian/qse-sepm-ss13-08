@@ -123,17 +123,16 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 int selectedRow = metaLVAPanel.getTable().getSelectedRow();
                 try {
                     MetaLVA merged = mergePanel.getMetaLVA();
-                    System.out.println("update for database: "+merged);
                     metaLVAService.update(merged);
                     lvaService.update(merged.getLVAs().get(0));
                 } catch (ServiceException e1) {
                     e1.printStackTrace();
-                    //todo print error to user
+                    PanelTube.backgroundPanel.viewInfoText("Beim Speichern ist ein Fehler passiert!", SmallInfoPanel.Error);
                 } catch (ValidationException e1) {
                     e1.printStackTrace();
-                    //todo print error to user
+                    PanelTube.backgroundPanel.viewInfoText("Beim Speichern ist ein Fehler passiert!", SmallInfoPanel.Error);
                 } catch (EscapeException e) {
-                    //todo tell user about error..
+                    //action cancled, user should already be informed!
                 }
                 newIntersectingMetaLVAs.remove(selectedRow);
                 oldIntersectingMetaLVAs.remove(selectedRow);
@@ -145,8 +144,8 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                         metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                     }
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich.", SmallInfoPanel.Info);
-                    //todo finished merging, inform user and quit
+                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich!", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.showLastComponent();
                 }
             }
         });
@@ -196,8 +195,8 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 if( metaLVAPanel.getTable().getRowCount()>0){
                     metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich.", SmallInfoPanel.Info);
-                    //todo finished merging, inform user and quit
+                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich!", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.showLastComponent();
                 }
             }
         });
@@ -214,9 +213,12 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                     try {
                         metaLVAService.update(newIntersectingMetaLVAs.get(selected[i]));
                     } catch (ServiceException e1) {
-                        //todo print error to user
+                        PanelTube.backgroundPanel.viewInfoText("Beim Speichern ist ein Fehler passiert!", SmallInfoPanel.Error);
+                        e1.printStackTrace();
                     } catch (ValidationException e1) {
-                        //todo print error to user
+                        PanelTube.backgroundPanel.viewInfoText("Beim Speichern ist ein Fehler passiert!", SmallInfoPanel.Error);
+
+                        e1.printStackTrace();
                     }
                     newIntersectingMetaLVAs.remove(selected[i]);
                     oldIntersectingMetaLVAs.remove(selected[i]);
@@ -225,8 +227,8 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 if( metaLVAPanel.getTable().getRowCount()>0){
                     metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich.", SmallInfoPanel.Info);
-                    //todo finished merging, inform user and quit 
+                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich!", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.showLastComponent();
                 }
             }
         });
@@ -376,11 +378,19 @@ public class ViewMerge extends StandardSimpleInsidePanel {
 
             //  META-LVA
             if(allChangedFields.contains(newName)){
+                if(newName.getText().trim().length()==0){
+                    PanelTube.backgroundPanel.viewInfoText("Der angegebene Name darf nicht leer sein!", SmallInfoPanel.Warning);
+                    throw new EscapeException();
+                }
                 toReturn.setName(newName.getText());
             }else{
                 toReturn.setName(currentOld.getName());
             }
             if(allChangedFields.contains(newNr)){
+                if(newNr.getText().trim().length()==0){
+                    PanelTube.backgroundPanel.viewInfoText("Die angegebene LVA-Nummer darf nicht leer sein!", SmallInfoPanel.Warning);
+                    throw new EscapeException();
+                }
                 toReturn.setNr(newNr.getText());
             }else{
                 toReturn.setNr(currentOld.getNr());
@@ -396,15 +406,20 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 toReturn.setModule(currentOld.getModule());
             }
             try{
+
                 if(allChangedFields.contains(newECTS)){
-                    toReturn.setECTS(Float.parseFloat(newECTS.getText()));
+                    float ects = Float.parseFloat(newECTS.getText());
+                    if(ects<0){
+                        PanelTube.backgroundPanel.viewInfoText("Die angegebenen ECTS müssen positiv sein!", SmallInfoPanel.Warning);
+                        throw new EscapeException();
+                    }
+                    toReturn.setECTS(ects);
                 }else{
                     toReturn.setECTS(currentOld.getECTS());
                 }
             } catch(NumberFormatException e){
-                PanelTube.backgroundPanel.viewInfoText("Die Zahl ist so nicht gueltig..", SmallInfoPanel.Warning);
-                e.printStackTrace();
-                throw new EscapeException("");
+                PanelTube.backgroundPanel.viewInfoText("Die angegebenen ECTS sind ungültig!", SmallInfoPanel.Warning);
+                throw new EscapeException();
             }
 
             //  LVA
@@ -446,11 +461,12 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             // <Module laden>
             allModules = null;
             allModulesMap = new HashMap<Integer, Integer>();
-            try {
+            /*try {
                 allModules = moduleService.readAll();
             } catch (ServiceException e) {
                 //todo user balbla
-            }
+            }*/
+            allModules=new ArrayList<Module>(0);
             String[] moduleName = new String[allModules.size()];
             int i=0;
             for(Module m:allModules){
