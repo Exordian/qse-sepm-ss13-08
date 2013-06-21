@@ -144,7 +144,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
         nameInput.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                changeTitle(nameInput.getText());
+                changeTitle(nameInput.getText());//To change body of implemented methods use File | Settings | File Templates.
             }
 
             @Override
