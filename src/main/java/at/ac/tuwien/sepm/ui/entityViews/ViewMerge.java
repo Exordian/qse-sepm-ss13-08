@@ -401,10 +401,10 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 }else{
                     toReturn.setECTS(currentOld.getECTS());
                 }
-            }catch(NumberFormatException e){
+            } catch(NumberFormatException e){
                 PanelTube.backgroundPanel.viewInfoText("Die Zahl ist so nicht gueltig..", SmallInfoPanel.Warning);
                 e.printStackTrace();
-                throw new EscapeException();
+                throw new EscapeException("");
             }
 
             //  LVA

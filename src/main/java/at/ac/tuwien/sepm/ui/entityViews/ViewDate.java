@@ -149,7 +149,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     } else {
                         dateService.createDate(dateEntity);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gespeichert.", SmallInfoPanel.Info);
+                    PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {

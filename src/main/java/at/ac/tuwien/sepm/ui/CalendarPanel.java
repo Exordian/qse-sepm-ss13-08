@@ -92,7 +92,6 @@ public class CalendarPanel extends StandardInsidePanel {
         semester = new JComboBox();
         semester.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5+295, (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 90, 20);
         semester.setFont(standardButtonFont);
-        refreshTop();
         this.add(month);
         this.add(semester);
     }

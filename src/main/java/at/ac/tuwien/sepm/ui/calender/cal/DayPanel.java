@@ -258,7 +258,7 @@ public class DayPanel extends JPanel {
                     dateEntity.setIntersectable(false);
                     dateEntity.setDescription("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!");
                     try {
-                        DayPanel.this.dateService.createDate(dateEntity);
+                        DayPanel.this.dateService.createDate(dateEntity);                                                    //todo
                         PanelTube.backgroundPanel.viewInfoText("Der Tag wurde als frei markiert.", SmallInfoPanel.Info);
                     } catch (ServiceException e1) {
                         log.error(e1.getMessage());
