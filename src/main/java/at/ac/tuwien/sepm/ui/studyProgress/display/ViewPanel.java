@@ -134,7 +134,7 @@ public class ViewPanel extends StandardInsidePanel {
         bwd.setOpaque(false);
         bwd.setContentAreaFilled(false);
         bwd.setBorderPainted(false);
-        bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));   //todo
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

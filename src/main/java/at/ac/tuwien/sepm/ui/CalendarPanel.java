@@ -305,14 +305,6 @@ public class CalendarPanel extends StandardInsidePanel {
 
     public void jumpToDate(DateTime anyDateOfWeek) {
         calPanelWeek.goToDay(anyDateOfWeek);
-        changeImage(1);
-        remove(calPanelMonth);
-        remove(todoPanel);
-        add(calPanelWeek);
-        calPanelWeek.refresh();
-        activeView = calPanelWeek;
-        month.setText(activeView.getTimeIntervalInfo().toUpperCase());
-        calPanelWeek.revalidate();
-        calPanelWeek.repaint();
+        tab1.doClick();
     }
 }

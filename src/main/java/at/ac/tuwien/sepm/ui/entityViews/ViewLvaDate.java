@@ -343,7 +343,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         for (LVA t : lvas) {
             lva.addItem(new LvaSelectItem(t));
         }
-        if (lvaDate != null) {
+        if (lvaDate.getLva() != null) {
             for(int i = 0; i < lva.getModel().getSize(); i++)
                 if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == lvaDate.getLva()) {
                     lva.setSelectedIndex(i);
