@@ -173,7 +173,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(3);
 
         String s = "aa";
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -196,7 +196,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(3);
 
         String s = "aa";
-        for(int i=0; i<14; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -220,7 +220,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(3);
 
         String s = "aa";
-        for(int i=0; i<14; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -244,7 +244,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(3);
 
         String s = "aa";
-        for(int i=0; i<14; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -268,7 +268,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(3);
 
         String s = "aa";
-        for(int i=0; i<14; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -292,7 +292,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(3);
 
         String s = "aa";
-        for(int i=0; i<7; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -316,7 +316,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(3);
 
         String s = "aa";
-        for(int i=0; i<7; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -662,7 +662,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(4);
 
         String s = "aa";
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -686,7 +686,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(4);
 
         String s = "aa";
-        for(int i=0; i<14; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -710,7 +710,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(4);
 
         String s = "aa";
-        for(int i=0; i<14; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -734,7 +734,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(4);
 
         String s = "aa";
-        for(int i=0; i<14; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -758,7 +758,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(4);
 
         String s = "aa";
-        for(int i=0; i<14; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -782,7 +782,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(4);
 
         String s = "aa";
-        for(int i=0; i<7; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 
@@ -806,7 +806,7 @@ public class DBLvaDaoTest {
         TestHelper.insert(4);
 
         String s = "aa";
-        for(int i=0; i<7; i++) {
+        for(int i=0; i<15; i++) {
             s=s.concat(s);
         }
 

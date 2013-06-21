@@ -18,10 +18,12 @@ public class ICalendarServiceImplTest {
     @Autowired
     ICalendarService service;
 
+    @Test
     public void testIcalImport() throws Exception {
 
     }
 
+    @Test
     public void testIcalExport() throws Exception {
 
     }

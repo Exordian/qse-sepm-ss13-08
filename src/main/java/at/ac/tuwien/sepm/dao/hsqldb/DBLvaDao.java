@@ -26,10 +26,10 @@ import java.util.List;
 public class DBLvaDao extends DBBaseDao implements LvaDao {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
-    private static final int MAX_LENGTH_DESCRIPTION=5000;
-    private static final int MAX_LENGTH_ADDITIONAL_DESCRIPTIONS=5000;
-    private static final int MAX_LENGTH_INSTITUTE=5000;
-    private static final int MAX_LENGTH_LANGUAGE=100;
+    private static final int MAX_LENGTH_DESCRIPTION=20000;
+    private static final int MAX_LENGTH_ADDITIONAL_DESCRIPTIONS=20000;
+    private static final int MAX_LENGTH_INSTITUTE=20000;
+    private static final int MAX_LENGTH_LANGUAGE=20000;
 
     @Autowired
     DBLvaDateDao lvaDateDao;
@@ -42,7 +42,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         if(toCreate == null) {
             return false;
         }
-        /*
+
         if(toCreate.getDescription()!=null && toCreate.getDescription().length()>MAX_LENGTH_DESCRIPTION) {
             throw new IOException(ExceptionMessages.tooLongDescription(MAX_LENGTH_DESCRIPTION));
         }
@@ -64,7 +64,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         if(toCreate.getLanguage()!=null && toCreate.getLanguage().length()>MAX_LENGTH_LANGUAGE) {
             throw new IOException(ExceptionMessages.tooLongLanguage(MAX_LENGTH_LANGUAGE));
         }
-        */
+
         /*
         String stmt = "INSERT INTO LVA (id,metaLva,year,isWinterSemester,description,grade,inStudyProgress) " +
                 "VALUES (null,?,?,?,?,?,?);";
@@ -386,7 +386,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         if(toUpdate == null) {
             return false;
         }
-        /*
+
         if(toUpdate.getDescription()!=null && toUpdate.getDescription().length()>MAX_LENGTH_DESCRIPTION) {
             throw new IOException(ExceptionMessages.tooLongDescription(MAX_LENGTH_DESCRIPTION));
         }
@@ -413,7 +413,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         if (jdbcTemplate.queryForObject(stmt, RowMappers.getIntegerRowMapper(), toUpdate.getId()) == 0) {
             return false;
         }
-        */
+
         String stmtUpdateMetaLva = "UPDATE lva SET metalva=? WHERE id=?";
         String stmtUpdateYear = "UPDATE lva SET year=? WHERE id=?";
         String stmtUpdateIsWinterSemester = "UPDATE lva SET iswintersemester=? WHERE id=?";
