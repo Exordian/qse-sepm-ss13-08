@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.swing.*;
 
@@ -35,11 +34,11 @@ public class CalWeekGenerator extends JPanel implements CalendarInterface {
 
     @Override
     public void init() {
-        calPanelWeek.init();
+        //calPanelWeek.init();
     }
 
     @Override
-    @Scheduled(fixedDelay = 5000)
+    //@Scheduled(fixedDelay = 5000)
     public void refresh() {
         try {
             calPanelWeek.setDates();
