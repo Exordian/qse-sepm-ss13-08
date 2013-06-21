@@ -202,7 +202,7 @@ public class PlanPanel extends StandardInsidePanel {
                 if(planningInProgress){
                     //return error
                 }else{
-                    SwingUtilities.invokeLater(new Thread(){
+                    new Thread(){
                         private IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
                         public void start(){
                             super.start();
@@ -285,7 +285,7 @@ public class PlanPanel extends StandardInsidePanel {
                             }
                             setPlanningInProgress(false);
                         }
-                    });
+                    }.start();
                 }
             }
         });

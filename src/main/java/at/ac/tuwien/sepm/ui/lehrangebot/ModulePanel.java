@@ -122,7 +122,7 @@ public class ModulePanel extends StandardInsidePanel {
         }
         refreshing = true;
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        SwingUtilities.invokeLater(new Thread() {
+        new Thread() {
             @Override
             public void run() {
                 try {
@@ -140,6 +140,6 @@ public class ModulePanel extends StandardInsidePanel {
 
                 ModulePanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
-        });
+        }.start();
     }
 }
