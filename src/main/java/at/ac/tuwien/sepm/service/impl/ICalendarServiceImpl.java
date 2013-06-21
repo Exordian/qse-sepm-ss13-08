@@ -62,10 +62,10 @@ public class ICalendarServiceImpl implements ICalendarService {
             calendar = builder.build(fis);
         } catch (FileNotFoundException e) {
             logger.info("Calendar not found.", e);
-            throw new ServiceException(COULD_NOT_IMPORT_CALENDAR, e);
+            throw new ServiceException(COULD_NOT_IMPORT_CALENDAR + " Die Datei konnte nicht gefunden werden.", e);
         } catch (ParserException e) {
             logger.info("Calender could not be parsed", e);
-            throw new ServiceException(COULD_NOT_IMPORT_CALENDAR, e);
+            throw new ServiceException(COULD_NOT_IMPORT_CALENDAR + " Die Datei ist beschädigt.", e);
         } catch (IOException e) {
             logger.info("Calender could not be read.", e);
             throw new ServiceException(COULD_NOT_IMPORT_CALENDAR, e);
@@ -106,7 +106,7 @@ public class ICalendarServiceImpl implements ICalendarService {
             }
         }
 
-        logger.debug(datesCreated + " dates successful imported");
+        logger.info(datesCreated + " dates successful imported");
         debug1(dates);
         return datesCreated;
     }
@@ -116,7 +116,8 @@ public class ICalendarServiceImpl implements ICalendarService {
         // TODO validate the file
 
         Calendar calendar = new Calendar();
-        calendar.getProperties().add(new ProdId("-//Google Inc//Google Calendar 70.9054//EN"));
+        // TODO set the correct ProdID
+        calendar.getProperties().add(new ProdId("at.ac.tuwien.sepm.group08"));
         calendar.getProperties().add(Version.VERSION_2_0);
         calendar.getProperties().add(CalScale.GREGORIAN);
 
@@ -162,7 +163,7 @@ public class ICalendarServiceImpl implements ICalendarService {
             throw new ServiceException(COULD_NOT_EXPORT_CALENDAR, e);
         }
 
-        logger.debug(datesCreated + " successful exported.");
+        logger.info(datesCreated + " successful exported.");
         return true;
     }
 
@@ -176,22 +177,22 @@ public class ICalendarServiceImpl implements ICalendarService {
     public void iCalFileValidator(File f, boolean isExisting) throws ServiceException {
         // TODO test this class properly
         if (f == null) {
-            logger.debug("no file found.");
+            logger.info("no file found.");
             throw new ServiceException("Keine Datei gefunden.");
         }
         if(f.exists()==!isExisting && isExisting && f.isFile()) {
-            logger.debug("not existing file.");
+            logger.info("not existing file.");
             throw new ServiceException("Die angegebene Datei existiert nicht.");
         }
         if(f.exists()==!isExisting && !isExisting && f.isFile()) {
-            logger.debug("failure at storing the calendar.");
+            logger.info("failure at storing the calendar.");
             throw new ServiceException("Fehler beim Speichern des Kalenders.");
         }
 
         MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
         String mimeType = mimetypesFileTypeMap.getContentType(f);
         if(!mimeType.equals("text/calendar")) {
-            logger.debug("wrong mime type. needed: 'text/calendar'\tgiven: " + mimeType);
+            logger.info("wrong mime type. needed: 'text/calendar'\tgiven: " + mimeType);
             throw new ServiceException("Die ausgewählte Datei hat das falsche Format.");
         }
     }
@@ -243,7 +244,7 @@ public class ICalendarServiceImpl implements ICalendarService {
                     stop.minusDays(1).secondOfMinute().withMaximumValue().get(DateTimeFieldType.secondOfMinute()),
                     stop.minusDays(1).millisOfSecond().withMaximumValue().get(DateTimeFieldType.millisOfSecond()));
 
-            logger.debug("'" + evsummary.getValue() + "'\tis a all day event\t" + start.getYear() + "-" + start.getMonthOfYear() + "-" + start.getDayOfMonth() + " " + start.getHourOfDay() + ":" + start.getMinuteOfHour() + ":" + start.getSecondOfMinute() + "." + start.getMillisOfSecond() +
+            logger.info("'" + evsummary.getValue() + "'\tis a all day event\t" + start.getYear() + "-" + start.getMonthOfYear() + "-" + start.getDayOfMonth() + " " + start.getHourOfDay() + ":" + start.getMinuteOfHour() + ":" + start.getSecondOfMinute() + "." + start.getMillisOfSecond() +
                     "\t" + stop.getYear() + "-" + stop.getMonthOfYear() + "-" + stop.getDayOfMonth() + " " + stop.getHourOfDay() + ":" + stop.getMinuteOfHour() + ":" + stop.getSecondOfMinute() + "." + stop.getMillisOfSecond());
         }
         TimeFrame timeFrame = new TimeFrame(start, stop);
@@ -265,7 +266,7 @@ public class ICalendarServiceImpl implements ICalendarService {
             dates.add(entity);
         }
 
-        logger.debug(succesfulDates + " dates created");
+        logger.info(succesfulDates + " dates created");
         return succesfulDates;
     }
 
@@ -290,7 +291,7 @@ public class ICalendarServiceImpl implements ICalendarService {
                 } else if (rule.getRecur().getFrequency().equals(Recur.MONTHLY)) {
                     duration = DateTimeConstants.MILLIS_PER_DAY*31;
                 } else if (rule.getRecur().getFrequency().equals(Recur.YEARLY)) {
-                    duration += DateTimeConstants.MILLIS_PER_DAY*366;
+                    duration = DateTimeConstants.MILLIS_PER_DAY*366;
                 }
                 //debug2(rule);
                 until = new net.fortuna.ical4j.model.DateTime(baseDate.getTime() + (time.to().getMillis() - time.from().getMillis()) + 100 + (rule.getRecur().getCount() * duration));
@@ -330,7 +331,7 @@ public class ICalendarServiceImpl implements ICalendarService {
             s += "\n\t\t(" + i + ")\t" + d;
             i++;
         }
-        logger.debug(s);
+        logger.info(s);
     }
 
     private void debug2(RRule rule) {
@@ -368,7 +369,7 @@ public class ICalendarServiceImpl implements ICalendarService {
         debug2 += "\n\t\t(" + monthList.size() + ") monthList=" + monthList;
         debug2 += "\n\t\t(" + yearDayList.size() + ") yearDayList=" + yearDayList;
         debug2 += "\n\t\t(" + setPosList.size() + ") setPosList=" + setPosList;
-        logger.debug(debug2);
+        logger.info(debug2);
     }
 
     private void debug3(ArrayList<DateEntity> dates, RRule rule, String name, String description, Date baseDate, TimeFrame time, boolean intersectable) {
@@ -381,6 +382,6 @@ public class ICalendarServiceImpl implements ICalendarService {
         debug3 += "\t\tdescription==null\t\t\t\t\t" +   (description==null) + "\n";
         debug3 += "\t\tbaseDate==null\t\t\t\t\t\t" +    (baseDate==null) + "\n";
         debug3 += "\t\ttime==null\t\t\t\t\t\t\t" +      (time==null);
-        logger.debug(debug3);
+        logger.info(debug3);
     }
 }
