@@ -98,6 +98,7 @@ public class CalendarPanel extends StandardInsidePanel {
     }
 
     private void refreshTop() {
+        semester.removeAllItems();
         try {
             boolean winterSem = lvaService.isFirstSemesterAWinterSemester();
             int semesters = lvaService.numberOfSemestersInStudyProgress();

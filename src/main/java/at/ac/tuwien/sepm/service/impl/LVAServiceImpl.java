@@ -239,8 +239,13 @@ public class LVAServiceImpl implements LVAService {
                     return x*2;
                 }
             } else {
-                logger.error("Erstes Jahr Property File wurde nicht gefunden.");
-                throw new ValidationException("Erstes Jahr Property File wurde nicht gefunden.");
+                if (readAll().isEmpty()) {
+                    logger.error("Sie müssen sich ein Studium planen lassen.");
+                    throw new ValidationException("Sie müssen sich ein Studium planen lassen.");
+                } else {
+                    logger.error("Erstes Jahr Property File wurde nicht gefunden.");
+                    throw new ValidationException("Erstes Jahr Property File wurde nicht gefunden.");
+                }
             }
         } catch (ValidationException e) {
             logger.error("Exception: "+ e.getMessage());

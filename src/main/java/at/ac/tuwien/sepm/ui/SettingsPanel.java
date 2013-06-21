@@ -69,7 +69,11 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 propertyService.setProperty("user.firstYear", Integer.toString(year.getYear()));
                 propertyService.setProperty("user.firstSemester", (String)semester.getSelectedItem());
-                propertyService.setProperty("user.majorName", ((CurriculumSelectItem)major.getSelectedItem()).toString());
+                if (!major.getSelectedItem().toString().equals("Bitte Importieren sie ein Studium!")) {
+                    propertyService.setProperty("user.majorName", major.getSelectedItem().toString());
+                } else {
+                    PanelTube.backgroundPanel.viewInfoText("Der Studiumsname konnte nicht gespeichert werden.", SmallInfoPanel.Info);
+                }
                 propertyService.setProperty("user.defaultECTS", ects.getText());
                 setVisible(false);
                 PanelTube.backgroundPanel.viewInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Info);
