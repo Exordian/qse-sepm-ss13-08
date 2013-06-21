@@ -92,7 +92,6 @@ public class CalendarPanel extends StandardInsidePanel {
         semester = new JComboBox();
         semester.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5+295, (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 90, 20);
         semester.setFont(standardButtonFont);
-        refreshTop();
         this.add(month);
         this.add(semester);
     }
@@ -110,10 +109,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 winterSem = !winterSem;
             }
         } catch (ServiceException e) {
-            // TODO find a solution for this workaround ... if this is the solution: delete this TO DO
-            if(PanelTube.backgroundPanel != null) {
-                PanelTube.backgroundPanel.viewInfoText("Die Anzahl der Semester konnte nicht geladen werden.", SmallInfoPanel.Error);
-            }
+            PanelTube.backgroundPanel.viewInfoText("Die Anzahl der Semester konnte nicht geladen werden.", SmallInfoPanel.Error);
         }
     }
 
