@@ -231,20 +231,24 @@ public class BackgroundPanel extends JPanel {
                 case 1:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/cal.jpg"));
                     lastImage = 1;
+                    calPanel.refresh();
                     this.addPanel(calPanel);
                     break;
                 case 2:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/stud.jpg"));
                     lastImage = 2;
+                    studPanel.refresh();
                     this.addPanel(studPanel);
                     break;
                 case 3:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/lehr.jpg"));
                     lastImage = 3;
+                    lehrPanel.refresh();
                     this.addPanel(lehrPanel);
                     break;
                 case 4:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));
+                    propsPanel.refresh();
                     break;
                 default:
                     break;
@@ -291,7 +295,6 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
-                refresh();
                 repaint();
                 revalidate();
             }
@@ -302,7 +305,6 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                refresh();
                 repaint();
                 revalidate();
             }
@@ -313,7 +315,6 @@ public class BackgroundPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(3);
-                refresh();
                 repaint();
                 revalidate();
             }
@@ -339,9 +340,5 @@ public class BackgroundPanel extends JPanel {
     }
 
     public void refresh(){
-        calPanel.refresh();
-        studPanel.refresh();
-        lehrPanel.refresh();
-        propsPanel.refresh();
     }
 }

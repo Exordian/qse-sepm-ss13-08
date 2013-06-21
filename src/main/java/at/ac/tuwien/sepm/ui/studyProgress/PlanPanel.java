@@ -25,6 +25,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -160,6 +161,7 @@ public class PlanPanel extends StandardInsidePanel {
                             lvaDAO.update(temp);
                             PanelTube.backgroundPanel.viewInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Success);
                             refreshMetaLVAs(new ArrayList<MetaLVA>(0));
+                            take.setEnabled(false);
                         } catch (IOException e1) {
                             logger.error(e1);
                             PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
@@ -276,7 +278,7 @@ public class PlanPanel extends StandardInsidePanel {
                                     logger.info("removing from solution: "+customMetaLVA);
                                 }
 
-
+                                Collections.sort(solution,MetaLVA.getAlphabeticalNameComparator());
                                 refreshMetaLVAs(solution);
 
                                 take.setEnabled(true);
