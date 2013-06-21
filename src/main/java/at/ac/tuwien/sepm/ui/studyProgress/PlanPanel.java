@@ -25,6 +25,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -143,29 +144,30 @@ public class PlanPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //todo warning alert: all data from year x, sem y will be overriden
-                List<LVA> toRemove = lvaDAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,true);
-                logger.debug("deleting from studyProgress:\n"+LVAUtil.formatShortLVA(toRemove,1));
+                List<LVA> toRemove = lvaDAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
+                logger.debug("deleting from studyProgress:\n" + LVAUtil.formatShortLVA(toRemove, 1));
                 try {
-                    for(LVA lva:toRemove){
+                    for (LVA lva : toRemove) {
                         //logger.debug("deleting from studyProgress: "+lva);
                         lva.setInStudyProgress(false);
                         lvaDAO.update(lva);
                     }
                     out:
-                    for(MetaLVA m:plannedMetaLVAs){
-                        LVA temp = m.getLVA(plannedYear,plannedSemester);
+                    for (MetaLVA m : plannedMetaLVAs) {
+                        LVA temp = m.getLVA(plannedYear, plannedSemester);
                         temp.setInStudyProgress(true);
                         //logger.debug("adding to studyProgress: "+temp);
                         try {
                             lvaDAO.update(temp);
                             PanelTube.backgroundPanel.viewInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Success);
                             refreshMetaLVAs(new ArrayList<MetaLVA>(0));
+                            take.setEnabled(false);
                         } catch (IOException e1) {
                             logger.error(e1);
                             PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
-                            for(MetaLVA m2:plannedMetaLVAs){    //rollback
-                                LVA temp2 = m.getLVA(plannedYear,plannedSemester);
-                                if(m2==m){
+                            for (MetaLVA m2 : plannedMetaLVAs) {    //rollback
+                                LVA temp2 = m.getLVA(plannedYear, plannedSemester);
+                                if (m2 == m) {
                                     break out;
                                 }
                                 temp2.setInStudyProgress(false);
@@ -181,7 +183,7 @@ public class PlanPanel extends StandardInsidePanel {
                     PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
                 }
 
-                logger.debug("adding to studyProgress: \n"+LVAUtil.formatShortDetailedMetaLVA(plannedMetaLVAs, 1));
+                logger.debug("adding to studyProgress: \n" + LVAUtil.formatShortDetailedMetaLVA(plannedMetaLVAs, 1));
 
 
             }
@@ -209,7 +211,7 @@ public class PlanPanel extends StandardInsidePanel {
                         }
                         @Override
                         public void run(){
-                            planningInProgress(true);
+                            setPlanningInProgress(true);
                             try{
                                 float goalECTS = Float.parseFloat(desiredECTSText.getText());
                                 //boolean vointersect =  intersectVOCheck.isSelected();
@@ -235,7 +237,7 @@ public class PlanPanel extends StandardInsidePanel {
                                     customMetaLVA.setLVA(dateDAO.readNotToIntersectByYearSemester(plannedYear,plannedSemester));
                                     //logger.debug(customMetaLVA.getLVA(plannedYear,plannedSemester));
                                     customMetaLVA.setName("custom dates");
-                                    customMetaLVA.setNr("UniqueNr!!!");
+                                    customMetaLVA.setNr("UniqueNr:%&%&%&%&%");
                                     forced.add(customMetaLVA);
                                     pool.add(customMetaLVA); //todo ohne diese zeile bug?!
                                 }
@@ -265,23 +267,25 @@ public class PlanPanel extends StandardInsidePanel {
                                     tempTimeBetween = tempTimeBetween*60;
                                 }
                                 planer.setIntersectingTolerance(tempTolerance);
-                                planer.setAllowedTimeBetween(tempTimeBetween);
 
+                                planer.setAllowedTimeBetween(tempTimeBetween);
                                 ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
+
+                                logger.info("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
+
                                 if(intersectCustomCheck.isSelected()){
                                     solution.remove(customMetaLVA);
-                                    solution.remove(customMetaLVA);
+                                    logger.info("removing from solution: "+customMetaLVA);
                                 }
-                                logger.info("solution provided by planner:\n" + LVAUtil.formatShortMetaLVA(solution, 1));
 
+                                Collections.sort(solution,MetaLVA.getAlphabeticalNameComparator());
                                 refreshMetaLVAs(solution);
-                                planningInProgress(false);
+
                                 take.setEnabled(true);
                             }catch(EscapeException e){
                                 PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
-
-                                planningInProgress(false);
                             }
+                            setPlanningInProgress(false);
                         }
                     }.start();
                 }
@@ -289,7 +293,12 @@ public class PlanPanel extends StandardInsidePanel {
         });
         this.add(plan);
     }
-    private void planningInProgress(boolean inProgress){
+    private void setPlanningInProgress(boolean inProgress){
+        if(inProgress){
+            this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        }else{
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
         planningInProgress = inProgress;
         plan.setEnabled(!inProgress);
         progressBar.setVisible(inProgress);
@@ -487,7 +496,7 @@ public class PlanPanel extends StandardInsidePanel {
 
         toleranceLabel = new JLabel("Prozent der Termine, die sich schneiden dürfen:");
         toleranceLabel.setFont(standardTextFont);
-        toleranceLabel.setBounds(considerStudyProgressCheckLabel.getX(), considerStudyProgressCheckLabel.getY()+considerStudyProgressCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
+        toleranceLabel.setBounds(considerStudyProgressCheckLabel.getX(), considerStudyProgressCheckLabel.getY() + considerStudyProgressCheckLabel.getHeight() + verticalSpace, textWidth, textHeight);
         this.add(toleranceLabel);
 
         tolerance = new JSpinner();
@@ -521,7 +530,7 @@ public class PlanPanel extends StandardInsidePanel {
         this.add(timeBetweenTextLabel);
 
         timeIntersect = new JSpinner();
-        timeIntersect.setModel(new SpinnerNumberModel(0,0,Integer.MAX_VALUE,5));
+        timeIntersect.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 5));
         timeIntersect.setBounds(timeBetweenTextLabel.getX() + timeBetweenTextLabel.getWidth() + 5 -20, timeBetweenTextLabel.getY() + 5, 43, 20);
         this.add(timeIntersect);
 
@@ -532,7 +541,7 @@ public class PlanPanel extends StandardInsidePanel {
 
 
         timeBuffer = new JSpinner();
-        timeBuffer.setModel(new SpinnerNumberModel(0,0,Integer.MAX_VALUE,5));
+        timeBuffer.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 5));
         timeBuffer.setBounds(timeBetweenTextLabel.getX() + timeBetweenTextLabel.getWidth() + 5 -20, timeBetweenTextLabel.getY() + 5, 43, 20);
         this.add(timeBuffer);
 

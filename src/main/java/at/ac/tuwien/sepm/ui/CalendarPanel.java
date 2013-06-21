@@ -423,8 +423,7 @@ public class CalendarPanel extends StandardInsidePanel {
 
     @Override
     public void refresh() {
-        calPanelMonth.refresh();
-        calPanelWeek.refresh();
+        activeView.refresh();
         refreshTop();
     }
 

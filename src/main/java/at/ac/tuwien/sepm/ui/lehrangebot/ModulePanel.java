@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
@@ -52,7 +53,7 @@ public class ModulePanel extends StandardInsidePanel {
     private JButton refresh;
     private JButton addLva;
     private JButton addModule;
-
+    boolean refreshing = false;
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
 
@@ -76,7 +77,7 @@ public class ModulePanel extends StandardInsidePanel {
         JLabel metaTitle = new JLabel("Module");
         metaTitle.setFont(standardSmallerTitleFont);
         int center = modulePane.getX()+modulePane.getWidth()/2;
-        metaTitle.setBounds((int)whiteSpace.getWidth()/2-(int)paneMeta.getWidth()/2-75, 5, 150,30);
+        metaTitle.setBounds((int) whiteSpace.getWidth() / 2 - (int) paneMeta.getWidth() / 2 - 75, 5, 150, 30);
         this.add(metaTitle);
 
         JLabel lvaTitle = new JLabel("enthaltene LVAs");
@@ -114,21 +115,30 @@ public class ModulePanel extends StandardInsidePanel {
 
 
     @Override
-    public void refresh() {
-        new Thread(){
+    public synchronized void refresh() {
+        //threading, so the user doesn't have to wait for the window to pop up
+        if(refreshing){
+            return;
+        }
+        refreshing = true;
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 try {
-                    log.info("Thread for loading LVAs started");
+                    log.info("Thread for loading Modules now running");
                     modules = moduleService.readAll();
-                    Collections.sort(modules,Module.getAlphabeticalNameComparator());
-                    log.info("loaded LVAs");
-                    //lvaPane.refresh(new ArrayList<LVA>(0));
+                    modulePane.refresh(modules);
+                    Collections.sort(modules, Module.getAlphabeticalNameComparator());
+                    log.info("loaded Modules");
+                    refreshing = false;
                 } catch (ServiceException e) {
-                    log.info("Exception caught while loading LVAs");
+                    log.info("Exception caught while loading Modules");
                     log.error("Exception: " + e.getMessage());
+                    PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der Module", SmallInfoPanel.Error);
                 }
-                modulePane.refresh(modules);
+
+                ModulePanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         }.start();
     }

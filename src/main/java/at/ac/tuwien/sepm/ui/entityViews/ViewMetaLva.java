@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
@@ -20,6 +21,9 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,28 +35,39 @@ import java.awt.event.ActionListener;
 @UI
 public class ViewMetaLva extends StandardSimpleInsidePanel {
     private JLabel nrLabel;
-    private JTextField nr;
+    private JTextField nrInput;
 
     private JLabel nameLabel;
     private JTextField nameInput;
 
     private JLabel ectsLabel;
-    private JSpinner ects;
+    private JSpinner ectsInput;
 
     private JLabel typeLabel;
-    private JComboBox type;
+    private JComboBox typeInput;
 
     private JLabel priorityLabel;
-    private JSpinner priority;
+    private JSpinner priorityInput;
 
     private JLabel semestersOfferedLabel;
-    private JComboBox semestersOffered;
+    private JComboBox semestersOfferedInput;
 
     private JLabel moduleLabel;
-    private JComboBox moduleDropdown;
+    private JComboBox moduleInput;
 
     private JLabel completedLabel;
-    private JCheckBox completed;
+    private JCheckBox completedInput;
+
+    private JLabel precursorLabel;
+    private MetaLVADisplayPanel precursorPanel;
+
+    private JLabel addPrecursorLabel;
+    private MetaLVADisplayPanel addPrecursorPanel;
+    private JButton showAddPrecursorPanelButton;
+    private JButton addPrecursorButton;
+    
+    private List<MetaLVA> precursor;
+
 
     private JButton save;
 
@@ -61,6 +76,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     private MetaLVA metaLVA;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+    private List<MetaLVA> allMetaLVAs;
 
     @Autowired
     public ViewMetaLva(MetaLVAService metaLVAService, ModuleService moduleService) {
@@ -86,13 +102,14 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     metaLVA.setName(nameInput.getText());
-                    metaLVA.setCompleted(completed.isSelected());
-                    metaLVA.setECTS(((Number)ects.getValue()).floatValue());
-                    metaLVA.setModule(((ModuleSelectItem) moduleDropdown.getSelectedItem()).get().getId());
-                    metaLVA.setNr(nr.getText());
-                    metaLVA.setPriority(((Number)priority.getValue()).floatValue());
-                    metaLVA.setSemestersOffered((Semester)semestersOffered.getSelectedItem());
-                    metaLVA.setType((LvaType)type.getSelectedItem());
+                    metaLVA.setCompleted(completedInput.isSelected());
+                    metaLVA.setECTS(((Number) ectsInput.getValue()).floatValue());
+                    metaLVA.setModule(((ModuleSelectItem) moduleInput.getSelectedItem()).get().getId());
+                    metaLVA.setNr(nrInput.getText());
+                    metaLVA.setPriority(((Number) priorityInput.getValue()).floatValue());
+                    metaLVA.setSemestersOffered((Semester) semestersOfferedInput.getSelectedItem());
+                    metaLVA.setType((LvaType) typeInput.getSelectedItem());
+                    metaLVA.setPrecursor(precursor);
 
                     if (metaLVA.getId() != null) {
                         if (metaLVAService.readById(metaLVA.getId()) != null)
@@ -116,15 +133,31 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     }
 
     private void addContent() {
-        int verticalSpace = 10;
+        int smallSpace = 10;
+        int bigSpace=20;
+        
+        int labelX = (int) (simpleWhiteSpace.getX()+bigSpace);
+        int labelWidth = 180;
+        
+        int inputX = labelX+labelWidth+smallSpace;
+        int inputWidth = 140;
+        
+        int oHeight = 25;
+
+        int rightX = inputX+inputWidth+bigSpace*2;
+        int rightWidth = (whiteSpace.x+whiteSpace.width-bigSpace) -rightX;
+
+        int paneHeight = 150;
+        int rightButtonWidth=200;
+
         nameLabel = new JLabel("Name:");
         nameLabel.setFont(standardTextFont);
-        nameLabel.setBounds((int)simpleWhiteSpace.getX() + 20,(int)simpleWhiteSpace.getY() + 10,140,25);
+        nameLabel.setBounds((int)simpleWhiteSpace.getX() + bigSpace,(int)simpleWhiteSpace.getY() + bigSpace,labelWidth,oHeight);
         this.add(nameLabel);
 
         nameInput = new JTextField();
         nameInput.setFont(standardTextFont);
-        nameInput.setBounds(nameLabel.getX() + nameLabel.getWidth() + 20, nameLabel.getY(), 140,25);
+        nameInput.setBounds(inputX, nameLabel.getY(), inputWidth,oHeight);
         nameInput.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -145,119 +178,204 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         
         nrLabel = new JLabel("Lva Nummer:");
         nrLabel.setFont(standardTextFont);
-        nrLabel.setBounds(nameLabel.getX(), nameLabel.getY() + nameLabel.getHeight() + verticalSpace, 140,25);
+        nrLabel.setBounds(labelX, nameLabel.getY() + nameLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(nrLabel);
 
-        nr = new JTextField();
-        nr.setFont(standardTextFont);
-        nr.setBounds(nrLabel.getX() + nrLabel.getWidth() + 20, nrLabel.getY(), 140,25);
-        this.add(nr);
+        nrInput = new JTextField();
+        nrInput.setFont(standardTextFont);
+        nrInput.setBounds(inputX, nrLabel.getY(), inputWidth, oHeight);
+        this.add(nrInput);
 
         ectsLabel = new JLabel("ECTs:");
         ectsLabel.setFont(standardTextFont);
-        ectsLabel.setBounds(nrLabel.getX(), nrLabel.getY() + nrLabel.getHeight() + verticalSpace, 140,25);
+        ectsLabel.setBounds(labelX, nrLabel.getY() + nrLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(ectsLabel);
 
-        ects = new JSpinner();
-        ects.setModel(new SpinnerNumberModel(0.,0.,30.,0.1));
-        ects.setEditor(new JSpinner.NumberEditor(ects, "0.#"));
-        ects.setFont(standardTextFont);
-        ects.setBounds(ectsLabel.getX() + ectsLabel.getWidth() + 20, ectsLabel.getY(), 140,25);
-        this.add(ects);
+        ectsInput = new JSpinner();
+        ectsInput.setModel(new SpinnerNumberModel(0., 0., 30., 0.1));
+        ectsInput.setEditor(new JSpinner.NumberEditor(ectsInput, "0.#"));
+        ectsInput.setFont(standardTextFont);
+        ectsInput.setBounds(inputX, ectsLabel.getY(), inputWidth, oHeight);
+        this.add(ectsInput);
 
         typeLabel = new JLabel("Typ:");
         typeLabel.setFont(standardTextFont);
-        typeLabel.setBounds(ectsLabel.getX(), ectsLabel.getY() + ectsLabel.getHeight() + verticalSpace, 140,25);
+        typeLabel.setBounds(labelX, ectsLabel.getY() + ectsLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(typeLabel);
 
-        type = new WideComboBox();
+        typeInput = new WideComboBox();
         for (LvaType t : LvaType.values()) {
-            type.addItem(t);
+            typeInput.addItem(t);
         }
-        type.setFont(standardTextFont);
-        type.setBounds(typeLabel.getX() + typeLabel.getWidth() + 20, typeLabel.getY(), 140,25);
-        this.add(type);
+        typeInput.setFont(standardTextFont);
+        typeInput.setBounds(inputX, typeLabel.getY(), inputWidth, oHeight);
+        this.add(typeInput);
 
         semestersOfferedLabel = new JLabel("angebotene Semester:");
         semestersOfferedLabel.setFont(standardTextFont);
-        semestersOfferedLabel.setBounds(typeLabel.getX(), typeLabel.getY() + typeLabel.getHeight() + verticalSpace, 140,25);
+        semestersOfferedLabel.setBounds(labelX, typeLabel.getY() + typeLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(semestersOfferedLabel);
 
-        semestersOffered = new WideComboBox();
+        semestersOfferedInput = new WideComboBox();
         for(Semester s : Semester.values())
-            semestersOffered.addItem(s);
-        semestersOffered.setFont(standardTextFont);
-        semestersOffered.setBounds(semestersOfferedLabel.getX() + semestersOfferedLabel.getWidth() + 20, semestersOfferedLabel.getY(), 140,25);
-        this.add(semestersOffered);
+            semestersOfferedInput.addItem(s);
+        semestersOfferedInput.setFont(standardTextFont);
+        semestersOfferedInput.setBounds(inputX, semestersOfferedLabel.getY(), inputWidth, oHeight);
+        this.add(semestersOfferedInput);
 
         moduleLabel = new JLabel("Gehört zu Modul:");
         moduleLabel.setFont(standardTextFont);
-        moduleLabel.setBounds(semestersOfferedLabel.getX(), semestersOfferedLabel.getY() + semestersOfferedLabel.getHeight() + verticalSpace, 140,25);
+        moduleLabel.setBounds(labelX, semestersOfferedLabel.getY() + semestersOfferedLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(moduleLabel);
 
-        moduleDropdown = new WideComboBox();
+        moduleInput = new WideComboBox();
         try {
             for (Module m :  moduleService.readAll())
-                moduleDropdown.addItem(new ModuleSelectItem(m));
+                moduleInput.addItem(new ModuleSelectItem(m));
         } catch (ServiceException e) {
             log.error("Exception: " +e.getMessage());
         }
-        moduleDropdown.setFont(standardTextFont);
-        moduleDropdown.setBounds(moduleLabel.getX() + moduleLabel.getWidth() + 20, moduleLabel.getY(), 140, 25);
-        this.add(moduleDropdown);
+        moduleInput.setFont(standardTextFont);
+        moduleInput.setBounds(inputX, moduleLabel.getY(), inputWidth, oHeight);
+        this.add(moduleInput);
 
         priorityLabel = new JLabel("Priorität:");
         priorityLabel.setFont(standardTextFont);
-        priorityLabel.setBounds(moduleLabel.getX(), moduleLabel.getY() + moduleLabel.getHeight() + verticalSpace, 140,25);
+        priorityLabel.setBounds(labelX, moduleLabel.getY() + moduleLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(priorityLabel);
 
-        priority = new JSpinner();
-        priority.setModel(new SpinnerNumberModel(5.,0.,10.,0.5));
-        priority.setEditor(new JSpinner.NumberEditor(priority, "0.#"));
-        priority.setFont(standardTextFont);
-        priority.setBounds(priorityLabel.getX() + priorityLabel.getWidth() + 20, priorityLabel.getY(), 140,25);
-        this.add(priority);
+        priorityInput = new JSpinner();
+        priorityInput.setModel(new SpinnerNumberModel(5., 0., 10., 0.5));
+        priorityInput.setEditor(new JSpinner.NumberEditor(priorityInput, "0.#"));
+        priorityInput.setFont(standardTextFont);
+        priorityInput.setBounds(inputX, priorityLabel.getY(), inputWidth, oHeight);
+        this.add(priorityInput);
 
         completedLabel = new JLabel("Abgeschlossen:");
         completedLabel.setFont(standardTextFont);
-        completedLabel.setBounds(priorityLabel.getX(), priorityLabel.getY() + priorityLabel.getHeight() + verticalSpace, 140,25);
+        completedLabel.setBounds(labelX, priorityLabel.getY() + priorityLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(completedLabel);
 
-        completed = new JCheckBox();
-        completed.addChangeListener(dONTFUCKINGBUGSWINGListener());
-        completed.setBackground(new Color(0,0,0,0));
-        completed.setBounds(completedLabel.getX() + completedLabel.getWidth() + 20, completedLabel.getY(), 20, 20);
-        this.add(completed);
+        completedInput = new JCheckBox();
+        completedInput.addChangeListener(dONTFUCKINGBUGSWINGListener());
+        completedInput.setBackground(new Color(0, 0, 0, 0));
+        completedInput.setBounds(inputX, completedLabel.getY(), 20, 25);
+        this.add(completedInput);
+
+        precursorLabel = new JLabel("Vorgänger:");
+        precursorLabel.setFont(standardTextFont);
+        precursorLabel.setBounds(rightX, simpleWhiteSpace.y+bigSpace, rightWidth, oHeight);
+        this.add(precursorLabel);
+
+        precursorPanel = new MetaLVADisplayPanel(new ArrayList<MetaLVA>(0),rightWidth,paneHeight);
+        precursorPanel.setBounds(rightX, precursorLabel.getY() + precursorLabel.getHeight() + smallSpace, rightWidth, paneHeight);
+        this.add(precursorPanel);
+
+        addPrecursorLabel = new JLabel("Vorgänger hinzufügen:");
+        addPrecursorLabel.setFont(standardTextFont);
+        addPrecursorLabel.setBounds(rightX, precursorPanel.getY()+precursorPanel.getHeight()+smallSpace, rightWidth, oHeight);
+        this.add(addPrecursorLabel);
+        
+        showAddPrecursorPanelButton = new JButton("Vorgänger hinzufügen");
+        showAddPrecursorPanelButton.setFont(standardButtonFont);
+
+        showAddPrecursorPanelButton.setBounds(rightX, addPrecursorLabel.getY() + addPrecursorLabel.getHeight() + smallSpace, rightButtonWidth, oHeight);
+        showAddPrecursorPanelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showAddPrecursorPanelButton.setVisible(false);
+                addPrecursorPanel.setVisible(true);
+                addPrecursorButton.setVisible(true);
+            }
+        });
+        this.add(showAddPrecursorPanelButton);
+
+
+        addPrecursorPanel = new MetaLVADisplayPanel(new ArrayList<MetaLVA>(0),rightWidth,paneHeight);
+        addPrecursorPanel.setBounds(rightX, addPrecursorLabel.getY() + addPrecursorLabel.getHeight() + smallSpace, rightWidth, paneHeight);
+        this.add(addPrecursorPanel);
+        addPrecursorPanel.setVisible(false);
+
+        addPrecursorButton = new JButton("hinzufügen");
+        addPrecursorButton.setFont(standardButtonFont);
+        addPrecursorButton.setBounds(rightX, addPrecursorPanel.getY() + addPrecursorPanel.getHeight() + smallSpace, rightButtonWidth, oHeight);
+        addPrecursorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showAddPrecursorPanelButton.setVisible(true);
+                addPrecursorPanel.setVisible(false);
+                addPrecursorButton.setVisible(false);
+                MetaLVA toAdd = addPrecursorPanel.getSelectedMetaLVA();
+                if(toAdd!=null){
+                    precursor.add(toAdd);
+                    precursorPanel.refresh(precursor);
+                    allMetaLVAs.remove(toAdd);
+                    addPrecursorPanel.refresh(allMetaLVAs);
+                }else{
+                    PanelTube.backgroundPanel.viewInfoText("keine LVA ausgewählt.",SmallInfoPanel.Warning);
+                }
+
+            }
+        });
+        this.add(addPrecursorButton);
+        addPrecursorButton.setVisible(false);
+
     }
 
     public void setMetaLva(MetaLVA metaLVA) {
+        allMetaLVAs=new ArrayList<MetaLVA>(0);
+        try {
+            allMetaLVAs = metaLVAService.readAll();
+            Collections.sort(allMetaLVAs,MetaLVA.getAlphabeticalNameComparator());
+        } catch (ServiceException e) {
+            e.printStackTrace();  //TODO fill me <3
+            PanelTube.backgroundPanel.viewInfoText("Fehler beim laden der LVAs aus der Datenbank.",SmallInfoPanel.Error);
+        } catch (ValidationException e) {
+            e.printStackTrace();  //TODO fill me <3
+            PanelTube.backgroundPanel.viewInfoText("Fehler beim laden der LVAs aus der Datenbank.",SmallInfoPanel.Error);
+        }
         if (metaLVA == null) {
             this.metaLVA = new MetaLVA();
             changeTitle("Neue LVA");
             nameInput.setText("Neue LVA");
-            nr.setText("");
-            ects.setValue(0);
-            type.setSelectedIndex(0);
-            priority.setValue(1);
-            semestersOffered.setSelectedIndex(0);
-            moduleDropdown.setSelectedIndex(0);
-            completed.setSelected(false);
+            nrInput.setText("");
+            ectsInput.setValue(0);
+            typeInput.setSelectedIndex(0);
+            priorityInput.setValue(1);
+            semestersOfferedInput.setSelectedIndex(0);
+            moduleInput.setSelectedIndex(0);
+            completedInput.setSelected(false);
+            precursorPanel.refresh(new ArrayList<MetaLVA>(0));
+            precursor=new ArrayList<MetaLVA>(0);
         } else {
             this.metaLVA=metaLVA;
             changeTitle(metaLVA.getName());
             nameInput.setText(metaLVA.getName());
-            nr.setText(metaLVA.getNr());
-            ects.setValue(metaLVA.getECTS());
-            type.setSelectedItem(metaLVA.getType());
-            priority.setValue(metaLVA.getPriority());
-            semestersOffered.setSelectedItem(metaLVA.getSemestersOffered());
-            for(int i = 0; i < moduleDropdown.getModel().getSize(); i++)
-                if (((ModuleSelectItem) moduleDropdown.getItemAt(i)).get().getId() == metaLVA.getModule()) {
-                    moduleDropdown.setSelectedIndex(i);
+            nrInput.setText(metaLVA.getNr());
+            ectsInput.setValue(metaLVA.getECTS());
+            typeInput.setSelectedItem(metaLVA.getType());
+            priorityInput.setValue(metaLVA.getPriority());
+            semestersOfferedInput.setSelectedItem(metaLVA.getSemestersOffered());
+            for(int i = 0; i < moduleInput.getModel().getSize(); i++)
+                if (((ModuleSelectItem) moduleInput.getItemAt(i)).get().getId() == metaLVA.getModule()) {
+                    moduleInput.setSelectedIndex(i);
                     break;
                 }
-            completed.setSelected(metaLVA.isCompleted());
+            completedInput.setSelected(metaLVA.isCompleted());
+            precursorPanel.refresh(metaLVA.getPrecursor());
+            precursor = metaLVA.getPrecursor();
         }
+        ArrayList<MetaLVA> toRemove = new ArrayList<MetaLVA>();
+        for(MetaLVA m1:allMetaLVAs){
+            for(MetaLVA m2:precursor){
+                if(m1.getId()==m2.getId()){
+                    toRemove.add(m1);
+                }
+            }
+        }
+        allMetaLVAs.removeAll(toRemove);
+        addPrecursorPanel.refresh(allMetaLVAs);
+        precursorPanel.refresh(precursor);
     }
 
     private static class ModuleSelectItem extends SelectItem<Module> {
