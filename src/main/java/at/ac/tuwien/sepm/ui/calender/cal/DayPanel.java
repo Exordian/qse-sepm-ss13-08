@@ -33,12 +33,13 @@ public class DayPanel extends JPanel {
     private boolean isCurrent = false;
     private boolean showTime=false;
     private LVAService lvaService;
+    private Font popUpFont;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     private DateService dateService;
 
-    public DayPanel(int maxDateLabels, DateService dateService, LVAService lvaService, boolean showTime) {
+    public DayPanel(int maxDateLabels, DateService dateService, LVAService lvaService, boolean showTime, Font popUpFont) {
         super(new MigLayout("", "1[]1[]1[]1", "1[]"));
         this.dateService=dateService;
         this.lvaService=lvaService;
@@ -51,6 +52,7 @@ public class DayPanel extends JPanel {
         this.tmdl.setFont(new Font("Arial", Font.PLAIN, 10));
         this.maxDateLabels=maxDateLabels;
         this.addMouseListeners();
+        this.popUpFont = popUpFont;
     }
 
     public void setCurrent(boolean current) {
@@ -194,6 +196,11 @@ public class DayPanel extends JPanel {
             newDate = new JMenuItem("Neuer Termin");
             free = new JMenuItem("Als freien Tag markieren");
             newLvaDate = new JMenuItem("Neuer Lva Termin");
+
+            newDate.setFont(popUpFont);
+            free.setFont(popUpFont);
+            newLvaDate.setFont(popUpFont);
+
             add(newDate);
             add(newLvaDate);
             add(free);

@@ -29,7 +29,9 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
     private boolean twoLine = false;
     private DateService dateService;
 
-    public DateLabel(Date date, DateService dateService, boolean twoLine) {
+    private Font popUpFont;
+
+    public DateLabel(Date date, DateService dateService, boolean twoLine, Font popUpFont) {
         this.date=date;
         this.twoLine = twoLine;
         this.dateService=dateService;
@@ -49,7 +51,7 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
         //setWrapStyleWord(false);
         setAutoscrolls(false);
         setFocusable(false);
-
+        this.popUpFont = popUpFont;
     }
 
     public void changeColor (boolean isActualMonth) {
@@ -165,6 +167,8 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
                 add(edit);
                 add(showRoom);
             }
+            edit.setFont(popUpFont);
+            showRoom.setFont(popUpFont);
             addActionListeners();
         }
 
