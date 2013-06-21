@@ -268,6 +268,8 @@ public class PlanPanel extends StandardInsidePanel {
                                     //tempTimeBetween = Integer.parseInt(timeBetweenBufferText.getText().replace("min","").trim())/60;
                                 }
                                 planer.setIntersectingTolerance(tempTolerance);
+                                planer.setAllowedTimeBetween(tempTimeBetween);
+
                                 ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
                                 if(intersectCustomCheck.isSelected()){
                                     solution.remove(customMetaLVA);
