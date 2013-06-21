@@ -34,6 +34,8 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             pool = new ArrayList<MetaLVA>(0);
         }
         this.pool.clear();
+        this.forced.clear();
+
         this.forced.addAll(forced);
         for(MetaLVA lva:pool){
             if(!lva.isCompleted()){
@@ -77,6 +79,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         for(MetaLVA mLVA :forced){
             if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
                 toPlan.add(mLVA);
+                logger.debug("adding to toPlan: "+mLVA);
             }
             if(mLVA.containsLVA(year, sem)){
                 chosen.add(toPlan.indexOf(mLVA));
