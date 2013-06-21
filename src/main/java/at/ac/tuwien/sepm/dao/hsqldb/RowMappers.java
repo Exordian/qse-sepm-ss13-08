@@ -196,8 +196,14 @@ class RowMappers {
                     entity.setSemester(Semester.S);
                 }
                 entity.setDescription(rs.getString((5)));
-                entity.setGrade(rs.getInt(6));
-                entity.setInStudyProgress(rs.getBoolean(7));
+                entity.setGoals(rs.getString(6));
+                entity.setContent(rs.getString(7));
+                entity.setAdditionalInfo1(rs.getString(8));
+                entity.setAdditionalInfo2(rs.getString(9));
+                entity.setInstitute(rs.getString(10));
+                entity.setLanguage(rs.getString(11));
+                entity.setGrade(rs.getInt(12));
+                entity.setInStudyProgress(rs.getBoolean(13));
                 return entity;
             }
         };

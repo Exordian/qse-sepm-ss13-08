@@ -12,6 +12,31 @@ public class ExceptionMessages {
         return "Die Beschreibung ist zu lang (max. " + i + " Zeichen).";
     }
 
+    static String tooLongGoals(int i) {
+        return "Die Beschreibung ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongContent(int i) {
+        return "Die Beschreibung ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongAdditionalinfo1(int i) {
+        return "Die Beschreibung ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongAdditionalinfo2(int i) {
+        return "Die Beschreibung ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongInsitute(int i) {
+        return "Die Beschreibung ist zu lang (max. " + i + " Zeichen).";
+    }
+
+    static String tooLongLanguage(int i) {
+        return "Die Beschreibung ist zu lang (max. " + i + " Zeichen).";
+    }
+
+
     static String tooLongRoom(int i) {
         return "Die Bezeichnung des Raumes ist zu lang (max. " + i + " Zeichen).";
     }

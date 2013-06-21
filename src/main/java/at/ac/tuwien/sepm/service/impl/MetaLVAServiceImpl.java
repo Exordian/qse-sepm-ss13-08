@@ -132,7 +132,7 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             logger.info("The meta lva \""  + toCreate.getNr() + " - " + toCreate.getName() + "\" is already stored.\n");
             return false;
         } catch(DataAccessException e) {
-            logger.error("Exception: "+ e.getMessage());
+            logger.error("Exception " + e.getClass() + ": " + e.getMessage(), e);
             throw new ServiceException("Exception: "+ e.getMessage());
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage());

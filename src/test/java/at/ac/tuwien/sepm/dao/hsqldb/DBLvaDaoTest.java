@@ -43,6 +43,12 @@ public class DBLvaDaoTest {
         e0.setYear(2000);
         e0.setSemester(Semester.S);
         e0.setDescription("Description0");
+        e0.setGoals("Goals0");
+        e0.setContent("Content0");
+        e0.setAdditionalInfo1("Additionalinfo10");
+        e0.setAdditionalInfo2("Additionalinfo20");
+        e0.setLanguage("Language0");
+        e0.setInstitute("Institute0");
         e0.setGrade(0);
         e0.setInStudyProgress(true);
 
@@ -54,6 +60,12 @@ public class DBLvaDaoTest {
         e1.setYear(2005);
         e1.setSemester(Semester.W);
         e1.setDescription("Description1");
+        e1.setGoals("Goals1");
+        e1.setContent("Content1");
+        e1.setAdditionalInfo1("Additionalinfo11");
+        e1.setAdditionalInfo2("Additionalinfo21");
+        e1.setLanguage("Language1");
+        e1.setInstitute("Institute1");
         e1.setGrade(1);
         e1.setInStudyProgress(false);
 
@@ -70,6 +82,12 @@ public class DBLvaDaoTest {
         assert(l0.getYear()==2000);
         assert(l0.getSemester().equals(Semester.S));
         assert(l0.getDescription().equals("Description0"));
+        assert(l0.getGoals().equals("Goals0"));
+        assert(l0.getContent().equals("Content0"));
+        assert(l0.getAdditionalInfo1().equals("Additionalinfo10"));
+        assert(l0.getAdditionalInfo2().equals("Additionalinfo20"));
+        assert(l0.getInstitute().equals("Institute0"));
+        assert(l0.getLanguage().equals("Language0"));
         assert(l0.getGrade()==0);
         assert(l0.isInStudyProgress());assert(l0.getId()==0);
 
@@ -78,6 +96,12 @@ public class DBLvaDaoTest {
         assert(l1.getYear()==2005);
         assert(l1.getSemester().equals(Semester.W));
         assert(l1.getDescription().equals("Description1"));
+        assert(l1.getGoals().equals("Goals1"));
+        assert(l1.getContent().equals("Content1"));
+        assert(l1.getAdditionalInfo1().equals("Additionalinfo11"));
+        assert(l1.getAdditionalInfo2().equals("Additionalinfo21"));
+        assert(l1.getInstitute().equals("Institute1"));
+        assert(l1.getLanguage().equals("Language1"));
         assert(l1.getGrade()==1);
         assert(!l1.isInStudyProgress());
     }
@@ -161,6 +185,150 @@ public class DBLvaDaoTest {
         e0.setYear(2000);
         e0.setSemester(Semester.S);
         e0.setDescription(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.create(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testCreateTooLongGoals() throws Exception {
+        TestHelper.insert(3);
+
+        String s = "aa";
+        for(int i=0; i<14; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setGoals(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.create(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testCreateTooLongContent() throws Exception {
+        TestHelper.insert(3);
+
+        String s = "aa";
+        for(int i=0; i<14; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setContent(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.create(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testCreateTooLongAdditionalinfo1() throws Exception {
+        TestHelper.insert(3);
+
+        String s = "aa";
+        for(int i=0; i<14; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setAdditionalInfo1(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.create(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testCreateTooLongAdditionalinfo2() throws Exception {
+        TestHelper.insert(3);
+
+        String s = "aa";
+        for(int i=0; i<14; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setAdditionalInfo2(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.create(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testCreateTooLongInsitute() throws Exception {
+        TestHelper.insert(3);
+
+        String s = "aa";
+        for(int i=0; i<7; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setInstitute(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.create(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testCreateTooLongLanguage() throws Exception {
+        TestHelper.insert(3);
+
+        String s = "aa";
+        for(int i=0; i<7; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setLanguage(s);
         e0.setGrade(0);
         e0.setInStudyProgress(true);
 
@@ -461,6 +629,12 @@ public class DBLvaDaoTest {
         e0.setYear(3000);
         e0.setSemester(Semester.W);
         e0.setDescription("asdf");
+        e0.setGoals("goals");
+        e0.setContent("content");
+        e0.setAdditionalInfo1("additionalinfo1");
+        e0.setAdditionalInfo2("additionalinfo2");
+        e0.setInstitute("institute");
+        e0.setLanguage("language");
         e0.setGrade(5);
         e0.setInStudyProgress(false);
 
@@ -473,6 +647,12 @@ public class DBLvaDaoTest {
         assert(l0.getYear()==3000);
         assert(l0.getSemester().equals(Semester.W));
         assert(l0.getDescription().equals("asdf"));
+        assert(l0.getGoals().equals("goals"));
+        assert(l0.getContent().equals("content"));
+        assert(l0.getAdditionalInfo1().equals("additionalinfo1"));
+        assert(l0.getAdditionalInfo2().equals("additionalinfo2"));
+        assert(l0.getInstitute().equals("institute"));
+        assert(l0.getLanguage().equals("language"));
         assert(l0.getGrade()==5);
         assert(!l0.isInStudyProgress());
     }
@@ -500,9 +680,155 @@ public class DBLvaDaoTest {
         dao.update(e0);
     }
 
+
+    @Test(expected = IOException.class)
+    public void testUpdateTooLongGoals() throws Exception {
+        TestHelper.insert(4);
+
+        String s = "aa";
+        for(int i=0; i<14; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setGoals(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.update(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testUpdateTooLongContent() throws Exception {
+        TestHelper.insert(4);
+
+        String s = "aa";
+        for(int i=0; i<14; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setContent(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.update(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testUpdateTooLongAdditionalinfo1() throws Exception {
+        TestHelper.insert(4);
+
+        String s = "aa";
+        for(int i=0; i<14; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setAdditionalInfo1(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.update(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testUpdateTooLongAdditionalinfo2() throws Exception {
+        TestHelper.insert(4);
+
+        String s = "aa";
+        for(int i=0; i<14; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setAdditionalInfo2(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.update(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testUpdateTooLongInsitute() throws Exception {
+        TestHelper.insert(4);
+
+        String s = "aa";
+        for(int i=0; i<7; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setInstitute(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.update(e0);
+    }
+
+    @Test(expected = IOException.class)
+    public void testUpdateTooLongLanguage() throws Exception {
+        TestHelper.insert(4);
+
+        String s = "aa";
+        for(int i=0; i<7; i++) {
+            s=s.concat(s);
+        }
+
+        LVA e0 = new LVA();
+        e0.setId(12341234);
+        MetaLVA m0 = new MetaLVA();
+        m0.setId(0);
+        e0.setMetaLVA(m0);
+        e0.setYear(2000);
+        e0.setSemester(Semester.S);
+        e0.setDescription("Description");
+        e0.setLanguage(s);
+        e0.setGrade(0);
+        e0.setInStudyProgress(true);
+
+        dao.update(e0);
+    }
+
+
     @Test
     public void testUpdateNull() throws Exception {
-        assert(!dao.create(null));
+        assert(!dao.update(null));
     }
 
     /*@Test(expected = DataAccessException.class)

@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.Semester;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -22,6 +24,8 @@ import java.util.List;
  */
 @Repository
 public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
+    private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+
     private static final int MAX_LENGTH_NUMBER=30;
     private static final int MAX_LENGTH_NAME=200;
 
@@ -85,6 +89,19 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
             ps.setFloat(5, e.getPriority());
             ps.setFloat(6, e.getECTS());
             ps.setInt(7, e.getModule());
+
+            /*
+            String sql = "INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module)" +
+                    " VALUES \n(null,\n" +
+                    "'" + e.getNr() + "',\n" +
+                    "'" + e.getName() + "',\n" +
+                    "" + semester + ",\n" +
+                    "" + e.getType().ordinal() + ",\n" +
+                    "" + e.getPriority() + ",\n" +
+                    "" + e.getECTS() + ",\n" +
+                    "" + e.getModule() + ");";
+            logger.info("\n\n" + sql + "\n");
+            */
             return ps;
         }
     }

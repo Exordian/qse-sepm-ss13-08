@@ -79,6 +79,15 @@ public class DBModuleDao extends DBBaseDao implements ModuleDao {
             }
             ps.setBoolean(3, a);
 
+            /*
+            String sql = "INSERT INTO Module (id,name,description,completeAll) VALUES \n(null,\n" +
+                    "'" + e.getName() + "',\n" +
+                    "'" + e.getDescription() + "',\n" +
+                    a + ");";
+
+            logger.info("\n\n" + sql + "\n");
+            */
+
             return ps;
         }
     }
