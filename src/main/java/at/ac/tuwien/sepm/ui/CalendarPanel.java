@@ -138,7 +138,7 @@ public class CalendarPanel extends StandardInsidePanel {
             @Override
             public String getDescription() {
                 if(System.getProperty("user.language").equals("de")) {
-                    return "Kalender Dateien";
+                    return "Kalender Dateien (*.ics, *.ifb, *.iFBf, *.ical)";
                 }
                 return "Calendar files";
             }
@@ -192,6 +192,8 @@ public class CalendarPanel extends StandardInsidePanel {
                         PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Error);
                         return;
                     }
+                } else {
+                    return;
                 }
                 String date = " Termine ";
                 if(datesImported == 1) {
@@ -236,6 +238,8 @@ public class CalendarPanel extends StandardInsidePanel {
                                 return;
                             }
                         }
+                    } else {
+                        return;
                     }
                 } while(jfcChosen == JFileChooser.APPROVE_OPTION && breakExport==1);
                 PanelTube.backgroundPanel.viewInfoText("Kalender erfolgreich exportiert.", SmallInfoPanel.Success);

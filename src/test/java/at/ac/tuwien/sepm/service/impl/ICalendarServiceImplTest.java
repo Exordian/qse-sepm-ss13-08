@@ -25,9 +25,4 @@ public class ICalendarServiceImplTest {
     public void testIcalExport() throws Exception {
 
     }
-
-    @Test(expected = ServiceException.class)
-    public void testICalFileValidatorFileIsNull() throws Exception {
-        service.iCalFileValidator(null, false);
-    }
 }
