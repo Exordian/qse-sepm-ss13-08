@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

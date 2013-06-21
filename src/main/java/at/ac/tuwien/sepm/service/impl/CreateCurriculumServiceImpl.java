@@ -1,8 +1,5 @@
 package at.ac.tuwien.sepm.service.impl;
 
-import at.ac.tuwien.sepm.dao.CurriculumDao;
-import at.ac.tuwien.sepm.dao.MetaLvaDao;
-import at.ac.tuwien.sepm.dao.ModuleDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBCurriculumDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBMetaLvaDao;
 import at.ac.tuwien.sepm.dao.hsqldb.DBModuleDao;
@@ -13,7 +10,6 @@ import at.ac.tuwien.sepm.service.CreateCurriculumService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

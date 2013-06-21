@@ -203,6 +203,7 @@ public class DayPanel extends JPanel {
 
             add(newDate);
             add(newLvaDate);
+            add(new Separator());
             add(free);
             addActionListeners();
         }

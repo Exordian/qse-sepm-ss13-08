@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.service.ICalendarService;
-import at.ac.tuwien.sepm.service.ServiceException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

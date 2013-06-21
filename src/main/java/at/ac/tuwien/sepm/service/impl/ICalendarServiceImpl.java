@@ -12,7 +12,6 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.*;
@@ -159,11 +158,11 @@ public class ICalendarServiceImpl implements ICalendarService {
         } catch (FileNotFoundException e) {
             logger.info("Calendar not found anymore.", e);
             throw new ServiceException(COULD_NOT_EXPORT_CALENDAR, e);
-        } catch (ValidationException e) {
-            logger.info("ValidationException at creating iCalendar file.", e);
-            throw new ServiceException(COULD_NOT_EXPORT_CALENDAR, e);
         } catch (IOException e) {
             logger.info("IOException at creating iCalendar file.", e);
+            throw new ServiceException(COULD_NOT_EXPORT_CALENDAR, e);
+        } catch (net.fortuna.ical4j.model.ValidationException e) {
+            logger.info("ValidationException at creating iCalendar file.", e);
             throw new ServiceException(COULD_NOT_EXPORT_CALENDAR, e);
         }
 

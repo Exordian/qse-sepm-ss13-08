@@ -163,14 +163,15 @@ public class CalendarPanel extends StandardInsidePanel {
             int semesters = lvaService.numberOfSemestersInStudyProgress();
             int year = lvaService.firstYearInStudyProgress();
             for (int x = 0; x < semesters; x++) {
-                semester.addItem(winterSem ? "WS" : "SS" + year);
+                String temp = winterSem ? "WS" : "SS";
+                semester.addItem(year + ", " + temp);
                 if (winterSem) {
                     year++;
                 }
                 winterSem = !winterSem;
             }
         } catch (ServiceException e) {
-            PanelTube.backgroundPanel.viewInfoText("Die Anzahl der Semester konnte nicht geladen werden.", SmallInfoPanel.Error);
+            PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Error);
         }
     }
 
@@ -209,7 +210,7 @@ public class CalendarPanel extends StandardInsidePanel {
     }
 
     private void createExportButton() {
-        exportBtn = new JButton("Als iCalendar speichern");
+        exportBtn = new JButton("Als iCalendar exportieren");
         exportBtn.setBounds(669, 581, 175, 38);
         exportBtn.setFont(standardButtonFont);
         exportBtn.addActionListener(new ActionListener() {

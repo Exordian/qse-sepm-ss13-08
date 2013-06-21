@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.service.impl;
 
-import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.LvaDateService;

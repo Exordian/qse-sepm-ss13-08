@@ -168,6 +168,7 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
                 add(showRoom);
             }
             edit.setFont(popUpFont);
+            add(new Separator());
             showRoom.setFont(popUpFont);
             addActionListeners();
         }

@@ -2,10 +2,8 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.dao.LvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
-import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import sun.util.logging.PlatformLogger;
 
 import java.io.IOException;
 import java.sql.Connection;

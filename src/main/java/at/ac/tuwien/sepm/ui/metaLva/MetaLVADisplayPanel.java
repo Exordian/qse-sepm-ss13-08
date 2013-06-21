@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ui.metaLva;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.HintTextField;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
@@ -20,7 +21,7 @@ import java.util.List;
  * Author: Lena Lenz
  */
 @UI
-public class MetaLVADisplayPanel extends JPanel {
+public class MetaLVADisplayPanel extends StandardInsidePanel {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private List<MetaLVA> allMetaLVAs;
     private List<MetaLVA> filteredMetaLVAs;
@@ -41,6 +42,7 @@ public class MetaLVADisplayPanel extends JPanel {
         this.tWidth =width;
         this.allMetaLVAs = lvas;
         filteredMetaLVAs = lvas;
+        loadFonts();
         table = new MetaLVATable(lvas,width);
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -142,6 +144,7 @@ public class MetaLVADisplayPanel extends JPanel {
                 public void mouseExited(MouseEvent e) {}
             });
             add(button2);
+            button2.setFont(standardButtonFont);
         }
     }
 

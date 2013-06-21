@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ui.metaLva;
 
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
+import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.HintTextField;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
@@ -20,7 +21,7 @@ import java.util.List;
  * Author: Lena Lenz
  */
 @UI
-public class ModuleDisplayPanel extends JPanel {
+public class ModuleDisplayPanel extends StandardInsidePanel {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private List<Module> allModules;
     private List<Module> filteredModules;
@@ -38,6 +39,7 @@ public class ModuleDisplayPanel extends JPanel {
     public ModuleDisplayPanel(List<Module> modules, int width, int height){
         this.tWidth =width;
         this.allModules = modules;
+        loadFonts();
         //this.metaLVAPanel = metaPanel;
         filteredModules = modules;
         table = new ModuleTable(modules,width);
@@ -136,6 +138,7 @@ public class ModuleDisplayPanel extends JPanel {
                 public void mouseExited(MouseEvent e) {}
             });
             add(button2);
+            button2.setFont(standardButtonFont);
         }
     }
 

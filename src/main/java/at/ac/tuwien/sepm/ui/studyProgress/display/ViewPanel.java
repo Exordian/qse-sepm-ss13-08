@@ -32,7 +32,7 @@ import java.util.ArrayList;
 @UI
 @Scope("singleton")
 public class ViewPanel extends StandardInsidePanel {
-    private JLabel majorName = new JLabel("Bachelor - Teststudium");// todo
+    private JLabel majorName = new JLabel("dummy");
     private JButton fwd;
     private JButton bwd;
     private SemesterPanel semester;
@@ -64,6 +64,9 @@ public class ViewPanel extends StandardInsidePanel {
         initButtons();
         // initSkiplist(semesterAnz);
         refresh();
+        for (int i=0;i<currSemester;i++) {
+            fwd.doClick();
+        }
         repaint();
         revalidate();
     }
@@ -94,12 +97,11 @@ public class ViewPanel extends StandardInsidePanel {
     @Scheduled(fixedDelay = 5000)
     public void refresh() {
         if (semesterAnz <= 1) {
-         //   bwd.setVisible(false);
+         //   bwd.setVisible(false);        //todo remove if bwd and fwd button setcursor is resolved
           //  fwd.setVisible(false);
         } else {
             bwd.setVisible(true);
             fwd.setVisible(true);
-
         }
         try {
             ArrayList<LVA> temp = new ArrayList<>();
@@ -132,7 +134,7 @@ public class ViewPanel extends StandardInsidePanel {
         bwd.setOpaque(false);
         bwd.setContentAreaFilled(false);
         bwd.setBorderPainted(false);
-        bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));   //todo
+        bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

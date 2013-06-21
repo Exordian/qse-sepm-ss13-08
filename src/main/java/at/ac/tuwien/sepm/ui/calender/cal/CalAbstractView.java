@@ -101,11 +101,11 @@ public abstract class CalAbstractView extends StandardInsidePanel {
     protected void initDayPanels() {
         for(int y=0; y<days.length; y=y+7) {
             for(int x=0; x<7-1; x++) {
-                days[x+y] = new DayPanel(maxDateLabels, dateService, lvaService,  showTime, standardTextFont);
+                days[x+y] = new DayPanel(maxDateLabels, dateService, lvaService,  showTime, standardButtonFont);
                 days[x+y].setMinimumSize(dayPanelDimension);
                 this.add(days[x + y]);
             }
-            days[y+6] = new DayPanel(maxDateLabels, dateService, lvaService, showTime, standardTextFont);
+            days[y+6] = new DayPanel(maxDateLabels, dateService, lvaService, showTime, standardButtonFont);
             days[y+6].setMinimumSize(dayPanelDimension);
             this.add(days[y + 6], "wrap");
         }
@@ -123,10 +123,10 @@ public abstract class CalAbstractView extends StandardInsidePanel {
             List<DateEntity> l2 = calService.getAllNotLVADatesAt(day.getDate());
             LinkedList<DateLabel> r = new LinkedList<DateLabel>();
             for (Date d : l1) {
-                r.addLast(new DateLabel(d, dateService, showTime, standardTextFont));
+                r.addLast(new DateLabel(d, dateService, showTime, standardButtonFont));
             }
             for (Date d : l2) {
-                r.addLast(new DateLabel(d, dateService, showTime, standardTextFont));
+                r.addLast(new DateLabel(d, dateService, showTime, standardButtonFont));
             }
             Collections.sort(r);
             day.setDateLabels(r);

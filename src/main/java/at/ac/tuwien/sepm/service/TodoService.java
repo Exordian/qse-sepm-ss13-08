@@ -4,7 +4,6 @@ package at.ac.tuwien.sepm.service;
 import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.dao;
 
 import at.ac.tuwien.sepm.entity.TissExam;
-import at.ac.tuwien.sepm.entity.Track;
-import at.ac.tuwien.sepm.service.Semester;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;

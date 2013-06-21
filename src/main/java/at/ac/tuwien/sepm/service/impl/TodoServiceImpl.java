@@ -2,8 +2,6 @@ package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.dao.LvaDao;
 import at.ac.tuwien.sepm.dao.TodoDao;
-import at.ac.tuwien.sepm.dao.hsqldb.DBLvaDao;
-import at.ac.tuwien.sepm.dao.hsqldb.DBTodoDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.Todo;
 import at.ac.tuwien.sepm.service.ServiceException;
@@ -15,7 +13,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

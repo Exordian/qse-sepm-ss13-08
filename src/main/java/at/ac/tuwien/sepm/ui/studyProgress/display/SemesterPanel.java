@@ -1,10 +1,8 @@
 package at.ac.tuwien.sepm.ui.studyProgress.display;
 
 import at.ac.tuwien.sepm.entity.LVA;
-import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.metaLva.LvaDisplayPanel;
-import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;

@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Scope;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 

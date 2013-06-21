@@ -2,9 +2,7 @@ package at.ac.tuwien.sepm.service;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
-import org.springframework.dao.DataAccessException;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

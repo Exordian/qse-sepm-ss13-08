@@ -1,11 +1,8 @@
 package at.ac.tuwien.sepm.ui.studyProgress;
 
-import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.TissExam;
 import at.ac.tuwien.sepm.ui.UI;
-import at.ac.tuwien.sepm.ui.metaLva.LvaTable;
 import at.ac.tuwien.sepm.ui.template.HintTextField;
-import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 

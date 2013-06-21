@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.dao;
 
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.ServiceException;
 import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;

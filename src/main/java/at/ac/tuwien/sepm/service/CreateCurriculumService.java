@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.service;
 import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
-import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
 import java.util.HashMap;

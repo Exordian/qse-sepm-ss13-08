@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ui.metaLva;
 
 import at.ac.tuwien.sepm.entity.LVA;
+import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.HintTextField;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
@@ -21,7 +22,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @UI
-public class LvaDisplayPanel extends JPanel {
+public class LvaDisplayPanel extends StandardInsidePanel {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private List<LVA> allLVAs;
     private List<LVA> filteredLVAs;
@@ -42,6 +43,7 @@ public class LvaDisplayPanel extends JPanel {
         this.allLVAs = lvas;
         filteredLVAs = lvas;
         table = new LvaTable(lvas,width);
+        loadFonts();
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -109,12 +111,7 @@ public class LvaDisplayPanel extends JPanel {
 
         public PopUpMenu(){
             button2 = new JMenuItem("Bearbeiten");
-            button2.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
+            button2.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     new Thread(){
@@ -127,14 +124,10 @@ public class LvaDisplayPanel extends JPanel {
                             PanelTube.backgroundPanel.viewLva(getSelectedLVA());
                         }
                     }.start();
-
                 }
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
             });
             add(button2);
+            button2.setFont(standardButtonFont);
         }
     }
 

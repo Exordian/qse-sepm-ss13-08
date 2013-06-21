@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.ui;
 import at.ac.tuwien.sepm.entity.*;
 import at.ac.tuwien.sepm.service.RoomFinderService;
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.ui.calender.ImportPanel;
 import at.ac.tuwien.sepm.ui.entityViews.*;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
@@ -42,7 +41,6 @@ public class BackgroundPanel extends JPanel {
     private Image image;
     private StandardInsidePanel lastComponent;
     private int lastImage;
-    private ImportPanel importPanel;
     private SmallInfoPanel smallInfoPanel;
 
     @Autowired
@@ -53,11 +51,10 @@ public class BackgroundPanel extends JPanel {
     @Autowired
     public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate,
                            ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,
-                           ViewModule viewModule, ImportPanel importPanel, SmallInfoPanel smallInfoPanel,ViewMerge viewMerge) {
+                           ViewModule viewModule, SmallInfoPanel smallInfoPanel,ViewMerge viewMerge) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
         this.viewMerge = viewMerge;
-        this.importPanel=importPanel;
         this.viewMetaLva=viewMetaLva;
         this.viewModule = viewModule;
         this.smallInfoPanel=smallInfoPanel;
@@ -151,14 +148,6 @@ public class BackgroundPanel extends JPanel {
         this.repaint();
     }
 
-    public void viewImport() {
-        removeAddedPanels();
-        importPanel.setVisible(true);
-        this.add(importPanel);
-        this.revalidate();
-        this.repaint();
-    }
-
     /*
     *   String s = text im infopanel (max. 75 chars)
     *   int nmb = icon
@@ -210,7 +199,6 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewMerge);
         this.remove(viewDeadline);
         this.remove(lehrPanel);
-        this.remove(importPanel);
     }
 
     private void addPanel(StandardInsidePanel c) {
