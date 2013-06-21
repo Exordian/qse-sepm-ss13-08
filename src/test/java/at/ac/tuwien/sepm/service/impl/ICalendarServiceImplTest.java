@@ -25,4 +25,5 @@ public class ICalendarServiceImplTest {
     public void testIcalExport() throws Exception {
 
     }
+
 }
