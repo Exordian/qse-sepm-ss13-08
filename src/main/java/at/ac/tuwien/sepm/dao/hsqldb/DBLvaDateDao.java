@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.dao.LvaDateDao;
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
@@ -69,6 +70,35 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
     public List<LvaDate> readByLva(int lvaId) throws DataAccessException {
         String stmt = "SELECT * FROM lvadate WHERE lva=? ORDER BY start";
         return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), lvaId);
+    }
+
+    @Override
+    public List<LvaDate> readyByTimeframeAndStudyprogress(TimeFrame timeFrame, boolean inStudyprogress) throws DataAccessException {
+        if(timeFrame == null) {
+            return null;
+        }
+
+        String stmt = "SELECT * FROM lvadate WHERE " +
+                "lva IN " +
+                "(SELECT id FROM lva WHERE instudyprogress=?)" +
+                "AND ((start>=? AND start<=?) OR" +
+                " (stop>=? AND stop<=?) OR " +
+                " (start<=? AND stop>=?))";
+        String stmtCount = "SELECT COUNT(*) FROM lvadate WHERE " +
+                "lva IN " +
+                "(SELECT id FROM lva WHERE instudyprogress=?)" +
+                "AND ((start>=? AND start<=?) OR" +
+                " (stop>=? AND stop<=?) OR " +
+                " (start<=? AND stop>=?))";
+
+        Timestamp s1 = new Timestamp(timeFrame.from().getMillis());
+        Timestamp s2 = new Timestamp(timeFrame.to().getMillis());
+
+        if(jdbcTemplate.queryForObject(stmtCount, RowMappers.getIntegerRowMapper(), inStudyprogress, s1, s2, s1, s2, s1, s2) == 0){
+            return new ArrayList<LvaDate>(0);
+        }
+
+        return jdbcTemplate.query(stmt, RowMappers.getLvaDateRowMapper(), inStudyprogress, s1, s2, s1, s2, s1, s2);
     }
 
     @Override

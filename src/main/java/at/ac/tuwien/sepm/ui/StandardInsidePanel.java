@@ -48,6 +48,8 @@ public abstract class StandardInsidePanel extends JPanel {
             standardButtonFont = temp.deriveFont(14f);
             calendarDatesFont =  temp.deriveFont(10f);
             calendarDaysFont =  temp.deriveFont(Font.BOLD, 12f);
+            javax.swing.UIManager.put("OptionPane.messageFont", standardTextFont);
+            javax.swing.UIManager.put("OptionPane.buttonFont", standardButtonFont);
         } catch (FontFormatException e) {
             log.info("Probleme beim Font laden.");
             e.printStackTrace();

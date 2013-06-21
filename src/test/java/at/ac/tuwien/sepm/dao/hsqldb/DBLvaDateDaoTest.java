@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
+import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.SemesterDateGenerator;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -512,5 +514,31 @@ public class DBLvaDateDaoTest {
     public void testReadByDayWithoutDates() throws Exception {
         TestHelper.insert(15);
         assert(dao.readByDay(new DateTime(1990, 1, 1, 1, 1, 1, 1)).size()==0);
+    }
+
+    @Test
+    public void testReadyByTimeframeAndStudyprogress() throws Exception {
+        TestHelper.insert(18);
+
+        List<LvaDate> l0 = dao.readyByTimeframeAndStudyprogress(SemesterDateGenerator.getTimeFrame(2013, Semester.S), true);
+        List<LvaDate> l1 = dao.readyByTimeframeAndStudyprogress(SemesterDateGenerator.getTimeFrame(2013, Semester.W), true);
+        List<LvaDate> l2 = dao.readyByTimeframeAndStudyprogress(SemesterDateGenerator.getTimeFrame(2013, Semester.S), false);
+
+
+
+        assert(l0.size() == 4);
+        assert(l1.size() == 4);
+        assert(l2.size() == 7);
+    }
+
+    @Test
+    public void testReadyByTimeframeIsNullAndStudyprogress() throws Exception {
+        TestHelper.insert(18);
+
+        List<LvaDate> l0 = dao.readyByTimeframeAndStudyprogress(null, false);
+        List<LvaDate> l1 = dao.readyByTimeframeAndStudyprogress(null, true);
+
+        assert(l0 == null);
+        assert(l1 == null);
     }
 }
