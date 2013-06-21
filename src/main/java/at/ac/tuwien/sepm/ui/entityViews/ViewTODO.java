@@ -81,8 +81,8 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             description.setText(todo.getDescription());
             done.setSelected(todo.getDone());
             if (todo.getLva() != null) {
-                for(int i = 0; i < lva.getModel().getSize(); i++)        //todo
-                    if (((LvaSelectItem) lva.getItemAt(i)).get() == todo.getLva()) {
+                for(int i = 0; i < lva.getModel().getSize(); i++)
+                    if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == todo.getLva().getId()) {
                         lva.setSelectedIndex(i);
                         break;
                     }
@@ -277,6 +277,14 @@ public class ViewTODO extends StandardSimpleInsidePanel {
         lva.removeAllItems();
         for (LVA t : lvas) {
             lva.addItem(new LvaSelectItem(t));
+        }
+
+        if (todo != null) {
+            for(int i = 0; i < lva.getModel().getSize(); i++)
+                if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == todo.getLva().getId()) {
+                    lva.setSelectedIndex(i);
+                    break;
+                }
         }
     }
 }

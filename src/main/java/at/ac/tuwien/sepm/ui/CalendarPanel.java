@@ -18,8 +18,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,6 +67,8 @@ public class CalendarPanel extends StandardInsidePanel {
         createImportButton();
         changeImage(1);
         createTop();
+        tab2.doClick();    //trolo
+        tab1.doClick();    //trolo more
         this.revalidate();
         this.repaint();
     }
@@ -143,6 +144,7 @@ public class CalendarPanel extends StandardInsidePanel {
         bwd.setContentAreaFilled(false);
         bwd.setBorderPainted(false);
         bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {

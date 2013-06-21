@@ -197,30 +197,13 @@ public class DayPanel extends JPanel {
         }
 
         private void addActionListeners() {
-            newDate.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
+            newDate.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     PanelTube.backgroundPanel.viewDate(null, date);
                 }
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
             });
-            newLvaDate.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-                }
-
+            newLvaDate.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     try {
@@ -235,21 +218,8 @@ public class DayPanel extends JPanel {
                         log.error(e1.getMessage());
                     }
                 }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                }
             });
-            free.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {}
-                @Override
-                public void mousePressed(MouseEvent e) {}
-
+            free.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     DateEntity dateEntity = new DateEntity();
@@ -265,10 +235,6 @@ public class DayPanel extends JPanel {
                         PanelTube.backgroundPanel.viewInfoText("Der Tag konnte nicht als frei markiert werden.", SmallInfoPanel.Error);
                     }
                 }
-                @Override
-                public void mouseEntered(MouseEvent e) {}
-                @Override
-                public void mouseExited(MouseEvent e) {}
             });
         }
     }

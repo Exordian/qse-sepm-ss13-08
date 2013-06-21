@@ -18,6 +18,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -94,8 +96,8 @@ public class ViewPanel extends StandardInsidePanel {
     @Scheduled(fixedDelay = 5000)
     public void refresh() {
         if (semesterAnz <= 1) {
-            bwd.setVisible(false);
-            fwd.setVisible(false);
+         //   bwd.setVisible(false);
+          //  fwd.setVisible(false);
         } else {
             bwd.setVisible(true);
             fwd.setVisible(true);
@@ -128,11 +130,11 @@ public class ViewPanel extends StandardInsidePanel {
             log.error(e.getMessage());
         }
 
-        bwd.setBounds(10, majorName.getY() + majorName.getHeight() + 30+semester.getHeight()/2, 40, 40);
+        bwd.setBounds(10, majorName.getY() + majorName.getHeight() + semester.getHeight() / 2, 40, 40);
         bwd.setOpaque(false);
         bwd.setContentAreaFilled(false);
         bwd.setBorderPainted(false);
-        bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));  //todo change cursor...
+        bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -149,11 +151,11 @@ public class ViewPanel extends StandardInsidePanel {
             }
         });
 
-        fwd.setBounds((int) whiteSpace.getWidth() - 50,majorName.getY() + majorName.getHeight() + 30+semester.getHeight()/2, 40, 40);
+        fwd.setBounds((int) whiteSpace.getWidth() - 50,majorName.getY() + majorName.getHeight() +semester.getHeight()/2, 40, 40);
         fwd.setOpaque(false);
         fwd.setContentAreaFilled(false);
         fwd.setBorderPainted(false);
-        fwd.setCursor(new Cursor(Cursor.HAND_CURSOR));  //todo change cursor...
+        fwd.setCursor(new Cursor(Cursor.HAND_CURSOR));
         fwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
