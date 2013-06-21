@@ -265,6 +265,7 @@ public class PlanPanel extends StandardInsidePanel {
 
                                 }
                                 planer.setIntersectingTolerance(tolerance);
+
                                 planer.setAllowedTimeBetween(timeBetween);
                                 ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
 

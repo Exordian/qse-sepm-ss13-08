@@ -66,7 +66,10 @@ public class MetaLVATable extends JTable{
     }
 
     public MetaLVA getSelectedMetaLVA(){
-        return lvas.get(getSelectedRow());
+        if(getSelectedRowCount()>0){
+            return lvas.get(getSelectedRow());
+        }
+        return null;
     }
 
     public void removeSelectedMetaLVA() {
