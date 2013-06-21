@@ -255,17 +255,14 @@ public class PlanPanel extends StandardInsidePanel {
                                 float tempTolerance = 0;
                                 tempTolerance = ((Number)tolerance.getValue()).floatValue();
                                 tempTolerance = tempTolerance/100;
-                                // tempTolerance=Float.parseFloat(toleranceText.getText().replace("%","").trim())/100;
 
                                 int tempTimeBetween = 0;
                                 if(timeBetweenDropdown.getSelectedIndex()==1){
                                     tempTimeBetween = (int)timeIntersect.getValue();
-                                    tempTimeBetween=tempTimeBetween/60;
-                                    //tempTimeBetween = -Integer.parseInt(timeBetweenIntersectText.getText().replace("min","").trim())/60;
+                                    tempTimeBetween=tempTimeBetween*60;
                                 }else if(timeBetweenDropdown.getSelectedIndex()==2){
                                     tempTimeBetween = (int)timeBuffer.getValue();
-                                    tempTimeBetween = tempTimeBetween/60;
-                                    //tempTimeBetween = Integer.parseInt(timeBetweenBufferText.getText().replace("min","").trim())/60;
+                                    tempTimeBetween = tempTimeBetween*60;
                                 }
                                 planer.setIntersectingTolerance(tempTolerance);
                                 planer.setAllowedTimeBetween(tempTimeBetween);
