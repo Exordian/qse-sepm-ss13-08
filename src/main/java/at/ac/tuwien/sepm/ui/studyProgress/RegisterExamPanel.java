@@ -76,6 +76,7 @@ public class RegisterExamPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RegisterExamPanel.this.refresh();
+                registerButton.setEnabled(true);
             }
         });
         this.add(refresh);
@@ -89,10 +90,13 @@ public class RegisterExamPanel extends StandardInsidePanel {
                 try {
                     automaticExamRegisterService.addRegistration(examPanel.getSelectedExam());
                 } catch (ServiceException e1) {
-                    PanelTube.backgroundPanel.viewInfoText("Anmeldung fehlgeschlagen", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewInfoText("Anmeldung fehlgeschlagen.", SmallInfoPanel.Error);
+                } catch (ArrayIndexOutOfBoundsException a) {
+                    PanelTube.backgroundPanel.viewInfoText("Sie müssen eine Pruefung auswaehlen.", SmallInfoPanel.Error);
                 }
             }
         });
+        registerButton.setEnabled(false);
         this.add(registerButton);
 
         progressBar = new JProgressBar();
