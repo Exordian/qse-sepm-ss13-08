@@ -46,13 +46,13 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
     private JLabel toLabel;
     private JLabel typeLabel;
     private JLabel attendanceRequiredLabel;
-   // private JLabel attendedLabel;
+    // private JLabel attendedLabel;
     private WideComboBox lva;
     private List<LVA> lvas;
     private LVAService lvaService;
 
     private JCheckBox attendanceRequired;
-   // private JCheckBox attended;
+    // private JCheckBox attended;
     private JComboBox type;
     private JDateChooser from;
     private JDateChooser to;
@@ -103,7 +103,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
             changeTitle(lvaDate.getName());
             description.setText(lvaDate.getDescription());
             type.setSelectedItem(lvaDate.getType());
-            for(int i = 0; i < lva.getModel().getSize(); i++)           //todo
+            for(int i = 0; i < lva.getModel().getSize(); i++)
                 if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == lvaDate.getLva()) {
                     lva.setSelectedIndex(i);
                     break;
@@ -342,6 +342,13 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         lva.removeAllItems();
         for (LVA t : lvas) {
             lva.addItem(new LvaSelectItem(t));
+        }
+        if (lvaDate != null) {
+            for(int i = 0; i < lva.getModel().getSize(); i++)
+                if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == lvaDate.getLva()) {
+                    lva.setSelectedIndex(i);
+                    break;
+                }
         }
     }
 }

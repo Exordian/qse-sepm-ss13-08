@@ -3,10 +3,14 @@ package at.ac.tuwien.sepm.ui.calender.cal;
 import at.ac.tuwien.sepm.entity.Date;
 import at.ac.tuwien.sepm.entity.DateEntity;
 import at.ac.tuwien.sepm.entity.LvaDate;
+import at.ac.tuwien.sepm.service.DateService;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.TimeFrame;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import javax.swing.*;
@@ -19,11 +23,16 @@ import java.awt.event.*;
 public class DateLabel extends JTextPane implements Comparable<DateLabel>{
     private static final int MAX_TEXT_LENGTH=20;
     private Date date;
-    private boolean twoLine = false;
 
-    public DateLabel(Date date, boolean twoLine) {
+    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+
+    private boolean twoLine = false;
+    private DateService dateService;
+
+    public DateLabel(Date date, DateService dateService, boolean twoLine) {
         this.date=date;
         this.twoLine = twoLine;
+        this.dateService=dateService;
         setContentType("text/html");
         if(date.getName()==null || date.getName().trim().equals("")){
             this.setText("...");
@@ -53,15 +62,11 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
             }
             if(date instanceof LvaDate) {
                 this.setBackground(new Color(223, 233, 255));
-
-
-                //this.setForeground(new Color(117, 190, 255));
             } else if (date instanceof DateEntity) {
-                if (((DateEntity) date).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!")) {
+                if (((DateEntity)date).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!")) {
                     this.setBackground(new Color(246, 242, 122));
                 } else {
                     this.setBackground(new Color(195, 255, 194));
-                    //this.setForeground(new Color(163, 255, 114));
                 }
             }
         } else {
@@ -168,7 +173,22 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
                     if(date instanceof LvaDate) {
                         PanelTube.backgroundPanel.viewLvaDate((LvaDate)date, null);
                     } else if(date instanceof DateEntity) {
-                        PanelTube.backgroundPanel.viewDate((DateEntity)date, null);
+                        if (((DateEntity)date).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!")) {
+                            Object[] options = {"Ja", "Abbrechen"};
+                            if (JOptionPane.showOptionDialog(DateLabel.this, "Wollen Sie den Tag wieder als 'nicht frei' markieren?", "Bestätigung",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
+                                try {
+                                    DateLabel.this.dateService.deleteDate(((DateEntity)date).getId());
+                                    PanelTube.backgroundPanel.viewInfoText("Der freie Tag wurde wieder als 'nicht frei' markiert.", SmallInfoPanel.Success);
+                                } catch (ServiceException e1) {
+                                    log.error(e1.getMessage());
+                                    PanelTube.backgroundPanel.viewInfoText("Der Tag konnte nicht als 'nicht frei' markiert werden.", SmallInfoPanel.Error);
+                                }
+                            } else {
+                                PanelTube.backgroundPanel.viewInfoText("Der freie Tag bleibt weiter als frei markiert.", SmallInfoPanel.Info);
+                            }
+                        } else
+                            PanelTube.backgroundPanel.viewDate((DateEntity)date, null);
                     }
                 }
             });
