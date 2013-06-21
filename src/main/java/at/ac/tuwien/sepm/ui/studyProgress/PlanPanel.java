@@ -79,13 +79,16 @@ public class PlanPanel extends StandardInsidePanel {
     private JLabel considerStudyProgressCheckLabel;
     private JCheckBox considerStudyProgressCheck;
     private JLabel toleranceLabel;
-    private JTextField toleranceText;
+    private JLabel toleranceText;
     private JLabel timeBetweenLabel;
     private JComboBox timeBetweenDropdown;
     private String[] timeBetweenTextLabelStrings;
     private JLabel timeBetweenTextLabel;
-    private JTextField timeBetweenIntersectText;
-    private JTextField timeBetweenBufferText;
+    private JLabel timeBetweenIntersectText;
+    private JLabel timeBetweenBufferText;
+    private JSpinner tolerance;
+    private JSpinner timeIntersect;
+    private JSpinner timeBuffer;
     // </ advanced settings >
 
     private boolean advancedShown = true;
@@ -140,17 +143,17 @@ public class PlanPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //todo warning alert: all data from year x, sem y will be overriden
-                List<LVA> toRemove = lvaDAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,true);
-                logger.debug("deleting from studyProgress:\n"+LVAUtil.formatShortLVA(toRemove,1));
+                List<LVA> toRemove = lvaDAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
+                logger.debug("deleting from studyProgress:\n" + LVAUtil.formatShortLVA(toRemove, 1));
                 try {
-                    for(LVA lva:toRemove){
-                    //logger.debug("deleting from studyProgress: "+lva);
+                    for (LVA lva : toRemove) {
+                        //logger.debug("deleting from studyProgress: "+lva);
                         lva.setInStudyProgress(false);
                         lvaDAO.update(lva);
                     }
                     out:
-                    for(MetaLVA m:plannedMetaLVAs){
-                        LVA temp = m.getLVA(plannedYear,plannedSemester);
+                    for (MetaLVA m : plannedMetaLVAs) {
+                        LVA temp = m.getLVA(plannedYear, plannedSemester);
                         temp.setInStudyProgress(true);
                         //logger.debug("adding to studyProgress: "+temp);
                         try {
@@ -160,9 +163,9 @@ public class PlanPanel extends StandardInsidePanel {
                         } catch (IOException e1) {
                             logger.error(e1);
                             PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
-                            for(MetaLVA m2:plannedMetaLVAs){    //rollback
-                                LVA temp2 = m.getLVA(plannedYear,plannedSemester);
-                                if(m2==m){
+                            for (MetaLVA m2 : plannedMetaLVAs) {    //rollback
+                                LVA temp2 = m.getLVA(plannedYear, plannedSemester);
+                                if (m2 == m) {
                                     break out;
                                 }
                                 temp2.setInStudyProgress(false);
@@ -178,11 +181,12 @@ public class PlanPanel extends StandardInsidePanel {
                     PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
                 }
 
-                logger.debug("adding to studyProgress: \n"+LVAUtil.formatShortDetailedMetaLVA(plannedMetaLVAs, 1));
+                logger.debug("adding to studyProgress: \n" + LVAUtil.formatShortDetailedMetaLVA(plannedMetaLVAs, 1));
 
 
             }
         });
+        take.setEnabled(false);
         this.add(take);
 
         plan = new JButton("Planen");
@@ -198,14 +202,14 @@ public class PlanPanel extends StandardInsidePanel {
                 if(planningInProgress){
                     //return error
                 }else{
-                    new Thread(){
+                    SwingUtilities.invokeLater(new Thread(){
                         private IntelligentSemesterPlaner planer = new IntelligentSemesterPlanerImpl();
                         public void start(){
                             super.start();
                         }
                         @Override
                         public void run(){
-                            planningInProgress(true);
+                            setPlanningInProgress(true);
                             try{
                                 float goalECTS = Float.parseFloat(desiredECTSText.getText());
                                 //boolean vointersect =  intersectVOCheck.isSelected();
@@ -247,26 +251,22 @@ public class PlanPanel extends StandardInsidePanel {
                                 }
                                 planer.setLVAs(forced, pool);
                                 planer.setTypesToIntersect(typesToIntersect);
-                                float tolerance = 0;
-                                try{
-                                    tolerance=Float.parseFloat(toleranceText.getText().replace("%","").trim())/100;
-                                }catch(NumberFormatException e){
-                                    throw new EscapeException("Bitte geben sie für Toleranz einen gültigen Wert an!");
-                                }
-                                    int timeBetween = 0;
-                                try{
-                                    if(timeBetweenDropdown.getSelectedIndex()==1){
-                                        timeBetween = -Integer.parseInt(timeBetweenIntersectText.getText().replace("min","").trim())/60;
-                                    }else if(timeBetweenDropdown.getSelectedIndex()==2){
-                                        timeBetween = Integer.parseInt(timeBetweenBufferText.getText().replace("min","").trim())/60;
-                                    }
-                                }catch(NumberFormatException e){
-                                    throw new EscapeException("Bitte geben sie für \"Zeit zwischen LVAs\" einen gültigen Wert an!");
 
-                                }
-                                planer.setIntersectingTolerance(tolerance);
+                                float tempTolerance = 0;
+                                tempTolerance = ((Number)tolerance.getValue()).floatValue();
+                                tempTolerance = tempTolerance/100;
 
-                                planer.setAllowedTimeBetween(timeBetween);
+                                int tempTimeBetween = 0;
+                                if(timeBetweenDropdown.getSelectedIndex()==1){
+                                    tempTimeBetween = (int)timeIntersect.getValue();
+                                    tempTimeBetween=tempTimeBetween*60;
+                                }else if(timeBetweenDropdown.getSelectedIndex()==2){
+                                    tempTimeBetween = (int)timeBuffer.getValue();
+                                    tempTimeBetween = tempTimeBetween*60;
+                                }
+                                planer.setIntersectingTolerance(tempTolerance);
+
+                                planer.setAllowedTimeBetween(tempTimeBetween);
                                 ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
 
                                 logger.info("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
@@ -278,21 +278,25 @@ public class PlanPanel extends StandardInsidePanel {
 
 
                                 refreshMetaLVAs(solution);
-                                planningInProgress(false);
 
+                                take.setEnabled(true);
                             }catch(EscapeException e){
                                 PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
-
-                                planningInProgress(false);
                             }
+                            setPlanningInProgress(false);
                         }
-                    }.start();
+                    });
                 }
             }
         });
         this.add(plan);
     }
-    private void planningInProgress(boolean inProgress){
+    private void setPlanningInProgress(boolean inProgress){
+        if(inProgress){
+            this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        }else{
+            this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
         planningInProgress = inProgress;
         plan.setEnabled(!inProgress);
         progressBar.setVisible(inProgress);
@@ -303,43 +307,50 @@ public class PlanPanel extends StandardInsidePanel {
         refreshAdvanced();
     }
     private void refreshAdvanced() {
-            intersectVOCheckLabel.setVisible(!advancedShown);
-            intersectVOCheck.setVisible(!advancedShown);
+        intersectVOCheckLabel.setVisible(!advancedShown);
+        intersectVOCheck.setVisible(!advancedShown);
 
-            intersectUECheckLabel.setVisible(!advancedShown);
-            intersectUECheck.setVisible(!advancedShown);
+        intersectUECheckLabel.setVisible(!advancedShown);
+        intersectUECheck.setVisible(!advancedShown);
 
-            intersectExamCheckLabel.setVisible(!advancedShown);
-            intersectExamCheck.setVisible(!advancedShown);
+        intersectExamCheckLabel.setVisible(!advancedShown);
+        intersectExamCheck.setVisible(!advancedShown);
 
-            intersectCustomCheckLabel.setVisible(!advancedShown);
-            intersectCustomCheck.setVisible(!advancedShown);
+        intersectCustomCheckLabel.setVisible(!advancedShown);
+        intersectCustomCheck.setVisible(!advancedShown);
 
-            considerStudyProgressCheck.setVisible(!advancedShown);
-            considerStudyProgressCheckLabel.setVisible(!advancedShown);
+        considerStudyProgressCheck.setVisible(!advancedShown);
+        considerStudyProgressCheckLabel.setVisible(!advancedShown);
 
-            toleranceLabel.setVisible(!advancedShown);
-            toleranceText.setVisible(!advancedShown);
+        tolerance.setVisible(!advancedShown);
+        toleranceLabel.setVisible(!advancedShown);
+        toleranceText.setVisible(!advancedShown);
 
-            timeBetweenLabel.setVisible(!advancedShown);
-            timeBetweenDropdown.setVisible(!advancedShown);
+        timeBetweenLabel.setVisible(!advancedShown);
+        timeBetweenDropdown.setVisible(!advancedShown);
 
-            timeBetweenTextLabel.setVisible(!advancedShown);
-            switch(timeBetweenDropdown.getSelectedIndex()){
-                case 1:
-                    timeBetweenIntersectText.setVisible(!advancedShown);
-                    timeBetweenBufferText.setVisible(false);
-                    break;
-                case 2:
-                    timeBetweenIntersectText.setVisible(false);
-                    timeBetweenBufferText.setVisible(!advancedShown);
-                    break;
-                default:
-                    timeBetweenIntersectText.setVisible(false);
-                    timeBetweenBufferText.setVisible(false);
-            }
-            repaint();
-            //advancedShown=!advancedShown;
+        timeBetweenTextLabel.setVisible(!advancedShown);
+        switch(timeBetweenDropdown.getSelectedIndex()){
+            case 1:
+                timeBetweenIntersectText.setVisible(!advancedShown);
+                timeIntersect.setVisible(!advancedShown);
+                timeBetweenBufferText.setVisible(false);
+                timeBuffer.setVisible(false);
+                break;
+            case 2:
+                timeBetweenIntersectText.setVisible(false);
+                timeIntersect.setVisible(false);
+                timeBetweenBufferText.setVisible(!advancedShown);
+                timeBuffer.setVisible(!advancedShown);
+                break;
+            default:
+                timeBetweenIntersectText.setVisible(false);
+                timeIntersect.setVisible(false);
+                timeBetweenBufferText.setVisible(false);
+                timeBuffer.setVisible(false);
+        }
+        repaint();
+        //advancedShown=!advancedShown;
     }
 
     private void initTextAndLabels() {
@@ -483,12 +494,17 @@ public class PlanPanel extends StandardInsidePanel {
 
         toleranceLabel = new JLabel("Prozent der Termine, die sich schneiden dürfen:");
         toleranceLabel.setFont(standardTextFont);
-        toleranceLabel.setBounds(considerStudyProgressCheckLabel.getX(), considerStudyProgressCheckLabel.getY()+considerStudyProgressCheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
+        toleranceLabel.setBounds(considerStudyProgressCheckLabel.getX(), considerStudyProgressCheckLabel.getY() + considerStudyProgressCheckLabel.getHeight() + verticalSpace, textWidth, textHeight);
         this.add(toleranceLabel);
 
-        toleranceText = new JTextField("20 %");
+        tolerance = new JSpinner();
+        tolerance.setModel(new SpinnerNumberModel(10, 0, 100, 5));
+        tolerance.setBounds(toleranceLabel.getX() + toleranceLabel.getWidth() + 5 -20, toleranceLabel.getY() + 5, 42, 20);
+        this.add(tolerance);
+
+        toleranceText = new JLabel("%");
         toleranceText.setBackground(new Color(0, 0, 0, 0));
-        toleranceText.setBounds(toleranceLabel.getX() + toleranceLabel.getWidth() + 5 -20, toleranceLabel.getY() + 5, 40, 20);
+        toleranceText.setBounds(tolerance.getX() + tolerance.getWidth() + 1, tolerance.getY(), 20, 20);
         this.add(toleranceText);
 
 
@@ -511,14 +527,25 @@ public class PlanPanel extends StandardInsidePanel {
         //timeBetweenTextLabel.setVisible(false);
         this.add(timeBetweenTextLabel);
 
-        timeBetweenIntersectText = new JTextField("0 min");
-        timeBetweenIntersectText.setBounds(timeBetweenTextLabel.getX() + timeBetweenTextLabel.getWidth() - 15, timeBetweenTextLabel.getY(), 41, textHeight);
-        //timeBetweenIntersectText.setVisible(false);
+        timeIntersect = new JSpinner();
+        timeIntersect.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 5));
+        timeIntersect.setBounds(timeBetweenTextLabel.getX() + timeBetweenTextLabel.getWidth() + 5 -20, timeBetweenTextLabel.getY() + 5, 43, 20);
+        this.add(timeIntersect);
+
+        timeBetweenIntersectText = new JLabel("min");
+        timeBetweenIntersectText.setBackground(new Color(0, 0, 0, 0));
+        timeBetweenIntersectText.setBounds(timeIntersect.getX() + timeIntersect.getWidth() + 1, timeIntersect.getY(), 30, 20);
         this.add(timeBetweenIntersectText);
 
-        timeBetweenBufferText = new JTextField("0 min");
-        timeBetweenBufferText.setBounds(timeBetweenTextLabel.getX() + timeBetweenTextLabel.getWidth() - 15, timeBetweenTextLabel.getY(), 41, textHeight);
-        //timeBetweenBufferText.setVisible(false);
+
+        timeBuffer = new JSpinner();
+        timeBuffer.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 5));
+        timeBuffer.setBounds(timeBetweenTextLabel.getX() + timeBetweenTextLabel.getWidth() + 5 -20, timeBetweenTextLabel.getY() + 5, 43, 20);
+        this.add(timeBuffer);
+
+        timeBetweenBufferText = new JLabel("min");
+        timeBetweenBufferText.setBackground(new Color(0, 0, 0, 0));
+        timeBetweenBufferText.setBounds(timeBuffer.getX() + timeBuffer.getWidth() + 1, timeBuffer.getY(), 30, 20);
         this.add(timeBetweenBufferText);
         toggleAdvanced();
 

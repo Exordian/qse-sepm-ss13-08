@@ -40,7 +40,6 @@ public class LvaPanel extends StandardInsidePanel {
     private MetaLVAService metaLVAService;
 
     private List<MetaLVA> metaLVAs;
-    private List<LVA> lvas;
 
     private MetaLVADisplayPanel metaPane;
     private LvaDisplayPanel lvaPane;
@@ -53,6 +52,7 @@ public class LvaPanel extends StandardInsidePanel {
     private JButton addMeta;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+    private boolean refreshing = false;
 
 
     @Autowired
@@ -90,7 +90,6 @@ public class LvaPanel extends StandardInsidePanel {
                 LvaPanel.this.refresh();
             }
         });
-        //this.add(refresh);
 
         addMeta = new JButton("Erstellen");
         addMeta.setFont(standardButtonFont);
@@ -138,31 +137,37 @@ public class LvaPanel extends StandardInsidePanel {
         metaPane.setLvaDisplayPanel(lvaPane);
         this.add(lvaPane);
     }
-
-
     @Override
     //@Scheduled(fixedDelay = 20000)
     public synchronized void refresh() {
         //threading, so the user doesn't have to wait for the window to pop up
-        new Thread(){
+        if(refreshing){
+            return;
+        }
+        refreshing = true;
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        SwingUtilities.invokeLater(new Thread(){
             @Override
             public void run(){
                 try {
-                    log.info("Thread for loading LVAs started");
+                    log.info("Thread for loading LVAs now running");
                     metaLVAs = metaLVAService.readAll();
                     Collections.sort(metaLVAs,MetaLVA.getAlphabeticalNameComparator());
+                    metaPane.refresh(metaLVAs);
                     log.info("loaded LVAs");
-                    //lvaPane.refresh(new ArrayList<LVA>(0));
+                    refreshing = false;
                 } catch (ServiceException e) {
                     log.info("Exception caught while loading LVAs");
                     log.error("Exception: " + e.getMessage());
+                    PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der LVAs", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.info("Exception caught while loading LVAs");
                     log.error("Exception: " + e.getMessage());
+                    PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der LVAs", SmallInfoPanel.Error);
                 }
-                metaPane.refresh(metaLVAs);
+                LvaPanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
-        }.start();
+        });
 
     }
 }

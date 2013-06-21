@@ -117,7 +117,17 @@ public class LvaDisplayPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    PanelTube.backgroundPanel.viewLva(getSelectedLVA());
+                    new Thread(){
+                        @Override
+                        public void run(){
+                            try {
+                                sleep(10);//waiting, so the right-clicked item really is selected
+                            } catch (InterruptedException ignore) {
+                            }
+                            PanelTube.backgroundPanel.viewLva(getSelectedLVA());
+                        }
+                    }.start();
+
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {}

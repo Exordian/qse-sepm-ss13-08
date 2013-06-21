@@ -18,8 +18,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ import java.util.ArrayList;
 @UI
 @Scope("singleton")
 public class ViewPanel extends StandardInsidePanel {
-    private JLabel majorName = new JLabel("Bachelor - Teststudium");
+    private JLabel majorName = new JLabel("Bachelor - Teststudium");// todo
     private JButton fwd;
     private JButton bwd;
     private SemesterPanel semester;

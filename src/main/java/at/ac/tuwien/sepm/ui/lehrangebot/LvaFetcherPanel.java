@@ -253,7 +253,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 progressBar.setIndeterminate(false);
                 progressBar.setVisible(false);
                 importb.setEnabled(true);
-                PanelTube.backgroundPanel.viewInfoText("Die Lvas wurden fertig geladen.", SmallInfoPanel.Info);
+                PanelTube.backgroundPanel.viewInfoText("Die Lvas wurden fertig geladen.", SmallInfoPanel.Success);
             } catch (ServiceException e) {
                 logger.info("couldn't build LvaTree", e);
                 PanelTube.backgroundPanel.viewInfoText("Die Lvas konnten nicht geladen werden.", SmallInfoPanel.Error);
