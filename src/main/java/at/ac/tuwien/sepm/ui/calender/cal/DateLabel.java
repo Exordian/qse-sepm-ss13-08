@@ -137,32 +137,34 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
         }
 
         @Override
-        public void mousePressed(MouseEvent e) {}
-
-        @Override
         public void mouseReleased(MouseEvent e) {
             if(e.getButton()==3) {
-                PopUpMenu menu = new PopUpMenu();
+                boolean troll = false;
+                if (date instanceof DateEntity) {
+                    if (((DateEntity)date).getDescription().equals("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!"))
+                        troll = true;
+                }
+                PopUpMenu menu = new PopUpMenu(troll);
                 menu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {}
-
-        @Override
-        public void mouseExited(MouseEvent e) {}
     }
 
     private class PopUpMenu extends JPopupMenu {
         private JMenuItem edit;
         private JMenuItem showRoom;
 
-        public PopUpMenu(){
-            edit = new JMenuItem("Bearbeiten");
-            showRoom = new JMenuItem("Wegbeschreibung");
-            add(edit);
-            add(showRoom);
+        public PopUpMenu(boolean troll){
+            if (troll) {
+                edit = new JMenuItem("Als 'nicht frei' markieren");
+                showRoom = new JMenuItem();
+                add(edit);
+            } else {
+                edit = new JMenuItem("Bearbeiten");
+                showRoom = new JMenuItem("Wegbeschreibung");
+                add(edit);
+                add(showRoom);
+            }
             addActionListeners();
         }
 
@@ -180,6 +182,7 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
                                 try {
                                     DateLabel.this.dateService.deleteDate(((DateEntity)date).getId());
                                     PanelTube.backgroundPanel.viewInfoText("Der freie Tag wurde wieder als 'nicht frei' markiert.", SmallInfoPanel.Success);
+                                    PanelTube.calendarPanel.refresh();
                                 } catch (ServiceException e1) {
                                     log.error(e1.getMessage());
                                     PanelTube.backgroundPanel.viewInfoText("Der Tag konnte nicht als 'nicht frei' markiert werden.", SmallInfoPanel.Error);

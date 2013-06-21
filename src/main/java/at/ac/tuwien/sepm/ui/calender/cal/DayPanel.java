@@ -76,6 +76,7 @@ public class DayPanel extends JPanel {
     }
 
     public void refreshDates() {
+        boolean freeday = false;
         deleteAllDates();
         for(DateLabel l : dates) {
             if (l.getDate() instanceof DateEntity)
@@ -84,21 +85,36 @@ public class DayPanel extends JPanel {
                     datePanel.add(l, "w 100%, wrap");
                     this.revalidate();
                     this.repaint();
-                    return;
+                    freeday = true;
                 }
         }
 
         if(dates.size() > maxDateLabels) {
             for(int i=0; i<maxDateLabels-1; i++) {
-                dates.get(i).changeColor(isCurrent);
-                datePanel.add(dates.get(i), "w 100%, wrap");
+                if (freeday) {
+                    if (dates.get(i).getDate() instanceof DateEntity) {
+                        dates.get(i).changeColor(isCurrent);
+                        datePanel.add(dates.get(i), "w 100%, wrap");
+                    }
+                } else {
+                    dates.get(i).changeColor(isCurrent);
+                    datePanel.add(dates.get(i), "w 100%, wrap");
+                }
             }
             tmdl.setText(dates.size()-maxDateLabels+1);
             datePanel.add(tmdl);
+
         } else {
             for(DateLabel l : dates) {
-                l.changeColor(isCurrent);
-                datePanel.add(l, "w 100%, wrap");
+                if (freeday) {
+                    if (l.getDate() instanceof DateEntity) {
+                        l.changeColor(isCurrent);
+                        datePanel.add(l, "w 100%, wrap");
+                    }
+                } else {
+                    l.changeColor(isCurrent);
+                    datePanel.add(l, "w 100%, wrap");
+                }
             }
         }
         this.revalidate();
@@ -216,11 +232,12 @@ public class DayPanel extends JPanel {
                     dateEntity.setDescription("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!");
                     try {
                         DayPanel.this.dateService.createDate(dateEntity);
-                        PanelTube.backgroundPanel.viewInfoText("Der Tag wurde als frei markiert.", SmallInfoPanel.Info);
+                        PanelTube.backgroundPanel.viewInfoText("Der Tag wurde als frei markiert.", SmallInfoPanel.Success);
                     } catch (ServiceException e1) {
                         log.error(e1.getMessage());
                         PanelTube.backgroundPanel.viewInfoText("Der Tag konnte nicht als frei markiert werden.", SmallInfoPanel.Error);
                     }
+                    PanelTube.calendarPanel.refresh();
                 }
             });
         }

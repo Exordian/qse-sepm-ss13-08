@@ -26,7 +26,6 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
 
     @Autowired
     public CalMonthGenerator(CalPanelMonth calPanelMonth) {
-
         //braucht man, damit man den kalender frei verschieben kann
         //das verschieben passiert dann in calpanelmonth
         //das muss bei der wochenansicht auch so gemacht werden
