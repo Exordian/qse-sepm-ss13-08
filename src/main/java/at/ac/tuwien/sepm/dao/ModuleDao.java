@@ -85,8 +85,8 @@ public interface ModuleDao {
     public boolean deleteFromCurriculum(int moduleId, int curriculumId) throws DataAccessException;
 
     /**
-     * Update the values of a MetaLVA. Every attribute of toUpdate, which is not null, is included to the
-     * update-statements. The MetaLVA is identified by its id, so this value should not be null.
+     * Update the values of a Module. Every attribute of toUpdate, which is not null, is included to the
+     * update-statements. The Module is identified by its id, so this value should not be null.
      * @param toUpdate The <code>Module</code> containing all values which should be updated.
      * @return <code>true</code> if there was a module found and was successfully updated and <code>false</code> if
      * there was no module with the specified id found.

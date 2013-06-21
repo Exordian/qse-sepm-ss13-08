@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.dao;
 
 import at.ac.tuwien.sepm.entity.LvaDate;
 import at.ac.tuwien.sepm.entity.LvaDateType;
+import at.ac.tuwien.sepm.service.TimeFrame;
 import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 
@@ -96,6 +97,16 @@ public interface LvaDateDao {
      * @throws DataAccessException If the lva date data could not be read because any error occurred.
      */
     public List<LvaDate> readByLva(int lvaId) throws DataAccessException;
+
+    /**
+     * Read all lva dates which start in the specified time frame and are included to the study progress or not.
+     * @param timeFrame The time frame.
+     * @param inStudyprogress <code>true</code> if the returned lva dates should be included to the study progress and
+     *                        <code>false</code> otherwise.
+     * @return A list containing all matching lva dates.
+     * @throws DataAccessException If the lva dates could not be read because any error occurred.
+     */
+    public List<LvaDate> readyByTimeframeAndStudyprogress(TimeFrame timeFrame, boolean inStudyprogress) throws DataAccessException;
 
     /**
      * Read all lva dates which start at the specified day or stop at the specified day or start before the specified day
