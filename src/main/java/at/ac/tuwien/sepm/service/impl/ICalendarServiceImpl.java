@@ -16,6 +16,7 @@ import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.*;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -37,10 +38,14 @@ import java.util.Iterator;
 public class ICalendarServiceImpl implements ICalendarService {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
+    private static final String WRONG_MIME_TYPE = "Die angegebene Datei hat kein gültiges Kalender-Format.";
+    private static final String FILE_DOES_NOT_EXIST = "Die Datei existiert nicht.";
+    private static final String FILE_NOT_FOUND = "Der Kalender konnte nicht importiert werden.";
     private static final String COULD_NOT_IMPORT_CALENDAR = "Der Kalender konnte nicht importiert werden.";
     private static final String COULD_NOT_EXPORT_CALENDAR = "Der Kalender konnte nicht gespeichert werden.";
     private static final String COULD_NOT_CREATE_DATE_1 = "Beim speichern des Termins '";
     private static final String COULD_NOT_CREATE_DATE_2 = "' ist ein Fehler aufgetreten.\n";
+    private static final String PRODID = "at.ac.tuwien.sepm.group08";
 
     @Autowired
     private LvaDateDao lvaDateDao;
@@ -50,7 +55,7 @@ public class ICalendarServiceImpl implements ICalendarService {
 
     @Override
     public int icalImport(File cal) throws ServiceException {
-        // TODO validate the file
+        iCalImportValidator(cal);
 
         FileInputStream fis;
         CalendarBuilder builder;
@@ -113,11 +118,10 @@ public class ICalendarServiceImpl implements ICalendarService {
 
     @Override
     public boolean icalExport(File cal) throws ServiceException {
-        // TODO validate the file
+        cal = iCalExportValidator(cal);
 
         Calendar calendar = new Calendar();
-        // TODO set the correct ProdID
-        calendar.getProperties().add(new ProdId("at.ac.tuwien.sepm.group08"));
+        calendar.getProperties().add(new ProdId(PRODID));
         calendar.getProperties().add(Version.VERSION_2_0);
         calendar.getProperties().add(CalScale.GREGORIAN);
 
@@ -167,13 +171,14 @@ public class ICalendarServiceImpl implements ICalendarService {
         return true;
     }
 
-    /**
+    /*
      * Validates if the given file is valid or not.
      * @param f The file to be validated.
      * @param isExisting <code>true</code> if the file must be existing, <code>false</code> otherwise.
      * @throws ServiceException If if the file is existing if it should not, if the file is not existing if it should,
      * if the File does have the wrong mime type.
      */
+    /*
     public void iCalFileValidator(File f, boolean isExisting) throws ServiceException {
         // TODO test this class properly
         if (f == null) {
@@ -194,6 +199,48 @@ public class ICalendarServiceImpl implements ICalendarService {
         if(!mimeType.equals("text/calendar")) {
             logger.info("wrong mime type. needed: 'text/calendar'\tgiven: " + mimeType);
             throw new ServiceException("Die ausgewählte Datei hat das falsche Format.");
+        }
+    }
+    */
+
+    private File iCalExportValidator(File f) throws ServiceException {
+        if(f == null) {
+            throw new ServiceException(FILE_NOT_FOUND);
+        }
+        String ext = FilenameUtils.getExtension(f.getName());
+        if(ext.equals("") || !ext.equals("ics")) {
+            String nr = "";
+            int i=1;
+            String path = FilenameUtils.getFullPath(f.getAbsolutePath());
+            String name = FilenameUtils.getBaseName(f.getAbsolutePath());
+            logger.info("path='" + path + "'\tname='" + name + "'");
+            do {
+                String s = "file '" + f.getAbsolutePath() + "' renamed to '";
+                f = new File(path + name + nr + ".ics");
+                s += f.getAbsolutePath() + "'";
+                logger.info(s);
+                i++;
+                nr = "" + i;
+            } while(f.exists());
+        }
+        return f;
+    }
+
+    private void iCalImportValidator(File f) throws ServiceException {
+        if(f == null) {
+            throw new ServiceException(FILE_NOT_FOUND);
+        } else if (!f.exists()) {
+            throw new ServiceException(FILE_DOES_NOT_EXIST);
+        } else if (!f.isFile()) {
+            throw new ServiceException(FILE_NOT_FOUND);
+        }
+
+        MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
+        mimetypesFileTypeMap.addMimeTypes("text/calendar ics iCal ifb iFBf ical");
+        String mimeType = mimetypesFileTypeMap.getContentType(f);
+
+        if (!mimeType.equals("text/calendar")) {
+            throw new ServiceException(WRONG_MIME_TYPE);
         }
     }
 
