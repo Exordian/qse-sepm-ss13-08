@@ -22,6 +22,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
     private boolean canceled;
     private int timeBetween=0;
 
+
     @Override
     public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
         logger.debug("setting LVAs..");
@@ -66,31 +67,28 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         }
 		tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
 		ArrayList<MetaLVA> roots = tree.getRoots();
-		ArrayList<MetaLVA> toPlan = new ArrayList<MetaLVA>(roots.size());
-		for(MetaLVA mLVA :roots){
-			if(mLVA.containsLVA(year, sem)){
-				toPlan.add(mLVA);
-			}
-		}
-        Collections.shuffle(toPlan);
-        Collections.sort(toPlan);
-        ArrayList chosen = new ArrayList<Integer>();
+		ArrayList<MetaLVA> toPlan = new ArrayList<MetaLVA>(roots.size()+forced.size());
         int actualECTS = 0;
+        ArrayList chosen = new ArrayList<Integer>();
         for(MetaLVA mLVA :forced){
-            if(!toPlan.contains(mLVA) && mLVA.containsLVA(year, sem)){
-                toPlan.add(mLVA);
-                logger.debug("adding to toPlan: "+mLVA);
-            }
             if(mLVA.containsLVA(year, sem)){
+                toPlan.add(mLVA);
                 chosen.add(toPlan.indexOf(mLVA));
                 actualECTS+=mLVA.getECTS();
             }
         }
+        Collections.shuffle(roots);
+        Collections.sort(roots);
+		for(MetaLVA mLVA :roots){
+			if(mLVA.containsLVA(year, sem) && !forced.contains(mLVA)){
+				toPlan.add(mLVA);
+			}
+		}
         computeSolution(toPlan,chosen,goalECTS,actualECTS);
         intersectAll(toPlan,year,sem);
 
         canceled = false;
-		recPlanning(toPlan,0,chosen,goalECTS,actualECTS);
+		recPlanning(toPlan,forced.size(),chosen,goalECTS,actualECTS);
         logger.debug("finished planning. Time passed: "+(System.currentTimeMillis()-startedPlanning)/1000f +" secounds");
         if(bestSolution!=null){
 		    return bestSolution;

@@ -231,7 +231,7 @@ public class PlanPanel extends StandardInsidePanel {
                                     customMetaLVA.setLVA(dateDAO.readNotToIntersectByYearSemester(plannedYear,plannedSemester));
                                     //logger.debug(customMetaLVA.getLVA(plannedYear,plannedSemester));
                                     customMetaLVA.setName("custom dates");
-                                    customMetaLVA.setNr("UniqueNr!!!");
+                                    customMetaLVA.setNr("UniqueNr:%&%&%&%&%");
                                     forced.add(customMetaLVA);
                                     pool.add(customMetaLVA); //todo ohne diese zeile bug?!
                                 }
@@ -265,14 +265,15 @@ public class PlanPanel extends StandardInsidePanel {
 
                                 }
                                 planer.setIntersectingTolerance(tolerance);
+                                planer.setAllowedTimeBetween(timeBetween);
                                 ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
-                                if(intersectCustomCheck.isSelected()){
-                                    solution.remove(customMetaLVA);
-                                    solution.remove(customMetaLVA);
-                                }
-
 
                                 logger.info("solution provided by planner:\n"+ LVAUtil.formatShortMetaLVA(solution, 1));
+
+                                if(intersectCustomCheck.isSelected()){
+                                    solution.remove(customMetaLVA);
+                                    logger.info("removing from solution: "+customMetaLVA);
+                                }
 
 
                                 refreshMetaLVAs(solution);
