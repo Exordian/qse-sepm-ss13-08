@@ -17,7 +17,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,18 +146,6 @@ public class DayPanel extends JPanel {
                     new CalDisplayAllDatesFrame(getDates());
                 }
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {}
-
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-
-            @Override
-            public void mouseExited(MouseEvent e) {}
         }
     }
 
@@ -228,7 +215,7 @@ public class DayPanel extends JPanel {
                     dateEntity.setIntersectable(false);
                     dateEntity.setDescription("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!");
                     try {
-                        DayPanel.this.dateService.createDate(dateEntity);                                                    //todo
+                        DayPanel.this.dateService.createDate(dateEntity);
                         PanelTube.backgroundPanel.viewInfoText("Der Tag wurde als frei markiert.", SmallInfoPanel.Info);
                     } catch (ServiceException e1) {
                         log.error(e1.getMessage());

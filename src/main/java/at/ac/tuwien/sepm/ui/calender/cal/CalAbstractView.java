@@ -123,10 +123,10 @@ public abstract class CalAbstractView extends StandardInsidePanel {
             List<DateEntity> l2 = calService.getAllNotLVADatesAt(day.getDate());
             LinkedList<DateLabel> r = new LinkedList<DateLabel>();
             for (Date d : l1) {
-                r.addLast(new DateLabel(d, showTime));
+                r.addLast(new DateLabel(d, dateService, showTime));
             }
             for (Date d : l2) {
-                r.addLast(new DateLabel(d, showTime));
+                r.addLast(new DateLabel(d, dateService, showTime));
             }
             Collections.sort(r);
             day.setDateLabels(r);

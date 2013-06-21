@@ -279,7 +279,7 @@ public class ViewTODO extends StandardSimpleInsidePanel {
             lva.addItem(new LvaSelectItem(t));
         }
 
-        if (todo != null) {
+        if (todo.getLva() != null) {
             for(int i = 0; i < lva.getModel().getSize(); i++)
                 if (((LvaSelectItem) lva.getItemAt(i)).get().getId() == todo.getLva().getId()) {
                     lva.setSelectedIndex(i);
