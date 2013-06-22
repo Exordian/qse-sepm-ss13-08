@@ -128,8 +128,9 @@ public class ModulePanel extends StandardInsidePanel {
                 try {
                     log.info("Thread for loading Modules now running");
                     modules = moduleService.readAll();
-                    modulePane.refresh(modules);
                     Collections.sort(modules, Module.getAlphabeticalNameComparator());
+                    modulePane.refresh(modules);
+
                     log.info("loaded Modules");
                     refreshing = false;
                 } catch (ServiceException e) {

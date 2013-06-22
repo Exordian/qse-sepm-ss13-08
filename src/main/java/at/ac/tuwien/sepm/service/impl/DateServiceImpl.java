@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.service.impl;
 
 import at.ac.tuwien.sepm.dao.DateDao;
 import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.Semester;
 import at.ac.tuwien.sepm.service.ServiceException;
@@ -170,5 +171,10 @@ public class DateServiceImpl implements DateService {
               temp--;
         }
         return temp;
+    }
+
+    @Override
+    public LVA readNotToIntersectByYearSemester(int plannedYear, Semester plannedSemester) {
+        return dateDao.readNotToIntersectByYearSemester(plannedYear,plannedSemester);
     }
 }
