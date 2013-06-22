@@ -168,15 +168,6 @@ public class ViewPanel extends StandardInsidePanel {
         }
     }
 
-    private int getYearNow() {
-        try {
-            return getFirstYear() + (service.numberOfSemestersInStudyProgress()/2);
-        } catch (ServiceException e) {
-            log.error(e.getMessage());
-            return 0;
-        }
-    }
-
     private boolean isFirstSemesterWinter() {
         try {
             return service.isFirstSemesterAWinterSemester();
