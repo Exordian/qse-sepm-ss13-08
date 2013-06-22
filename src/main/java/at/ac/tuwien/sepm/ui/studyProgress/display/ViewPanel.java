@@ -40,10 +40,12 @@ public class ViewPanel extends StandardInsidePanel {
     private LVAService service;
     private PropertyService propertyService;
 
-    private int semesterAnz = 6;
-    private int currSemester = 1;
-    private int year = 2013;
-    private boolean isWinterSemester = true;
+    private SemesterList semesterList;
+
+    //private int semesterAnz = 6;
+    //private int currSemester = 1;
+    //private int year = 2013;
+    //private boolean isWinterSemester = true;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -55,63 +57,34 @@ public class ViewPanel extends StandardInsidePanel {
         this.setOpaque(false);
         loadFonts();
         setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(), (int) whiteSpace.getWidth(), (int) whiteSpace.getHeight());
+        this.semesterList = new SemesterList();
         setMajorName();
-        setSemesterAnzahl();
-        year = getFirstYear();
-        setIsWinterSemester();
         initMajorName();
         initSemesterPanel();
         initButtons();
-        // initSkiplist(semesterAnz);
         refresh();
-        for (int i=0;i<currSemester;i++) {
-            fwd.doClick();
-        }
         repaint();
         revalidate();
     }
 
-    /*private void initSkiplist(int semesterAnz) {
-        JLabel semesters = new JLabel("Semester:");
-        semesters.setFont(standardSmallerTitleFont);
-        semesters.setBounds(50, majorName.getY() + majorName.getHeight() +semester.getHeight()+50, 150, 25);
-        this.add(semesters);
-
-        DefaultListModel listModel = new DefaultListModel();
-        for(int i = 1; i <= semesterAnz; i++) {
-            listModel.addElement(i + ". Semester");
-        }
-        semesterList = new JList(listModel);
-        semesterList.setSelectedIndex(1);
-        semesterList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                semester.setSemesterTitle((String)semesterList.getSelectedValue());
-            }
-        });
-        semesterList.setBounds(50, semesters.getY() + semesters.getHeight() + 10, 230, (20 * (semesterAnz)));
-        semesterList.setBorder(BorderFactory.createLineBorder(Color.black));
-        this.add(semesterList);
-    } */
-
     @Scheduled(fixedDelay = 5000)
     public void refresh() {
-        if (semesterAnz <= 1) {
-         //   bwd.setVisible(false);        //todo remove if bwd and fwd button setcursor is resolved
-          //  fwd.setVisible(false);
+        if (getSemesterAnzahl() <= 1) {
+            //   bwd.setVisible(false);        //todo remove if bwd and fwd button setcursor is resolved
+            //  fwd.setVisible(false);
         } else {
             bwd.setVisible(true);
             fwd.setVisible(true);
         }
         try {
             ArrayList<LVA> temp = new ArrayList<>();
-            for (LVA l : service.readByYearAndSemester(year, isWinterSemester)) {
+            for (LVA l : service.readByYearAndSemester(semesterList.getCurrentYear(), semesterList.getCurrentSemesterIsWinterSemester())) {
                 if (l.isInStudyProgress())
                     temp.add(l);
             }
             semester.setLvas(temp);
-            String tempo = isWinterSemester? "WS" : "SS";
-            semester.setSemesterTitle(currSemester + ". Semester (" + year + ", " + tempo + ")");
+            String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
+            semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
         } catch (ServiceException e) {
             log.error(e.getMessage());
         } catch (ValidationException e) {
@@ -138,16 +111,8 @@ public class ViewPanel extends StandardInsidePanel {
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                // if (!semesterList.isSelectionEmpty()) {
-                //     semesterList.setSelectedIndex(semesterList.getSelectedIndex()-1);
-                if (year > getFirstYear()) {
-                    if (!isWinterSemester)
-                        year--;
-                    isWinterSemester = !isWinterSemester;
-                    currSemester--;
-                    refresh();
-                }
-                // }
+                semesterList.last();
+                refresh();
             }
         });
 
@@ -159,16 +124,8 @@ public class ViewPanel extends StandardInsidePanel {
         fwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //  if (!semesterList.isSelectionEmpty()) {
-                //     semesterList.setSelectedIndex(semesterList.getSelectedIndex()+1);
-                if (year < getYearNow()) {
-                    if (isWinterSemester)
-                        year++;
-                    isWinterSemester = !isWinterSemester;
-                    currSemester++;
-                    refresh();
-                }
-                //  }
+                semesterList.next();
+                refresh();
             }
         });
         this.add(fwd);
@@ -193,19 +150,19 @@ public class ViewPanel extends StandardInsidePanel {
         }
     }
 
-    public void setSemesterAnzahl() {
+    private int getSemesterAnzahl() {
         try {
-            this.semesterAnz = service.numberOfSemestersInStudyProgress();
+            return service.numberOfSemestersInStudyProgress();
         } catch (ServiceException e) {
             log.error(e.getMessage());
+            return 0;
         }
     }
 
-    public int getFirstYear() {
+    private int getFirstYear() {
         try {
             return service.firstYearInStudyProgress();
         } catch (ServiceException e) {
-            //JOptionPane.showMessageDialog(ViewPanel.this, "Sie müssen zuerst den in den Einstellungen angeben, wann Sie mit ihrem Studium begonnen haben!", "Fehler", JOptionPane.ERROR_MESSAGE);
             log.error(e.getMessage());
             return 0;
         }
@@ -220,11 +177,62 @@ public class ViewPanel extends StandardInsidePanel {
         }
     }
 
-    public void setIsWinterSemester() {
+    private boolean isFirstSemesterWinter() {
         try {
-            this.isWinterSemester = service.isFirstSemesterAWinterSemester();
+            return service.isFirstSemesterAWinterSemester();
         } catch (ServiceException e) {
             log.error(e.getMessage());
+            return false;
+        }
+    }
+
+    private class SemesterList {
+        private int semesterAnz;
+        private boolean currWinterSemester;
+        private int currSemester;
+
+        SemesterList() {
+            this.semesterAnz = getSemesterAnzahl();
+            this.currSemester = semesterAnz;
+            this.currWinterSemester = isFirstSemesterWinter();
+
+            for (int i = 1; i  < semesterAnz; i++) {
+                this.currWinterSemester =!this.currWinterSemester;
+            }
+        }
+
+        int getCurrentYear() {
+            if (isFirstSemesterWinter()) {
+                    return getFirstYear() + (currSemester/2);
+            } else {
+                if (currWinterSemester) {
+                    return getFirstYear() + (currSemester/2) -1;
+                } else {
+                    return getFirstYear() + (currSemester/2);
+                }
+            }
+        }
+
+        int getCurrentSemester() {
+            return currSemester;
+        }
+
+        boolean getCurrentSemesterIsWinterSemester() {
+            return currWinterSemester;
+        }
+
+        void next() {
+            if (currSemester < semesterAnz) {
+                currSemester++;
+                currWinterSemester =!currWinterSemester;
+            }
+        }
+
+        void last() {
+            if (currSemester > 1) {
+                currSemester--;
+                currWinterSemester =!currWinterSemester;
+            }
         }
     }
 }

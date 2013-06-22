@@ -229,14 +229,37 @@ public class LVAServiceImpl implements LVAService {
                         temp = l;
                     if(l.isInStudyProgress()) {
                         if (l.getYear() >= temp.getYear())
-                            temp = l;
+                            if (temp.getSemester() != Semester.UNKNOWN)
+                                temp = l;
                     }
                 }
                 int x = temp.getYear()-beginning;
+                boolean isLastWinterSemester = false;
+
+                if (temp.getSemester() == Semester.S) {
+                    isLastWinterSemester=false;
+                } else if (temp.getSemester() == Semester.W) {
+                    isLastWinterSemester= true;
+                } else  if (temp.getSemester() == Semester.W_S) {
+                    isLastWinterSemester=false;
+                }
+
                 if (x == 0) {
                     return isFirstSemesterAWinterSemester()? 2 : 1;
                 } else {
-                    return x*2;
+                    if (!isFirstSemesterAWinterSemester()) {
+                        if (!isLastWinterSemester) {
+                            return (x*2)+1;
+                        } else {
+                            return (x*2)+2;
+                        }
+                    } else {
+                        if (!isLastWinterSemester) {
+                            return x*2;
+                        } else {
+                            return (x*2)+1;
+                        }
+                    }
                 }
             } else {
                 if (readAll().isEmpty()) {
