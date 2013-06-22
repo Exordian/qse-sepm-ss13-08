@@ -109,8 +109,8 @@ public class DBDateDao extends DBBaseDao implements DateDao {
             l.setTime(d.getTime());
             lvaDates.add(l);
         }
-        result.setLectures(lvaDates);
-        result.setExercises(lvaDates);
+        //result.setLectures(lvaDates);
+        //result.setExercises(lvaDates);
         result.setExams(lvaDates);
 
         /*

@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.service;
 
 
 import at.ac.tuwien.sepm.entity.DateEntity;
+import at.ac.tuwien.sepm.entity.LVA;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -92,4 +93,6 @@ public interface DateService {
      * @return the current year
      */
     public int getCurrentYearOfSemester();
+
+    public LVA readNotToIntersectByYearSemester(int plannedYear, Semester plannedSemester);
 }

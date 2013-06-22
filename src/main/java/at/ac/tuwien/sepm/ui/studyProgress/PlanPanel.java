@@ -1,16 +1,11 @@
 package at.ac.tuwien.sepm.ui.studyProgress;
 
-import at.ac.tuwien.sepm.dao.DateDao;
-import at.ac.tuwien.sepm.dao.LvaDao;
-import at.ac.tuwien.sepm.dao.MetaLvaDao;
 import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
-import at.ac.tuwien.sepm.service.DateService;
-import at.ac.tuwien.sepm.service.EscapeException;
-import at.ac.tuwien.sepm.service.IntelligentSemesterPlaner;
-import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.IntelligentSemesterPlanerImpl;
 import at.ac.tuwien.sepm.service.impl.LVAUtil;
+import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -23,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,14 +31,14 @@ import java.util.List;
  */
 @UI
 public class PlanPanel extends StandardInsidePanel {
-    MetaLvaDao metaLVADAO;
-    LvaDao lvaDAO;
-    DateDao dateDAO;
+
+    MetaLVAService metaLVAService;
+    LVAService lvaService;
+    DateService dateService;
 
     /*@Autowired
     LVAService lvaService;
 */
-    DateService dateService;
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -97,11 +91,12 @@ public class PlanPanel extends StandardInsidePanel {
     private boolean planningInProgress;
 
     @Autowired
-    public PlanPanel(MetaLvaDao metaLVADAO,DateDao dateDao,DateService dateService,LvaDao lvaDAO) {
-        this.lvaDAO=lvaDAO;
+    public PlanPanel(DateService dateService,MetaLVAService metaLVAService,LVAService lvaService) {
+
+        
+        this.lvaService = lvaService;
+        this.metaLVAService = metaLVAService;
         this.dateService=dateService;
-        this.metaLVADAO= metaLVADAO;
-        this.dateDAO = dateDao;
 
 
         this.setLayout(null);
@@ -126,7 +121,6 @@ public class PlanPanel extends StandardInsidePanel {
      /*-----------------------RIGHT SIDE  PLAN ANZEIGEN-------------------*/
 
     private void initLVAPane() {
-        //plannedMetaLVAs = metaLVADAO.readByYearSemesterStudyProgress(dateService.getCurrentYear(), dateService.getCurrentSemester(), true);
 
         plannedMetaLVAs = new ArrayList<MetaLVA>(); //metaLVADAO.readUncompletedByYearSemesterStudyProgress(2013,Semester.S, true);
         pane = new MetaLVADisplayPanel(plannedMetaLVAs, (int)outputPlane.getWidth(), (int)outputPlane.getHeight()); //todo plannedMetaLVAs anzeigen die schon geplant sind
@@ -144,43 +138,54 @@ public class PlanPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //todo warning alert: all data from year x, sem y will be overriden
-                List<LVA> toRemove = lvaDAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
-                logger.debug("deleting from studyProgress:\n" + LVAUtil.formatShortLVA(toRemove, 1));
+                
                 try {
+                    List<LVA> toRemove = lvaService.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
+                    logger.debug("deleting from studyProgress:\n" + LVAUtil.formatShortLVA(toRemove, 1));
                     for (LVA lva : toRemove) {
                         //logger.debug("deleting from studyProgress: "+lva);
                         lva.setInStudyProgress(false);
-                        lvaDAO.update(lva);
+                        lvaService.update(lva);
                     }
-                    out:
-                    for (MetaLVA m : plannedMetaLVAs) {
-                        LVA temp = m.getLVA(plannedYear, plannedSemester);
-                        temp.setInStudyProgress(true);
-                        //logger.debug("adding to studyProgress: "+temp);
-                        try {
-                            lvaDAO.update(temp);
-                            PanelTube.backgroundPanel.viewInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Success);
-                            refreshMetaLVAs(new ArrayList<MetaLVA>(0));
-                            take.setEnabled(false);
-                        } catch (IOException e1) {
-                            logger.error(e1);
-                            PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
-                            for (MetaLVA m2 : plannedMetaLVAs) {    //rollback
-                                LVA temp2 = m.getLVA(plannedYear, plannedSemester);
-                                if (m2 == m) {
-                                    break out;
+                    try{
+                        out:
+                        for (MetaLVA m : plannedMetaLVAs) {
+                            LVA temp = m.getLVA(plannedYear, plannedSemester);
+                            temp.setInStudyProgress(true);
+                            //logger.debug("adding to studyProgress: "+temp);
+                            try {
+                                lvaService.update(temp);
+                                
+                            } catch (ServiceException e1) {
+                                logger.error(e1);
+                                PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+                                for (MetaLVA m2 : plannedMetaLVAs) {    //rollback
+                                    if (m2 == m) {
+                                        break;
+                                    }
+                                    LVA temp2 = m2.getLVA(plannedYear, plannedSemester);
+                                    temp2.setInStudyProgress(false);
+                                    try {
+                                        lvaService.update(temp2);
+                                    } catch (ServiceException e2) {
+                                        logger.error(e2);
+                                    } catch (ValidationException e2) {
+                                        logger.error(e2);
+                                    } 
                                 }
-                                temp2.setInStudyProgress(false);
-                                try {
-                                    lvaDAO.update(temp2);
-                                } catch (IOException e2) {
-                                    logger.error(e2);
-                                }
+                                throw new EscapeException();
                             }
                         }
+                        PanelTube.backgroundPanel.viewInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Success);
+                        refreshMetaLVAs(new ArrayList<MetaLVA>(0));
+                        take.setEnabled(false);
+                    }catch(EscapeException e1){
+                        take.setEnabled(false);
                     }
-                } catch (IOException e1) {
-                    PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+                } catch (ServiceException e1) {
+                    PanelTube.backgroundPanel.viewInfoText("Beim Löschen der alten Daten ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+                } catch (ValidationException e1) {
+                    PanelTube.backgroundPanel.viewInfoText("Beim Löschen der alten Daten ist ein Problem aufgetreten.", SmallInfoPanel.Error);
                 }
 
                 logger.debug("adding to studyProgress: \n" + LVAUtil.formatShortDetailedMetaLVA(plannedMetaLVAs, 1));
@@ -214,19 +219,18 @@ public class PlanPanel extends StandardInsidePanel {
                             setPlanningInProgress(true);
                             try{
                                 float goalECTS = Float.parseFloat(desiredECTSText.getText());
-                                //boolean vointersect =  intersectVOCheck.isSelected();
                                 plannedYear = Integer.parseInt(yearText.getText());
                                 plannedSemester = Semester.S;
                                 if (semesterDrop.getSelectedIndex() == 0) {
                                     plannedSemester = Semester.W;
                                 }
                                 List<MetaLVA> forced;
-                                List<MetaLVA> pool= metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,false);
+                                List<MetaLVA> pool= metaLVAService.readUncompletedByYearSemesterStudyProgress(plannedYear,plannedSemester,false);
                                 if (considerStudyProgressCheck.isSelected()){
-                                    forced = metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
+                                    forced = metaLVAService.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
                                 }else{
                                     forced = new ArrayList<>();
-                                    pool.addAll(metaLVADAO.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
+                                    pool.addAll(metaLVAService.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
                                 }
                                 if(pool.isEmpty()){
                                     throw new EscapeException("Es wurden keine LVAs im gewünschten Semester gefunden");
@@ -234,8 +238,7 @@ public class PlanPanel extends StandardInsidePanel {
                                 MetaLVA customMetaLVA = new MetaLVA();
 
                                 if(intersectCustomCheck.isSelected()){
-                                    customMetaLVA.setLVA(dateDAO.readNotToIntersectByYearSemester(plannedYear,plannedSemester));
-                                    //logger.debug(customMetaLVA.getLVA(plannedYear,plannedSemester));
+                                    customMetaLVA.setLVA(dateService.readNotToIntersectByYearSemester(plannedYear,plannedSemester));
                                     customMetaLVA.setName("custom dates");
                                     customMetaLVA.setNr("UniqueNr:%&%&%&%&%");
                                     forced.add(customMetaLVA);
@@ -260,11 +263,9 @@ public class PlanPanel extends StandardInsidePanel {
 
                                 int tempTimeBetween = 0;
                                 if(timeBetweenDropdown.getSelectedIndex()==1){
-                                    tempTimeBetween = (int)timeIntersect.getValue();
-                                    tempTimeBetween=tempTimeBetween*60;
+                                    tempTimeBetween = (int)timeIntersect.getValue()*60;
                                 }else if(timeBetweenDropdown.getSelectedIndex()==2){
-                                    tempTimeBetween = (int)timeBuffer.getValue();
-                                    tempTimeBetween = tempTimeBetween*60;
+                                    tempTimeBetween = -(int)timeBuffer.getValue()*60;
                                 }
                                 planer.setIntersectingTolerance(tempTolerance);
 
@@ -283,6 +284,10 @@ public class PlanPanel extends StandardInsidePanel {
 
                                 take.setEnabled(true);
                             }catch(EscapeException e){
+                                PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
+                            } catch (ServiceException e) {
+                                PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
+                            } catch (ValidationException e) {
                                 PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
                             }
                             setPlanningInProgress(false);
@@ -463,12 +468,13 @@ public class PlanPanel extends StandardInsidePanel {
         intersectExamCheckLabel.setBounds(intersectUECheckLabel.getX(), intersectUECheckLabel.getY()+intersectUECheckLabel.getHeight()+verticalSpace, textWidth,textHeight);
         this.add(intersectExamCheckLabel);
 
-        intersectExamCheck = new JCheckBox();
+        intersectExamCheck = new JCheckBox(); //todo remove
         intersectExamCheck.addChangeListener(dONTFUCKINGBUGSWINGListener());
         intersectExamCheck.setBackground(new Color(0, 0, 0, 0));
         intersectExamCheck.setBounds(intersectExamCheckLabel.getX()+intersectExamCheckLabel.getWidth()+5, intersectExamCheckLabel.getY()+5, 20, 20);
         this.add(intersectExamCheck);
         intersectExamCheck.setSelected(true);
+        intersectExamCheck.setEnabled(false);
 
         intersectCustomCheckLabel = new JLabel("Überprüfe private Termine auf Überschneidungen:");
         intersectCustomCheckLabel.setFont(standardTextFont);
