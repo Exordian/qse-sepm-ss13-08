@@ -127,20 +127,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
     }
 
     private void performImport() {
-        //temp
-/*
-            List<MetaLVA> temp = new ArrayList<MetaLVA>(0);
-            try {
-                temp = metaLVAService.readAll();
-            } catch (ServiceException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (ValidationException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        PanelTube.backgroundPanel.viewMerge(temp,temp);
-            if(true)
-                return;*/
-        //temp
+
         TreePath path = tissTree.getSelectionPath();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
         Object item = selectedNode.getUserObject();

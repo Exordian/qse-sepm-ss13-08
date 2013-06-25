@@ -130,7 +130,6 @@ public class ModulePanel extends StandardInsidePanel {
                     modules = moduleService.readAll();
                     Collections.sort(modules, Module.getAlphabeticalNameComparator());
                     modulePane.refresh(modules);
-
                     log.info("loaded Modules");
                     refreshing = false;
                 } catch (ServiceException e) {

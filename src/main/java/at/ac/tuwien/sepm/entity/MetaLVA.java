@@ -268,4 +268,24 @@ public class MetaLVA implements Comparable<MetaLVA>{
             }
         };
     }
+
+    public boolean equalsForMerge(MetaLVA o) {
+        System.out.println(o);
+        if (this == o) return true;
+        if (o == null) return false;
+        /*for(LVA lva: lvas){
+            if(!lva.equalsForMerge(o.getLVA(lva.getYear(),lva.getSemester()))){
+                return false;
+            }
+        }*/
+        if (Float.compare(o.ects, ects) != 0) return false;
+        if (module != o.module) return false;
+        if (lvas != null ? !lvas.equals(o.lvas) : o.lvas != null) return false;
+        if (name != null ? !name.equals(o.name) : o.name != null) return false;
+        if (nr != null ? !nr.equals(o.nr) : o.nr != null) return false;
+        if (type != o.type) return false;
+
+        return true;
+    }
+
 }

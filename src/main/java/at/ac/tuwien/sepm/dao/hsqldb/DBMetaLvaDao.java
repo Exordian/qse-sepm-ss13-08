@@ -48,7 +48,6 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
         }
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-
         /*
         String stmt = "INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module) VALUES " +
                 "(null,?,?,?,?,?,?,?)";

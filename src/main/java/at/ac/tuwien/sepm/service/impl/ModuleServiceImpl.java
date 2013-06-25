@@ -36,10 +36,25 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Autowired
     MetaLVAService metaLVAService;
+    private boolean merging = false;
 
     public void startMergeSession() {
+        merging = true;
         merger.reset();
         metaLVAService.startMergeSession();
+    }
+    public void addForMerge(Module toMerge) throws ServiceException {
+        Module oldModule;
+        try {
+            oldModule = moduleDao.readByName(toMerge.getName());
+        } catch (DataAccessException e1) {
+            logger.error("Exception: "+ e1.getMessage());
+            throw new ServiceException("Exception: " + e1.getMessage(), e1);
+        }
+        if(oldModule!=null) {
+            merger.add(oldModule,toMerge);
+        }
+
     }
 
     public boolean stopMergeSession() {

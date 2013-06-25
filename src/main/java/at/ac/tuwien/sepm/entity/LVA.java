@@ -311,62 +311,30 @@ public class LVA implements Comparable<LVA>{
     }
 
     @Override
-    public boolean equals(Object o) {
+    public int compareTo(LVA o) {
+        return year-o.year; //todo: include semester and test ordering
+    }
+
+    public boolean equalsForMerge(LVA o) {
         if (this == o) return true;
-        if (!(o instanceof LVA)) return false;
+        if (o == null) return false;
 
-        LVA lva = (LVA) o;
 
-        if (grade != lva.grade) return false;
-        if (id != lva.id) return false;
-        if (inStudyProgress != lva.inStudyProgress) return false;
-        if (year != lva.year) return false;
-        if (additionalInfo1 != null ? !additionalInfo1.equals(lva.additionalInfo1) : lva.additionalInfo1 != null)
+        if (year != o.year) return false;
+        if (additionalInfo1 != null ? !additionalInfo1.equals(o.additionalInfo1) : o.additionalInfo1 != null)
             return false;
-        if (additionalInfo2 != null ? !additionalInfo2.equals(lva.additionalInfo2) : lva.additionalInfo2 != null)
+        if (additionalInfo2 != null ? !additionalInfo2.equals(o.additionalInfo2) : o.additionalInfo2 != null)
             return false;
-        if (content != null ? !content.equals(lva.content) : lva.content != null) return false;
-        if (deadlines != null ? !deadlines.equals(lva.deadlines) : lva.deadlines != null) return false;
-        if (description != null ? !description.equals(lva.description) : lva.description != null) return false;
-        if (exams != null ? !exams.equals(lva.exams) : lva.exams != null) return false;
-        if (exercises != null ? !exercises.equals(lva.exercises) : lva.exercises != null) return false;
-        if (goals != null ? !goals.equals(lva.goals) : lva.goals != null) return false;
-        if (institute != null ? !institute.equals(lva.institute) : lva.institute != null) return false;
-        if (language != null ? !language.equals(lva.language) : lva.language != null) return false;
-        if (lectures != null ? !lectures.equals(lva.lectures) : lva.lectures != null) return false;
-        if (metaLVA != null ? !metaLVA.equals(lva.metaLVA) : lva.metaLVA != null) return false;
-        if (performanceRecord != null ? !performanceRecord.equals(lva.performanceRecord) : lva.performanceRecord != null)
+        if (content != null ? !content.equals(o.content) : o.content != null) return false;
+        if (description != null ? !description.equals(o.description) : o.description != null) return false;
+        if (goals != null ? !goals.equals(o.goals) : o.goals != null) return false;
+        if (institute != null ? !institute.equals(o.institute) : o.institute != null) return false;
+        if (language != null ? !language.equals(o.language) : o.language != null) return false;
+        if (performanceRecord != null ? !performanceRecord.equals(o.performanceRecord) : o.performanceRecord != null)
             return false;
-        if (semester != lva.semester) return false;
+        if (semester != o.semester) return false;
 
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (metaLVA != null ? metaLVA.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + year;
-        result = 31 * result + (semester != null ? semester.hashCode() : 0);
-        result = 31 * result + grade;
-        result = 31 * result + (inStudyProgress ? 1 : 0);
-        result = 31 * result + (goals != null ? goals.hashCode() : 0);
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        result = 31 * result + (additionalInfo1 != null ? additionalInfo1.hashCode() : 0);
-        result = 31 * result + (additionalInfo2 != null ? additionalInfo2.hashCode() : 0);
-        result = 31 * result + (institute != null ? institute.hashCode() : 0);
-        result = 31 * result + (performanceRecord != null ? performanceRecord.hashCode() : 0);
-        result = 31 * result + (language != null ? language.hashCode() : 0);
-        result = 31 * result + (lectures != null ? lectures.hashCode() : 0);
-        result = 31 * result + (exercises != null ? exercises.hashCode() : 0);
-        result = 31 * result + (exams != null ? exams.hashCode() : 0);
-        result = 31 * result + (deadlines != null ? deadlines.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public int compareTo(LVA o) {
-        return year-o.year; //todo: include semester and test ordering
-    }
 }

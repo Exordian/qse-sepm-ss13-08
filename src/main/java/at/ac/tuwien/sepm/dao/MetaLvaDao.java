@@ -34,12 +34,12 @@ public interface MetaLvaDao {
 
     /**
      * Set the predecessors of an meta lva.
-     * @param lvaId The id of the meta lva.
+     * @param metaLVAId The id of the meta lva.
      * @param predecessorId the id of the predecessor of the lva.
      * @return <code>true</code> if the predecessor could be set.
      * @throws DataAccessException If the data could not be saved because any other error occurred.
      */
-    public boolean setPredecessor(int lvaId, int predecessorId) throws DataAccessException;
+    public boolean setPredecessor(int metaLVAId, int predecessorId) throws DataAccessException;
 
     /**
      * Unset the predecessors of an meta lva.

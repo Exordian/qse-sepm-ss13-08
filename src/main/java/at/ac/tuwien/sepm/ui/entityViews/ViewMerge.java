@@ -333,25 +333,27 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             
             
             LVA newLVA = newMetaLVA.getLVAs().get(0);
-            LVA oldLVA = oldMetaLVA.getLVAs().get(0);
-
-            // LVA
-            if(newLVA.getDescription()!=null && !newLVA.getDescription().equals(oldLVA.getDescription())){
-                height = addSectionTextArea("Beschreibung", oldLVA.getDescription(), newDescription, newLVA.getDescription(), true, height);
-            }if(newLVA.getContent()!=null && !newLVA.getContent().equals(oldLVA.getContent())){
-                height = addSectionTextArea("Inhalt", oldLVA.getContent(), newContent, newLVA.getContent(), true, height);
-            }if(newLVA.getAdditionalInfo1()!=null && !newLVA.getAdditionalInfo1().equals(oldLVA.getAdditionalInfo1())){
-                height = addSectionTextArea("Zusätzliche Info 1", oldLVA.getAdditionalInfo1(), newAdditionalInfo1, newLVA.getAdditionalInfo1(), true, height);
-            }if(newLVA.getAdditionalInfo2()!=null && !newLVA.getAdditionalInfo2().equals(oldLVA.getAdditionalInfo2())){
-                height = addSectionTextArea("Zusätzliche Info 2", oldLVA.getAdditionalInfo2(), newAdditionalInfo2, newLVA.getAdditionalInfo2(), true, height);
-            }if(newLVA.getGoals()!=null && !newLVA.getGoals().equals(oldLVA.getGoals())){
-                height = addSectionTextArea("Ziele", oldLVA.getGoals(), newGoals, newLVA.getGoals(), true, height);
-            }if(newLVA.getLanguage()!=null && !newLVA.getLanguage().equals(oldLVA.getLanguage())){
-                height = addSectionTextArea("Sprache", oldLVA.getLanguage(), newLanguage, newLVA.getLanguage(), false, height);
-            }if(newLVA.getInstitute()!=null && !newLVA.getInstitute().equals(oldLVA.getInstitute())){
-                height = addSectionTextArea("Institut", oldLVA.getInstitute(), newInstitute, newLVA.getInstitute(), false, height);
+            LVA oldLVA = oldMetaLVA.getLVA(newLVA.getYear(),newLVA.getSemester());
+            if(newLVA != null && oldLVA != null){ //todo if any of the two MetaLVAs have no LVA assigned, this will be skipped
+                // LVA
+                if(newLVA.getDescription()!=null && !newLVA.getDescription().equals(oldLVA.getDescription())){
+                    height = addSectionTextArea("Beschreibung", oldLVA.getDescription(), newDescription, newLVA.getDescription(), true, height);
+                }if(newLVA.getContent()!=null && !newLVA.getContent().equals(oldLVA.getContent())){
+                    height = addSectionTextArea("Inhalt", oldLVA.getContent(), newContent, newLVA.getContent(), true, height);
+                }if(newLVA.getAdditionalInfo1()!=null && !newLVA.getAdditionalInfo1().equals(oldLVA.getAdditionalInfo1())){
+                    height = addSectionTextArea("Zusätzliche Info 1", oldLVA.getAdditionalInfo1(), newAdditionalInfo1, newLVA.getAdditionalInfo1(), true, height);
+                }if(newLVA.getAdditionalInfo2()!=null && !newLVA.getAdditionalInfo2().equals(oldLVA.getAdditionalInfo2())){
+                    height = addSectionTextArea("Zusätzliche Info 2", oldLVA.getAdditionalInfo2(), newAdditionalInfo2, newLVA.getAdditionalInfo2(), true, height);
+                }if(newLVA.getGoals()!=null && !newLVA.getGoals().equals(oldLVA.getGoals())){
+                    height = addSectionTextArea("Ziele", oldLVA.getGoals(), newGoals, newLVA.getGoals(), true, height);
+                }if(newLVA.getLanguage()!=null && !newLVA.getLanguage().equals(oldLVA.getLanguage())){
+                    height = addSectionTextArea("Sprache", oldLVA.getLanguage(), newLanguage, newLVA.getLanguage(), false, height);
+                }if(newLVA.getInstitute()!=null && !newLVA.getInstitute().equals(oldLVA.getInstitute())){
+                    height = addSectionTextArea("Institut", oldLVA.getInstitute(), newInstitute, newLVA.getInstitute(), false, height);
+                }
+                //todo missing attributes from LVA
             }
-            //todo missing attributes from LVA
+
             /**how to:
              *  height = addSectionTextArea( *title* , *old-lva value*, *text-area*, *new-lva value*, *4-lines or 1line*, height);
              *
