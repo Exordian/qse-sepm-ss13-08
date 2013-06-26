@@ -144,7 +144,7 @@ public class MetaLVA implements Comparable<MetaLVA>{
         this.semestersOffered = semestersOffered;
     }
 
-    public int getModule() {
+    public Integer getModule() {
         return module;
     }
 

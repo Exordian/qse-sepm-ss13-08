@@ -64,7 +64,7 @@ public class DBDateDaoTest {
     }
 
     @Test(expected = IOException.class)
-    public void testCreateToLongDescription() throws Exception {
+    public void testCreateTooLongDescription() throws Exception {
         String s = "aa";
         for(int i=0; i<10; i++) {
             s=s.concat(s);
@@ -262,7 +262,7 @@ public class DBDateDaoTest {
     @Test
     public void testReadNotIntersectableByNotExistingYearSemester() throws Exception {
         TestHelper.insert(0);
-        assert(dao.readNotToIntersectByYearSemester(-1, Semester.S).getLectures().size()==0);
+        assert(dao.readNotToIntersectByYearSemester(2, Semester.S).getLectures().size()==0);
     }
 
     @Test

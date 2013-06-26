@@ -25,7 +25,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 
     @Override
     public void setLVAs(List<MetaLVA> forced, List<MetaLVA> pool){
-        logger.debug("setting LVAs..");
+        logger.info("setting LVAs..");
         long timeStarted= System.currentTimeMillis();
 
         if(forced==null){
@@ -50,14 +50,14 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
         }
         Collections.shuffle(this.forced);
         Collections.sort(this.forced);
-        logger.debug("forced set:\n"+ LVAUtil.formatShortMetaLVA(this.forced, 2));
-        logger.debug("pool set:\n"+LVAUtil.formatShortMetaLVA(this.pool, 2));
-        logger.debug("finished setting LVAs. Time passed: "+(System.currentTimeMillis()-timeStarted)/1000f +" secounds");
+        logger.info("forced set:\n"+ LVAUtil.formatShortMetaLVA(this.forced, 2));
+        logger.info("pool set:\n"+LVAUtil.formatShortMetaLVA(this.pool, 2));
+        logger.info("finished setting LVAs. Time passed: "+(System.currentTimeMillis()-timeStarted)/1000f +" secounds");
     }
 
     @Override
     public ArrayList<MetaLVA> planSemester(float goalECTS,int year,Semester sem){
-        logger.debug("start planning..");
+        logger.info("start planning..");
         startedPlanning = System.currentTimeMillis();
         if(typesToIntersect==null){
             typesToIntersect=new ArrayList<Integer>();
@@ -66,7 +66,13 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             typesToIntersect.add(LVAUtil.EXAM_TIMES);
         }
 		tree = new DependenceTree(new ArrayList<MetaLVA>(pool));
+        tree.changePriorityByParents(0.15f);
+        tree.changePriorityBySemester(1f);
+        tree.shufflePriority(0.2f);
 		ArrayList<MetaLVA> roots = tree.getRoots();
+        for(MetaLVA m:roots){
+            logger.info(""+m+", new priority: "+tree.getPriority(m));
+        }
 		ArrayList<MetaLVA> toPlan = new ArrayList<MetaLVA>(roots.size()+forced.size());
         int actualECTS = 0;
         ArrayList chosen = new ArrayList<Integer>();
@@ -77,8 +83,6 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
                 actualECTS+=mLVA.getECTS();
             }
         }
-        Collections.shuffle(roots);
-        Collections.sort(roots);
 		for(MetaLVA mLVA :roots){
 			if(mLVA.containsLVA(year, sem) && !forced.contains(mLVA)){
 				toPlan.add(mLVA);
@@ -89,7 +93,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 
         canceled = false;
 		recPlanning(toPlan,forced.size(),chosen,goalECTS,actualECTS);
-        logger.debug("finished planning. Time passed: "+(System.currentTimeMillis()-startedPlanning)/1000f +" secounds");
+        logger.info("finished planning. Time passed: "+(System.currentTimeMillis()-startedPlanning)/1000f +" secounds");
         if(bestSolution!=null){
 		    return bestSolution;
         }
@@ -102,7 +106,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 	private void recPlanning(ArrayList<MetaLVA> all,int index,ArrayList<Integer> chosen,float goalECTS,float actualECTS){
         if(System.currentTimeMillis()-startedPlanning> planningTimeTolerance){
             if(!canceled){
-                logger.debug("Time ran out. Providing best solution so far.");
+                logger.info("Time ran out. Providing best solution so far.");
             }
             canceled=true;
             return;
@@ -184,7 +188,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
 			}
 			bestSolution=newSolution;
 			solutionValue=value;
-            logger.debug("new Solution found: \n" +LVAUtil.formatMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value+", with : "+actualECTS+" ECTS");
+            logger.info("new Solution found: \n" +LVAUtil.formatMetaLVA(newSolution, 2)+"\n\t\tsolution value: "+value+", with : "+actualECTS+" ECTS");
 		    bestSolutionECTS=actualECTS;
         }else{
             //active for detailed debugging
@@ -251,6 +255,7 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             }
         }
         public ArrayList<MetaLVA> getRoots(){
+            Collections.shuffle(roots);
             Collections.sort(roots);
             ArrayList<MetaLVA> toReturn = new ArrayList<MetaLVA>(roots.size());
             for(Node n:roots){
@@ -275,6 +280,11 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             for(Node n:nodesList){
                 logger.debug(n.getLVA());
                 n.changePriorityBySemester(delta);
+            }
+        }
+        public void shufflePriority(float maxMult){
+            for(Node n:nodesList){
+                n.randomize(maxMult);
             }
         }
         public float getPriority(MetaLVA lva){
@@ -319,12 +329,15 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
                     priority-=delta;
                 }
             }
+            public void randomize(float maxMult){
+                priority = priority+ (float) (priority*((1-2*(float) Math.random())*maxMult));
+            }
             public float getPriority(){
                 return priority;
             }
             @Override
             public int compareTo(Node o) {
-                return (int) ((priority - o.priority)*128);
+                return (int) Math.signum(o.priority - priority);
             }
         }
         @Override

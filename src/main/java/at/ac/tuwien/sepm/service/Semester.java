@@ -14,4 +14,16 @@ public enum Semester {
                 return "Unbekannt";
         }
     }
+    public String toShortString(){
+        switch(this){
+            case W:
+                return "WS";
+            case S:
+                return "SS";
+            case W_S:
+                return "WS/SS";
+            default:
+                return "n.a.";
+        }
+    }
 }

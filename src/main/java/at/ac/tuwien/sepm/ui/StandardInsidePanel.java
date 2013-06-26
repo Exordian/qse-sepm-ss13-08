@@ -21,8 +21,8 @@ public abstract class StandardInsidePanel extends JPanel {
     protected final Point startCoordinateOfWhiteSpace = new Point(51, 79); //x, y of stud whitespace
 
     protected Font standardTitleFont;
-    protected Font standardTextFont;
-    protected Font standardButtonFont;
+    public Font standardTextFont;
+    public Font standardButtonFont;
     protected Font calendarDaysFont;
     protected Font calendarDatesFont;
     protected Font standardSmallerTitleFont;
