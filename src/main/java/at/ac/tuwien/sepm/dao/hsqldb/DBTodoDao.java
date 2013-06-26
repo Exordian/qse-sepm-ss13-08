@@ -54,7 +54,9 @@ public class DBTodoDao extends DBBaseDao implements TodoDao {
         String stmt="SELECT * FROM todo WHERE id=?;";
         Todo result = jdbcTemplate.queryForObject(stmt, RowMappers.getTodoRowMapper(), id);
 
-        result.setLva(lvaDao.readByIdWithoutLvaDates(result.getLva().getId()));
+        if (result.getLva() != null) {
+            result.setLva(lvaDao.readByIdWithoutLvaDates(result.getLva().getId()));
+        }
 
         return result;
     }
@@ -128,7 +130,8 @@ public class DBTodoDao extends DBBaseDao implements TodoDao {
         List<Todo> result = jdbcTemplate.query(query, RowMappers.getTodoRowMapper());
         for(int i=0; i<result.size(); i++) {
             result.set(i, readById(result.get(i).getId()));
-            //if(result.get(i).getLva() != null)    //todo bei privatem termin ist lva = null, aber hier wird eine lva rausgezogen
+            //if(result.get(i).getLva() != null)
+            if (result.get(i).getLva() != null)
                 result.get(i).getLva().setMetaLVA(metaLvaDao.readById(result.get(i).getLva().getMetaLVA().getId()));
             //else
            //     result.get(i).setLva(null);

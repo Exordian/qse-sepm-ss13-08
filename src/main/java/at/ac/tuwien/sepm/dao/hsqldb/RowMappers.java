@@ -130,9 +130,11 @@ class RowMappers {
                 Todo entity = new Todo();
                 entity.setId(rs.getInt(1));
 
-                LVA lva = new LVA();
-                lva.setId(rs.getInt(2));
-                entity.setLva(lva);
+                if(rs.getObject(2) != null) {
+                    LVA lva = new LVA();
+                    lva.setId(rs.getInt(2));
+                    entity.setLva(lva);
+                }
 
                 entity.setName(rs.getString(3));
                 entity.setDescription(rs.getString(4));

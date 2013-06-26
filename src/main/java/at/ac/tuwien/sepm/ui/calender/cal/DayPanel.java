@@ -122,8 +122,19 @@ public class DayPanel extends JPanel {
                 }
             }
         }
+
+        if (date.isAfter(DateTime.now().getMillis())) {
+            setPastDayForeground();
+        }
+        setPastDayForeground();
         this.revalidate();
         this.repaint();
+    }
+
+    private void setPastDayForeground () {
+        for(DateLabel l : dates) {
+            l.setForeground(new Color(251, 246,255));
+        }
     }
 
     private void deleteAllDates() {
