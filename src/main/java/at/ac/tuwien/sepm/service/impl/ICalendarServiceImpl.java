@@ -246,6 +246,7 @@ public class ICalendarServiceImpl implements ICalendarService {
 
     private int addEvent(ArrayList<DateEntity> dates, VEvent ev) {
         if(dates == null || ev == null) {
+            logger.info("could not add event '" +  ev.getSummary().getValue() + "'\taddEvent 0");
             return -1;
         }
 
@@ -254,6 +255,7 @@ public class ICalendarServiceImpl implements ICalendarService {
         DtEnd evend = ev.getEndDate();
         Summary evsummary = ev.getSummary();
         if(evstart == null || evend == null || evsummary == null || evstart.getDate() == null || evend.getDate() == null) {
+            logger.info("could not add event '" + ev.getSummary().getValue() + "'\taddEvent 1");
             return -1;
         }
         Description evdescription = ev.getDescription();
@@ -270,6 +272,10 @@ public class ICalendarServiceImpl implements ICalendarService {
         boolean intersectable = false;
         if (evtransp != null && evtransp.getValue().equals(Transp.TRANSPARENT.getValue())) {
             intersectable = true;
+        }
+        String description = "";
+        if(ev.getDescription() != null) {
+            description = ev.getDescription().getValue();
         }
 
         // set times if event is a all day event
@@ -289,35 +295,33 @@ public class ICalendarServiceImpl implements ICalendarService {
                     stop.minusDays(1).minuteOfHour().withMaximumValue().get(DateTimeFieldType.minuteOfHour()),
                     stop.minusDays(1).secondOfMinute().withMaximumValue().get(DateTimeFieldType.secondOfMinute()),
                     stop.minusDays(1).millisOfSecond().withMaximumValue().get(DateTimeFieldType.millisOfSecond()));
-
+            /*
             logger.info("'" + evsummary.getValue() + "'\tis a all day event\t" + start.getYear() + "-" + start.getMonthOfYear() + "-" + start.getDayOfMonth() + " " + start.getHourOfDay() + ":" + start.getMinuteOfHour() + ":" + start.getSecondOfMinute() + "." + start.getMillisOfSecond() +
                     "\t" + stop.getYear() + "-" + stop.getMonthOfYear() + "-" + stop.getDayOfMonth() + " " + stop.getHourOfDay() + ":" + stop.getMinuteOfHour() + ":" + stop.getSecondOfMinute() + "." + stop.getMillisOfSecond());
+            */
         }
         TimeFrame timeFrame = new TimeFrame(start, stop);
 
         int succesfulDates = 1;
         // if the event represents a series
         if (evrrule != null) {
-            succesfulDates = addSeries(dates, evrrule, evsummary.getValue(), evdescription.getValue(), ev.getStartDate().getDate(), timeFrame, intersectable);
-        }
-        // if the event is a single event
-        else {
+            if (evdescription == null)
+            succesfulDates = addSeries(dates, evrrule, evsummary.getValue(), description, ev.getStartDate().getDate(), timeFrame, intersectable);
+        } else { // if the event is a single event
             DateEntity entity = new DateEntity();
             entity.setName(evsummary.getValue());
             entity.setTime(timeFrame);
-            if (evdescription != null) {
-                entity.setDescription(evdescription.getValue());
-            }
+            entity.setDescription(description);
             entity.setIntersectable(intersectable);
             dates.add(entity);
         }
 
-        logger.info(succesfulDates + " dates created");
+        logger.info(succesfulDates + " date(s) created\t0");
         return succesfulDates;
     }
 
     private int addSeries(ArrayList<DateEntity> dates, RRule rule, String name, String description, Date baseDate, TimeFrame time, boolean intersectable) {
-        // debug3(dates, rule, name, description, baseDate, time, intersectable);
+        debug3(dates, rule, name, description, baseDate, time, intersectable);
 
         net.fortuna.ical4j.model.DateTime until;
 
@@ -339,9 +343,13 @@ public class ICalendarServiceImpl implements ICalendarService {
                 } else if (rule.getRecur().getFrequency().equals(Recur.YEARLY)) {
                     duration = DateTimeConstants.MILLIS_PER_DAY*366;
                 }
-                //debug2(rule);
+                debug2(rule);
                 until = new net.fortuna.ical4j.model.DateTime(baseDate.getTime() + (time.to().getMillis() - time.from().getMillis()) + 100 + (rule.getRecur().getCount() * duration));
+            } else if (rule.getRecur().getFrequency() != null) {
+                logger.info("could not add series '" +  name + "'\taddSeries 0");
+                return -1;
             } else { // the way, how the duration of the series is represented, is not provided by this method
+                logger.info("could not add series '" +  name + "'\taddSeries 1");
                 return -1;
             }
         } else { // the duration of the series is represented by a start and stop date
