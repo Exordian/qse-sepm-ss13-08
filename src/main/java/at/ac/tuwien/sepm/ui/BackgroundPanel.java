@@ -1,9 +1,11 @@
 package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.entity.*;
+import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.RoomFinderService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.entityViews.*;
+import at.ac.tuwien.sepm.ui.startUp.ViewStartUp;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -25,6 +27,7 @@ public class BackgroundPanel extends JPanel {
     private JButton tab1;
     private JButton tab2;
     private JButton tab3;
+    //private JButton viewStartupButton;
 
     private StandardInsidePanel calPanel;
     private StandardInsidePanel studPanel;
@@ -38,10 +41,13 @@ public class BackgroundPanel extends JPanel {
     private ViewLva viewLva;
     private ViewMetaLva viewMetaLva;
     private ViewModule viewModule;
+    private ViewStartUp viewStartup;
     private Image image;
     private StandardInsidePanel lastComponent;
     private int lastImage;
     private SmallInfoPanel smallInfoPanel;
+    private ArrayList<JButton> tabs;
+
 
     @Autowired
     RoomFinderService roomFinderService;
@@ -51,7 +57,8 @@ public class BackgroundPanel extends JPanel {
     @Autowired
     public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate,
                            ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,
-                           ViewModule viewModule, SmallInfoPanel smallInfoPanel,ViewMerge viewMerge) {
+                           ViewModule viewModule, SmallInfoPanel smallInfoPanel,ViewMerge viewMerge,ViewStartUp viewStartUp,
+                           PropertyService propertyService) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
         this.viewMerge = viewMerge;
@@ -67,15 +74,29 @@ public class BackgroundPanel extends JPanel {
         this.viewLVAdate=viewLVAdate;
         this.viewTodo=viewTodo;
         this.viewDeadline=viewDeadline;
+        this.viewStartup = viewStartUp;
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
 
-        properties.doClick();//todo remove when wizard is implemented
+        if(Boolean.parseBoolean(propertyService.getProperty("firstStarted","true"))){ //things, which happen on first startup
+            changeImage(5);
+        }
+
+
 
         log.info("Background Panel initialized.");
     }
-
+    public void setControlsEnabled(boolean b){
+        for(JButton button:tabs){
+            button.setEnabled(b);
+            if(b){
+                button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }else{
+                button.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }
     //wenn neue entity erzeugt werden soll ->  viewDate(null)
     public void viewDate(DateEntity dateEntity, DateTime dateTime) {
         removeAddedPanels();
@@ -147,6 +168,13 @@ public class BackgroundPanel extends JPanel {
         this.revalidate();
         this.repaint();
     }
+    public void viewStartup() {
+        removeAddedPanels();
+        viewStartup.setVisible(true);
+        this.add(viewStartup);
+        this.revalidate();
+        this.repaint();
+    }
 
     /*
     *   String s = text im infopanel (max. 75 chars)
@@ -199,6 +227,7 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewMerge);
         this.remove(viewDeadline);
         this.remove(lehrPanel);
+        this.remove(viewStartup);
     }
 
     private void addPanel(StandardInsidePanel c) {
@@ -238,6 +267,12 @@ public class BackgroundPanel extends JPanel {
                     image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));
                     propsPanel.refresh();
                     break;
+                case 5:
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));
+                    setControlsEnabled(false);
+                    //viewStartupButton.setVisible(false);
+                    viewStartup();
+                    break;
                 default:
                     break;
             }
@@ -272,13 +307,15 @@ public class BackgroundPanel extends JPanel {
         tab1 = new JButton();
         tab2 = new JButton();
         tab3 = new JButton();
+        //viewStartupButton = new JButton("S");
 
-        ArrayList<JButton> tabs = new ArrayList<JButton>();
+        tabs = new ArrayList<JButton>();
         tabs.add(tab1);
         tabs.add(tab2);
         tabs.add(tab3);
+        //tabs.add(viewStartupButton);
 
-        tab1.setBounds(12,50,55,159);
+        tab1.setBounds(12, 50, 55, 159);
         tab1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -288,7 +325,7 @@ public class BackgroundPanel extends JPanel {
             }
         });
 
-        tab2.setBounds(12,209,55,159);
+        tab2.setBounds(12, 209, 55, 159);
         tab2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -298,7 +335,7 @@ public class BackgroundPanel extends JPanel {
             }
         });
 
-        tab3.setBounds(12,369,55,159);
+        tab3.setBounds(12, 369, 55, 159);
         tab3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -307,6 +344,7 @@ public class BackgroundPanel extends JPanel {
                 revalidate();
             }
         });
+
 
         for (int i = 0; i < 3; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
