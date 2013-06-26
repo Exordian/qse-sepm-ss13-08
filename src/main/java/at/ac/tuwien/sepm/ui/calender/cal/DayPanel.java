@@ -160,9 +160,8 @@ public class DayPanel extends JPanel {
 
         class PrivateMouseListener extends MouseAdapter {
             public void mouseClicked(MouseEvent evt) {
-                if (evt.getClickCount() == 1) {
+                if (evt.getClickCount() == 2) {
                     PanelTube.calendarPanel.jumpToDate(date);
-                    //new CalDisplayAllDatesFrame(getDates());
                 }
             }
         }
