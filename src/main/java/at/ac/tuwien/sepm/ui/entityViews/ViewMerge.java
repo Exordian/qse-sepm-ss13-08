@@ -452,7 +452,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             }if(allChangedFields.contains(newInstitute)){
                 temp.setInstitute(newInstitute.getText());
             }if(allChangedFields.contains(newPerformanceRecord)){
-                temp.setInstitute(newPerformanceRecord.getText());
+                temp.setPerformanceRecord(newPerformanceRecord.getText());
             }
             //todo add missing attributes
             toReturn.setLVA(temp);
