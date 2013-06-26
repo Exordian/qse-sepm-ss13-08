@@ -90,6 +90,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
     }
 
     public void setIntersectingMetaLVAs(List<MetaLVA> oldMetaLVAs, List<MetaLVA> newMetaLVAs) {
+        mergePanel.init();
         this.oldIntersectingMetaLVAs = new ArrayList<>(oldMetaLVAs);
         this.newIntersectingMetaLVAs = new ArrayList<>(newMetaLVAs);
 
@@ -166,6 +167,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             public void valueChanged(ListSelectionEvent e) {
                 if(metaLVAPanel.getTable().getSelectedRowCount()>0){
                     mergePanel.refresh(oldIntersectingMetaLVAs.get(metaLVAPanel.getTable().getSelectedRow()),newIntersectingMetaLVAs.get(metaLVAPanel.getTable().getSelectedRow()));
+
                 }
             }
         });
@@ -254,7 +256,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
     }
     public class MetaLVAMergePanel extends JScrollPane{
 
-        private HashSet<Component> allChangedFields = new HashSet<Component>();
+        private HashSet<Component> allChangedFields;// = new HashSet<Component>();
         //private HashSet<JComboBox> allChangedDrops = new HashSet<JComboBox>();
         private int width;
         private int height;
@@ -290,7 +292,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             this.height=height-20;
             setBackground(Color.WHITE);
             //setBorder(BorderFactory.createEmptyBorder());
-            init();
+            //init();
         }
         /*@Override
         public Component add(Component c){
@@ -300,19 +302,10 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             currentOld=oldMetaLVA;
             currentNew=newMetaLVA;
             getViewport().removeAll();
-            //this.add(new JLabel("test"));
-            //this.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 
             grid = new JPanel(new GridBagLayout());
             myPanel = new JPanel();
             myPanel.setLayout(null);
-            //myPanel.setBackground(Color.BLUE);
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.gridx=0;
-            c.gridy=0;
-            c.weighty=1;
-            c.anchor = GridBagConstraints.NORTHWEST;
             int height=0;
             //META LVA
 
@@ -326,7 +319,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 height=addSectionDrops("Typ", oldMetaLVA.getType().ordinal(), newType, newMetaLVA.getType().ordinal(), height);
             }if(Math.abs(oldMetaLVA.getECTS()- newMetaLVA.getECTS())> 0.00001){
                 height=addSectionTextArea("ECTS", "" + oldMetaLVA.getECTS(), newECTS, "" + newMetaLVA.getECTS(), false, height);
-            }if(oldMetaLVA.getModule()!= newMetaLVA.getModule()){
+            }if(newMetaLVA.getModule()!=null &&oldMetaLVA.getModule()!= newMetaLVA.getModule()){
                 height=addSectionDrops("Modul", allModulesMap.get(oldMetaLVA.getModule()), newModule, allModulesMap.get(newMetaLVA.getModule()), height);
             }
 
@@ -372,9 +365,6 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             myPanel.setMinimumSize(new Dimension(width, myPanel.getPreferredSize().height));
             myPanel.setBackground(Color.WHITE);
             getViewport().add(myPanel);
-            //myPanel.repaint();
-            //revalidate();
-            //repaint();
         }
         public MetaLVA getMetaLVA() throws EscapeException {
             MetaLVA toReturn = new MetaLVA();
@@ -458,7 +448,9 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             toReturn.setLVA(temp);
             return toReturn;
         }
-        public void init(){
+        private void init(){
+            allChangedFields = new HashSet<Component>();
+
             // <META LVA>
             newName = new JTextArea();
             newType = new JComboBox<LvaType>(LvaType.values());
@@ -469,24 +461,25 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             // <Module laden>
             allModules = null;
             allModulesMap = new HashMap<Integer, Integer>();
-            /*try {
+            try {
                 allModules = moduleService.readAll();
             } catch (ServiceException e) {
                 //todo user balbla
-            }*/
-            allModules=new ArrayList<Module>(0);
+            }
+            //allModules=new ArrayList<Module>(0);
             String[] moduleName = new String[allModules.size()];
             int i=0;
             for(Module m:allModules){
                 allModulesMap.put(m.getId(),i);
                 moduleName[i++] = m.getName();
             }
+            newModule = new JComboBox<String>(moduleName);
             // </Module laden>
 
             // <LVA>
 
             newDescription = new JTextArea();
-            newModule = new JComboBox<String>(moduleName);
+
             newContent = new JTextArea();
             newAdditionalInfo1 = new JTextArea();
             newGoals = new JTextArea();
