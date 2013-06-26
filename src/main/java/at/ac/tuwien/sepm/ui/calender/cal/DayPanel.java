@@ -68,6 +68,8 @@ public class DayPanel extends JPanel {
         this.title.setText(" " + date.getDayOfMonth());
         if (date.getYear() == DateTime.now().getYear() && date.getMonthOfYear() == DateTime.now().getMonthOfYear() && date.getDayOfMonth() == DateTime.now().getDayOfMonth()) {
             this.title.setForeground(new Color(73, 112,255));
+        } else {
+            this.title.setForeground(Color.BLACK);
         }
     }
 
@@ -124,14 +126,14 @@ public class DayPanel extends JPanel {
         }
 
         if (date.isAfter(DateTime.now().getMillis())) {
-            setPastDayForeground();
+            setPastDayColors();
         }
-        setPastDayForeground();
+
         this.revalidate();
         this.repaint();
     }
 
-    private void setPastDayForeground () {
+    private void setPastDayColors () {
         for(DateLabel l : dates) {
             l.setForeground(new Color(251, 246,255));
         }

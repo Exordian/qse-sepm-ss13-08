@@ -11,6 +11,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Locale;
 
 /**
@@ -175,24 +177,39 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
         for(int i=preStart; i<=preStop; i++) {
             days[a].setDate(new DateTime(preYear, preMonth, i, 0, 0, 0, 0));
             //days[a].setBackground(COLOR_OF_NOT_CURRENT_MONTH);
-            days[a].setBackground(COLOR_OF_CURRENT_MONTH);
-            days[a].setCurrent(true);
+            //days[a].setCurrent(true);
+            setDateLabelColors(days[a], dayNames[a]);
             a++;
         }
 
         for(int i=actStart; i<=actStop; i++) {
             days[a].setDate(new DateTime(firstDay.getYear(), firstDay.getMonthOfYear(), i, 0, 0, 0, 0));
-            days[a].setBackground(COLOR_OF_CURRENT_MONTH);
-            days[a].setCurrent(true);
+            //days[a].setBackground(COLOR_OF_NOT_CURRENT_MONTH);
+            //days[a].setCurrent(true);
+            setDateLabelColors(days[a], dayNames[a]);
             a++;
         }
 
         for(int i=postStart; i<=postStop; i++) {
             days[a].setDate(new DateTime(postYear, postMonth, i, 0, 0, 0, 0));
             //days[a].setBackground(COLOR_OF_NOT_CURRENT_MONTH);
-            days[a].setBackground(COLOR_OF_CURRENT_MONTH);
-            days[a].setCurrent(true);
+            //days[a].setCurrent(true);
+            setDateLabelColors(days[a], dayNames[a]);
             a++;
+        }
+    }
+
+    private void setDateLabelColors (DayPanel d, JLabel dayNameLabel) {
+        DateTime refDate = new DateTime(DateTime.now().getYear(), DateTime.now().getMonthOfYear(), DateTime.now().getDayOfMonth(), 0, 0, 0, 0);
+        if(d.getDate().isBefore(refDate.getMillis()) && !(d.getDate().equals(refDate))) {
+            d.setBackground(COLOR_OF_NOT_CURRENT_MONTH);
+            d.setCurrent(false);
+            dayNameLabel.setBackground(COLOR_OF_NOT_CURRENT_MONTH);
+
+        } else {
+            d.setBackground(COLOR_OF_CURRENT_MONTH);
+            d.setCurrent(true);
+            dayNameLabel.setBackground(COLOR_OF_CURRENT_MONTH);
         }
     }
 
