@@ -215,6 +215,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         } catch (ValidationException e) {
             logger.error("tried to import invalid lva");
             PanelTube.backgroundPanel.viewInfoText("Es gab Probleme beim speichern.",SmallInfoPanel.Error);
+
         }
     }
 
@@ -224,6 +225,12 @@ public class LvaFetcherPanel extends StandardInsidePanel {
         progressBar.setVisible(true);
         FetcherTask task = new FetcherTask();
         task.execute();
+    }
+    public void freeUI(){
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        progressBar.setIndeterminate(false);
+        progressBar.setVisible(false);
+        importb.setEnabled(true);
     }
 
     private class FetcherTask extends SwingWorker<Void, Void> {
@@ -249,16 +256,14 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 tissTree.getSelectionModel().setSelectionMode
                         (TreeSelectionModel.SINGLE_TREE_SELECTION);
                 treeView.setViewportView(tissTree);
-                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                progressBar.setIndeterminate(false);
-                progressBar.setVisible(false);
-                importb.setEnabled(true);
+
                 tissTree.setSelectionPath(new TreePath(tissTree.getModel().getRoot()));
                 PanelTube.backgroundPanel.viewInfoText("Fertig geladen. Klicken sie auf \"Importieren\" um fortzufahren.", SmallInfoPanel.Info);
             } catch (ServiceException e) {
                 logger.info("couldn't build LvaTree", e);
                 PanelTube.backgroundPanel.viewInfoText("Die LVAs konnten nicht geladen werden.", SmallInfoPanel.Error);
             }
+            freeUI();
             return null;
         }
     }
