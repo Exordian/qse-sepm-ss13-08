@@ -183,27 +183,29 @@ class RowMappers {
         return new RowMapper<LVA>() {
             @Override
             public LVA mapRow(ResultSet rs, int rowNum) throws SQLException {
+                int i=1;
                 LVA entity = new LVA();
-                entity.setId(rs.getInt(1));
+                entity.setId(rs.getInt(i++));
                 MetaLVA metaLva = new MetaLVA();
-                metaLva.setId(rs.getInt(2));
+                metaLva.setId(rs.getInt(i++));
                 entity.setMetaLVA(metaLva);
-                entity.setYear(rs.getInt(3));
-                boolean isWinterSemester = rs.getBoolean(4);
+                entity.setYear(rs.getInt(i++));
+                boolean isWinterSemester = rs.getBoolean(i++);
                 if(isWinterSemester) {
                     entity.setSemester(Semester.W);
                 } else {
                     entity.setSemester(Semester.S);
                 }
-                entity.setDescription(rs.getString((5)));
-                entity.setGoals(rs.getString(6));
-                entity.setContent(rs.getString(7));
-                entity.setAdditionalInfo1(rs.getString(8));
-                entity.setAdditionalInfo2(rs.getString(9));
-                entity.setInstitute(rs.getString(10));
-                entity.setLanguage(rs.getString(11));
-                entity.setGrade(rs.getInt(12));
-                entity.setInStudyProgress(rs.getBoolean(13));
+                entity.setDescription(rs.getString((i++)));
+                entity.setGoals(rs.getString(i++));
+                entity.setContent(rs.getString(i++));
+                entity.setAdditionalInfo1(rs.getString(i++));
+                entity.setAdditionalInfo2(rs.getString(i++));
+                entity.setInstitute(rs.getString(i++));
+                entity.setLanguage(rs.getString(i++));
+                entity.setPerformanceRecord(rs.getString(i++));
+                entity.setGrade(rs.getInt(i++));
+                entity.setInStudyProgress(rs.getBoolean(i++));
                 return entity;
             }
         };

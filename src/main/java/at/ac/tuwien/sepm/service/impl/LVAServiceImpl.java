@@ -43,10 +43,10 @@ public class LVAServiceImpl implements LVAService {
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -61,7 +61,7 @@ public class LVAServiceImpl implements LVAService {
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ public class LVAServiceImpl implements LVAService {
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -94,7 +94,7 @@ public class LVAServiceImpl implements LVAService {
             return lvaList;
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ public class LVAServiceImpl implements LVAService {
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -124,12 +124,12 @@ public class LVAServiceImpl implements LVAService {
             return lvaList;
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 
     @Override
-    public boolean update(LVA toUpdate) throws ServiceException, ValidationException {
+    public boolean update(LVA toUpdate) throws ServiceException {
         if(toUpdate==null){
             throw new ServiceException("toUpdate must not be null");
         }
@@ -140,13 +140,13 @@ public class LVAServiceImpl implements LVAService {
             return updated;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage()+"\nLVA which threw Exception: "+toUpdate);
-            throw new ValidationException("Exception: "+ e.getMessage());
+            throw new ServiceException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage()+"\nLVA which threw Exception: "+toUpdate);
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage()+"\nLVA which threw Exception: "+toUpdate);
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -162,15 +162,12 @@ public class LVAServiceImpl implements LVAService {
             valid = false;
             error_msg += "invalid metaLVA!\n";
         }
-        if(toValidate.getDescription() == null ) {
-            valid = false;
-            error_msg += "invalid description!\n";
-        }
+
         if(toValidate.getSemester() == null) {
             valid = false;
             error_msg += "invalid semester!(null)\n";
         }
-        if(toValidate.getYear() < 0) {
+        if(toValidate.getYear() < -1) {
             valid = false;
             error_msg += "invalid year!(< 0)\n";
         }
@@ -194,7 +191,7 @@ public class LVAServiceImpl implements LVAService {
             return lvaDao.readAll();
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -272,7 +269,7 @@ public class LVAServiceImpl implements LVAService {
             }
         } catch (ValidationException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 }

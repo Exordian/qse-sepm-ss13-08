@@ -161,4 +161,6 @@ public interface MetaLVAService {
 
 
     void delete(Integer id) throws ServiceException;
+
+    void addForMerge(MetaLVA m) throws ServiceException;
 }

@@ -215,7 +215,7 @@ public class MetaLVA implements Comparable<MetaLVA>{
         }
         int index =0;
         for(LVA lva:lvas){
-            toReturn+="\n"+(index++)+") "+indent+lva;
+            toReturn+="\n"+(index++)+") "+indent+lva.toDetailedStringWithoutTime();
         }
         return toReturn;
     }
@@ -227,7 +227,7 @@ public class MetaLVA implements Comparable<MetaLVA>{
         }
         int index=0;
         for(LVA lva:lvas){
-            toReturn+="\n"+indent+(index++)+") "+lva.toDetailedString(indentCount+1);
+            toReturn+="\n"+indent+(index++)+") "+lva.toDetailedStringWithTime(indentCount + 1);
         }
         return toReturn;
     }
@@ -269,21 +269,21 @@ public class MetaLVA implements Comparable<MetaLVA>{
         };
     }
 
-    public boolean equalsForMerge(MetaLVA o) {
-        System.out.println(o);
-        if (this == o) return true;
-        if (o == null) return false;
-        /*for(LVA lva: lvas){
-            if(!lva.equalsForMerge(o.getLVA(lva.getYear(),lva.getSemester()))){
+    public static boolean equalsForMerge(MetaLVA oldMetaLVA,MetaLVA newMetaLVA) {
+        if (newMetaLVA == oldMetaLVA) return true;
+        if (oldMetaLVA == null || newMetaLVA==null) return false;
+        if(newMetaLVA.getLVAs()!= null && newMetaLVA.getLVAs().size()>0){
+            LVA temp = newMetaLVA.getLVAs().get(0);
+            if (!LVA.equalsForMerge(oldMetaLVA.getLVA(temp.getYear(),temp.getSemester()),temp)){
                 return false;
             }
-        }*/
-        if (Float.compare(o.ects, ects) != 0) return false;
-        if (module != o.module) return false;
-        if (lvas != null ? !lvas.equals(o.lvas) : o.lvas != null) return false;
-        if (name != null ? !name.equals(o.name) : o.name != null) return false;
-        if (nr != null ? !nr.equals(o.nr) : o.nr != null) return false;
-        if (type != o.type) return false;
+        }
+        if (Math.abs(oldMetaLVA.ects- newMetaLVA.ects)> 0.00001) return false;
+        if (newMetaLVA.module != oldMetaLVA.module) return false;
+
+        if (newMetaLVA.name != null &&( oldMetaLVA.name==null ||!newMetaLVA.name.equals(oldMetaLVA.name))) return false;
+        if (newMetaLVA.nr != null &&( oldMetaLVA.nr==null ||!newMetaLVA.nr.equals(oldMetaLVA.nr))) return false;
+        if (newMetaLVA.type !=null &&( oldMetaLVA.type==null || newMetaLVA.type != oldMetaLVA.type)) return false;
 
         return true;
     }

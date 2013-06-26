@@ -27,11 +27,13 @@ public class MergerImpl {
         logger.info("Merger reset");
     }
 
-    void add(MetaLVA oldMetaLVA, MetaLVA newMetaLva) {
-        if(!oldMetaLVA.equalsForMerge(newMetaLva)){
-            newMetaLva.setId(oldMetaLVA.getId());
+    void add(MetaLVA oldMetaLVA, MetaLVA newMetaLVA) {
+        boolean lvaEquals = true;
+
+        if(!MetaLVA.equalsForMerge(oldMetaLVA, newMetaLVA) || !lvaEquals){
+            newMetaLVA.setId(oldMetaLVA.getId());
             oldMetaLVAs.add(oldMetaLVA);
-            newMetaLVAs.add(newMetaLva);
+            newMetaLVAs.add(newMetaLVA);
             logger.debug("new meta lva pair added.");
         }
     }
@@ -48,7 +50,7 @@ public class MergerImpl {
     }
 
     public boolean moduleMergingNecessary() {
-        return newModules.size()!=0;
+        return newMetaLVAs.size()!=0;
     }
 
     public ArrayList<MetaLVA> getOldMetaLVAs() {

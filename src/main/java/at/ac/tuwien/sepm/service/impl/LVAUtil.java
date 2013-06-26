@@ -24,97 +24,7 @@ public class LVAUtil {
 
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
-    public static String formatMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
-        String toReturn = "";
-        String indent = "";
-        for(int i=0;i< indentCount;i++){
-            indent+="\t";
-        }
-        int index=0;
-        for(MetaLVA m:metaLVAs){
-            toReturn+="\n"+indent+(index++)+") "+m;
-        }
-        if(toReturn.length()==0){
-            return "";
-        }
-        return toReturn.substring(1);
-    }
-    public static String formatShortMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
-        String toReturn = "";
-        String indent = "";
-        for(int i=0;i< indentCount;i++){
-            indent+="\t";
-        }
-        int index=0;
-        for(MetaLVA m:metaLVAs){
-            toReturn+="\n"+indent+(index++)+") "+m.toShortString();
-        }
-        if(toReturn.length()==0){
-            return "";
-        }
-        return toReturn.substring(1);
-    }
-    public static String formatDetailedMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
-        String toReturn = "";
-        String indent = "";
-        for(int i=0;i< indentCount;i++){
-            indent+="\t";
-        }
-        int index=0;
-        for(MetaLVA m:metaLVAs){
-            toReturn+="\n"+indent+(index++)+") "+m.toDetailedString(indentCount + 1);
-        }
-        if(toReturn.length()==0){
-            return "";
-        }
-        return toReturn.substring(1);
-    }
-    public static String formatShortDetailedMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
-        String toReturn = "";
-        String indent = "";
-        for(int i=0;i< indentCount;i++){
-            indent+="\t";
-        }
-        int index=0;
-        for(MetaLVA m:metaLVAs){
-            toReturn+="\n"+indent+(index++)+") "+m.toShortDetailedString(indentCount + 1);
-        }
-        if(toReturn.length()==0){
-            return "";
-        }
-        return toReturn.substring(1);
-    }
-
-    public static String formatLVA(List<LVA> lvas,int indentCount) {
-        String toReturn = "";
-        String indent = "";
-        for(int i=0;i< indentCount;i++){
-            indent+="\t";
-        }
-        int index=0;
-        for(LVA m:lvas){
-            toReturn+="\n"+indent+(index++)+") "+m;
-        }
-        if(toReturn.length()==0){
-            return "";
-        }
-        return toReturn.substring(1);
-    }
-    public static String formatShortLVA(List<LVA> lvas,int indentCount) {
-        String toReturn = "";
-        String indent = "";
-        for(int i=0;i< indentCount;i++){
-            indent+="\t";
-        }
-        int index=0;
-        for(LVA lva :lvas){
-            toReturn+="\n"+indent+(index++)+") "+ lva.toShortString();
-        }
-        if(toReturn.length()==0){
-            return "";
-        }
-        return toReturn.substring(1);
-    }
+    
     /**
      * This methods will provide an Iterator, which returns all TimeFrames saved for the given LVA, for the given types. Since they are
      * inserted in order, they will also be returned in order.
@@ -321,7 +231,6 @@ public class LVAUtil {
     }
 
 
-
     private static class TimeIterator implements Iterator<LvaDate>{
         private LVA lva;
         ArrayList<Iterator<LvaDate>> allIter= new ArrayList<Iterator<LvaDate>>();
@@ -391,6 +300,97 @@ public class LVAUtil {
 
         }
 
+    }
+    public static String formatMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(MetaLVA m:metaLVAs){
+            toReturn+="\n"+indent+(index++)+") "+m;
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+    public static String formatShortMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(MetaLVA m:metaLVAs){
+            toReturn+="\n"+indent+(index++)+") "+m.toShortString();
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+    public static String formatDetailedMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(MetaLVA m:metaLVAs){
+            toReturn+="\n"+indent+(index++)+") "+m.toDetailedString(indentCount + 1);
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+    public static String formatShortDetailedMetaLVA(List<MetaLVA> metaLVAs, int indentCount){
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(MetaLVA m:metaLVAs){
+            toReturn+="\n"+indent+(index++)+") "+m.toShortDetailedString(indentCount + 1);
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+
+    public static String formatLVA(List<LVA> lvas,int indentCount) {
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(LVA m:lvas){
+            toReturn+="\n"+indent+(index++)+") "+m;
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
+    }
+    public static String formatShortLVA(List<LVA> lvas,int indentCount) {
+        String toReturn = "";
+        String indent = "";
+        for(int i=0;i< indentCount;i++){
+            indent+="\t";
+        }
+        int index=0;
+        for(LVA lva :lvas){
+            toReturn+="\n"+indent+(index++)+") "+ lva.toShortString();
+        }
+        if(toReturn.length()==0){
+            return "";
+        }
+        return toReturn.substring(1);
     }
 
 }

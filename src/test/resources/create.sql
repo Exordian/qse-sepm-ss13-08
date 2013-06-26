@@ -68,6 +68,7 @@ CREATE TABLE LVA (
   additionalInfo2 LONGVARCHAR,
   institute LONGVARCHAR,
   language LONGVARCHAR,
+  performanceRecord LONGVARCHAR,
   grade INTEGER,
   inStudyProgress BOOLEAN DEFAULT FALSE NOT NULL,
   UNIQUE (metaLva, year, isWinterSemester)

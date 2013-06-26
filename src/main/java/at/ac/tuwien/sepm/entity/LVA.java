@@ -286,7 +286,8 @@ public class LVA implements Comparable<LVA>{
         }
         return toReturn+">";
     }
-    public String toDetailedString(int indentCount){
+
+    public String toDetailedStringWithTime(int indentCount){
         String toReturn = toString();
         String indent="";
         for(int i=0;i<indentCount;i++){
@@ -309,30 +310,49 @@ public class LVA implements Comparable<LVA>{
         }
         return toReturn;
     }
-
+    public String toDetailedStringWithoutTime() {
+        return "LVA{" +
+                "id=" + id +
+                ", metaLVA=" + metaLVA +
+                ", description='" + description + '\'' +
+                ", year=" + year +
+                ", semester=" + semester +
+                ", gradeEnum=" + gradeEnum +
+                ", inStudyProgress=" + inStudyProgress +
+                ", goals='" + goals + '\'' +
+                ", content='" + content + '\'' +
+                ", additionalInfo1='" + additionalInfo1 + '\'' +
+                ", additionalInfo2='" + additionalInfo2 + '\'' +
+                ", institute='" + institute + '\'' +
+                ", performanceRecord='" + performanceRecord + '\'' +
+                ", language='" + language + '\'' +
+                '}';
+    }
     @Override
     public int compareTo(LVA o) {
         return year-o.year; //todo: include semester and test ordering
     }
 
-    public boolean equalsForMerge(LVA o) {
-        if (this == o) return true;
-        if (o == null) return false;
 
 
-        if (year != o.year) return false;
-        if (additionalInfo1 != null ? !additionalInfo1.equals(o.additionalInfo1) : o.additionalInfo1 != null)
+    public static boolean equalsForMerge(LVA oldLVA,LVA newLVA) {
+        if (oldLVA == newLVA) return true;
+        if (oldLVA == null || newLVA == null) return false;
+
+
+        if (newLVA.year != oldLVA.year) return false;
+        if (newLVA.additionalInfo1 != null &&( oldLVA.additionalInfo1== null || !newLVA.additionalInfo1.equals(oldLVA.additionalInfo1)))
             return false;
-        if (additionalInfo2 != null ? !additionalInfo2.equals(o.additionalInfo2) : o.additionalInfo2 != null)
+        if (newLVA.additionalInfo2 != null &&( oldLVA.additionalInfo2== null || !newLVA.additionalInfo2.equals(oldLVA.additionalInfo2)))
             return false;
-        if (content != null ? !content.equals(o.content) : o.content != null) return false;
-        if (description != null ? !description.equals(o.description) : o.description != null) return false;
-        if (goals != null ? !goals.equals(o.goals) : o.goals != null) return false;
-        if (institute != null ? !institute.equals(o.institute) : o.institute != null) return false;
-        if (language != null ? !language.equals(o.language) : o.language != null) return false;
-        if (performanceRecord != null ? !performanceRecord.equals(o.performanceRecord) : o.performanceRecord != null)
+        if (newLVA.content != null &&( oldLVA.content== null || !newLVA.content.equals(oldLVA.content))) return false;
+        if (newLVA.description != null &&( oldLVA.description== null || !newLVA.description.equals(oldLVA.description))) return false;
+        if (newLVA.goals != null &&( oldLVA.goals== null || !newLVA.goals.equals(oldLVA.goals))) return false;
+        if (newLVA.institute != null &&( oldLVA.institute== null || !newLVA.institute.equals(oldLVA.institute))) return false;
+        if (newLVA.language != null &&( oldLVA.language== null || !newLVA.language.equals(oldLVA.language))) return false;
+        if (newLVA.performanceRecord != null &&( oldLVA.performanceRecord== null || !newLVA.performanceRecord.equals(oldLVA.performanceRecord)))
             return false;
-        if (semester != o.semester) return false;
+        if (newLVA.semester != null &&( oldLVA.semester== null || newLVA.semester != oldLVA.semester)) return false;
 
         return true;
     }

@@ -61,7 +61,9 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         if(toCreate.getLanguage()!=null && toCreate.getLanguage().length()>MAX_LENGTH_LANGUAGE) {
             throw new IOException(ExceptionMessages.tooLongLanguage(MAX_LENGTH_LANGUAGE));
         }
-
+        if(toCreate.getPerformanceRecord()!=null && toCreate.getPerformanceRecord().length()>MAX_LENGTH_ADDITIONAL_DESCRIPTIONS) {
+            throw new IOException(ExceptionMessages.tooLongLanguage(MAX_LENGTH_ADDITIONAL_DESCRIPTIONS));
+        }
         /*
         String stmt = "INSERT INTO LVA (id,metaLva,year,isWinterSemester,description,grade,inStudyProgress) " +
                 "VALUES (null,?,?,?,?,?,?);";
@@ -78,7 +80,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         logger.info(toCreate.toString());
-        logger.info("bevore jdbcTemplate");
+        logger.info("before jdbcTemplate");
         jdbcTemplate.update(new PrivatePreparedCreateStatementCreator(toCreate, semester), keyHolder);
         logger.info("after jdbcTemplate");
 
@@ -103,22 +105,23 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         @Override
         public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
             String stmt = "INSERT INTO LVA (id,metaLva,year,isWinterSemester,description,goals,content,additionalinfo1," +
-                    "additionalinfo2,institute,language,grade,inStudyProgress) VALUES (null,?,?,?,?,?,?,?,?,?,?,?,?);";
+                    "additionalinfo2,institute,language,performanceRecord,grade,inStudyProgress) VALUES (null,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
             PreparedStatement ps = con.prepareStatement(stmt);
-
-            ps.setInt(1, e.getMetaLVA().getId());
-            ps.setInt(2, e.getYear());
-            ps.setBoolean(3, semester);
-            ps.setString(4, e.getDescription());
-            ps.setString(5, e.getGoals());
-            ps.setString(6, e.getContent());
-            ps.setString(7, e.getAdditionalInfo1());
-            ps.setString(8, e.getAdditionalInfo2());
-            ps.setString(9, e.getInstitute());
-            ps.setString(10, e.getLanguage());
-            ps.setInt(11, e.getGrade());
-            ps.setBoolean(12, e.isInStudyProgress());
+            int i=1;
+            ps.setInt(i++, e.getMetaLVA().getId());
+            ps.setInt(i++, e.getYear());
+            ps.setBoolean(i++, semester);
+            ps.setString(i++, e.getDescription());
+            ps.setString(i++, e.getGoals());
+            ps.setString(i++, e.getContent());
+            ps.setString(i++, e.getAdditionalInfo1());
+            ps.setString(i++, e.getAdditionalInfo2());
+            ps.setString(i++, e.getInstitute());
+            ps.setString(i++, e.getLanguage());
+            ps.setString(i++, e.getPerformanceRecord());
+            ps.setInt(i++, e.getGrade());
+            ps.setBoolean(i++, e.isInStudyProgress());
 
             /*
             String s1 = setNullToEmptyString(e.getDescription());
@@ -405,6 +408,9 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         if(toUpdate.getLanguage()!=null && toUpdate.getLanguage().length()>MAX_LENGTH_LANGUAGE) {
             throw new IOException(ExceptionMessages.tooLongLanguage(MAX_LENGTH_LANGUAGE));
         }
+        if(toUpdate.getPerformanceRecord()!=null && toUpdate.getPerformanceRecord().length()>MAX_LENGTH_ADDITIONAL_DESCRIPTIONS) {
+            throw new IOException(ExceptionMessages.tooLongLanguage(MAX_LENGTH_ADDITIONAL_DESCRIPTIONS));
+        }
 
         String stmt = "SELECT COUNT(*) FROM lva WHERE id=?";
         if (jdbcTemplate.queryForObject(stmt, RowMappers.getIntegerRowMapper(), toUpdate.getId()) == 0) {
@@ -421,6 +427,7 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         String stmtUpdateAdditionalinfo2 = "UPDATE lva SET additionalinfo2=? WHERE id=?";
         String stmtUpdateInsitute = "UPDATE lva SET institute=? WHERE id=?";
         String stmtUpdateLanguage = "UPDATE lva SET language=? WHERE id=?";
+        String stmtUpdatePerformanceRecord = "UPDATE lva SET performanceRecord =? WHERE id=?";
         String stmtUpdateGrade = "UPDATE lva SET grade=? WHERE id=?";
         String stmtUpdateInStudyProgress = "UPDATE lva SET instudyprogress=? WHERE id=?";
 
@@ -446,6 +453,8 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
             jdbcTemplate.update(stmtUpdateInsitute, toUpdate.getInstitute(), toUpdate.getId());
         } if (toUpdate.getLanguage() != null) {
             jdbcTemplate.update(stmtUpdateLanguage, toUpdate.getLanguage(), toUpdate.getId());
+        } if (toUpdate.getPerformanceRecord() != null) {
+            jdbcTemplate.update(stmtUpdatePerformanceRecord, toUpdate.getPerformanceRecord(), toUpdate.getId());
         }
         jdbcTemplate.update(stmtUpdateYear, toUpdate.getYear(), toUpdate.getId());
         jdbcTemplate.update(stmtUpdateGrade, toUpdate.getGrade(), toUpdate.getId());

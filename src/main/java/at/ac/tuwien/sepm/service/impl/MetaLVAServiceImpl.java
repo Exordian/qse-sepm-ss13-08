@@ -128,6 +128,7 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             if(oldMetaLva==null) {
                 throw new ServiceException("Internal error");
             }
+
             merger.add(oldMetaLva, toCreate);
             logger.info("The meta lva \""  + toCreate.getNr() + " - " + toCreate.getName() + "\" is already stored.\n");
             return false;
@@ -329,6 +330,23 @@ public class MetaLVAServiceImpl implements MetaLVAService {
 
     @Override
     public void delete(Integer id) throws ServiceException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("not implemented");
+    }
+
+    @Override
+    public void addForMerge(MetaLVA toMerge) throws ServiceException {
+        MetaLVA oldMetaLVA;
+        try {
+            oldMetaLVA = metaLvaDao.readByLvaNumber(toMerge.getNr());
+        } catch (DataAccessException e1) {
+            logger.error("Exception: "+ e1.getMessage());
+            throw new ServiceException(e1.getMessage());
+        }
+        if(oldMetaLVA==null) {
+            throw new ServiceException("Internal error");
+        }
+        merger.add(oldMetaLVA, toMerge);
+
+
     }
 }

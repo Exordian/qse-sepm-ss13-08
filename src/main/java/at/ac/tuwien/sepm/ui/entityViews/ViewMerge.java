@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.entity.LVA;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.*;
+import at.ac.tuwien.sepm.service.impl.LVAUtil;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
@@ -33,11 +34,7 @@ import java.util.List;
 
 
 /**
- * Created with IntelliJ IDEA.
- * User: Georg
- * Date: 01.06.13
- * Time: 22:45
- * To change this template use File | Settings | File Templates.
+ * Author: Georg Plaz
  */
 @UI
 public class ViewMerge extends StandardSimpleInsidePanel {
@@ -101,6 +98,8 @@ public class ViewMerge extends StandardSimpleInsidePanel {
         if(metaLVAPanel.getTable().getRowCount()>0){
             metaLVAPanel.getTable().setRowSelectionInterval(0,0);
         }
+        log.info("got old MetaLVAs for merging:\n"+ LVAUtil.formatDetailedMetaLVA(oldMetaLVAs,1));
+        log.info("got new MetaLVAs for merging:\n"+ LVAUtil.formatDetailedMetaLVA(newMetaLVAs,1));
         //mergePanel.refresh(oldMetaLVAs.get(0), newMetaLVAs.get(1));
 
     }
@@ -144,7 +143,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                         metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                     }
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich!", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewInfoText("Die Daten wurden erfolgreich zusammengeführt!", SmallInfoPanel.Success);
                     PanelTube.backgroundPanel.showLastComponent();
                 }
             }
@@ -195,7 +194,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 if( metaLVAPanel.getTable().getRowCount()>0){
                     metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich!", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewInfoText("Die Daten wurden erfolgreich zusammengeführt!", SmallInfoPanel.Success);
                     PanelTube.backgroundPanel.showLastComponent();
                 }
             }
@@ -227,7 +226,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 if( metaLVAPanel.getTable().getRowCount()>0){
                     metaLVAPanel.getTable().setRowSelectionInterval(0,0);
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Das Mergen war erfolgreich!", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewInfoText("Die Daten wurden erfolgreich zusammengeführt!", SmallInfoPanel.Success);
                     PanelTube.backgroundPanel.showLastComponent();
                 }
             }
@@ -281,12 +280,13 @@ public class ViewMerge extends StandardSimpleInsidePanel {
         private JTextArea newAdditionalInfo2;
         private JTextArea newLanguage;
         private JTextArea newInstitute;
-
+        private JTextArea newPerformanceRecord;
 
         private JPanel grid;
         private JPanel myPanel;
         private MetaLVA currentOld;
         private MetaLVA currentNew;
+
 
 
         public MetaLVAMergePanel(int width, int height){
@@ -319,23 +319,29 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             c.anchor = GridBagConstraints.NORTHWEST;
             int height=0;
             //META LVA
+
+
+
             if(newMetaLVA.getNr() != null && !oldMetaLVA.getNr().equals(newMetaLVA.getNr())){
                 height = addSectionTextArea("LVA-Nummer", oldMetaLVA.getNr(), newNr, newMetaLVA.getNr(), false, height);
             }if(newMetaLVA.getName() != null && !oldMetaLVA.getName().equals(newMetaLVA.getName())){
                 height= addSectionTextArea("Name", oldMetaLVA.getName(), newName, newMetaLVA.getName(), false, height);
             }if(newMetaLVA.getType() != null && !oldMetaLVA.getType().equals(newMetaLVA.getType())){
                 height=addSectionDrops("Typ", oldMetaLVA.getType().ordinal(), newType, newMetaLVA.getType().ordinal(), height);
-            }if(oldMetaLVA.getECTS()!=newMetaLVA.getECTS()){
+            }if(Math.abs(oldMetaLVA.getECTS()- newMetaLVA.getECTS())> 0.00001){
                 height=addSectionTextArea("ECTS", "" + oldMetaLVA.getECTS(), newECTS, "" + newMetaLVA.getECTS(), false, height);
             }if(oldMetaLVA.getModule()!= newMetaLVA.getModule()){
                 height=addSectionDrops("Modul", allModulesMap.get(oldMetaLVA.getModule()), newModule, allModulesMap.get(newMetaLVA.getModule()), height);
             }
-            
+
             
             LVA newLVA = newMetaLVA.getLVAs().get(0);
             LVA oldLVA = oldMetaLVA.getLVA(newLVA.getYear(),newLVA.getSemester());
             if(newLVA != null && oldLVA != null){ //todo if any of the two MetaLVAs have no LVA assigned, this will be skipped
                 // LVA
+
+                //year
+
                 if(newLVA.getDescription()!=null && !newLVA.getDescription().equals(oldLVA.getDescription())){
                     height = addSectionTextArea("Beschreibung", oldLVA.getDescription(), newDescription, newLVA.getDescription(), true, height);
                 }if(newLVA.getContent()!=null && !newLVA.getContent().equals(oldLVA.getContent())){
@@ -346,6 +352,8 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                     height = addSectionTextArea("Zusätzliche Info 2", oldLVA.getAdditionalInfo2(), newAdditionalInfo2, newLVA.getAdditionalInfo2(), true, height);
                 }if(newLVA.getGoals()!=null && !newLVA.getGoals().equals(oldLVA.getGoals())){
                     height = addSectionTextArea("Ziele", oldLVA.getGoals(), newGoals, newLVA.getGoals(), true, height);
+                }if(newLVA.getPerformanceRecord()!=null && !newLVA.getPerformanceRecord().equals(oldLVA.getPerformanceRecord())){
+                    height = addSectionTextArea("Performance", oldLVA.getPerformanceRecord(), newPerformanceRecord, newLVA.getPerformanceRecord(), true, height);
                 }if(newLVA.getLanguage()!=null && !newLVA.getLanguage().equals(oldLVA.getLanguage())){
                     height = addSectionTextArea("Sprache", oldLVA.getLanguage(), newLanguage, newLVA.getLanguage(), false, height);
                 }if(newLVA.getInstitute()!=null && !newLVA.getInstitute().equals(oldLVA.getInstitute())){
@@ -447,6 +455,8 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                 temp.setLanguage(newLanguage.getText());
             }if(allChangedFields.contains(newInstitute)){
                 temp.setInstitute(newInstitute.getText());
+            }if(allChangedFields.contains(newPerformanceRecord)){
+                temp.setInstitute(newPerformanceRecord.getText());
             }
             //todo add missing attributes
             toReturn.setLVA(temp);
@@ -487,6 +497,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             newAdditionalInfo2 = new JTextArea();
             newLanguage = new JTextArea();
             newInstitute = new JTextArea();
+            newPerformanceRecord = new JTextArea();
             //todo missing lva-attributes initialisieren
             // </LVA>
         }
@@ -566,6 +577,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             oldTextArea.setEditable(false);
             oldTextArea.setFont(standardTextFont);
             oldTextArea.setLineWrap(newTextArea.getLineWrap());
+            oldTextArea.setWrapStyleWord(newTextArea.getWrapStyleWord());
             JTextField temp = new JTextField();
             temp.setEnabled(false);
             oldTextArea.setBackground(new Color(230, 230, 230));

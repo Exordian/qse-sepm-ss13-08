@@ -43,19 +43,7 @@ public class ModuleServiceImpl implements ModuleService {
         merger.reset();
         metaLVAService.startMergeSession();
     }
-    public void addForMerge(Module toMerge) throws ServiceException {
-        Module oldModule;
-        try {
-            oldModule = moduleDao.readByName(toMerge.getName());
-        } catch (DataAccessException e1) {
-            logger.error("Exception: "+ e1.getMessage());
-            throw new ServiceException("Exception: " + e1.getMessage(), e1);
-        }
-        if(oldModule!=null) {
-            merger.add(oldModule,toMerge);
-        }
 
-    }
 
     public boolean stopMergeSession() {
         if(mergingNecessary()) {
@@ -97,7 +85,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public boolean create(Module toCreate) throws ServiceException, ValidationException {
+    public boolean create(Module toCreate) throws ServiceException {
         boolean moduleCreated = false;
         boolean metaLvasCreated = true;
 
@@ -128,7 +116,7 @@ public class ModuleServiceImpl implements ModuleService {
 
         try {
             if(toCreate.getMetaLvas() != null) {
-                int id = moduleDao.readByName(toCreate.getName()).getId();
+                int id = toCreate.getId();//moduleDao.readByName(toCreate.getName()).getId();
                 //logger.debug("Amount of meta lvas stored in toCreate: " + toCreate.getMetaLvas().size());
                 for (MetaLVA m : toCreate.getMetaLvas()) {
                     //logger.debug("Following meta lva is now being created: " + m.getNr() + "\t" + m.getName() + "\t\t\t" + m.toString());
@@ -141,6 +129,9 @@ public class ModuleServiceImpl implements ModuleService {
                 logger.debug("Amount of meta lvas stored in toCreate: 0");
             }
         } catch(ServiceException e) {
+            logger.error("Exception: "+ e.getMessage());
+            throw new ServiceException("MetaLVA could not be created", e);
+        } catch (ValidationException e) {
             logger.error("Exception: "+ e.getMessage());
             throw new ServiceException("MetaLVA could not be created", e);
         }
