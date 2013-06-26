@@ -19,6 +19,7 @@ import java.io.IOException;
 public class SmallInfoPanel extends StandardInsidePanel {
     private JLabel infoText;
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+    private static final int MAX_LETTERS = 200;
     public static int Error = 1;
     public static int Info = 2;
     public static int Warning = 3;
@@ -27,7 +28,8 @@ public class SmallInfoPanel extends StandardInsidePanel {
     public SmallInfoPanel() {
         this.setLayout(null);
         this.setOpaque(false);
-        this.setBounds(600-270,5,540,40);
+        // this.setBounds(600-270,5,540,40);
+        this.setBounds(600-270,5,900,40);
         loadFonts();
         changeImage(1);
         loadText();
@@ -38,12 +40,12 @@ public class SmallInfoPanel extends StandardInsidePanel {
     private void loadText() {
         infoText = new JLabel("dummy");
         infoText.setForeground(new Color(198, 205, 199));
-        infoText.setBounds(47,0, 493, 40);
+        infoText.setBounds(47,0, 843, 40);
         this.add(infoText);
     }
 
     public void setInfoText(String s, int nmb) {
-        if(s.length() <= 75) {
+        if(s.length() <= MAX_LETTERS) {
             infoText.setText(s);
         } else {
             infoText.setText("info text zu lang");

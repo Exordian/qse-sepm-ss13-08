@@ -38,6 +38,7 @@ public class CalendarPanel extends StandardInsidePanel {
     private JButton importBtn;
     private JButton exportBtn;
     private JButton todayBtn;
+    private JButton deleteAllDatesBtn;
     private JLabel month;
     private WideComboBox semester;
     private DefaultComboBoxModel<SemesterComboBoxItem> semesterCbmdl;
@@ -55,10 +56,18 @@ public class CalendarPanel extends StandardInsidePanel {
     private static final String OVERWRITE_FILE_MESSAGE = "Die angegebene Datei existiert bereits.\nSoll diese überschrieben werden?";
     private static final String OVERWRITE_FILE_TITLE = "Soll die Datei überschrieben werden?";
     private static final String[] OVERWRITE_FILE_BUTTON_TEXT = {"Ja", "Nein"};
+
+    private static final String DELETE_ALL_DATES_MESSAGE = "Es werden alle privaten Termine gelöscht.\nLVA-Termine bleiben gespeichert." +
+            "\nMöchten Sie fortfahren?";
+    private static final String DELETE_ALL_DATES_TITLE = "Termine wirklich löschen?";
+    private static final String[] DELETE_ALL_DATES_BUTTON_TEXT = {"Ja", "Nein"};
+
     private JFileChooser jfc;
 
 
     private LVAService lvaService;
+
+    private DateService dateService;
 
     private boolean showTodo = false;
 
@@ -68,10 +77,11 @@ public class CalendarPanel extends StandardInsidePanel {
     private ICalendarService iCalendarService;
 
     @Autowired
-    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel, LVAService lvaService) {
+    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel, LVAService lvaService, DateService dateService) {
         init();
         PanelTube.calendarPanel=this;
         this.lvaService=lvaService;
+        this.dateService=dateService;
         this.calPanelMonth=calPanelMonth;
         this.calPanelWeek=calPanelWeek;
         this.activeView=calPanelWeek;
@@ -124,9 +134,38 @@ public class CalendarPanel extends StandardInsidePanel {
             }
         });
 
+        deleteAllDatesBtn = new JButton("Private Termine löschen");
+        deleteAllDatesBtn.setBounds((int)(todayBtn.getX() + todayBtn.getWidth() + 2), (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 180, 20);
+        deleteAllDatesBtn.setFont(standardButtonFont);
+        deleteAllDatesBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int i = JOptionPane.showOptionDialog(new JFrame(),
+                            DELETE_ALL_DATES_MESSAGE,
+                            DELETE_ALL_DATES_TITLE,
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            DELETE_ALL_DATES_BUTTON_TEXT,
+                            DELETE_ALL_DATES_BUTTON_TEXT[1]);
+
+                    if(i == 0) {
+                        dateService.deleteAllDates();
+                        PanelTube.backgroundPanel.viewInfoText("Termine erfolgreich gelöscht", SmallInfoPanel.Success);
+                        calPanelMonth.refresh();
+                        calPanelWeek.refresh();
+                    }
+                } catch (ServiceException e1) {
+                    PanelTube.backgroundPanel.viewInfoText(e1.getMessage(), SmallInfoPanel.Error);
+                }
+            }
+        });
+
         this.add(month);
         this.add(semester);
         this.add(todayBtn);
+        this.add(deleteAllDatesBtn);
     }
 
     @PostConstruct
@@ -139,7 +178,6 @@ public class CalendarPanel extends StandardInsidePanel {
                         activeView.goToDay(SemesterDateGenerator.getTimeFrame(((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getYear(), ((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getSemester()).from());
                         month.setText(activeView.getTimeIntervalInfo().toUpperCase().toUpperCase());
                         semester.setSelectedIndex(0);
-                        log.info("semester combo box used ... ");
                     }
                 }
             }

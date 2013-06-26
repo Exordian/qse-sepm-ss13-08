@@ -20,8 +20,8 @@ import java.util.List;
 @Repository
 public class DBDateDao extends DBBaseDao implements DateDao {
 
-    private static final int MAX_LENGTH_NAME=200;
-    private static final int MAX_LENGTH_DESCRIPTION=200;
+    private static final int MAX_LENGTH_NAME=2000;
+    private static final int MAX_LENGTH_DESCRIPTION=2000;
 
     @Override
     public boolean create(DateEntity toCreate) throws IOException, DataAccessException {
@@ -176,6 +176,12 @@ public class DBDateDao extends DBBaseDao implements DateDao {
 
         jdbcTemplate.update("DELETE FROM date WHERE id=?;", new Integer(id));
 
+        return true;
+    }
+
+    @Override
+    public boolean deleteAll() throws DataAccessException {
+        jdbcTemplate.update("DELETE FROM date;");
         return true;
     }
 }

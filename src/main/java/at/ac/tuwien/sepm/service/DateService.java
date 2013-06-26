@@ -38,6 +38,13 @@ public interface DateService {
     public void deleteDate(int id) throws ServiceException;
 
     /**
+     * Delete all dates (not the lva dates).
+     * @throws ServiceException IF any error occurred and the data could not be deleted.
+     *
+     */
+    public void deleteAllDates() throws ServiceException;
+
+    /**
      * Validates Id and passes it on to DateDAO.
      * @param id The Id of the DateEntity to be read.
      * @throws ServiceException If id is not valid
