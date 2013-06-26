@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -36,6 +37,10 @@ import java.util.Iterator;
 @Service
 public class ICalendarServiceImpl implements ICalendarService {
     private Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+
+    private static final String DEBUG_TABS = "\t\t\t\t";
+    private static final int AMOUNT_OF_DATES_OF_NOT_STOPPING_SERIES = 20;
+    private static final int TIME_BUFFER = 100; // millis
 
     private static final String WRONG_MIME_TYPE = "Die angegebene Datei hat kein gültiges Kalender-Format.";
     private static final String FILE_DOES_NOT_EXIST = "Die Datei existiert nicht.";
@@ -102,11 +107,13 @@ public class ICalendarServiceImpl implements ICalendarService {
             throw new ServiceException(COULD_NOT_IMPORT_CALENDAR + "\nEs " + is + failureCounter + " Fehler aufgetreten");
         }
 
+
+        logger.info("All dates extracted from file. Storing to database now ... ");
         for(DateEntity d : dates) {
             try {
                 dateDao.create(d);
             } catch (IOException e) {
-                throw new ServiceException(COULD_NOT_CREATE_DATE_1 + d.getName() + COULD_NOT_CREATE_DATE_2 + e.getMessage(), e);
+                throw new ServiceException("Fehler bei '" + d.getName() + "': " + e.getMessage(), e);
             }
         }
 
@@ -170,38 +177,6 @@ public class ICalendarServiceImpl implements ICalendarService {
         return true;
     }
 
-    /*
-     * Validates if the given file is valid or not.
-     * @param f The file to be validated.
-     * @param isExisting <code>true</code> if the file must be existing, <code>false</code> otherwise.
-     * @throws ServiceException If if the file is existing if it should not, if the file is not existing if it should,
-     * if the File does have the wrong mime type.
-     */
-    /*
-    public void iCalFileValidator(File f, boolean isExisting) throws ServiceException {
-        // TODO test this class properly
-        if (f == null) {
-            logger.info("no file found.");
-            throw new ServiceException("Keine Datei gefunden.");
-        }
-        if(f.exists()==!isExisting && isExisting && f.isFile()) {
-            logger.info("not existing file.");
-            throw new ServiceException("Die angegebene Datei existiert nicht.");
-        }
-        if(f.exists()==!isExisting && !isExisting && f.isFile()) {
-            logger.info("failure at storing the calendar.");
-            throw new ServiceException("Fehler beim Speichern des Kalenders.");
-        }
-
-        MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
-        String mimeType = mimetypesFileTypeMap.getContentType(f);
-        if(!mimeType.equals("text/calendar")) {
-            logger.info("wrong mime type. needed: 'text/calendar'\tgiven: " + mimeType);
-            throw new ServiceException("Die ausgewählte Datei hat das falsche Format.");
-        }
-    }
-    */
-
     private File iCalExportValidator(File f) throws ServiceException {
         if(f == null) {
             throw new ServiceException(FILE_NOT_FOUND);
@@ -243,9 +218,9 @@ public class ICalendarServiceImpl implements ICalendarService {
         }
     }
 
-
     private int addEvent(ArrayList<DateEntity> dates, VEvent ev) {
         if(dates == null || ev == null) {
+            logger.info("could not add event '" +  ev.getSummary().getValue() + "'\taddEvent: dates or ev is null");
             return -1;
         }
 
@@ -254,6 +229,7 @@ public class ICalendarServiceImpl implements ICalendarService {
         DtEnd evend = ev.getEndDate();
         Summary evsummary = ev.getSummary();
         if(evstart == null || evend == null || evsummary == null || evstart.getDate() == null || evend.getDate() == null) {
+            logger.info("could not add event '" + ev.getSummary().getValue() + "'\taddEvent: one evstart, evend, evsummary, evstart.getDate() or evend.getDate() is null");
             return -1;
         }
         Description evdescription = ev.getDescription();
@@ -270,6 +246,10 @@ public class ICalendarServiceImpl implements ICalendarService {
         boolean intersectable = false;
         if (evtransp != null && evtransp.getValue().equals(Transp.TRANSPARENT.getValue())) {
             intersectable = true;
+        }
+        String description = "";
+        if(ev.getDescription() != null) {
+            description = ev.getDescription().getValue();
         }
 
         // set times if event is a all day event
@@ -289,61 +269,71 @@ public class ICalendarServiceImpl implements ICalendarService {
                     stop.minusDays(1).minuteOfHour().withMaximumValue().get(DateTimeFieldType.minuteOfHour()),
                     stop.minusDays(1).secondOfMinute().withMaximumValue().get(DateTimeFieldType.secondOfMinute()),
                     stop.minusDays(1).millisOfSecond().withMaximumValue().get(DateTimeFieldType.millisOfSecond()));
-
+            /*
             logger.info("'" + evsummary.getValue() + "'\tis a all day event\t" + start.getYear() + "-" + start.getMonthOfYear() + "-" + start.getDayOfMonth() + " " + start.getHourOfDay() + ":" + start.getMinuteOfHour() + ":" + start.getSecondOfMinute() + "." + start.getMillisOfSecond() +
                     "\t" + stop.getYear() + "-" + stop.getMonthOfYear() + "-" + stop.getDayOfMonth() + " " + stop.getHourOfDay() + ":" + stop.getMinuteOfHour() + ":" + stop.getSecondOfMinute() + "." + stop.getMillisOfSecond());
+            */
         }
         TimeFrame timeFrame = new TimeFrame(start, stop);
 
         int succesfulDates = 1;
         // if the event represents a series
         if (evrrule != null) {
-            succesfulDates = addSeries(dates, evrrule, evsummary.getValue(), evdescription.getValue(), ev.getStartDate().getDate(), timeFrame, intersectable);
-        }
-        // if the event is a single event
-        else {
+            succesfulDates = addSeries(dates, evrrule, evsummary.getValue(), description, ev.getStartDate().getDate(), timeFrame, intersectable);
+        } else { // if the event is a single event
             DateEntity entity = new DateEntity();
             entity.setName(evsummary.getValue());
             entity.setTime(timeFrame);
-            if (evdescription != null) {
-                entity.setDescription(evdescription.getValue());
-            }
+            entity.setDescription(description);
             entity.setIntersectable(intersectable);
             dates.add(entity);
+            logger.info("new date created: '" + evsummary.getValue() + "'");
         }
 
-        logger.info(succesfulDates + " dates created");
+        //logger.info(succesfulDates + " date(s) created\t0");
         return succesfulDates;
     }
 
     private int addSeries(ArrayList<DateEntity> dates, RRule rule, String name, String description, Date baseDate, TimeFrame time, boolean intersectable) {
-        // debug3(dates, rule, name, description, baseDate, time, intersectable);
+        debug3(dates, rule, name, description, baseDate, time, intersectable);
 
         net.fortuna.ical4j.model.DateTime until;
 
         if(rule.getRecur().getUntil()==null) {
+            long duration = 1;
+            int notEndingSeriesFactor = 1;
+            if (rule.getRecur().getFrequency().equals(Recur.SECONDLY)) {
+                duration = DateTimeConstants.MILLIS_PER_SECOND;
+                notEndingSeriesFactor = 10000;
+            } else if (rule.getRecur().getFrequency().equals(Recur.MINUTELY)) {
+                duration = DateTimeConstants.MILLIS_PER_MINUTE;
+                notEndingSeriesFactor = 10000;
+            } else if (rule.getRecur().getFrequency().equals(Recur.HOURLY)) {
+                duration = DateTimeConstants.MILLIS_PER_HOUR;
+                notEndingSeriesFactor = (12*AMOUNT_OF_DATES_OF_NOT_STOPPING_SERIES);
+            } else if (rule.getRecur().getFrequency().equals(Recur.DAILY)) {
+                duration = DateTimeConstants.MILLIS_PER_DAY;
+                notEndingSeriesFactor = (356*AMOUNT_OF_DATES_OF_NOT_STOPPING_SERIES);
+            } else if (rule.getRecur().getFrequency().equals(Recur.WEEKLY)) {
+                duration = DateTimeConstants.MILLIS_PER_WEEK;
+                notEndingSeriesFactor = (52 * AMOUNT_OF_DATES_OF_NOT_STOPPING_SERIES);
+            } else if (rule.getRecur().getFrequency().equals(Recur.MONTHLY)) {
+                duration = DateTimeConstants.MILLIS_PER_DAY*31;
+                notEndingSeriesFactor = (12 * AMOUNT_OF_DATES_OF_NOT_STOPPING_SERIES);
+            } else if (rule.getRecur().getFrequency().equals(Recur.YEARLY)) {
+                duration = DateTimeConstants.MILLIS_PER_DAY*366;
+                notEndingSeriesFactor = AMOUNT_OF_DATES_OF_NOT_STOPPING_SERIES;
+            }
             if (rule.getRecur().getCount() >= 0) { // the duration of the series is represented by a max amount of single events
-                long duration = 0;
-                if (rule.getRecur().getFrequency().equals(Recur.SECONDLY)) {
-                    duration = DateTimeConstants.MILLIS_PER_SECOND;
-                } else if (rule.getRecur().getFrequency().equals(Recur.MINUTELY)) {
-                    duration = DateTimeConstants.MILLIS_PER_MINUTE;
-                } else if (rule.getRecur().getFrequency().equals(Recur.HOURLY)) {
-                    duration = DateTimeConstants.MILLIS_PER_HOUR;
-                } else if (rule.getRecur().getFrequency().equals(Recur.DAILY)) {
-                    duration = DateTimeConstants.MILLIS_PER_DAY;
-                } else if (rule.getRecur().getFrequency().equals(Recur.WEEKLY)) {
-                    duration = DateTimeConstants.MILLIS_PER_WEEK;
-                } else if (rule.getRecur().getFrequency().equals(Recur.MONTHLY)) {
-                    duration = DateTimeConstants.MILLIS_PER_DAY*31;
-                } else if (rule.getRecur().getFrequency().equals(Recur.YEARLY)) {
-                    duration = DateTimeConstants.MILLIS_PER_DAY*366;
-                }
-                //debug2(rule);
-                until = new net.fortuna.ical4j.model.DateTime(baseDate.getTime() + (time.to().getMillis() - time.from().getMillis()) + 100 + (rule.getRecur().getCount() * duration));
+                until = new net.fortuna.ical4j.model.DateTime(baseDate.getTime() + (time.to().getMillis() - time.from().getMillis()) + TIME_BUFFER + (rule.getRecur().getCount() * duration));
+            } else if (rule.getRecur().getFrequency() != null) { // the series is a not stopping series, like a birthday. notEndingSeriesFactor dates will be created.
+                until = new net.fortuna.ical4j.model.DateTime(baseDate.getTime() + (time.to().getMillis() - time.from().getMillis()) + TIME_BUFFER + (notEndingSeriesFactor * duration));
+                logger.info("the series '" +  name + "' has no end date defined, " + notEndingSeriesFactor + " instances will be created. Calculated end date: " + new DateTime(until.getTime()) + "(in millis: " + until.getTime() + ")");
             } else { // the way, how the duration of the series is represented, is not provided by this method
+                logger.info("could not add series '" +  name + "'\taddSeries: the way, how the duration of the series is represented, is not provided by this method");
                 return -1;
             }
+            debug2(rule, name);
         } else { // the duration of the series is represented by a start and stop date
             DateTime dt = new DateTime(rule.getRecur().getUntil().getTime());
             until = new net.fortuna.ical4j.model.DateTime(dt.getMillis() + time.to().getMillis() - time.from().getMillis());
@@ -365,6 +355,7 @@ public class ICalendarServiceImpl implements ICalendarService {
             entity.setTime(new TimeFrame(new DateTime(start), new DateTime(stop)));
             entity.setIntersectable(intersectable);
             dates.add(entity);
+            logger.info("new date of series created: '" + name + "'");
         }
 
         return dateList.size();
@@ -374,28 +365,28 @@ public class ICalendarServiceImpl implements ICalendarService {
         String s = "all " + dates.size() + " imported dates:";
         int i=0;
         for(DateEntity d : dates) {
-            s += "\n\t\t(" + i + ")\t" + d;
+            s += "\n" + DEBUG_TABS + "(" + i + ")\t" + d;
             i++;
         }
         logger.info(s);
     }
 
-    private void debug2(RRule rule) {
-        String debug2 = "series will be calculated by 'COUNT'";
+    private void debug2(RRule rule, String name) {
+        String debug2 = "series '" + name + "' will be calculated by 'COUNT'";
         if (rule.getRecur().getFrequency().equals(Recur.SECONDLY)) {
-            debug2 += "\n\t\tfrequency=" + "SECONDLY";
+            debug2 += "\n" + DEBUG_TABS + "frequency=" + "SECONDLY";
         } else if (rule.getRecur().getFrequency().equals(Recur.MINUTELY)) {
-            debug2 += "\n\t\tfrequency=" + "MINUTELY";
+            debug2 += "\n" + DEBUG_TABS + "frequency=" + "MINUTELY";
         } else if (rule.getRecur().getFrequency().equals(Recur.HOURLY)) {
-            debug2 += "\n\t\tfrequency=" + "HOURLY";
+            debug2 += "\n" + DEBUG_TABS + "frequency=" + "HOURLY";
         } else if (rule.getRecur().getFrequency().equals(Recur.DAILY)) {
-            debug2 += "\n\t\tfrequency=" + "DAILY";
+            debug2 += "\n" + DEBUG_TABS + "frequency=" + "DAILY";
         } else if (rule.getRecur().getFrequency().equals(Recur.WEEKLY)) {
-            debug2 += "\n\t\tfrequency=" + "WEEKLY";
+            debug2 += "\n" + DEBUG_TABS + "frequency=" + "WEEKLY";
         } else if (rule.getRecur().getFrequency().equals(Recur.MONTHLY)) {
-            debug2 += "\n\t\tfrequency=" + "MONTHLY";
+            debug2 += "\n" + DEBUG_TABS + "frequency=" + "MONTHLY";
         } else if (rule.getRecur().getFrequency().equals(Recur.YEARLY)) {
-            debug2 += "\n\t\tfrequency=" + "YEARLY";
+            debug2 += "\n" + DEBUG_TABS + "frequency=" + "YEARLY";
         }
         NumberList secondList = rule.getRecur().getSecondList();
         NumberList minuteList = rule.getRecur().getMinuteList();
@@ -406,28 +397,29 @@ public class ICalendarServiceImpl implements ICalendarService {
         NumberList monthList = rule.getRecur().getMonthList();
         NumberList yearDayList =  rule.getRecur().getYearDayList();
         NumberList setPosList = rule.getRecur().getSetPosList();
-        debug2 += "\n\t\t(" + secondList.size() + ") secondList=" + secondList;
-        debug2 += "\n\t\t(" + minuteList.size() + ") minuteList=" + minuteList;
-        debug2 += "\n\t\t(" + hourList.size() + ") hourList=" + hourList;
-        debug2 += "\n\t\t(" + dayList.size() + ") dayList=" + dayList;
-        debug2 += "\n\t\t(" + weekNoList.size() + ") weekNoList=" + weekNoList;
-        debug2 += "\n\t\t(" + monthDayList.size() + ") monthDayList=" + monthDayList;
-        debug2 += "\n\t\t(" + monthList.size() + ") monthList=" + monthList;
-        debug2 += "\n\t\t(" + yearDayList.size() + ") yearDayList=" + yearDayList;
-        debug2 += "\n\t\t(" + setPosList.size() + ") setPosList=" + setPosList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + secondList.size() + ") secondList=" + secondList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + minuteList.size() + ") minuteList=" + minuteList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + hourList.size() + ") hourList=" + hourList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + dayList.size() + ") dayList=" + dayList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + weekNoList.size() + ") weekNoList=" + weekNoList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + monthDayList.size() + ") monthDayList=" + monthDayList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + monthList.size() + ") monthList=" + monthList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + yearDayList.size() + ") yearDayList=" + yearDayList;
+        debug2 += "\n" + DEBUG_TABS + "(size=" + setPosList.size() + ") setPosList=" + setPosList;
         logger.info(debug2);
     }
 
     private void debug3(ArrayList<DateEntity> dates, RRule rule, String name, String description, Date baseDate, TimeFrame time, boolean intersectable) {
-        String debug3 = "trying to generate series ... name='" + name + "'\n";
-        debug3 += "\t\tdates==null\t\t\t\t\t\t\t" +     (dates==null) + "\n";
-        debug3 += "\t\trule==null\t\t\t\t\t\t\t" +      (rule==null) + "\n";
-        debug3 += "\t\trule.getRecur()==null\t\t\t\t" + (rule.getRecur()==null) + "\n";
-        debug3 += "\t\trule.getRecur().getUntil()==null\t" + (rule.getRecur().getUntil()==null) + "\n";
-        debug3 += "\t\tname==null\t\t\t\t\t\t\t" +      (name==null) + "\n";
-        debug3 += "\t\tdescription==null\t\t\t\t\t" +   (description==null) + "\n";
-        debug3 += "\t\tbaseDate==null\t\t\t\t\t\t" +    (baseDate==null) + "\n";
-        debug3 += "\t\ttime==null\t\t\t\t\t\t\t" +      (time==null);
+        String debug3 = "trying to generate series\n";
+        debug3 += DEBUG_TABS + "name='" + name + "'\n";
+        debug3 += DEBUG_TABS + "dates==null\t\t\t\t\t\t\t" +     (dates==null) + "\n";
+        debug3 += DEBUG_TABS + "rule==null\t\t\t\t\t\t\t" +      (rule==null) + "\n";
+        debug3 += DEBUG_TABS + "rule.getRecur()==null\t\t\t\t" + (rule.getRecur()==null) + "\n";
+        debug3 += DEBUG_TABS + "rule.getRecur().getUntil()==null\t" + (rule.getRecur().getUntil()==null) + "\n";
+        debug3 += DEBUG_TABS + "name==null\t\t\t\t\t\t\t" +      (name==null) + "\n";
+        debug3 += DEBUG_TABS + "description==null\t\t\t\t\t" +   (description==null) + "\n";
+        debug3 += DEBUG_TABS + "baseDate==null\t\t\t\t\t\t" +    (baseDate==null) + "\n";
+        debug3 += DEBUG_TABS + "time==null\t\t\t\t\t\t\t" +      (time==null);
         logger.info(debug3);
     }
 }

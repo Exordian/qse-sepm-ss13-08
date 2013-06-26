@@ -68,7 +68,7 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
 
     @Override
     public void goToDay(DateTime date) {
-        // TODO
+        calPanelMonth.goToDay(date);
     }
 
     @Override

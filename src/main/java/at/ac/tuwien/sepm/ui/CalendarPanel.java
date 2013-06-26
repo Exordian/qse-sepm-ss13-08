@@ -1,16 +1,14 @@
 package at.ac.tuwien.sepm.ui;
 
-import at.ac.tuwien.sepm.service.ICalendarService;
-import at.ac.tuwien.sepm.service.LVAService;
-import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.ui.calender.cal.CalMonthGenerator;
 import at.ac.tuwien.sepm.ui.calender.cal.CalWeekGenerator;
 import at.ac.tuwien.sepm.ui.calender.cal.CalendarInterface;
 import at.ac.tuwien.sepm.ui.calender.todo.TodoPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
+import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-//import org.joda.time.DateTime;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +19,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,8 +37,11 @@ public class CalendarPanel extends StandardInsidePanel {
     private JButton bwd;
     private JButton importBtn;
     private JButton exportBtn;
+    private JButton todayBtn;
+    private JButton deleteAllDatesBtn;
     private JLabel month;
-    private JComboBox semester;
+    private WideComboBox semester;
+    private DefaultComboBoxModel<SemesterComboBoxItem> semesterCbmdl;
 
     static DefaultTableModel mtblCalendar; //Table model
     static JScrollPane stblCalendar; //The scrollpane
@@ -53,10 +56,18 @@ public class CalendarPanel extends StandardInsidePanel {
     private static final String OVERWRITE_FILE_MESSAGE = "Die angegebene Datei existiert bereits.\nSoll diese überschrieben werden?";
     private static final String OVERWRITE_FILE_TITLE = "Soll die Datei überschrieben werden?";
     private static final String[] OVERWRITE_FILE_BUTTON_TEXT = {"Ja", "Nein"};
+
+    private static final String DELETE_ALL_DATES_MESSAGE = "Es werden alle privaten Termine gelöscht.\nLVA-Termine bleiben gespeichert." +
+            "\nMöchten Sie fortfahren?";
+    private static final String DELETE_ALL_DATES_TITLE = "Termine wirklich löschen?";
+    private static final String[] DELETE_ALL_DATES_BUTTON_TEXT = {"Ja", "Nein"};
+
     private JFileChooser jfc;
 
 
     private LVAService lvaService;
+
+    private DateService dateService;
 
     private boolean showTodo = false;
 
@@ -66,10 +77,11 @@ public class CalendarPanel extends StandardInsidePanel {
     private ICalendarService iCalendarService;
 
     @Autowired
-    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel, LVAService lvaService) {
+    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel, LVAService lvaService, DateService dateService) {
         init();
         PanelTube.calendarPanel=this;
         this.lvaService=lvaService;
+        this.dateService=dateService;
         this.calPanelMonth=calPanelMonth;
         this.calPanelWeek=calPanelWeek;
         this.activeView=calPanelWeek;
@@ -106,11 +118,73 @@ public class CalendarPanel extends StandardInsidePanel {
         month.setForeground(Color.WHITE);
         month.setFont(standardTitleFont);
 
-        semester = new JComboBox();
+        semester = new WideComboBox();
+        semesterCbmdl = new DefaultComboBoxModel<>();
         semester.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5+295, (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 90, 20);
-        semester.setFont(standardButtonFont);
+        semester.setFont(standardTextFont);
+
+        todayBtn = new JButton("Heute");
+        todayBtn.setBounds((int)(semester.getX() + semester.getWidth() + 2), (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 90, 20);
+        todayBtn.setFont(standardButtonFont);
+        todayBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                activeView.goToDay(DateTime.now());
+                month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+            }
+        });
+
+        deleteAllDatesBtn = new JButton("Private Termine löschen");
+        deleteAllDatesBtn.setBounds((int)(todayBtn.getX() + todayBtn.getWidth() + 2), (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 180, 20);
+        deleteAllDatesBtn.setFont(standardButtonFont);
+        deleteAllDatesBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int i = JOptionPane.showOptionDialog(new JFrame(),
+                            DELETE_ALL_DATES_MESSAGE,
+                            DELETE_ALL_DATES_TITLE,
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            DELETE_ALL_DATES_BUTTON_TEXT,
+                            DELETE_ALL_DATES_BUTTON_TEXT[1]);
+
+                    if(i == 0) {
+                        dateService.deleteAllDates();
+                        PanelTube.backgroundPanel.viewInfoText("Termine erfolgreich gelöscht", SmallInfoPanel.Success);
+                        calPanelMonth.refresh();
+                        calPanelWeek.refresh();
+                    }
+                } catch (ServiceException e1) {
+                    PanelTube.backgroundPanel.viewInfoText(e1.getMessage(), SmallInfoPanel.Error);
+                }
+            }
+        });
+
         this.add(month);
         this.add(semester);
+        this.add(todayBtn);
+        this.add(deleteAllDatesBtn);
+    }
+
+    @PostConstruct
+    private void addSemesterActionListener () {
+        semester.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    if( ((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getSemester() != null) {
+                        activeView.goToDay(SemesterDateGenerator.getTimeFrame(((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getYear(), ((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getSemester()).from());
+                        month.setText(activeView.getTimeIntervalInfo().toUpperCase().toUpperCase());
+                        semester.setSelectedIndex(0);
+                    }
+                }
+            }
+        });
+
+        semester.setModel(semesterCbmdl);
+        activeView.goToDay(DateTime.now());
     }
 
     private void createICalFileChooser() {
@@ -140,9 +214,10 @@ public class CalendarPanel extends StandardInsidePanel {
                 if(System.getProperty("user.language").equals("de")) {
                     return "Kalender Dateien (*.ics, *.ifb, *.iFBf, *.ical)";
                 }
-                return "Calendar files";
+                return "Calendar files (*.ics, *.ifb, *.iFBf, *.ical)";
             }
         });
+        jfc.setFont(standardTextFont);
     }
 
     private int openExistingFileDialog () {
@@ -158,13 +233,14 @@ public class CalendarPanel extends StandardInsidePanel {
 
     private void refreshTop() {
         semester.removeAllItems();
+        semesterCbmdl.addElement(new SemesterComboBoxItem(0, null));
         try {
             boolean winterSem = lvaService.isFirstSemesterAWinterSemester();
             int semesters = lvaService.numberOfSemestersInStudyProgress();
             int year = lvaService.firstYearInStudyProgress();
             for (int x = 0; x < semesters; x++) {
-                String temp = winterSem ? "WS" : "SS";
-                semester.addItem(year + ", " + temp);
+                Semester temp = winterSem ? Semester.W : Semester.S;
+                semesterCbmdl.addElement(new SemesterComboBoxItem(year, temp));
                 if (winterSem) {
                     year++;
                 }
@@ -277,6 +353,7 @@ public class CalendarPanel extends StandardInsidePanel {
                     month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 } catch (ServiceException e) {
                     PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden des Kalenders.", SmallInfoPanel.Error);
+                    // TODO use info panel
                     month.setText("ERROR");
                 }
             }
@@ -295,6 +372,7 @@ public class CalendarPanel extends StandardInsidePanel {
                     month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 } catch (ServiceException e) {
                     PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden des Kalenders.", SmallInfoPanel.Error);
+                    // TODO use info panel
                     month.setText("ERROR");
                 }
             }
@@ -431,5 +509,30 @@ public class CalendarPanel extends StandardInsidePanel {
     public void jumpToDate(DateTime anyDateOfWeek) {
         calPanelWeek.goToDay(anyDateOfWeek);
         tab1.doClick();
+    }
+
+    private class SemesterComboBoxItem {
+        private int year;
+        private Semester sem;
+
+        public SemesterComboBoxItem(int year, Semester sem) {
+            this.year = year;
+            this.sem = sem;
+        }
+
+        public int getYear() {
+            return year;
+        }
+
+        public Semester getSemester() {
+            return sem;
+        }
+
+        public String toString() {
+            if (sem == null) {
+                return "Bitte Semester auswählen";
+            }
+            return sem.toString() + " " + year;
+        }
     }
 }

@@ -27,7 +27,8 @@ public class PropertyServiceImpl implements PropertyService {
             FileInputStream in = new FileInputStream("./studentmanager.properties");
             properties.load(in);
         } catch (IOException e) {
-            log.error("property file not found, using empty properties", e);
+            // log.error("property file not found, using empty properties", e);
+            log.error("property file not found, using empty properties");
         }
     }
 

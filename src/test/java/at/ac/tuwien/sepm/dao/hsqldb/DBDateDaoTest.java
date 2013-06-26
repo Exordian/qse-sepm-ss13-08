@@ -426,4 +426,12 @@ public class DBDateDaoTest {
         TestHelper.insert(15);
         assert(dao.readByDay(new DateTime(1990, 1, 1, 1, 1, 1, 1)).size()==0);
     }
+
+    @Test
+    public void testDeleteAll () throws Exception {
+        TestHelper.insert(0);
+        Assert.assertNotNull(dao.readById(0));
+        dao.deleteAll();
+        Assert.assertNull(dao.readById(0));
+    }
 }

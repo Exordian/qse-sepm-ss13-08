@@ -69,6 +69,16 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
+    public void deleteAllDates() throws ServiceException {
+        try {
+            dateDao.deleteAll();
+        } catch (DataAccessException d) {
+            log.error("could not delete all dates ... ");
+            throw new ServiceException("Die Termine konnten nicht oder nicht vollständig gelöscht werden.", d);
+        }
+    }
+
+    @Override
     public DateEntity readDateById(int id) throws ServiceException {
         this.validateId(id);
 

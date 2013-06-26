@@ -127,4 +127,20 @@ public class SemesterDateGenerator {
     public static TimeFrame getTimeFrame() {
         return getTimeFrame(DateTime.now());
     }
+
+    public static Semester getSemester(DateTime date) {
+        if (date.getMonthOfYear() >= SOMMER_SEMESTER_START_MONTH+1 && date.getMonthOfYear() <= WINTER_SEMESTER_STOP_MONTH) {
+            return Semester.W;
+        } else {
+            return Semester.S;
+        }
+    }
+
+    public static int getYear(DateTime date) {
+        if (date.getMonthOfYear() >= 1 && date.getMonthOfYear() <= WINTER_SEMESTER_STOP_MONTH) {
+            return date.getYear() - 1;
+        } else {
+            return date.getYear();
+        }
+    }
 }

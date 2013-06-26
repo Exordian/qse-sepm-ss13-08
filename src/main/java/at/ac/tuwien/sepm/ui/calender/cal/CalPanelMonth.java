@@ -162,7 +162,11 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
 
     @Override
     public void goToDay(DateTime date) {
-        // TODO
+        firstDay = new DateTime(date.getYear(), date.getMonthOfYear(), date.dayOfMonth().withMinimumValue().getDayOfMonth(), 0, 0, 0, 0);
+        setDays();
+        refresh();
+        repaint();
+        revalidate();
     }
 
     public void semester() {

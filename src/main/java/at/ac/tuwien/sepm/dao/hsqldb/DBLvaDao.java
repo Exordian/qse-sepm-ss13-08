@@ -25,8 +25,8 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
 
     private static final int MAX_LENGTH_DESCRIPTION=20000;
     private static final int MAX_LENGTH_ADDITIONAL_DESCRIPTIONS=20000;
-    private static final int MAX_LENGTH_INSTITUTE=20000;
-    private static final int MAX_LENGTH_LANGUAGE=20000;
+    private static final int MAX_LENGTH_INSTITUTE=200;
+    private static final int MAX_LENGTH_LANGUAGE=200;
 
     @Autowired
     DBLvaDateDao lvaDateDao;

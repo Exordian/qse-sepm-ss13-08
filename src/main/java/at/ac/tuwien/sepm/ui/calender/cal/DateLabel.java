@@ -20,6 +20,7 @@ import java.awt.event.*;
 /**
  * @author Markus MUTH
  */
+
 public class DateLabel extends JTextPane implements Comparable<DateLabel>{
     private static final int MAX_TEXT_LENGTH=20;
     private Date date;
@@ -134,7 +135,11 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
     class PrivateMouseListener extends MouseAdapter {
         public void mouseClicked(MouseEvent evt) {
             if (evt.getClickCount() == 2) {
-                UpdateDateFrameFactory.createFrame(getDate());
+                if(getDate() instanceof LvaDate) {
+                    PanelTube.backgroundPanel.viewLvaDate((LvaDate) getDate(), DateTime.now());
+                } else if (getDate() instanceof DateEntity) {
+                    PanelTube.backgroundPanel.viewDate((DateEntity) getDate(), DateTime.now());
+                }
             }
         }
 

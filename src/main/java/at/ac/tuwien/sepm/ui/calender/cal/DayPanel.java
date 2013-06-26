@@ -66,6 +66,9 @@ public class DayPanel extends JPanel {
     public void setDate(DateTime date) {
         this.date = date;
         this.title.setText(" " + date.getDayOfMonth());
+        if (date.getYear() == DateTime.now().getYear() && date.getMonthOfYear() == DateTime.now().getMonthOfYear() && date.getDayOfMonth() == DateTime.now().getDayOfMonth()) {
+            this.title.setForeground(new Color(73, 112,255));
+        }
     }
 
     public DateTime getDate () {
@@ -160,9 +163,8 @@ public class DayPanel extends JPanel {
 
         class PrivateMouseListener extends MouseAdapter {
             public void mouseClicked(MouseEvent evt) {
-                if (evt.getClickCount() == 1) {
+                if (evt.getClickCount() == 2) {
                     PanelTube.calendarPanel.jumpToDate(date);
-                    //new CalDisplayAllDatesFrame(getDates());
                 }
             }
         }

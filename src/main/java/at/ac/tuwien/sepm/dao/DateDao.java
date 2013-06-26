@@ -117,5 +117,13 @@ public interface DateDao {
      * because any error occured.
      */
     public boolean delete(int id) throws DataAccessException;
+
+    /**
+     * Delete all Dates
+     * @return <code>true</code>
+     * @throws org.springframework.dao.DataAccessException DataAccessException If the date data could not be deleted
+     * because any error occured.
+     */
+    public boolean deleteAll() throws DataAccessException;
 }
 
