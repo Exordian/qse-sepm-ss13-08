@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ui.startUp;
 
+import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.util.LinkedList;
@@ -8,39 +10,40 @@ import java.util.List;
 /**
  * Author: Georg Plaz
  */
-public abstract class StartRowPanel extends JPanel{
+public abstract class SimpleDisplayPanel extends JPanel{
     private double width;
     private double height;
-    private ViewStartUp startUp;
-    protected int smallSpace;// = 10;
-    protected int bigSpace;//=20;
+    public int smallSpace;// = 10;
+    public int bigSpace;//=20;
 
-    protected int labelXLeft;// = bigSpace;
-    protected int labelWidthLeft;// = 180;
+    public int labelXLeft;// = bigSpace;
+    public int labelWidthLeft;// = 180;
 
-    protected int inputXLeft;// = labelXLeft + labelWidthLeft +smallSpace;
-    protected int inputWidthLeft;// = 180;
+    public int inputXLeft;// = labelXLeft + labelWidthLeft +smallSpace;
+    public int inputWidthLeft;// = 180;
 
-    protected int labelXRight;// = inputXLeft + inputWidthLeft +bigSpace*2;
-    protected int labelWidthRight;// = 180;
+    public int labelXRight;// = inputXLeft + inputWidthLeft +bigSpace*2;
+    public int labelWidthRight;// = 180;
 
-    protected int inputXRight;// = labelXRight + labelWidthRight +smallSpace;
-    protected int inputWidthRight;// = 180;
+    public int inputXRight;// = labelXRight + labelWidthRight +smallSpace;
+    public int inputWidthRight;// = 180;
 
-    protected int oHeight = 25;
+    public int oHeight = 25;
 
+    public int lastLeftTopHeight;
+    public int lastLeftBottomHeight;
+    public int lastRightTopHeight;
+    public int lastRightBottomHeight;
 
-    protected int buttonWidth=150;
+    public int buttonWidth=150;
 
     private List<JComponent> allLabels;
     private List<JComponent> allInputs;
 
+    private StandardInsidePanel standardInsidePanel;
     private JComponent lastLabel;
-    int lastLeftTopHeight;
-    int lastLeftBottomHeight;
-    int lastRightTopHeight;
-    int lastRightBottomHeight;
-    public StartRowPanel(double width, double height, ViewStartUp startUp){
+    
+    public SimpleDisplayPanel(double width, double height,StandardInsidePanel standardInsidePanel){
         smallSpace = 10;
         bigSpace=20;
 
@@ -65,7 +68,8 @@ public abstract class StartRowPanel extends JPanel{
         this.width=width;
         //this.rightWidth = (width-bigSpace)-rightX;
         this.height=height;
-        this.startUp = startUp;
+        this.standardInsidePanel = standardInsidePanel;
+
         sInit();
         //super.init();
     }
@@ -75,9 +79,6 @@ public abstract class StartRowPanel extends JPanel{
 
         allLabels = new LinkedList<JComponent>();
         allInputs = new LinkedList<JComponent>();
-    }
-    public ViewStartUp getStartUp() {
-        return startUp;
     }
 
     public double getPanelHeight() {
@@ -89,6 +90,9 @@ public abstract class StartRowPanel extends JPanel{
     }
     public void addText(String s,boolean left){
         addRow(new JTextArea(s),null,left);
+    }
+    public void addText(String s,Integer font,boolean left){
+        addRow(new JTextArea(s),font,null,null,left,true);
     }
     public void addEmptyArea(int space,boolean left){
         if(left){
@@ -102,6 +106,9 @@ public abstract class StartRowPanel extends JPanel{
 
     }
     public void addRow(JComponent label, JComponent input,boolean left,boolean top){
+        addRow(label,null,input,null,left,top);
+    }
+    public void addRow(JComponent label,Integer fontLabel, JComponent input,Integer fontInput,boolean left,boolean top){
         allLabels.add(label);
         allInputs.add(input);
         int tempLabelX,tempLabelWidth,tempInputX,tempInputWidth,tempHeight;
@@ -131,8 +138,11 @@ public abstract class StartRowPanel extends JPanel{
         int tempMax = 0;
         if(label!=null){
 
-            //label.setBackground(new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255)));
-            label.setFont(getStartUp().standardTextFont);
+            if(fontLabel!=null){
+                label.setFont(standardInsidePanel.standardTextFont.deriveFont(fontLabel));
+            }else{
+                label.setFont(standardInsidePanel.standardTextFont);
+            }
 
             if(label instanceof JTextComponent){
                 JTextComponent textLabel = (JTextArea)label;
@@ -150,6 +160,11 @@ public abstract class StartRowPanel extends JPanel{
 
             if(label instanceof JButton){
                 tempLabelWidth = buttonWidth;
+                if(fontLabel!=null){
+                    label.setFont(standardInsidePanel.standardButtonFont.deriveFont(fontLabel));
+                }else{
+                    label.setFont(standardInsidePanel.standardButtonFont);
+                }
             }else{
                 if(input!=null){
 
@@ -167,23 +182,39 @@ public abstract class StartRowPanel extends JPanel{
         if(input!=null){
 
             add(input);
-            input.setFont(getStartUp().standardTextFont);
-            if(!top){
-                tempHeight-=input.getPreferredSize().height;
-            }
-            if(input instanceof JButton){
-                JButton inputButton = (JButton)input;
-                inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, input.getPreferredSize().height);
-            }else if(input instanceof JProgressBar){
-                JProgressBar inputButton = (JProgressBar)input;
-                inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, input.getPreferredSize().height);
+            if(fontInput!=null){
+                input.setFont(standardInsidePanel.standardTextFont.deriveFont(fontInput));
             }else{
-                input.setBounds(tempInputX, tempHeight, tempInputWidth, input.getPreferredSize().height);
+                input.setFont(standardInsidePanel.standardTextFont);
+            }
+            int tempWidth=tempInputWidth;
+            if(input instanceof JButton){
+                if(fontInput!=null){
+                    input.setFont(standardInsidePanel.standardButtonFont.deriveFont(fontInput));
+                }else{
+                    input.setFont(standardInsidePanel.standardButtonFont);
+                }
+                JButton inputButton = (JButton)input;
+                if(!top){
+                    tempHeight-=input.getPreferredSize().height;
+                }
+                tempWidth=buttonWidth;//inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, input.getPreferredSize().height);
+            }else if(input instanceof JProgressBar){
+                if(!top){
+                    tempHeight-=input.getPreferredSize().height;
+                }
+                JProgressBar inputButton = (JProgressBar)input;
+                tempWidth=buttonWidth;//inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, input.getPreferredSize().height);
+            }else{
+                if(!top){
+                    tempHeight-=input.getPreferredSize().height;
+                }
                 if(input instanceof JTextComponent){
                     JTextComponent inputText = (JTextComponent)input;
                     inputText.setBorder(new JTextField().getBorder());
                 }
             }
+            input.setBounds(tempInputX+(tempInputWidth-tempWidth), tempHeight, tempWidth, input.getPreferredSize().height);
             if(!top){
                 tempHeight+=input.getPreferredSize().height;
             }

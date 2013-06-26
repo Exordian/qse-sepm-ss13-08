@@ -96,6 +96,7 @@ public class BackgroundPanel extends JPanel {
                 button.setCursor(Cursor.getDefaultCursor());
             }
         }
+        properties.setEnabled(b);
     }
     //wenn neue entity erzeugt werden soll ->  viewDate(null)
     public void viewDate(DateEntity dateEntity, DateTime dateTime) {
@@ -171,6 +172,7 @@ public class BackgroundPanel extends JPanel {
     public void viewStartup() {
         removeAddedPanels();
         viewStartup.setVisible(true);
+        viewStartup.jump(0);
         this.add(viewStartup);
         this.revalidate();
         this.repaint();
@@ -268,7 +270,7 @@ public class BackgroundPanel extends JPanel {
                     propsPanel.refresh();
                     break;
                 case 5:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));//todo grafik für startup-wizard
                     setControlsEnabled(false);
                     //viewStartupButton.setVisible(false);
                     viewStartup();

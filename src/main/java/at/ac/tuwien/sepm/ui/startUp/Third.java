@@ -11,22 +11,20 @@ import java.awt.event.ActionListener;
 /**
  * Author: Georg Plaz
  */
-public class Third extends StartRowPanel {
+public class Third extends SimpleDisplayPanel {
     private static Logger logger = LogManager.getLogger(Third.class);
 
     private JTextField tissUsername = new JTextField();
     private JPasswordField tissPassword = new JPasswordField();
     private WideComboBox studyDrop;
     private JButton progressFurther;
+    private JButton goBack= new JButton("Zurück");
     private JProgressBar progressBar = new JProgressBar();
-
-
-    //academicPrograms.setMinimumSize(new Dimension((int)this.getBounds().getWidth()-145, 20));
-
-
+    private ViewStartUp startUp;
 
     public Third(double width, double height, ViewStartUp parent) {
         super(width, height,parent);
+        this.startUp=parent;
         subInit();
     }
     public void subInit(){
@@ -34,14 +32,35 @@ public class Third extends StartRowPanel {
         progressFurther.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                getStartUp().next();
+                startUp.next();
             }
         });
-        addText("Das wars..", true);
-        addText("Und jetzt?", true);
+        goBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startUp.back();
+            }
+        });
+        addText("Zum Abschluss ein paar Infos..\n\nWenn du LVAs,Termine usw bearbeiten willst, " +
+                "kannst du nach einem Rechtsklick aus einem Popup \"Bearbeiten\" wählen.",true);
+        addText("Damit du mit dieser App arbeiten kannst, brauchst du vorher LVAs " +
+                "die du deinem Studenverlauf hinzufügst. Dazu kannst du dir entweder ein Semester " +
+                "planen lassen Studienverlauf -> Planen, oder du fügst die LVAs manuell hinzu. " +
+                "Dazu bearbeitest du das jeweilige Semester der LVA und aktivierst die Checkbox " +
+                "\"Im Studienverlauf\"", true);
+        addText("Der Planer errechnet dir mögliche Semester ohne Überschneidungen. Dabei wird unter " +
+                "anderem die vom User gesetzte Priorität der LVA berücksichtigt.", true);
+        addText("\n\nIm Kalender fügst du neue Termine auch über das Popup nach dem Rechtsklick ein.\n" +
+                "Du kannst dir private\"Termine, oder LVA-Termine erstellen. Es ist auch möglich Tage \n" +
+                "als frei zu markieren.", false);
+        addText("Außerdem kannst du dich unter Studienverlauf -> Anmeldungen automatisch für Prüfungen " +
+                "anmelden, falls du die Daten im Tiss gesetzt hast. Wenn du auf aktualisieren klickst, " +
+                "werden alle Prüfungen zu allen LVAs angezeigt, die du deinem Studium hinzugefügt hast.", false);
+        addRow(goBack,null,true,false);
 
-        addText("",false);
-        addRow(null,progressFurther,false);
+
+
+        addRow(null,progressFurther,false,false);
 
 
 

@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ui.startUp;
 
 import at.ac.tuwien.sepm.service.EscapeException;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.ui.SettingsPanel;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
@@ -16,36 +17,33 @@ import java.awt.event.ActionListener;
 /**
  * Author: Georg Plaz
  */
-public class Secound extends StartRowPanel {
+public class Secound extends SimpleDisplayPanel {
     private static Logger logger = LogManager.getLogger(Secound.class);
 
     private JTextField facebookUsername = new JTextField();
     private JPasswordField facebookPassword = new JPasswordField();
-    private JButton progressFurther;
+    private JButton progressFurther= new JButton("Weiter");
+    private JButton goBack= new JButton("Zurück");
     private JProgressBar progressBar = new JProgressBar();
     private WideComboBox semesterDrop = new WideComboBox(new Semester[]{Semester.W,Semester.S});
     private JTextField year = new JTextField();
-
-
-    //academicPrograms.setMinimumSize(new Dimension((int)this.getBounds().getWidth()-145, 20));
-
-
+    private ViewStartUp startUp;
 
     public Secound(double width, double height, ViewStartUp parent) {
         super(width, height,parent);
+        this.startUp=parent;
         subInit();
     }
     public void subInit(){
-        facebookUsername.setText(getStartUp().propertyService.getProperty("facebook.user",""));
-        facebookPassword.setText(getStartUp().propertyService.getProperty("facebook.password",""));
-        year.setText(getStartUp().propertyService.getProperty("user.firstYear",""+ DateTime.now().getYear()));
-        if(getStartUp().propertyService.getProperty("user.firstSemester","WS").equals("WS")){
+        facebookUsername.setText(startUp.propertyService.getProperty(SettingsPanel.FACEBOOK_USER,""));
+        facebookPassword.setText(startUp.propertyService.getProperty(SettingsPanel.FACEBOOK_PASSWORD,""));
+        year.setText(startUp.propertyService.getProperty(SettingsPanel.FIRST_YEAR,""+ DateTime.now().getYear()));
+        if(startUp.propertyService.getProperty(SettingsPanel.FIRST_SEMESTER,"WS").equals("WS")){
             semesterDrop.setSelectedIndex(0);
         }else{
             semesterDrop.setSelectedIndex(1);
         }
 
-        progressFurther = new JButton("Weiter");
         progressFurther.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,21 +64,26 @@ public class Secound extends StartRowPanel {
                     int un = facebookUsername.getText().length();
                     int pw = facebookPassword.getPassword().length;
                     if(un>0 && pw>0){
-                        getStartUp().propertyService.setProperty("facebook.user", facebookUsername.getText());
-                        getStartUp().propertyService.setProperty("facebook.password",new String(facebookPassword.getPassword()));
+                        startUp.propertyService.setProperty(SettingsPanel.FACEBOOK_USER, facebookUsername.getText());
+                        startUp.propertyService.setProperty(SettingsPanel.FACEBOOK_PASSWORD,new String(facebookPassword.getPassword()));
                     }else if((un==0)!=(pw==0)){
                         PanelTube.backgroundPanel.viewInfoText("Die Facebook-Daten sind ungültig!", SmallInfoPanel.Warning);
                         throw new EscapeException();
                     }
-                    getStartUp().next();
-                    getStartUp().propertyService.setProperty("user.firstSemester",((Semester)semesterDrop.getSelectedItem()).toShortString());
-                    getStartUp().propertyService.setProperty("user.firstYear",year.getText());
+                    startUp.next();
+                    startUp.propertyService.setProperty(SettingsPanel.FIRST_SEMESTER,((Semester)semesterDrop.getSelectedItem()).toShortString());
+                    startUp.propertyService.setProperty(SettingsPanel.FIRST_YEAR,year.getText());
                 }catch(EscapeException e1){
 
                 }
             }
         });
-
+        goBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startUp.back();
+            }
+        });
 
 
         addText("Gratuliere!\n\nDu hast es durch das erste Panel geschafft!", true);
@@ -90,13 +93,15 @@ public class Secound extends StartRowPanel {
         addRow(new JTextArea("Jahr"), year, true);
         addRow(new JTextArea("Semester"),semesterDrop,true);
 
+        addRow(goBack,null,true,false);
+
         addText("\n\nUnser App bietet auch eine Facebookintegration an!", false);
         addText("Wenn du diesen Service nutzen willst, kannst du deine Facebookdaten hier eintragen. Die Angabe ist optional!\n", false);
 
         addRow(new JTextArea("Facebook-Username"), facebookUsername, false);
         addRow(new JTextArea("Facebook-Passwort"),facebookPassword,false);
 
-        addRow(null,progressFurther,false);
+        addRow(null,progressFurther,false,false);
 
 
 

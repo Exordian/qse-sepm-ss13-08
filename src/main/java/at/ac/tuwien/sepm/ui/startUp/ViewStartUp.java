@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ui.startUp;
 import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.PropertyService;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
@@ -63,9 +64,10 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
             p.setBackground(Color.BLUE);
         }
 
-        jump(0);
+
+
     }
-    protected void jump(int index){
+    public void jump(int index){
         logger.info("jumping from "+currentIndex+", to "+index);
         allPanels.get(currentIndex).setVisible(false);
         currentIndex = index;
@@ -77,6 +79,7 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
             propertyService.setProperty("firstStarted","false");
             PanelTube.backgroundPanel.showLastComponent();
             PanelTube.backgroundPanel.setControlsEnabled(true);
+            PanelTube.backgroundPanel.viewInfoText("Der Startup-Wizard ist beendet.", SmallInfoPanel.Success);
         }else{
             jump(currentIndex+1);
         }

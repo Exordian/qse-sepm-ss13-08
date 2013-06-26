@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ui;
 
 import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.service.*;
+import at.ac.tuwien.sepm.ui.startUp.SimpleDisplayPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.SelectItem;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
@@ -19,6 +20,15 @@ import java.awt.event.WindowEvent;
 
 @UI
 public class SettingsPanel extends StandardSimpleInsidePanel {
+    public static final String FIRST_YEAR = "user.firstYear";
+    public static final String FIRST_SEMESTER = "user.firstSemester";
+    public static final String TISS_USER = "tiss.user";
+    public static final String TISS_PASSWORD = "tiss.password";
+    public static final String FACEBOOK_USER = "facebook.user";
+    public static final String FACEBOOK_PASSWORD = "facebook.password";
+    public static final String MAJOR = "user.majorName";
+    public static final String FIRST_START = "firstStart";
+
     private JLabel tissLogin;
     private JLabel facebookLogin;
     private JLabel defaultEcts;
@@ -28,9 +38,10 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private JLabel nameLabelFacebook;
     private JLabel nameLabelTISS;
 
+    private JButton showWizard;
     private JButton tiss;
     private JButton facebook;
-    private JTextField ects;
+    // JTextField ects;
     private JComboBox major;
     private JButton deleteALL;
 
@@ -43,6 +54,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
     private CreateCurriculumService createCurriculumService;
 
+    private MySimplePanel content;
     @Autowired
     private AuthService authService;
 
@@ -67,72 +79,52 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                propertyService.setProperty("user.firstYear", Integer.toString(year.getYear()));
-                propertyService.setProperty("user.firstSemester", (String)semester.getSelectedItem());
+                propertyService.setProperty(FIRST_YEAR, Integer.toString(year.getYear()));
+                propertyService.setProperty(FIRST_SEMESTER, (String)semester.getSelectedItem());
                 if (!major.getSelectedItem().toString().equals("Bitte Importieren sie ein Studium!")) {
-                    propertyService.setProperty("user.majorName", major.getSelectedItem().toString());
+                    propertyService.setProperty(MAJOR, major.getSelectedItem().toString());
                 } else {
                     PanelTube.backgroundPanel.viewInfoText("Der Studiumsname konnte nicht gespeichert werden.", SmallInfoPanel.Info);
                 }
-                propertyService.setProperty("user.defaultECTS", ects.getText());
+                //propertyService.setProperty("user.defaultECTS", ects.getText());
                 setVisible(false);
-                PanelTube.backgroundPanel.viewInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Info);
+                PanelTube.backgroundPanel.viewInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Success);
                 PanelTube.backgroundPanel.showLastComponent();
             }
         });
-        this.add(save);
+        //this.add(save);
     }
 
     private void addContent() {
-        int textHeight = 25;
-        int textWidth = 200;
-        int verticalSpace = 10;
-        int verticalSpaceVast = 40;
+        //int textHeight = 25;
 
-        begin = new JLabel("Anfang des Studiums:");
-        begin.setFont(standardTextFont);
-        begin.setBounds((int)simpleWhiteSpace.getX()+70, (int)simpleWhiteSpace.getY()+30, textWidth, textHeight);
-        this.add(begin);
+        showWizard = new JButton("anzeigen");
+        showWizard.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PanelTube.backgroundPanel.viewStartup();
+            }
+        });
+
 
         semester = new JComboBox();
         semester.setFont(standardButtonFont);
         semester.addItem("SS");
         semester.addItem("WS");
-        if (propertyService.getProperty("user.firstSemester") != null) {
-            semester.setSelectedItem(propertyService.getProperty("user.firstSemester"));
+        if (propertyService.getProperty(FIRST_SEMESTER) != null) {
+            semester.setSelectedItem(propertyService.getProperty(FIRST_SEMESTER));
         } else {
             semester.setSelectedItem("WS");
         }
 
-        semester.setBounds(begin.getX() + begin.getWidth() -10, begin.getY(), 45,25);
-        this.add(semester);
-
         year = new JYearChooser();
-        if (propertyService.getProperty("user.firstYear") != null && !propertyService.getProperty("user.firstYear").isEmpty()) {
-            year.setYear(Integer.parseInt(propertyService.getProperty("user.firstYear")));
+        if (propertyService.getProperty(FIRST_YEAR) != null && !propertyService.getProperty(FIRST_YEAR).isEmpty()) {
+            year.setYear(Integer.parseInt(propertyService.getProperty(FIRST_YEAR)));
         } else {
             year.setYear(2013);
         }
-        year.setFont(standardTextFont);
-        year.setBounds(semester.getX() + semester.getWidth() + 5, semester.getY(), 65,25);
-        this.add(year);
-
-        tissLogin = new JLabel("TISS Login Daten");
-        tissLogin.setFont(standardTextFont);
-        tissLogin.setBounds(begin.getX(), begin.getHeight() + begin.getY() + 20, textWidth, textHeight);
-        this.add(tissLogin);
 
         tiss = new JButton("eingeben");
-        tiss.setFont(standardButtonFont);
-        tiss.setBounds(tissLogin.getX(), tissLogin.getY() + tissLogin.getHeight() + verticalSpace, textWidth - 20, textHeight);
-
-        nameLabelTISS = new JLabel();
-        if (propertyService.getProperty("tiss.user") != null && !propertyService.getProperty("tiss.user").isEmpty()) {
-            nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty("tiss.user"));
-        }
-        nameLabelTISS.setFont(standardTextFont.deriveFont(Font.BOLD));
-        nameLabelTISS.setBounds(tiss.getX()+tiss.getWidth()+30, tiss.getY(), 500, textHeight);
-        this.add(nameLabelTISS);
 
         tiss.addActionListener(new ActionListener() {
             @Override
@@ -153,36 +145,22 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                         try {
                             authService.authenticate(temp.getName(), temp.getPassword());
                             nameLabelTISS.setText("Eingeloggt als: " + temp.getName());
-                            propertyService.setProperty("tiss.user", temp.getName());
-                            propertyService.setProperty("tiss.password", temp.getPassword());
+                            propertyService.setProperty(TISS_USER, temp.getName());
+                            propertyService.setProperty(TISS_PASSWORD, temp.getPassword());
                         } catch (ServiceException ex) {
                             nameLabelTISS.setText("Login Daten ungültig");
                         }
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
+                        content.refresh();
                     }
                 });
+                content.refresh();
             }
         });
-        this.add(tiss);
-
-        facebookLogin = new JLabel("Facebook Login Daten");
-        facebookLogin.setFont(standardTextFont);
-        facebookLogin.setBounds(tissLogin.getX(), tiss.getHeight() + tiss.getY() + 20, textWidth, textHeight);
-        this.add(facebookLogin);
+        //this.add(tiss);
 
         facebook = new JButton("eingeben");
-        facebook.setFont(standardButtonFont);
-        facebook.setBounds(facebookLogin.getX(), facebookLogin.getY() + facebookLogin.getHeight() + verticalSpace, textWidth-20, textHeight);
-
-        nameLabelFacebook= new JLabel();
-        if (propertyService.getProperty("facebook.user") != null && !propertyService.getProperty("facebook.user").isEmpty()) {
-            nameLabelFacebook.setText("Eingeloggt als: " + propertyService.getProperty("facebook.user"));
-        }
-        nameLabelFacebook.setFont(standardTextFont.deriveFont(Font.BOLD));
-        nameLabelFacebook.setBounds(facebook.getX()+facebook.getWidth()+30, facebook.getY(), 500, textHeight);
-        this.add(nameLabelFacebook);
-
         facebook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -200,35 +178,18 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
                         nameLabelFacebook.setText("Eingeloggt als: " + temp.getName());
-                        propertyService.setProperty("facebook.user", temp.getName());
-                        propertyService.setProperty("facebook.password", temp.getPassword());
+                        propertyService.setProperty(FACEBOOK_USER, temp.getName());
+                        propertyService.setProperty(FACEBOOK_PASSWORD, temp.getPassword());
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
+                        content.refresh();
                     }
                 });
+                content.refresh();
             }
         });
-        this.add(facebook);
-
-        defaultEcts = new JLabel("Default ECTS angeben");
-        defaultEcts.setFont(standardTextFont);
-        defaultEcts.setBounds(tissLogin.getX(), facebook.getHeight() + facebook.getY() + verticalSpaceVast, textWidth, textHeight);
-        this.add(defaultEcts);
-
-        ects = new JTextField();
-        if (propertyService.getProperty("user.defaultECTS") != null && !propertyService.getProperty("user.defaultECTS").isEmpty()) {
-            ects.setText(propertyService.getProperty("user.defaultECTS"));
-        } else {
-            ects.setText("30");
-        }
-        ects.setFont(standardButtonFont);
-        ects.setBounds(defaultEcts.getX() + defaultEcts.getWidth() - 10, defaultEcts.getY(), 25, textHeight);
-        this.add(ects);
 
         pickMajor = new JLabel("Studium auswählen");
-        pickMajor.setFont(standardTextFont);
-        pickMajor.setBounds(tissLogin.getX(), ects.getHeight() + ects.getY() + verticalSpaceVast, textWidth, textHeight);
-        this.add(pickMajor);
 
         major = new WideComboBox();
         try {
@@ -240,41 +201,44 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         } catch (ServiceException e) {
             log.error("Error: " + e.getMessage());
         }
-        major.setFont(standardButtonFont);
 
-        if (propertyService.getProperty("user.majorName") != null && !propertyService.getProperty("user.majorName").isEmpty()) {
-            semester.setSelectedItem(propertyService.getProperty("user.majorName"));
+        if (propertyService.getProperty(MAJOR) != null && !propertyService.getProperty(MAJOR).isEmpty()) {
+            semester.setSelectedItem(propertyService.getProperty(MAJOR));
         } else {
             semester.setSelectedIndex(0);
         }
-        major.setBounds(pickMajor.getX() + pickMajor.getWidth() - 10, pickMajor.getY(), 250, textHeight);
-        this.add(major);
 
 
         deleteALL = new JButton("ALLE Daten zurücksetzen");
-        deleteALL.setFont(standardTextFont);
-        deleteALL.setBounds(pickMajor.getX(), pickMajor.getHeight() + pickMajor.getY() + verticalSpaceVast, textWidth+50, textHeight);
+
         deleteALL.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Object[] options = {"Ja", "Abbrechen"};
                 if (JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
-                    propertyService.removeProperty("user.firstYear");
-                    propertyService.removeProperty("user.firstSemester");
-                    propertyService.removeProperty("user.majorName");
-                    propertyService.removeProperty("facebook.user");
-                    propertyService.removeProperty("facebook.password");
-                    propertyService.removeProperty("tiss.user");
-                    propertyService.removeProperty("tiss.password");
-                    propertyService.removeProperty("user.defaultECTS");
-
+                    propertyService.removeProperty(FIRST_YEAR);
+                    propertyService.removeProperty(FIRST_SEMESTER);
+                    propertyService.removeProperty(MAJOR);
+                    propertyService.removeProperty(FACEBOOK_USER);
+                    propertyService.removeProperty(FACEBOOK_PASSWORD);
+                    propertyService.removeProperty(TISS_USER);
+                    propertyService.removeProperty(TISS_PASSWORD);
+                    //propertyService.removeProperty("user.defaultECTS");
+                    propertyService.removeProperty(FIRST_START);
                     //todo alle datenbank daten löschen
                     System.exit(0);
                 }
             }
         });
-        this.add(deleteALL);
+        //this.add(deleteALL);
+        content = new MySimplePanel(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this);
+        this.add(content);
+        content.setBounds(simpleWhiteSpace);
+    }
+    @Override
+    public void refresh(){
+        content.refresh();
     }
 
     private static class CurriculumSelectItem extends SelectItem<Curriculum> {
@@ -285,6 +249,55 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         @Override
         public String toString() {
             return item.getName();
+        }
+    }
+    private class MySimplePanel extends SimpleDisplayPanel{
+        int buttonWidthInit =buttonWidth;
+        public MySimplePanel(double width, double height, StandardInsidePanel standardInsidePanel) {
+            super(width, height, standardInsidePanel);
+            inputWidthLeft-= 40;
+            labelWidthLeft-=50;
+            inputXLeft-=30;
+            labelXLeft+=bigSpace;
+
+            refresh();
+
+        }
+        private void refresh(){
+            buttonWidth= buttonWidthInit;
+            lastLeftBottomHeight=getHeight();
+            lastRightBottomHeight=getHeight();
+            lastLeftTopHeight=bigSpace;
+            lastRightTopHeight=bigSpace;
+            removeAll();
+            init();
+        }
+        private void init(){
+            addEmptyArea(bigSpace*2,true);
+            addText("Studienbeginn",true);
+            addRow(new JTextArea("Jahr"),year,true);
+            addRow(new JTextArea("Semester"),semester,true);
+            addEmptyArea(bigSpace*3,true);
+            addRow(new JTextArea("Startup-Wizard"),showWizard,true);
+
+            addEmptyArea(bigSpace*2,false);
+            addRow(new JTextArea("TISS-login"),tiss,false);
+            if (propertyService.getProperty(TISS_USER) != null && !propertyService.getProperty(TISS_USER).isEmpty() &&
+                    propertyService.getProperty(TISS_PASSWORD) != null && !propertyService.getProperty(TISS_PASSWORD).isEmpty()) {
+                addText("Eingeloggt als: " + propertyService.getProperty(TISS_USER),Font.BOLD,false);
+                //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(TISS_USER));
+            }
+            addEmptyArea(bigSpace*2,false);
+            addRow(new JTextArea("Facebook-login"),facebook,false);
+            if (propertyService.getProperty(FACEBOOK_USER) != null && !propertyService.getProperty(FACEBOOK_USER).isEmpty() &&
+                    propertyService.getProperty(FACEBOOK_PASSWORD) != null && !propertyService.getProperty(FACEBOOK_PASSWORD).isEmpty()) {
+                addText("Eingeloggt als: " + propertyService.getProperty(FACEBOOK_USER),Font.BOLD,false);
+                //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(TISS_USER));
+            }
+            addEmptyArea(bigSpace*2,false);
+
+            buttonWidth=labelWidthRight+20;
+            addRow(deleteALL,save,false,false);
         }
     }
 }
