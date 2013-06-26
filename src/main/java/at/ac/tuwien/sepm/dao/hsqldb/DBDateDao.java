@@ -58,7 +58,7 @@ public class DBDateDao extends DBBaseDao implements DateDao {
         Object[] args = new Object[]{new Timestamp(from.getMillis()), new Timestamp(till.getMillis())};
         return jdbcTemplate.query(stmt, RowMappers.getDateRowMapper(), args);
     }
-    //SELECT COUNT(*) FROM lvadate WHERE lva IN (SELECT id FROM lva where year=2013 AND iswintersemester=false AND instudyprogress=false)
+
     @Override
     public List<DateEntity> readByDay(DateTime date) throws DataAccessException {
         String stmt = "SELECT * FROM date WHERE " +
