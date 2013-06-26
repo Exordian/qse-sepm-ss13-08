@@ -233,7 +233,8 @@ public class PlanPanel extends StandardInsidePanel {
                                     pool.addAll(metaLVAService.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
                                 }
                                 if(pool.isEmpty()){
-                                    throw new EscapeException("Es wurden keine LVAs im gewünschten Semester gefunden");
+                                    PanelTube.backgroundPanel.viewInfoText("Es wurden keine LVAs im gewünschten Semester gefunden", SmallInfoPanel.Warning);
+                                    throw new EscapeException();
                                 }
                                 MetaLVA customMetaLVA = new MetaLVA();
 
@@ -284,11 +285,8 @@ public class PlanPanel extends StandardInsidePanel {
 
                                 take.setEnabled(true);
                             }catch(EscapeException e){
-                                PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
                             } catch (ServiceException e) {
-                                PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
-                            } catch (ValidationException e) {
-                                PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Warning);
+                                PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Planen aufgetreten.", SmallInfoPanel.Error);
                             }
                             setPlanningInProgress(false);
                         }

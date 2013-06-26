@@ -3,14 +3,16 @@ package at.ac.tuwien.sepm.ui.studyProgress;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.TissExam;
 import at.ac.tuwien.sepm.entity.TissExamState;
-import at.ac.tuwien.sepm.service.*;
-import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.service.AutomaticExamRegisterService;
+import at.ac.tuwien.sepm.service.DateService;
+import at.ac.tuwien.sepm.service.MetaLVAService;
+import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
+import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import at.ac.tuwien.sepm.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -150,8 +152,7 @@ public class RegisterExamPanel extends StandardInsidePanel {
                 progressBar.setVisible(false);
             } catch (ServiceException e) {
                 log.error("Exception: " + e.getMessage());
-            } catch (ValidationException e) {
-                log.error("Exception: " + e.getMessage());
+                PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler aufgetreten", SmallInfoPanel.Error);
             }
             return null;
         }

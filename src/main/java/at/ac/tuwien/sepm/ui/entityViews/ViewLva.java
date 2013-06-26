@@ -88,8 +88,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
             }
         } catch (ServiceException e) {
             log.error("Exception: "+ e.getMessage());
-        } catch (ValidationException e) {
-            log.error("Exception: " + e.getMessage());
+            PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
         }
         if (lva == null) {
             this.lva=new LVA();
@@ -266,8 +265,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
             }
         } catch (ServiceException e) {
             log.error("Exception: "+ e.getMessage());
-        } catch (ValidationException e) {
-            log.error("Exception: " + e.getMessage());
+            PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
         }
         metaLVAInput.setFont(standardTextFont);
         metaLVAInput.setBounds(inputLeftX, metaLVALabel.getY(), inputLeftWidth,textHeight);

@@ -254,7 +254,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 progressBar.setVisible(false);
                 importb.setEnabled(true);
                 tissTree.setSelectionPath(new TreePath(tissTree.getModel().getRoot()));
-                PanelTube.backgroundPanel.viewInfoText("Fertig geladen. Klicken sie importieren um fortzufahren", SmallInfoPanel.Info);
+                PanelTube.backgroundPanel.viewInfoText("Fertig geladen. Klicken sie auf \"Importieren\" um fortzufahren.", SmallInfoPanel.Info);
             } catch (ServiceException e) {
                 logger.info("couldn't build LvaTree", e);
                 PanelTube.backgroundPanel.viewInfoText("Die LVAs konnten nicht geladen werden.", SmallInfoPanel.Error);

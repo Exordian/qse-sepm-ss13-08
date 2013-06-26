@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.MetaLVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -115,8 +114,7 @@ public class LvaPanel extends StandardInsidePanel {
                     }
                 } catch (ServiceException e1) {
                     log.error("Exception: "+ e1.getMessage());
-                } catch (ValidationException e1) {
-                    log.error("Exception: "+ e1.getMessage());
+                    PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler aufgetreten", SmallInfoPanel.Error);
                 }
             }
         });
@@ -157,12 +155,7 @@ public class LvaPanel extends StandardInsidePanel {
                     log.info("loaded LVAs");
                     refreshing = false;
                 } catch (ServiceException e) {
-                    log.info("Exception caught while loading LVAs");
-                    log.error("Exception: " + e.getMessage());
-                    PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der LVAs", SmallInfoPanel.Error);
-                } catch (ValidationException e) {
-                    log.info("Exception caught while loading LVAs");
-                    log.error("Exception: " + e.getMessage());
+                    log.error(e);
                     PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der LVAs", SmallInfoPanel.Error);
                 }
                 LvaPanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

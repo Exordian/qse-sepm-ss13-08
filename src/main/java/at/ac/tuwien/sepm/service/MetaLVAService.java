@@ -37,7 +37,7 @@ public interface MetaLVAService {
     * @throws ServiceException  If the data from toCreate could not be saved because any other error occurred.
     * @throws ValidationException if invalid toCreate
             */
-    public boolean create(MetaLVA toCreate) throws ServiceException, ValidationException;
+    public boolean create(MetaLVA toCreate) throws ServiceException;
 
     /**
      * Set the predecessors of an meta lva.
@@ -47,7 +47,7 @@ public interface MetaLVAService {
      * @throws ServiceException If the data could not be saved because any other error occurred.
      * @throws ValidationException if invalid IDs
      */
-    public boolean setPredecessor(int lvaId, int predecessorId) throws ServiceException, ValidationException;
+    public boolean setPredecessor(int lvaId, int predecessorId) throws ServiceException;
 
     /**
      * Unset the predecessors of an meta lva.
@@ -56,7 +56,7 @@ public interface MetaLVAService {
      * @return <code>true</code> if the predecessor could be unset.
      * @throws ServiceException If the data could not be saved because any other error occurred.
      */
-    public boolean unsetPredecessor(int lvaId, int predecessorId) throws ServiceException, ValidationException;
+    public boolean unsetPredecessor(int lvaId, int predecessorId) throws ServiceException;
 
     /**
      * Read a meta lva by its id. There are all lvas and predecessors set.
@@ -64,7 +64,7 @@ public interface MetaLVAService {
      * @param id The id of the meta lva which should be read.
      * @throws ServiceException If the meta lva data could not be read because any error occured
      */
-    public MetaLVA readById(int id) throws ServiceException, ValidationException;
+    public MetaLVA readById(int id) throws ServiceException;
 
     /**
      * Read all predecessors of the specified lva. The lvas and predecessors are not returned.
@@ -73,7 +73,7 @@ public interface MetaLVAService {
      * @param lvaId The id of the meta lva which should be read.
      * @throws ServiceException If the meta lva data could not be read because any error occured
      */
-    public List<MetaLVA> readAllPredecessors(int lvaId) throws ServiceException, ValidationException;
+    public List<MetaLVA> readAllPredecessors(int lvaId) throws ServiceException;
 
     /**
      * Read a meta lva by its id. The lvas and predecessors are not returned.
@@ -81,7 +81,7 @@ public interface MetaLVAService {
      * @param id The id of the meta lva which should be read.
      * @throws ServiceException If the meta lva data could not be read because any error occured
      */
-    public MetaLVA readByIdWithoutLvaAndPrecursor(int id) throws ServiceException, ValidationException;
+    public MetaLVA readByIdWithoutLvaAndPrecursor(int id) throws ServiceException;
 
     /**
      * Read a meta lva by its lva number. The lvas and predecessors are also returned.
@@ -90,7 +90,7 @@ public interface MetaLVAService {
      * @throws ServiceException If the meta lva data could not be read because any error occured
      * @throws ValidationException if invalid parameters
      */
-    public MetaLVA readByLvaNumber(String lvaNumber) throws ServiceException, ValidationException;
+    public MetaLVA readByLvaNumber(String lvaNumber) throws ServiceException;
 
     /**
      * Return all meta lvas, which have no completed lva, have no lva in the specified year and semester and where the
@@ -104,7 +104,7 @@ public interface MetaLVAService {
      * @throws ServiceException If the data could not be read because any other error occurred.
      * @throws ValidationException if invalid parameters
      */
-    public List<MetaLVA> readUncompletedByYearSemesterStudyProgress (int year, Semester semester, boolean isInStudyProgress) throws ServiceException, ValidationException;
+    public List<MetaLVA> readUncompletedByYearSemesterStudyProgress (int year, Semester semester, boolean isInStudyProgress) throws ServiceException;
 
     /**
      * Update the meta lvanumber,name, semester, type, priority, ects and module. The meta lva is identified by the id.
@@ -117,7 +117,7 @@ public interface MetaLVAService {
      * @throws ServiceException If the meta lva data could not be updated because any error occurred, especially  if the id is <code>null</code>.
      * @throws ValidationException if invalid parameters
      */
-    public boolean update(MetaLVA toUpdate) throws ServiceException, ValidationException;
+    public boolean update(MetaLVA toUpdate) throws ServiceException;
 
     /*
      * Delete the with <code>toDelete</code> identified MetaLVA.
@@ -134,7 +134,7 @@ public interface MetaLVAService {
      * @throws ServiceException If the meta lva data could not be read because any error occured.
      * @throws ValidationException if invalid parameters
      */
-    public List<MetaLVA> readByModule(int module) throws ServiceException, ValidationException;
+    public List<MetaLVA> readByModule(int module) throws ServiceException;
 
     /**
      * Validate a MetaLVA.
@@ -158,7 +158,7 @@ public interface MetaLVAService {
      * @throws ServiceException If the meta lva data could not be read because any error occured.
      * @throws ValidationException if invalid parameters
      */
-    public List<MetaLVA> readAll() throws ServiceException, ValidationException;
+    public List<MetaLVA> readAll() throws ServiceException;
 
 
 

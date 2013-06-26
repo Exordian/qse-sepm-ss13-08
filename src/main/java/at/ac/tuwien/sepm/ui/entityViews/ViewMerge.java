@@ -214,10 +214,6 @@ public class ViewMerge extends StandardSimpleInsidePanel {
                     } catch (ServiceException e1) {
                         PanelTube.backgroundPanel.viewInfoText("Beim Speichern ist ein Fehler passiert!", SmallInfoPanel.Error);
                         e1.printStackTrace();
-                    } catch (ValidationException e1) {
-                        PanelTube.backgroundPanel.viewInfoText("Beim Speichern ist ein Fehler passiert!", SmallInfoPanel.Error);
-
-                        e1.printStackTrace();
                     }
                     newIntersectingMetaLVAs.remove(selected[i]);
                     oldIntersectingMetaLVAs.remove(selected[i]);
@@ -443,7 +439,7 @@ public class ViewMerge extends StandardSimpleInsidePanel {
             temp.setInStudyProgress(oldLVA.isInStudyProgress());
             if(allChangedFields.contains(newDescription)){
                 temp.setDescription(newDescription.getText());
-            }if(allChangedFields.contains(newAdditionalInfo2)){
+            }if(allChangedFields.contains(newAdditionalInfo1)){
                 temp.setAdditionalInfo1(newAdditionalInfo1.getText());
             }if(allChangedFields.contains(newAdditionalInfo2)){
                 temp.setAdditionalInfo2(newAdditionalInfo2.getText());

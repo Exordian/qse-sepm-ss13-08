@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.ui.entityViews;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.*;
-import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -117,13 +116,10 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     } else {
                         metaLVAService.create(metaLVA);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Die Lva wurde gespeichert.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewInfoText("Die LVA wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
-                    log.error("MetaLvaEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
-                } catch (ValidationException e) {
                     log.error("MetaLvaEntity is invalid.");
                     PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
@@ -328,11 +324,9 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             allMetaLVAs = metaLVAService.readAll();
             Collections.sort(allMetaLVAs,MetaLVA.getAlphabeticalNameComparator());
         } catch (ServiceException e) {
-            e.printStackTrace();  //TODO fill me <3
-            PanelTube.backgroundPanel.viewInfoText("Fehler beim laden der LVAs aus der Datenbank.",SmallInfoPanel.Error);
-        } catch (ValidationException e) {
-            e.printStackTrace();  //TODO fill me <3
-            PanelTube.backgroundPanel.viewInfoText("Fehler beim laden der LVAs aus der Datenbank.",SmallInfoPanel.Error);
+            e.printStackTrace();
+            log.error(e);
+            PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
         }
         if (metaLVA == null) {
             this.metaLVA = new MetaLVA();
