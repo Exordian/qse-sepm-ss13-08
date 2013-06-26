@@ -42,8 +42,8 @@ public class First extends StartRowPanel {
         subInit();
     }
     public void subInit(){
-        tissUsername.setText(getStartUp().propertyService.getProperty("user.user",""));
-        tissPassword.setText(getStartUp().propertyService.getProperty("user.password",""));
+        tissUsername.setText(getStartUp().propertyService.getProperty("tiss.user",""));
+        tissPassword.setText(getStartUp().propertyService.getProperty("tiss.password",""));
         studyDrop = new WideComboBox();
         studyDrop.addItem(new CurriculumContainer());
         try {
@@ -100,7 +100,7 @@ public class First extends StartRowPanel {
         });
         allLabels = new LinkedList<JComponent>();
 
-        addText("Hallo!\n\nHerzlich willkommen im sTUdiumsmanager!.\nDies ist ein kurzer Startup-Wizard, " +
+        addText("Hallo!\n\nHerzlich willkommen im sTUdiumsmanager!\nDies ist ein kurzer Startup-Wizard, " +
                 "der dir die wichtigsten Dinge im Programm kurz erklärt. Damit das Programm richtig funktioniert," +
                 "brauchen wir ein paar Informationen, die du auch gleich hier eingeben kannst!",true);
         addText("Alle Daten werden nur lokal gespeichert und eventuell zum Anmelden bei " +
