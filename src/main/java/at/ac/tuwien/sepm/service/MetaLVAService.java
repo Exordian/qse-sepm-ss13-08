@@ -19,6 +19,8 @@ public interface MetaLVAService {
 
     public boolean mergingNecessary();
 
+    public boolean writePrecessors();
+
     public List<MetaLVA> getNewMetaLvasWithMergeConflicts();
 
     public List<MetaLVA> getOldMetaLvasWithMergeConflicts();

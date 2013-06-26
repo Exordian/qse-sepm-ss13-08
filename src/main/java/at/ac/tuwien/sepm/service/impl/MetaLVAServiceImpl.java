@@ -16,6 +16,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ public class MetaLVAServiceImpl implements MetaLVAService {
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
 
     MergerImpl merger = new MergerImpl();
+
+    private List<MetaLVA> metaLVAsWithPrecessors = new ArrayList<MetaLVA>();
 
     @Autowired
     MetaLvaDao metaLvaDao;
@@ -55,6 +59,36 @@ public class MetaLVAServiceImpl implements MetaLVAService {
         return merger.getOldMetaLVAs();
     }
 
+    private void storeMetaLVAWithPrecessor(MetaLVA toStore){
+        metaLVAsWithPrecessors.add(toStore);
+    }
+    public boolean writePrecessors(){
+        boolean toReturn = true;
+        List<MetaLVA> toRemove = new LinkedList<MetaLVA>();
+        for(MetaLVA metaLVA :metaLVAsWithPrecessors){
+            boolean wroteAllPrecursor = true;
+            List<MetaLVA> predecessors = new LinkedList<MetaLVA>();
+            for(MetaLVA predecessorTemp :metaLVA.getPrecursor()){
+                MetaLVA predecessor = metaLvaDao.readByLvaNumber(predecessorTemp.getNr());
+                if(predecessor==null){
+                    wroteAllPrecursor=toReturn=false;
+                    logger.error("error while reading precursor. storing successor for trying again later. successor: "+metaLVA+", precursor: "+ predecessorTemp);
+                    break;
+                }else{
+                    predecessors.add(predecessor);
+                }
+            }
+            if(wroteAllPrecursor){
+                for(MetaLVA predecessor : predecessors){
+                    metaLvaDao.setPredecessor(metaLVA.getId(), predecessor.getId());
+                    logger.info("predecessor saved. successor: "+metaLVA+", precursor: "+ predecessor);
+                }
+                toRemove.add(metaLVA);
+            }
+        }
+        metaLVAsWithPrecessors.removeAll(toRemove);
+        return toReturn;
+    }
     public boolean stopMergeSession() {
         if(mergingNecessary()) {
             String logString = "meta lva merger stopped - conflicts at storing following " + merger.getNewMetaLVAs().size() + " meta lva(s): \n";
@@ -74,11 +108,13 @@ public class MetaLVAServiceImpl implements MetaLVAService {
     }
 
     @Override
-    public boolean create(MetaLVA toCreate) throws ServiceException, ValidationException {
+    public boolean create(MetaLVA toCreate) throws ServiceException {
         try {
             this.validateMetaLVA(toCreate);
             boolean metaLvaCreated = metaLvaDao.create(toCreate);
-
+            if(metaLvaCreated){
+                storeMetaLVAWithPrecessor(toCreate);
+            }
             boolean lvaCreated=false;
             if(toCreate.getLVAs()!=null && toCreate.getLVAs().size()>0){
                 toCreate.getLVAs().get(0).setId(toCreate.getId());
@@ -116,14 +152,14 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             return metaLvaCreated && lvaCreated;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ValidationException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(DuplicateKeyException e) {
             MetaLVA oldMetaLva;
             try {
                 oldMetaLva = metaLvaDao.readByLvaNumber(toCreate.getNr());
             } catch (DataAccessException e1) {
                 logger.error("Exception: "+ e1.getMessage());
-                throw new ServiceException("Exception: " + e.getMessage(), e1);
+                throw new ServiceException(e1);
             }
             if(oldMetaLva==null) {
                 throw new ServiceException("Internal error");
@@ -134,15 +170,15 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             return false;
         } catch(DataAccessException e) {
             logger.error("Exception " + e.getClass() + ": " + e.getMessage(), e);
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean setPredecessor(int lvaId, int predecessorId) throws ServiceException, ValidationException {
+    public boolean setPredecessor(int lvaId, int predecessorId) throws ServiceException {
         try {
             this.validateID(lvaId);
             this.validateID(predecessorId);
@@ -150,15 +186,15 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             return set_predecessor;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ValidationException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean unsetPredecessor(int lvaId, int predecessorId) throws ServiceException, ValidationException {
+    public boolean unsetPredecessor(int lvaId, int predecessorId) throws ServiceException {
         try {
             this.validateID(lvaId);
             this.validateID(predecessorId);
@@ -166,118 +202,118 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             return unset_predecessor;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ValidationException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public MetaLVA readById(int id) throws ServiceException, ValidationException {
+    public MetaLVA readById(int id) throws ServiceException {
         try {
             this.validateID(id);
             MetaLVA metaLVA = metaLvaDao.readById(id);
             return metaLVA;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ValidationException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<MetaLVA> readAllPredecessors(int lvaId) throws ServiceException, ValidationException {
+    public List<MetaLVA> readAllPredecessors(int lvaId) throws ServiceException {
         try {
             this.validateID(lvaId);
             List<MetaLVA> metaLVAList = metaLvaDao.readAllPredecessors(lvaId);
             return metaLVAList;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ValidationException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public MetaLVA readByIdWithoutLvaAndPrecursor(int id) throws ServiceException, ValidationException {
+    public MetaLVA readByIdWithoutLvaAndPrecursor(int id) throws ServiceException {
         try {
             this.validateID(id);
             MetaLVA metaLVA = metaLvaDao.readByIdWithoutLvaAndPrecursor(id);
             return metaLVA;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ValidationException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public MetaLVA readByLvaNumber(String lvaNumber) throws ServiceException, ValidationException {
+    public MetaLVA readByLvaNumber(String lvaNumber) throws ServiceException {
         if(lvaNumber == null) {
             logger.error("invalid parameter!(lvaNumber)");
-            throw new ValidationException("invalid parameter!(lvaNumber)");
+            throw new ServiceException("invalid parameter!(lvaNumber)");
         }
         try {
             MetaLVA metaLva = metaLvaDao.readByLvaNumber(lvaNumber);
             return metaLva;
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<MetaLVA> readUncompletedByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws ServiceException, ValidationException {
+    public List<MetaLVA> readUncompletedByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws ServiceException {
         if(year < 0 || semester == null) {
             logger.error("invalid parameters!");
-            throw new ValidationException("invalid parameters!");
+            throw new ServiceException("invalid parameters!");
         }
         try {
             List<MetaLVA> metaLVAList = metaLvaDao.readUncompletedByYearSemesterStudyProgress(year, semester, isInStudyProgress);
             return metaLVAList;
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean update(MetaLVA toUpdate) throws ServiceException, ValidationException {
+    public boolean update(MetaLVA toUpdate) throws ServiceException {
         try {
             this.validateMetaLVA(toUpdate);
             boolean updated = metaLvaDao.update(toUpdate);
             return updated;
         } catch(ServiceException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ValidationException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<MetaLVA> readByModule(int module) throws ServiceException, ValidationException {
+    public List<MetaLVA> readByModule(int module) throws ServiceException {
         if(module < 0) {
             logger.error("invalid parameter!");
-            throw new ValidationException("invalid parameter!");
+            throw new ServiceException("invalid parameter!");
         }
         try {
             List<MetaLVA> metaLVAList = metaLvaDao.readByModule(module);
             return metaLVAList;
         }  catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -318,13 +354,13 @@ public class MetaLVAServiceImpl implements MetaLVAService {
     }
 
     @Override
-    public List<MetaLVA> readAll() throws ServiceException, ValidationException {
+    public List<MetaLVA> readAll() throws ServiceException {
         try {
             List<MetaLVA> metaLVAList = metaLvaDao.readAll();
             return metaLVAList;
         }  catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException("Exception: "+ e.getMessage());
+            throw new ServiceException(e);
         }
     }
 

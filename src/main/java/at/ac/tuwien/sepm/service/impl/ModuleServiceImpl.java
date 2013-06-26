@@ -135,8 +135,8 @@ public class ModuleServiceImpl implements ModuleService {
             logger.error("Exception: "+ e.getMessage());
             throw new ServiceException("MetaLVA could not be created", e);
         }
-
-        return moduleCreated && metaLvasCreated;
+        boolean wrotePrecessors = metaLVAService.writePrecessors();
+        return moduleCreated && metaLvasCreated && wrotePrecessors;
     }
 
     @Override
