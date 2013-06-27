@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ui.startUp;
 import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.PropertyService;
+import at.ac.tuwien.sepm.service.impl.ZidAuthService;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
@@ -29,12 +30,14 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
     protected LvaFetcherService lvaFetcherService;
     protected ModuleService moduleService;
     protected PropertyService propertyService;
+    protected ZidAuthService authService;
 
     @Autowired
-    public ViewStartUp(LvaFetcherService lvaFetcherService,ModuleService moduleService,PropertyService propertyService) {
+    public ViewStartUp(LvaFetcherService lvaFetcherService,ModuleService moduleService,PropertyService propertyService,ZidAuthService authService) {
         this.lvaFetcherService = lvaFetcherService;
         this.moduleService=moduleService;
         this.propertyService=propertyService;
+        this.authService=authService;
         addImage();
         init();
 

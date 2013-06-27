@@ -61,12 +61,12 @@ public class RegisterExamPanel extends StandardInsidePanel {
     private void addTitles() {
         JLabel examList = new JLabel("Prüfungen");
         examList.setFont(standardSmallerTitleFont);
-        examList.setBounds((int) whiteSpace.getWidth() / 2 - (int) paneExams.getWidth() / 2 - 75, 5, 150, 35);
+        examList.setBounds((int) whiteSpace.getWidth() / 2 - (int) paneExams.getWidth() / 2 - examList.getPreferredSize().width/2, 5, examList.getPreferredSize().width, 35);
         this.add(examList);
 
-        JLabel pendingRegistrations = new JLabel("Anmeldungen");
+        JLabel pendingRegistrations = new JLabel("Ausstehende Anmeldungen");
         pendingRegistrations.setFont(standardSmallerTitleFont);
-        pendingRegistrations.setBounds((int) whiteSpace.getWidth() / 2 + (int) panePending.getWidth() / 2 - 90, 5, 180, 35);
+        pendingRegistrations.setBounds((int) whiteSpace.getWidth() / 2 + (int) panePending.getWidth() / 2 - pendingRegistrations.getPreferredSize().width/2, 5, pendingRegistrations.getPreferredSize().width, 35);
         this.add(pendingRegistrations);
     }
 

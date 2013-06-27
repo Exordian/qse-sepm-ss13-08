@@ -75,8 +75,15 @@ public class First extends SimpleDisplayPanel {
                     int un = tissUsername.getText().length();
                     int pw = tissPassword.getPassword().length;
                     if(un>0 && pw>0){
-                        startUp.propertyService.setProperty(PropertyService.TISS_USER,tissUsername.getText());
-                        startUp.propertyService.setProperty(PropertyService.TISS_PASSWORD,new String(tissPassword.getPassword()));
+                        try {
+                            startUp.authService.authenticate(tissUsername.getText(), new String(tissPassword.getPassword()));
+                            startUp.propertyService.setProperty(PropertyService.TISS_USER,tissUsername.getText());
+                            startUp.propertyService.setProperty(PropertyService.TISS_PASSWORD,new String(tissPassword.getPassword()));
+                        } catch (ServiceException ex) {
+                            PanelTube.backgroundPanel.viewInfoText("Die TISS-Daten sind ungültig!",SmallInfoPanel.Warning);
+                            throw new EscapeException();
+                        }
+
                     }else if((un==0)!=(pw==0)){
                         PanelTube.backgroundPanel.viewInfoText("Die TISS-Daten sind ungültig!", SmallInfoPanel.Warning);
                         throw new EscapeException();
@@ -136,6 +143,7 @@ public class First extends SimpleDisplayPanel {
     public void refresh() {
         tissUsername.setText(startUp.propertyService.getProperty(PropertyService.TISS_USER,""));
         tissPassword.setText(startUp.propertyService.getProperty(PropertyService.TISS_PASSWORD,""));
+        confirmed=false;
         //studyDrop.setSelectedItem(); todo
     }
 

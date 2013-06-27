@@ -90,7 +90,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         showWizard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PanelTube.backgroundPanel.viewStartup();
+                PanelTube.backgroundPanel.viewStartup(false);
             }
         });
 
@@ -206,9 +206,8 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     //propertyService.removeProperty(PropertyService."user.defaultECTS");
                     propertyService.removeProperty(PropertyService.FIRST_RUN);
                     //todo alte datenbank daten löschen
-                    PanelTube.backgroundPanel.viewInfoText("Alle Daten wurden gelöscht",SmallInfoPanel.Success);
-                    PanelTube.backgroundPanel.setControlsEnabled(false);
-                    PanelTube.backgroundPanel.viewStartup();
+                    PanelTube.backgroundPanel.viewInfoText("Property-file geleert, rest noch nicht implementiert!",SmallInfoPanel.Warning);
+                    PanelTube.backgroundPanel.viewStartup(true);
                     //System.exit(0);
                 }
             }
@@ -249,7 +248,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
 
         }
         public void refresh(){
-            buttonWidth= buttonWidthInit;
+            buttonWidth= inputWidthLeft;
             lastLeftBottomHeight=getHeight();
             lastRightBottomHeight=getHeight();
             lastLeftTopHeight=bigSpace;
@@ -264,6 +263,8 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             addRow(new JTextArea("Semester"),semester,true);
             addEmptyArea(bigSpace*3,true);
             addRow(new JTextArea("Startup-Wizard"),showWizard,true);
+
+            buttonWidth=buttonWidthInit;
 
             addEmptyArea(bigSpace*2,false);
             addRow(new JTextArea("TISS-login"),tiss,false);

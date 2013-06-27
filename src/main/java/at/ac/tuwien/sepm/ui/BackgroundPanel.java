@@ -170,10 +170,16 @@ public class BackgroundPanel extends JPanel {
         this.revalidate();
         this.repaint();
     }
-    public void viewStartup() {
+    public void viewStartup(boolean lock) {
+        setControlsEnabled(!lock);
         removeAddedPanels();
         viewStartup.setVisible(true);
         viewStartup.jump(0);
+        if(!lock){
+            viewStartup.addReturnButton();
+        }else{
+            viewStartup.removeReturnButton();
+        }
         this.add(viewStartup);
         this.revalidate();
         this.repaint();
@@ -272,9 +278,8 @@ public class BackgroundPanel extends JPanel {
                     break;
                 case 5:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));//todo grafik für startup-wizard
-                    setControlsEnabled(false);
-                    //viewStartupButton.setVisible(false);
-                    viewStartup();
+
+                    viewStartup(true);
                     break;
                 default:
                     break;

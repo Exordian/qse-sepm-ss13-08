@@ -55,8 +55,10 @@ public class Third extends SimpleDisplayPanel {
                 "als frei zu markieren.", false);
         addText("Außerdem kannst du dich unter Studienverlauf -> Anmeldungen automatisch für Prüfungen " +
                 "anmelden, falls du die Daten im Tiss gesetzt hast. Wenn du auf aktualisieren klickst, " +
-                "werden alle Prüfungen zu allen LVAs angezeigt, die du deinem Studium hinzugefügt hast.", false);
-        addRow(goBack,null,true,false);
+                "werden alle Prüfungen zu allen LVAs angezeigt, die du deinem Studienverlauf hinzugefügt hast.", false);
+        addText("Wenn du auf anmelden klickst, wird die Prüfung in die Liste der ausstehenden Anmeldungen aufgenommen.",false);
+
+                addRow(goBack,null,true,false);
 
 
 
