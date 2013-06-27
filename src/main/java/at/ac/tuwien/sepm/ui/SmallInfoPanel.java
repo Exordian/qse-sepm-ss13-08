@@ -1,11 +1,15 @@
 package at.ac.tuwien.sepm.ui;
 
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
@@ -18,23 +22,62 @@ import java.io.IOException;
 @UI
 public class SmallInfoPanel extends StandardInsidePanel {
     private JLabel infoText;
+    private JButton but;
+
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
-    private static final int MAX_LETTERS = 200;
+    private static final int MAX_LETTERS = 75;
     public static int Error = 1;
     public static int Info = 2;
     public static int Warning = 3;
     public static int Success = 4;
+    private String message="";
+    private boolean showMore=false;
 
     public SmallInfoPanel() {
         this.setLayout(null);
         this.setOpaque(false);
-        // this.setBounds(600-270,5,540,40);
-        this.setBounds(600-270,5,900,40);
+        this.setBounds(330,5,540,40);
         loadFonts();
         changeImage(1);
         loadText();
+        loadMoreButton();
         repaint();
         revalidate();
+    }
+
+    private void loadMoreButton() {
+        but = new JButton();
+        but.setBounds(500,0,38,38);
+        but.setOpaque(false);
+        but.setContentAreaFilled(false);
+        but.setBorderPainted(false);
+        but.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        changeButtonImage("img/downwards.png");
+        but.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (showMore) {
+                    changeButtonImage("img/downwards.png");
+                    PanelTube.backgroundPanel.hideBiggerInfoText();
+                    PanelTube.backgroundPanel.startInfoTextTimer();
+                    showMore=false;
+                } else {
+                    PanelTube.backgroundPanel.stopInfoTextTimer();
+                    PanelTube.backgroundPanel.viewBiggerInfoText(message);
+                    changeButtonImage("img/upwards.png");
+                    showMore=true;
+                }
+            }
+        });
+        this.add(but);
+    }
+
+    private void changeButtonImage(String s) {
+        try {
+            but.setIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(s))));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void loadText() {
@@ -45,11 +88,26 @@ public class SmallInfoPanel extends StandardInsidePanel {
     }
 
     public void setInfoText(String s, int nmb) {
+        this.message = s;
         if(s.length() <= MAX_LETTERS) {
-            infoText.setText(s);
+            infoText.setText(this.message);
         } else {
-            infoText.setText(s.substring(0,MAX_LETTERS-3)+"...");
-            log.error("Infotext too long: <"+s+">");
+            switch(nmb) {
+                case 1:
+                    infoText.setText("Fehler! Um mehr zu erfahren, druecken Sie bitte rechts.");
+                    break;
+                case 2:
+                    infoText.setText("Information! Um mehr zu erfahren, druecken Sie bitte rechts.");
+                    break;
+                case 3:
+                    infoText.setText("Warnung! Um mehr zu erfahren, druecken Sie bitte rechts.");
+                    break;
+                case 4:
+                    infoText.setText("Success! Um mehr zu erfahren, druecken Sie bitte rechts.");
+                    break;
+                default:
+                    break;
+            }
         }
         infoText.setFont(standardButtonFont);
         changeImage(nmb);

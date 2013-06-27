@@ -158,7 +158,7 @@ public class PlanPanel extends StandardInsidePanel {
                                 
                             } catch (ServiceException e1) {
                                 logger.error(e1);
-                                PanelTube.backgroundPanel.viewInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+                                PanelTube.backgroundPanel.viewSmallInfoText("Beim speichern ist ein Problem aufgetreten.", SmallInfoPanel.Error);
                                 for (MetaLVA m2 : plannedMetaLVAs) {    //rollback
                                     if (m2 == m) {
                                         break;
@@ -176,16 +176,16 @@ public class PlanPanel extends StandardInsidePanel {
                                 throw new EscapeException();
                             }
                         }
-                        PanelTube.backgroundPanel.viewInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Success);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Success);
                         refreshMetaLVAs(new ArrayList<MetaLVA>(0));
                         take.setEnabled(false);
                     }catch(EscapeException e1){
                         take.setEnabled(false);
                     }
                 } catch (ServiceException e1) {
-                    PanelTube.backgroundPanel.viewInfoText("Beim Löschen der alten Daten ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Beim Löschen der alten Daten ist ein Problem aufgetreten.", SmallInfoPanel.Error);
                 } catch (ValidationException e1) {
-                    PanelTube.backgroundPanel.viewInfoText("Beim Löschen der alten Daten ist ein Problem aufgetreten.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Beim Löschen der alten Daten ist ein Problem aufgetreten.", SmallInfoPanel.Error);
                 }
 
                 logger.debug("adding to studyProgress: \n" + LVAUtil.formatShortDetailedMetaLVA(plannedMetaLVAs, 1));
@@ -234,7 +234,7 @@ public class PlanPanel extends StandardInsidePanel {
                                     pool.addAll(metaLVAService.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
                                 }
                                 if(pool.isEmpty()){
-                                    PanelTube.backgroundPanel.viewInfoText("Es wurden keine LVAs im gewünschten Semester gefunden", SmallInfoPanel.Warning);
+                                    PanelTube.backgroundPanel.viewSmallInfoText("Es wurden keine LVAs im gewünschten Semester gefunden", SmallInfoPanel.Warning);
                                     throw new EscapeException();
                                 }
                                 MetaLVA customMetaLVA = new MetaLVA();
@@ -270,7 +270,7 @@ public class PlanPanel extends StandardInsidePanel {
                                     tempTimeBetween = -(int)timeBuffer.getValue()*60;
                                 }
                                 if (!considerStudyProgressCheck.isSelected()){
-                                    PanelTube.backgroundPanel.viewInfoText("Bitte Geduld. Das Planen kann einige Sekunden dauern.",SmallInfoPanel.Info);
+                                    PanelTube.backgroundPanel.viewSmallInfoText("Bitte Geduld. Das Planen kann einige Sekunden dauern.",SmallInfoPanel.Info);
                                 }
                                 planer.setIntersectingTolerance(tempTolerance);
                                 planer.setAllowedTimeBetween(tempTimeBetween);
@@ -289,7 +289,7 @@ public class PlanPanel extends StandardInsidePanel {
                                 take.setEnabled(true);
                             }catch(EscapeException e){
                             } catch (ServiceException e) {
-                                PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Planen aufgetreten.", SmallInfoPanel.Error);
+                                PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Planen aufgetreten.", SmallInfoPanel.Error);
                             }
                             setPlanningInProgress(false);
                         }

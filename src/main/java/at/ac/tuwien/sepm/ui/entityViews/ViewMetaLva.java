@@ -116,12 +116,12 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     } else {
                         metaLVAService.create(metaLVA);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Die LVA wurde gespeichert.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die LVA wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("MetaLvaEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -309,7 +309,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     allMetaLVAs.remove(toAdd);
                     addPrecursorPanel.refresh(allMetaLVAs);
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("keine LVA ausgewählt.",SmallInfoPanel.Warning);
+                    PanelTube.backgroundPanel.viewSmallInfoText("keine LVA ausgewählt.", SmallInfoPanel.Warning);
                 }
 
             }
@@ -327,7 +327,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         } catch (ServiceException e) {
             e.printStackTrace();
             log.error(e);
-            PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
+            PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
         }
         if (metaLVA == null) {
             this.metaLVA = new MetaLVA();

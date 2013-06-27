@@ -108,13 +108,13 @@ public class LvaPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (metaLVAService.readAll() == null) {
-                        PanelTube.backgroundPanel.viewInfoText("Es muss eine MetaLva existieren.", SmallInfoPanel.Error);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Es muss eine MetaLva existieren.", SmallInfoPanel.Error);
                     } else {
                         PanelTube.backgroundPanel.viewLva(null);
                     }
                 } catch (ServiceException e1) {
                     log.error("Exception: "+ e1.getMessage());
-                    PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler aufgetreten", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler aufgetreten", SmallInfoPanel.Error);
                 }
             }
         });
@@ -156,7 +156,7 @@ public class LvaPanel extends StandardInsidePanel {
                     refreshing = false;
                 } catch (ServiceException e) {
                     log.error(e);
-                    PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der LVAs", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden der LVAs", SmallInfoPanel.Error);
                 }
                 LvaPanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }

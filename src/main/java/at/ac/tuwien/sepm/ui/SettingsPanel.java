@@ -32,24 +32,30 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     // JTextField ects;
     private JComboBox major;
     private JButton deleteALL;
-
+    private JButton deleteAllDatesBtn;
     private JYearChooser year;
     private WideComboBox semester;
-
     private JButton save;
+
+    private static final String DELETE_ALL_DATES_MESSAGE = "Es werden alle privaten Termine gelöscht.\nLVA-Termine bleiben gespeichert." +
+            "\nMöchten Sie fortfahren?";
+    private static final String DELETE_ALL_DATES_TITLE = "Termine wirklich löschen?";
+    private static final String[] DELETE_ALL_DATES_BUTTON_TEXT = {"Ja", "Nein"};
 
     private PropertyService propertyService;
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
     private CreateCurriculumService createCurriculumService;
+    private DateService dateService;
 
     private MySimplePanel content;
     @Autowired
     private AuthService authService;
 
     @Autowired
-    public SettingsPanel(PropertyService propertyService, CreateCurriculumService createCurriculumService) {
+    public SettingsPanel(PropertyService propertyService, CreateCurriculumService createCurriculumService, DateService dateService) {
         this.createCurriculumService=createCurriculumService;
         this.propertyService=propertyService;
+        this.dateService=dateService;
         init();
         addImage();
         addTitle("Einstellungen");
@@ -72,11 +78,11 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 if (!major.getSelectedItem().toString().equals("Bitte Importieren sie ein Studium!")) {
                     propertyService.setProperty(PropertyService.MAJOR, major.getSelectedItem().toString());
                 } else {
-                    PanelTube.backgroundPanel.viewInfoText("Der Studiumsname konnte nicht gespeichert werden.", SmallInfoPanel.Info);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Der Studiumsname konnte nicht gespeichert werden.", SmallInfoPanel.Info);
                 }
                 //propertyService.setProperty(PropertyService."user.defaultECTS", ects.getText());
                 setVisible(false);
-                PanelTube.backgroundPanel.viewInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Success);
+                PanelTube.backgroundPanel.viewSmallInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Success);
                 PanelTube.backgroundPanel.showLastComponent();
             }
         });
@@ -127,7 +133,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                             propertyService.setProperty(PropertyService.TISS_USER, temp.getName());
                             propertyService.setProperty(PropertyService.TISS_PASSWORD, temp.getPassword());
                         } catch (ServiceException ex) {
-                            PanelTube.backgroundPanel.viewInfoText("Login Daten ungültig",SmallInfoPanel.Error);
+                            PanelTube.backgroundPanel.viewSmallInfoText("Login Daten ungültig",SmallInfoPanel.Error);
                         }
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
@@ -178,7 +184,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 major.addItem("Bitte Importieren sie ein Studium!");
         } catch (ServiceException e) {
             log.error("Error: " + e.getMessage());
-            PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der Studien",SmallInfoPanel.Error);
+            PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden der Studien",SmallInfoPanel.Error);
         }
 
         if (propertyService.getProperty(PropertyService.MAJOR) != null && !propertyService.getProperty(PropertyService.MAJOR).isEmpty()) {
@@ -206,13 +212,44 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     //propertyService.removeProperty(PropertyService."user.defaultECTS");
                     propertyService.removeProperty(PropertyService.FIRST_RUN);
                     //todo alte datenbank daten löschen
-                    PanelTube.backgroundPanel.viewInfoText("Property-file geleert, rest noch nicht implementiert!",SmallInfoPanel.Warning);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Property-file geleert, rest noch nicht implementiert!",SmallInfoPanel.Warning);
                     PanelTube.backgroundPanel.viewStartup(true);
                     //System.exit(0);
                 }
             }
         });
         //this.add(deleteALL);
+
+
+        this.add(deleteALL);
+
+
+        deleteAllDatesBtn = new JButton("Private Termine löschen");    //todo neben den button delete all button setzen
+        deleteAllDatesBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int i = JOptionPane.showOptionDialog(new JFrame(),
+                            DELETE_ALL_DATES_MESSAGE,
+                            DELETE_ALL_DATES_TITLE,
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            DELETE_ALL_DATES_BUTTON_TEXT,
+                            DELETE_ALL_DATES_BUTTON_TEXT[1]);
+
+                    if (i == 0) {
+                        dateService.deleteAllDates();
+                        PanelTube.backgroundPanel.viewSmallInfoText("Termine erfolgreich gelöscht", SmallInfoPanel.Success);
+                        PanelTube.calendarPanel.refresh();
+                    }
+                } catch (ServiceException e1) {
+                    PanelTube.backgroundPanel.viewSmallInfoText(e1.getMessage(), SmallInfoPanel.Error);
+                }
+            }
+        });
+
+
         content = new MySimplePanel(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this);
         this.add(content);
         content.setBounds(simpleWhiteSpace);

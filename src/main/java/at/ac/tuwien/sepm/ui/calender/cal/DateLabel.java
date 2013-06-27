@@ -173,7 +173,7 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
                 add(showRoom);
             }
             edit.setFont(popUpFont);
-            add(new Separator());
+            //add(new Separator());
             showRoom.setFont(popUpFont);
             addActionListeners();
         }
@@ -191,14 +191,14 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
                                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
                                 try {
                                     DateLabel.this.dateService.deleteDate(((DateEntity)date).getId());
-                                    PanelTube.backgroundPanel.viewInfoText("Der freie Tag wurde wieder als 'nicht frei' markiert.", SmallInfoPanel.Success);
+                                    PanelTube.backgroundPanel.viewSmallInfoText("Der freie Tag wurde wieder als 'nicht frei' markiert.", SmallInfoPanel.Success);
                                     PanelTube.calendarPanel.refresh();
                                 } catch (ServiceException e1) {
                                     log.error(e1.getMessage());
-                                    PanelTube.backgroundPanel.viewInfoText("Der Tag konnte nicht als 'nicht frei' markiert werden.", SmallInfoPanel.Error);
+                                    PanelTube.backgroundPanel.viewSmallInfoText("Der Tag konnte nicht als 'nicht frei' markiert werden.", SmallInfoPanel.Error);
                                 }
                             } else {
-                                PanelTube.backgroundPanel.viewInfoText("Der freie Tag bleibt weiter als frei markiert.", SmallInfoPanel.Info);
+                                PanelTube.backgroundPanel.viewSmallInfoText("Der freie Tag bleibt weiter als frei markiert.", SmallInfoPanel.Info);
                             }
                         } else
                             PanelTube.backgroundPanel.viewDate((DateEntity)date, null);
@@ -210,9 +210,9 @@ public class DateLabel extends JTextPane implements Comparable<DateLabel>{
                 public void mouseReleased(MouseEvent e) {
                     if(date instanceof LvaDate) {
                         if(!PanelTube.backgroundPanel.openRoomBrowser(((LvaDate) date).getRoom()))
-                            PanelTube.backgroundPanel.viewInfoText("Keine Wegbeschreibung gefunden.", SmallInfoPanel.Info);
+                            PanelTube.backgroundPanel.viewSmallInfoText("Keine Wegbeschreibung gefunden.", SmallInfoPanel.Info);
                     } else {
-                        PanelTube.backgroundPanel.viewInfoText("Es existieren keine Wegbeschreibungen zu privaten Terminen.", SmallInfoPanel.Warning);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Es existieren keine Wegbeschreibungen zu privaten Terminen.", SmallInfoPanel.Warning);
                     }
                 }
             });

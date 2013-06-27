@@ -237,7 +237,7 @@ public class DayPanel extends JPanel {
                         if (!lvaService.readAll().isEmpty()) {
                             PanelTube.backgroundPanel.viewLvaDate(null,date);
                         } else {
-                            PanelTube.backgroundPanel.viewInfoText("Es existieren noch keine Lehrveranstaltungen.", SmallInfoPanel.Error);
+                            PanelTube.backgroundPanel.viewSmallInfoText("Es existieren noch keine Lehrveranstaltungen.", SmallInfoPanel.Error);
                         }
                     } catch (ServiceException e1) {
                         log.error(e1.getMessage());
@@ -256,10 +256,10 @@ public class DayPanel extends JPanel {
                     dateEntity.setDescription("Dies ist ein freier Tag, das heisst: KEINE UNI YEAAH!!!");
                     try {
                         DayPanel.this.dateService.createDate(dateEntity);
-                        PanelTube.backgroundPanel.viewInfoText("Der Tag wurde als frei markiert.", SmallInfoPanel.Success);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Der Tag wurde als frei markiert.", SmallInfoPanel.Success);
                     } catch (ServiceException e1) {
                         log.error(e1.getMessage());
-                        PanelTube.backgroundPanel.viewInfoText("Der Tag konnte nicht als frei markiert werden.", SmallInfoPanel.Error);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Der Tag konnte nicht als frei markiert werden.", SmallInfoPanel.Error);
                     }
                     PanelTube.calendarPanel.refresh();
                 }

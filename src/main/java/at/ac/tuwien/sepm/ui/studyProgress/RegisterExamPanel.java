@@ -92,9 +92,9 @@ public class RegisterExamPanel extends StandardInsidePanel {
                 try {
                     automaticExamRegisterService.addRegistration(examPanel.getSelectedExam());
                 } catch (ServiceException e1) {
-                    PanelTube.backgroundPanel.viewInfoText("Anmeldung fehlgeschlagen.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Anmeldung fehlgeschlagen.", SmallInfoPanel.Error);
                 } catch (ArrayIndexOutOfBoundsException a) {
-                    PanelTube.backgroundPanel.viewInfoText("Sie müssen eine Pruefung auswaehlen.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Sie müssen eine Pruefung auswaehlen.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -152,7 +152,7 @@ public class RegisterExamPanel extends StandardInsidePanel {
                 progressBar.setVisible(false);
             } catch (ServiceException e) {
                 log.error("Exception: " + e.getMessage());
-                PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler aufgetreten", SmallInfoPanel.Error);
+                PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler aufgetreten", SmallInfoPanel.Error);
             }
             return null;
         }

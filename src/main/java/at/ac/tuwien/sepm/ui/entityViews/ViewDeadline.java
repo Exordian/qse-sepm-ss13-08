@@ -119,19 +119,19 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewDeadline.this, "Wollen sie diese Deadline wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             lvaDateService.delete(deadline.getId());
-                            PanelTube.backgroundPanel.viewInfoText("Die Deadline wurde gelöscht.", SmallInfoPanel.Success);
+                            PanelTube.backgroundPanel.viewSmallInfoText("Die Deadline wurde gelöscht.", SmallInfoPanel.Success);
                         }
                         setVisible(false);
                         PanelTube.backgroundPanel.showLastComponent();
                     } else {
-                        PanelTube.backgroundPanel.viewInfoText("Diese Deadline existiert nicht in der Datenbank.", SmallInfoPanel.Error);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Diese Deadline existiert nicht in der Datenbank.", SmallInfoPanel.Error);
                     }
                 } catch (ServiceException e) {
                     log.error("Deadline is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("Deadline is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -158,15 +158,15 @@ public class ViewDeadline extends StandardSimpleInsidePanel {
                     } else {
                         lvaDateService.create(deadline);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Die Deadline wurde gespeichert.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Deadline wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("Deadline is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("Deadline is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });

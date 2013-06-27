@@ -68,7 +68,6 @@ public class ViewModule extends StandardSimpleInsidePanel {
         this.module = new Module();
         module.setMetaLvas(new ArrayList<MetaLVA>(0));
         addTitle("Neues Modul");
-
         addReturnButton();
         addContent();
         addButtons();
@@ -103,25 +102,25 @@ public class ViewModule extends StandardSimpleInsidePanel {
                             }
                         }
                     }
-                    module.setName(nameInput.getText());
+                    module.setName(title.getText());
                     module.setDescription(descriptionInput.getText());
                     if (module.getId() != null) {
                         moduleService.update(module);
                     } else {
                         moduleService.create(module);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Das Modul wurde gespeichert.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Das Modul wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
-                    log.error("Module is invalid",e);
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    log.error("Module is invalid.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
-                    log.error("Module is invalid",e);
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    log.error("Module is invalid.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (NumberFormatException e){
-                    log.error("Input priority is invalid.",e);
-                    PanelTube.backgroundPanel.viewInfoText("Die angegebene Priorität ist ungültig!", SmallInfoPanel.Error);
+                    log.error("Input priority is invalid.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die angegebene Priorität ist ungültig!", SmallInfoPanel.Error);
                 } catch (EscapeException ignore){
                     log.info("user cancelled saving");
                 }
