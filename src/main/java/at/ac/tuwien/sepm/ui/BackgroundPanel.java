@@ -48,6 +48,7 @@ public class BackgroundPanel extends JPanel {
     private SmallInfoPanel smallInfoPanel;
     private ArrayList<JButton> tabs;
 
+    private Timer hideInfoTimer;
 
     @Autowired
     RoomFinderService roomFinderService;
@@ -81,7 +82,7 @@ public class BackgroundPanel extends JPanel {
 
         if(Boolean.parseBoolean(propertyService.getProperty(PropertyService.FIRST_RUN,"true"))){
             //things, which happen on first startup
-            changeImage(5);
+            viewStartup(true);
         }
 
 
@@ -177,8 +178,10 @@ public class BackgroundPanel extends JPanel {
         viewStartup.jump(0);
         if(!lock){
             viewStartup.addReturnButton();
+            changeImage(5);
         }else{
             viewStartup.removeReturnButton();
+            changeImage(6);
         }
         this.add(viewStartup);
         this.revalidate();
@@ -204,15 +207,18 @@ public class BackgroundPanel extends JPanel {
 
 
     void hideInfoText() {
-        Timer timer = new Timer(5000, new ActionListener() {
+        if(hideInfoTimer!=null){
+            hideInfoTimer.stop();
+        }
+        hideInfoTimer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 smallInfoPanel.setVisible(false);
                 BackgroundPanel.this.remove(smallInfoPanel);
             }
         });
-        timer.setRepeats(false);
-        timer.start();
+        hideInfoTimer.setRepeats(false);
+        hideInfoTimer.start();
     }
 
     @Override
@@ -277,9 +283,10 @@ public class BackgroundPanel extends JPanel {
                     propsPanel.refresh();
                     break;
                 case 5:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));//todo grafik für startup-wizard
-
-                    viewStartup(true);
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));//todo grafik für startup-wizard in der kein tab selektiert ist (die buttons sind noch intakt).
+                    break;
+                case 6:
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));//todo grafik für startup-wizard in der alle tabs deaktiviert sind.
                     break;
                 default:
                     break;

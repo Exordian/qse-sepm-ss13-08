@@ -83,7 +83,7 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
             propertyService.setProperty(PropertyService.FIRST_RUN,"false");
             PanelTube.backgroundPanel.showLastComponent();
             PanelTube.backgroundPanel.setControlsEnabled(true);
-            PanelTube.backgroundPanel.viewInfoText("Der Startup-Wizard ist beendet.", SmallInfoPanel.Success);
+            PanelTube.backgroundPanel.viewInfoText("Der Startup-Wizard wurde erfolgreich beendet.", SmallInfoPanel.Success);
         }else{
             jump(currentIndex+1);
         }

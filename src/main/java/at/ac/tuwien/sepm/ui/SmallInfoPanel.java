@@ -48,7 +48,8 @@ public class SmallInfoPanel extends StandardInsidePanel {
         if(s.length() <= MAX_LETTERS) {
             infoText.setText(s);
         } else {
-            infoText.setText("info text zu lang");
+            infoText.setText(s.substring(0,MAX_LETTERS-3)+"...");
+            log.error("Infotext too long: <"+s+">");
         }
         infoText.setFont(standardButtonFont);
         changeImage(nmb);

@@ -33,6 +33,8 @@ public class LehrangebotPanel extends StandardInsidePanel {
     private StandardInsidePanel lvaPanel;
     private ModulePanel modulePanel;
 
+    private StandardInsidePanel activePanel;
+
     @Autowired
     public LehrangebotPanel(StudienplanPanel studienplanPanel, LvaPanel lvaPanel, LvaFetcherPanel lvaFetcherPanel, ModulePanel modulePanel) {
         init();
@@ -41,6 +43,7 @@ public class LehrangebotPanel extends StandardInsidePanel {
         this.lvaPanel=lvaPanel;
         this.modulePanel=modulePanel;
         createTabButtons();
+        tab1.doClick();
         changeImage(1);
         this.add(this.studienplanPanel);
         this.validate();
@@ -63,6 +66,7 @@ public class LehrangebotPanel extends StandardInsidePanel {
         tab1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                activePanel = studienplanPanel;
                 changeImage(1);
                 remove(lvaFetcherPanel);
                 remove(lvaPanel);
@@ -77,6 +81,7 @@ public class LehrangebotPanel extends StandardInsidePanel {
         tab2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                activePanel = modulePanel;
                 changeImage(2);
                 remove(studienplanPanel);
                 remove(lvaPanel);
@@ -92,6 +97,7 @@ public class LehrangebotPanel extends StandardInsidePanel {
         tab3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                activePanel = lvaPanel;
                 changeImage(3);
                 remove(lvaFetcherPanel);
                 remove(studienplanPanel);
@@ -106,6 +112,7 @@ public class LehrangebotPanel extends StandardInsidePanel {
         tab4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                activePanel = lvaFetcherPanel;
                 changeImage(4);
                 remove(studienplanPanel);
                 remove(lvaPanel);
@@ -147,6 +154,10 @@ public class LehrangebotPanel extends StandardInsidePanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void refresh(){
+        activePanel.refresh();
     }
 
 }

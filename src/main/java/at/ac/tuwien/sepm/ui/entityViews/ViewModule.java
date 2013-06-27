@@ -68,6 +68,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
         this.module = new Module();
         module.setMetaLvas(new ArrayList<MetaLVA>(0));
         addTitle("Neues Modul");
+
         addReturnButton();
         addContent();
         addButtons();
@@ -102,7 +103,7 @@ public class ViewModule extends StandardSimpleInsidePanel {
                             }
                         }
                     }
-                    module.setName(title.getText());
+                    module.setName(nameInput.getText());
                     module.setDescription(descriptionInput.getText());
                     if (module.getId() != null) {
                         moduleService.update(module);
@@ -113,13 +114,13 @@ public class ViewModule extends StandardSimpleInsidePanel {
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
-                    log.error("Module is invalid.");
+                    log.error("Module is invalid",e);
                     PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
-                    log.error("Module is invalid.");
+                    log.error("Module is invalid",e);
                     PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (NumberFormatException e){
-                    log.error("Input priority is invalid.");
+                    log.error("Input priority is invalid.",e);
                     PanelTube.backgroundPanel.viewInfoText("Die angegebene Priorität ist ungültig!", SmallInfoPanel.Error);
                 } catch (EscapeException ignore){
                     log.info("user cancelled saving");

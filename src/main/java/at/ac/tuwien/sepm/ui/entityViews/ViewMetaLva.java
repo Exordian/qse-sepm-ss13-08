@@ -245,6 +245,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         priorityInput.setEditor(new JSpinner.NumberEditor(priorityInput, "0.#"));
         priorityInput.setFont(standardTextFont);
         priorityInput.setBounds(inputX, priorityLabel.getY(), inputWidth, oHeight);
+        priorityInput.setValue(5);
         this.add(priorityInput);
 
         completedLabel = new JLabel("Abgeschlossen:");
@@ -335,7 +336,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             nrInput.setText("");
             ectsInput.setValue(0);
             typeInput.setSelectedIndex(0);
-            priorityInput.setValue(1);
+            priorityInput.setValue(5);
             semestersOfferedInput.setSelectedIndex(0);
             moduleInput.setSelectedIndex(0);
             completedInput.setSelected(false);
