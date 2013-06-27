@@ -9,9 +9,9 @@ import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -67,7 +67,7 @@ public class ViewPanel extends StandardInsidePanel {
         revalidate();
     }
 
-    @Scheduled(fixedDelay = 5000)
+    //@Scheduled(fixedDelay = 5000)
     public void refresh() {
         if (getSemesterAnzahl() <= 1) {
             //   bwd.setVisible(false);        //todo remove if bwd and fwd button setcursor is resolved
@@ -144,10 +144,9 @@ public class ViewPanel extends StandardInsidePanel {
     }
 
     public void setMajorName() {
-        if (propertyService.getProperty("user.majorName") != null) {
-            majorName.setText(propertyService.getProperty("user.majorName"));
-            repaint();
-        }
+        String temp = propertyService.getProperty("user.majorName","Kein Studium angegeben");
+        majorName.setText(temp);
+        repaint();
     }
 
     private int getSemesterAnzahl() {
@@ -164,7 +163,7 @@ public class ViewPanel extends StandardInsidePanel {
             return service.firstYearInStudyProgress();
         } catch (ServiceException e) {
             log.error(e.getMessage());
-            return 0;
+            return DateTime.now().getYear();
         }
     }
 
@@ -173,7 +172,7 @@ public class ViewPanel extends StandardInsidePanel {
             return service.isFirstSemesterAWinterSemester();
         } catch (ServiceException e) {
             log.error(e.getMessage());
-            return false;
+            return true;
         }
     }
 

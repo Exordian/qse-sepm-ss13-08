@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import com.toedter.calendar.JYearChooser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -18,25 +19,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Author: Georg Plaz
+ */
 @UI
 public class SettingsPanel extends StandardSimpleInsidePanel {
-    public static final String FIRST_YEAR = "user.firstYear";
-    public static final String FIRST_SEMESTER = "user.firstSemester";
-    public static final String TISS_USER = "tiss.user";
-    public static final String TISS_PASSWORD = "tiss.password";
-    public static final String FACEBOOK_USER = "facebook.user";
-    public static final String FACEBOOK_PASSWORD = "facebook.password";
-    public static final String MAJOR = "user.majorName";
-    public static final String FIRST_START = "firstStart";
 
-    private JLabel tissLogin;
-    private JLabel facebookLogin;
-    private JLabel defaultEcts;
-    private JLabel pickMajor;
-    private JLabel begin;
-
-    private JLabel nameLabelFacebook;
-    private JLabel nameLabelTISS;
 
     private JButton showWizard;
     private JButton tiss;
@@ -46,7 +34,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private JButton deleteALL;
 
     private JYearChooser year;
-    private JComboBox semester;
+    private WideComboBox semester;
 
     private JButton save;
 
@@ -79,14 +67,14 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                propertyService.setProperty(FIRST_YEAR, Integer.toString(year.getYear()));
-                propertyService.setProperty(FIRST_SEMESTER, (String)semester.getSelectedItem());
+                propertyService.setProperty(PropertyService.FIRST_YEAR, Integer.toString(year.getYear()));
+                propertyService.setProperty(PropertyService.FIRST_SEMESTER, semester.getSelectedItem().toString());
                 if (!major.getSelectedItem().toString().equals("Bitte Importieren sie ein Studium!")) {
-                    propertyService.setProperty(MAJOR, major.getSelectedItem().toString());
+                    propertyService.setProperty(PropertyService.MAJOR, major.getSelectedItem().toString());
                 } else {
                     PanelTube.backgroundPanel.viewInfoText("Der Studiumsname konnte nicht gespeichert werden.", SmallInfoPanel.Info);
                 }
-                //propertyService.setProperty("user.defaultECTS", ects.getText());
+                //propertyService.setProperty(PropertyService."user.defaultECTS", ects.getText());
                 setVisible(false);
                 PanelTube.backgroundPanel.viewInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Success);
                 PanelTube.backgroundPanel.showLastComponent();
@@ -107,22 +95,14 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         });
 
 
-        semester = new JComboBox();
-        semester.setFont(standardButtonFont);
-        semester.addItem("SS");
-        semester.addItem("WS");
-        if (propertyService.getProperty(FIRST_SEMESTER) != null) {
-            semester.setSelectedItem(propertyService.getProperty(FIRST_SEMESTER));
-        } else {
-            semester.setSelectedItem("WS");
-        }
+        semester = new WideComboBox(new Semester[]{Semester.W,Semester.S});
+        semester.setSelectedItem(Semester.parse(propertyService.getProperty(PropertyService.FIRST_SEMESTER,Semester.W.toString())));
+
 
         year = new JYearChooser();
-        if (propertyService.getProperty(FIRST_YEAR) != null && !propertyService.getProperty(FIRST_YEAR).isEmpty()) {
-            year.setYear(Integer.parseInt(propertyService.getProperty(FIRST_YEAR)));
-        } else {
-            year.setYear(2013);
-        }
+        year.setYear(Integer.parseInt(propertyService.getProperty(PropertyService.FIRST_YEAR,""+DateTime.now().getYear())));
+        year.setStartYear(1900);
+        year.setEndYear(DateTime.now().getYear());
 
         tiss = new JButton("eingeben");
 
@@ -144,11 +124,10 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                         super.windowClosed(e);
                         try {
                             authService.authenticate(temp.getName(), temp.getPassword());
-                            nameLabelTISS.setText("Eingeloggt als: " + temp.getName());
-                            propertyService.setProperty(TISS_USER, temp.getName());
-                            propertyService.setProperty(TISS_PASSWORD, temp.getPassword());
+                            propertyService.setProperty(PropertyService.TISS_USER, temp.getName());
+                            propertyService.setProperty(PropertyService.TISS_PASSWORD, temp.getPassword());
                         } catch (ServiceException ex) {
-                            nameLabelTISS.setText("Login Daten ungültig");
+                            PanelTube.backgroundPanel.viewInfoText("Login Daten ungültig",SmallInfoPanel.Error);
                         }
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
@@ -177,9 +156,9 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
-                        nameLabelFacebook.setText("Eingeloggt als: " + temp.getName());
-                        propertyService.setProperty(FACEBOOK_USER, temp.getName());
-                        propertyService.setProperty(FACEBOOK_PASSWORD, temp.getPassword());
+                        //nameLabelFacebook.setText("Eingeloggt als: " + temp.getName());
+                        propertyService.setProperty(PropertyService.FACEBOOK_USER, temp.getName());
+                        propertyService.setProperty(PropertyService.FACEBOOK_PASSWORD, temp.getPassword());
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
                         content.refresh();
@@ -189,8 +168,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             }
         });
 
-        pickMajor = new JLabel("Studium auswählen");
-
+        
         major = new WideComboBox();
         try {
             if (!createCurriculumService.readAllCurriculum().isEmpty())
@@ -200,10 +178,11 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 major.addItem("Bitte Importieren sie ein Studium!");
         } catch (ServiceException e) {
             log.error("Error: " + e.getMessage());
+            PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der Studien",SmallInfoPanel.Error);
         }
 
-        if (propertyService.getProperty(MAJOR) != null && !propertyService.getProperty(MAJOR).isEmpty()) {
-            semester.setSelectedItem(propertyService.getProperty(MAJOR));
+        if (propertyService.getProperty(PropertyService.MAJOR) != null && !propertyService.getProperty(PropertyService.MAJOR).isEmpty()) {
+            semester.setSelectedItem(propertyService.getProperty(PropertyService.MAJOR));
         } else {
             semester.setSelectedIndex(0);
         }
@@ -217,17 +196,20 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 Object[] options = {"Ja", "Abbrechen"};
                 if (JOptionPane.showOptionDialog(SettingsPanel.this, "Wollen Sie wirklich alle gespeicherten Daten des Programms löschen?", "Bestätigung",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]) == JOptionPane.YES_OPTION) {
-                    propertyService.removeProperty(FIRST_YEAR);
-                    propertyService.removeProperty(FIRST_SEMESTER);
-                    propertyService.removeProperty(MAJOR);
-                    propertyService.removeProperty(FACEBOOK_USER);
-                    propertyService.removeProperty(FACEBOOK_PASSWORD);
-                    propertyService.removeProperty(TISS_USER);
-                    propertyService.removeProperty(TISS_PASSWORD);
-                    //propertyService.removeProperty("user.defaultECTS");
-                    propertyService.removeProperty(FIRST_START);
-                    //todo alle datenbank daten löschen
-                    System.exit(0);
+                    propertyService.removeProperty(PropertyService.FIRST_YEAR);
+                    propertyService.removeProperty(PropertyService.FIRST_SEMESTER);
+                    propertyService.removeProperty(PropertyService.MAJOR);
+                    propertyService.removeProperty(PropertyService.FACEBOOK_USER);
+                    propertyService.removeProperty(PropertyService.FACEBOOK_PASSWORD);
+                    propertyService.removeProperty(PropertyService.TISS_USER);
+                    propertyService.removeProperty(PropertyService.TISS_PASSWORD);
+                    //propertyService.removeProperty(PropertyService."user.defaultECTS");
+                    propertyService.removeProperty(PropertyService.FIRST_RUN);
+                    //todo alte datenbank daten löschen
+                    PanelTube.backgroundPanel.viewInfoText("Alle Daten wurden gelöscht",SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.setControlsEnabled(false);
+                    PanelTube.backgroundPanel.viewStartup();
+                    //System.exit(0);
                 }
             }
         });
@@ -238,7 +220,10 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     }
     @Override
     public void refresh(){
+        semester.setSelectedItem(Semester.parse(propertyService.getProperty(PropertyService.FIRST_SEMESTER,Semester.W.toString())));
+        year.setYear(Integer.parseInt(propertyService.getProperty(PropertyService.FIRST_YEAR, ""+DateTime.now().getYear())));
         content.refresh();
+
     }
 
     private static class CurriculumSelectItem extends SelectItem<Curriculum> {
@@ -263,7 +248,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             refresh();
 
         }
-        private void refresh(){
+        public void refresh(){
             buttonWidth= buttonWidthInit;
             lastLeftBottomHeight=getHeight();
             lastRightBottomHeight=getHeight();
@@ -282,19 +267,19 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
 
             addEmptyArea(bigSpace*2,false);
             addRow(new JTextArea("TISS-login"),tiss,false);
-            if (propertyService.getProperty(TISS_USER) != null && !propertyService.getProperty(TISS_USER).isEmpty() &&
-                    propertyService.getProperty(TISS_PASSWORD) != null && !propertyService.getProperty(TISS_PASSWORD).isEmpty()) {
-                addText("Eingeloggt als: " + propertyService.getProperty(TISS_USER),Font.BOLD,false);
-                //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(TISS_USER));
+            if (propertyService.getProperty(PropertyService.TISS_USER) != null && !propertyService.getProperty(PropertyService.TISS_USER).isEmpty() &&
+                    propertyService.getProperty(PropertyService.TISS_PASSWORD) != null && !propertyService.getProperty(PropertyService.TISS_PASSWORD).isEmpty()) {
+                addText("Eingeloggt als: " + propertyService.getProperty(PropertyService.TISS_USER),Font.BOLD,false);
+                //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(PropertyService.TISS_USER));
             }
             addEmptyArea(bigSpace*2,false);
             addRow(new JTextArea("Facebook-login"),facebook,false);
-            if (propertyService.getProperty(FACEBOOK_USER) != null && !propertyService.getProperty(FACEBOOK_USER).isEmpty() &&
-                    propertyService.getProperty(FACEBOOK_PASSWORD) != null && !propertyService.getProperty(FACEBOOK_PASSWORD).isEmpty()) {
-                addText("Eingeloggt als: " + propertyService.getProperty(FACEBOOK_USER),Font.BOLD,false);
-                //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(TISS_USER));
+            if (propertyService.getProperty(PropertyService.FACEBOOK_USER) != null && !propertyService.getProperty(PropertyService.FACEBOOK_USER).isEmpty() &&
+                    propertyService.getProperty(PropertyService.FACEBOOK_PASSWORD) != null && !propertyService.getProperty(PropertyService.FACEBOOK_PASSWORD).isEmpty()) {
+                addText("Eingeloggt als: " + propertyService.getProperty(PropertyService.FACEBOOK_USER),Font.BOLD,false);
+                //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(PropertyService.TISS_USER));
             }
-            addEmptyArea(bigSpace*2,false);
+            addEmptyArea(bigSpace,false,false);
 
             buttonWidth=labelWidthRight+20;
             addRow(deleteALL,save,false,false);

@@ -24,7 +24,7 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
     private static Logger logger = LogManager.getLogger(ViewStartUp.class);
     private int currentIndex=0;
     //private StartRowPanel current;
-    private List<JPanel> allPanels;
+    private List<SimpleDisplayPanel> allPanels;
 
     protected LvaFetcherService lvaFetcherService;
     protected ModuleService moduleService;
@@ -49,7 +49,7 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
 
     private void addContent() {
         setBackground(Color.GREEN);
-        allPanels = new ArrayList<JPanel>();
+        allPanels = new ArrayList<SimpleDisplayPanel>();
         //JPanel temp = new JPanel();
         //temp.add(new JLabel("blabla"));
         //allPanels.add(temp);
@@ -72,11 +72,12 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
         allPanels.get(currentIndex).setVisible(false);
         currentIndex = index;
         allPanels.get(currentIndex).setVisible(true);
+        allPanels.get(currentIndex).refresh();
 
     }
     protected void next(){
         if(currentIndex+1 == allPanels.size()){
-            propertyService.setProperty("firstStarted","false");
+            propertyService.setProperty(PropertyService.FIRST_RUN,"false");
             PanelTube.backgroundPanel.showLastComponent();
             PanelTube.backgroundPanel.setControlsEnabled(true);
             PanelTube.backgroundPanel.viewInfoText("Der Startup-Wizard ist beendet.", SmallInfoPanel.Success);

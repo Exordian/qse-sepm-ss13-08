@@ -51,7 +51,7 @@ public class Third extends SimpleDisplayPanel {
         addText("Der Planer errechnet dir mögliche Semester ohne Überschneidungen. Dabei wird unter " +
                 "anderem die vom User gesetzte Priorität der LVA berücksichtigt.", true);
         addText("\n\nIm Kalender fügst du neue Termine auch über das Popup nach dem Rechtsklick ein.\n" +
-                "Du kannst dir private\"Termine, oder LVA-Termine erstellen. Es ist auch möglich Tage \n" +
+                "Du kannst dir private Termine, oder LVA-Termine erstellen. Es ist auch möglich Tage " +
                 "als frei zu markieren.", false);
         addText("Außerdem kannst du dich unter Studienverlauf -> Anmeldungen automatisch für Prüfungen " +
                 "anmelden, falls du die Daten im Tiss gesetzt hast. Wenn du auf aktualisieren klickst, " +
@@ -74,4 +74,9 @@ public class Third extends SimpleDisplayPanel {
     }
 
 
+    @Override
+    public void refresh() {
+        //TODO fill me <3
+        //TODO no!
+    }
 }

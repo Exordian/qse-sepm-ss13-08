@@ -26,4 +26,12 @@ public enum Semester {
                 return "n.a.";
         }
     }
+    public static Semester parse(String s){
+        for(Semester sem:Semester.values()){
+            if(s.equals(sem.toString()) || s.equals(sem.toShortString())){
+                return sem;
+            }
+        }
+        return null;
+    }
 }

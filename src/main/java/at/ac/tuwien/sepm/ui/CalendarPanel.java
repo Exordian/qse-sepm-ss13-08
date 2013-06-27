@@ -157,7 +157,8 @@ public class CalendarPanel extends StandardInsidePanel {
                         calPanelWeek.refresh();
                     }
                 } catch (ServiceException e1) {
-                    PanelTube.backgroundPanel.viewInfoText(e1.getMessage(), SmallInfoPanel.Error);
+                    log.error(e1);
+                    PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim löschen aufgetreten", SmallInfoPanel.Error);
                 }
             }
         });
@@ -234,21 +235,26 @@ public class CalendarPanel extends StandardInsidePanel {
     private void refreshTop() {
         semester.removeAllItems();
         semesterCbmdl.addElement(new SemesterComboBoxItem(0, null));
-        try {
-            boolean winterSem = lvaService.isFirstSemesterAWinterSemester();
-            int semesters = lvaService.numberOfSemestersInStudyProgress();
-            int year = lvaService.firstYearInStudyProgress();
-            for (int x = 0; x < semesters; x++) {
-                Semester temp = winterSem ? Semester.W : Semester.S;
-                semesterCbmdl.addElement(new SemesterComboBoxItem(year, temp));
-                if (winterSem) {
-                    year++;
-                }
-                winterSem = !winterSem;
-            }
-        } catch (ServiceException e) {
-            PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Error);
+
+        boolean winterSem = true;// lvaService.isFirstSemesterAWinterSemester();
+        int semesters=0;// = lvaService.numberOfSemestersInStudyProgress();
+        int year=DateTime.now().getYear();// = lvaService.firstYearInStudyProgress();
+        try{
+            winterSem = lvaService.isFirstSemesterAWinterSemester();
+            semesters = lvaService.numberOfSemestersInStudyProgress();
+            year = lvaService.firstYearInStudyProgress();
+        }catch (ServiceException e) {
+            log.error(e);
         }
+        for (int x = 0; x < semesters; x++) {
+            Semester temp = winterSem ? Semester.W : Semester.S;
+            semesterCbmdl.addElement(new SemesterComboBoxItem(year, temp));
+            if (winterSem) {
+                year++;
+            }
+            winterSem = !winterSem;
+        }
+
     }
 
     private void createImportButton() {
@@ -268,6 +274,7 @@ public class CalendarPanel extends StandardInsidePanel {
                         activeView.refresh();
                     } catch (ServiceException e) {
                         PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Error);
+                        log.error(e);
                         return;
                     }
                 } else {
@@ -313,6 +320,7 @@ public class CalendarPanel extends StandardInsidePanel {
                                 iCalendarService.icalExport(file);
                             } catch (ServiceException e) {
                                 PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Error);
+                                log.error(e);
                                 return;
                             }
                         }

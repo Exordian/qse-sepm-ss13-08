@@ -3,8 +3,8 @@ package at.ac.tuwien.sepm.ui.startUp;
 import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.EscapeException;
+import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.ServiceException;
-import at.ac.tuwien.sepm.ui.SettingsPanel;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
@@ -39,8 +39,7 @@ public class First extends SimpleDisplayPanel {
         subInit();
     }
     public void subInit(){
-        tissUsername.setText(startUp.propertyService.getProperty(SettingsPanel.TISS_USER,""));
-        tissPassword.setText(startUp.propertyService.getProperty(SettingsPanel.TISS_PASSWORD,""));
+        refresh();
         studyDrop = new WideComboBox();
         studyDrop.addItem(new CurriculumContainer());
         try {
@@ -76,8 +75,8 @@ public class First extends SimpleDisplayPanel {
                     int un = tissUsername.getText().length();
                     int pw = tissPassword.getPassword().length;
                     if(un>0 && pw>0){
-                        startUp.propertyService.setProperty(SettingsPanel.TISS_USER,tissUsername.getText());
-                        startUp.propertyService.setProperty(SettingsPanel.TISS_PASSWORD,new String(tissPassword.getPassword()));
+                        startUp.propertyService.setProperty(PropertyService.TISS_USER,tissUsername.getText());
+                        startUp.propertyService.setProperty(PropertyService.TISS_PASSWORD,new String(tissPassword.getPassword()));
                     }else if((un==0)!=(pw==0)){
                         PanelTube.backgroundPanel.viewInfoText("Die TISS-Daten sind ungültig!", SmallInfoPanel.Warning);
                         throw new EscapeException();
@@ -99,7 +98,7 @@ public class First extends SimpleDisplayPanel {
 
 
         addText("Hallo!\n\nHerzlich willkommen im sTUdiumsmanager!\nDies ist ein kurzer Startup-Wizard, " +
-                "der dir die wichtigsten Dinge im Programm kurz erklärt. Damit das Programm richtig funktioniert," +
+                "der dir die wichtigsten Dinge im Programm kurz erklärt. Damit das Programm richtig funktioniert, " +
                 "brauchen wir ein paar Informationen, die du auch gleich hier eingeben kannst!",true);
 
         addText("Alle Daten werden nur lokal gespeichert und eventuell zum Anmelden bei " +
@@ -111,7 +110,7 @@ public class First extends SimpleDisplayPanel {
         addRow(new JTextArea("TISS-Passwort"), tissPassword,true);
 
         addText("\n\nUm dir LVAs für dein aktuelles Semester einzutragen (was du für alle Funktionen in dieser App brauchst), " +
-                "musst du vorher ein Studium importieren. Wähle hier dein Studium aus. Die Daten werden aus dem TISS ausgelesen." +
+                "musst du vorher ein Studium importieren. Wähle hier dein Studium aus. Die Daten werden aus dem TISS ausgelesen. " +
                 "Du kannst auch diesen Schritt auch erst später unter Lehrangebot -> Importieren " +
                 "ausführen\n.",false);
         addRow(new JTextArea("Studium"), studyDrop, false);
@@ -132,6 +131,14 @@ public class First extends SimpleDisplayPanel {
         tissUsername.setEnabled(!b);
         studyDrop.setEnabled(!b);
     }
+
+    @Override
+    public void refresh() {
+        tissUsername.setText(startUp.propertyService.getProperty(PropertyService.TISS_USER,""));
+        tissPassword.setText(startUp.propertyService.getProperty(PropertyService.TISS_PASSWORD,""));
+        //studyDrop.setSelectedItem(); todo
+    }
+
     private class CurriculumContainer{
         private Curriculum curriculum;
         private CurriculumContainer(Curriculum curriculum){
@@ -162,7 +169,7 @@ public class First extends SimpleDisplayPanel {
                 for(Module m : currentModules) {
                     startUp.moduleService.create(m);
                 }
-                PanelTube.backgroundPanel.viewInfoText("Gratuliere, das Studium wurde fertig geladen und importiert!", SmallInfoPanel.Success);
+                PanelTube.backgroundPanel.viewInfoText("Gratuliere, das Studium wurde geladen und importiert!", SmallInfoPanel.Success);
                 startUp.next();
             } catch (ServiceException e) {
                 logger.info("couldn't load LVAs", e);

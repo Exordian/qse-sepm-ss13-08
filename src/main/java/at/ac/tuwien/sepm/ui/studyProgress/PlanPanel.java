@@ -229,6 +229,7 @@ public class PlanPanel extends StandardInsidePanel {
                                 if (considerStudyProgressCheck.isSelected()){
                                     forced = metaLVAService.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true);
                                 }else{
+
                                     forced = new ArrayList<>();
                                     pool.addAll(metaLVAService.readUncompletedByYearSemesterStudyProgress(plannedYear, plannedSemester, true));
                                 }
@@ -268,8 +269,10 @@ public class PlanPanel extends StandardInsidePanel {
                                 }else if(timeBetweenDropdown.getSelectedIndex()==2){
                                     tempTimeBetween = -(int)timeBuffer.getValue()*60;
                                 }
+                                if (!considerStudyProgressCheck.isSelected()){
+                                    PanelTube.backgroundPanel.viewInfoText("Bitte Geduld. Das Planen kann einige Sekunden dauern.",SmallInfoPanel.Info);
+                                }
                                 planer.setIntersectingTolerance(tempTolerance);
-
                                 planer.setAllowedTimeBetween(tempTimeBetween);
                                 ArrayList<MetaLVA> solution = planer.planSemester(goalECTS, plannedYear, plannedSemester);
 

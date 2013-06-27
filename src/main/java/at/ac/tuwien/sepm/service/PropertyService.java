@@ -1,6 +1,14 @@
 package at.ac.tuwien.sepm.service;
 
 public interface PropertyService {
+    public static final String FIRST_YEAR = "user.firstYear";
+    public static final String FIRST_SEMESTER = "user.firstSemester";
+    public static final String TISS_USER = "tiss.user";
+    public static final String TISS_PASSWORD = "tiss.password";
+    public static final String FACEBOOK_USER = "facebook.user";
+    public static final String FACEBOOK_PASSWORD = "facebook.password";
+    public static final String MAJOR = "user.majorName";
+    public static final String FIRST_RUN = "firstRun";
 
     /**
      * set program wide property

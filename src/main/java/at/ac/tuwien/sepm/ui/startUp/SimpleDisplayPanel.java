@@ -95,10 +95,21 @@ public abstract class SimpleDisplayPanel extends JPanel{
         addRow(new JTextArea(s),font,null,null,left,true);
     }
     public void addEmptyArea(int space,boolean left){
-        if(left){
-            lastLeftTopHeight +=space;
+        addEmptyArea(space,left,true);
+    }
+    public void addEmptyArea(int space,boolean left,boolean top){
+        if(top){
+            if(left){
+                lastLeftTopHeight +=space;
+            }else{
+                lastRightTopHeight +=space;
+            }
         }else{
-            lastRightTopHeight +=space;
+            if(left){
+                lastLeftBottomHeight -=space;
+            }else{
+                lastRightBottomHeight -=space;
+            }
         }
     }
     public void addRow(JComponent label, JComponent input,boolean left){
@@ -236,4 +247,5 @@ public abstract class SimpleDisplayPanel extends JPanel{
         }
 
     }
+    public abstract void refresh();
 }

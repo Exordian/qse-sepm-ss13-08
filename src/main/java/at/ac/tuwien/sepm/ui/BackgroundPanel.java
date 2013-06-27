@@ -79,7 +79,8 @@ public class BackgroundPanel extends JPanel {
         createPropertiesButton();
         createTabButtons();
 
-        if(Boolean.parseBoolean(propertyService.getProperty("firstStarted","true"))){ //things, which happen on first startup
+        if(Boolean.parseBoolean(propertyService.getProperty(PropertyService.FIRST_RUN,"true"))){
+            //things, which happen on first startup
             changeImage(5);
         }
 

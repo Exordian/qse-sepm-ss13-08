@@ -78,6 +78,7 @@ public class StudiesPanel extends StandardInsidePanel {
                 remove(viewPanel);
                 remove(registerExamPanel);
                 add(planningPanel);
+                planningPanel.refresh();
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
             }
@@ -92,6 +93,7 @@ public class StudiesPanel extends StandardInsidePanel {
                 remove(viewPanel);
                 remove(planningPanel);
                 remove(registerExamPanel);
+                exportPanel.refresh();
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
             }
@@ -101,7 +103,7 @@ public class StudiesPanel extends StandardInsidePanel {
         tab4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if(propertyService.getProperty("tiss.user") == null || propertyService.getProperty("tiss.user").isEmpty()) {
+                if(propertyService.getProperty(PropertyService.TISS_USER) == null || propertyService.getProperty(PropertyService.TISS_USER).isEmpty()) {
                     JOptionPane.showMessageDialog(StudiesPanel.this, "Um dieses Modul nutzen zu können müssen Sie die TISS Kennungsdaten unter Einstellungen angeben", "Anmeldungen", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -110,6 +112,7 @@ public class StudiesPanel extends StandardInsidePanel {
                 remove(viewPanel);
                 remove(planningPanel);
                 add(registerExamPanel);
+                registerExamPanel.refresh();
                 StudiesPanel.this.validate();
                 StudiesPanel.this.repaint();
             }

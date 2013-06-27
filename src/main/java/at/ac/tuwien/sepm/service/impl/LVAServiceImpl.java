@@ -43,10 +43,10 @@ public class LVAServiceImpl implements LVAService {
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -61,7 +61,7 @@ public class LVAServiceImpl implements LVAService {
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -76,7 +76,7 @@ public class LVAServiceImpl implements LVAService {
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -94,7 +94,7 @@ public class LVAServiceImpl implements LVAService {
             return lvaList;
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -109,7 +109,7 @@ public class LVAServiceImpl implements LVAService {
             throw new ValidationException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -124,7 +124,7 @@ public class LVAServiceImpl implements LVAService {
             return lvaList;
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -143,10 +143,10 @@ public class LVAServiceImpl implements LVAService {
             throw new ServiceException("Exception: "+ e.getMessage());
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage()+"\nLVA which threw Exception: "+toUpdate);
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         } catch(IOException e) {
             logger.error("Exception: "+ e.getMessage()+"\nLVA which threw Exception: "+toUpdate);
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -191,14 +191,15 @@ public class LVAServiceImpl implements LVAService {
             return lvaDao.readAll();
         } catch(DataAccessException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
     @Override
     public boolean isFirstSemesterAWinterSemester() throws ServiceException {
-        if (propertyService.getProperty("user.firstSemester") != null&&!propertyService.getProperty("user.firstSemester").isEmpty()) {
-            return propertyService.getProperty("user.firstSemester").equals("WS");
+        String temp = propertyService.getProperty(PropertyService.FIRST_SEMESTER);
+        if (temp != null&&!temp.isEmpty()) {
+            return temp.equals("WS");
         } else {
             logger.error("Erstes Semester Property File wurde nicht gefunden.");
             throw new ServiceException("Erstes Semester Property File wurde nicht gefunden.");
@@ -207,8 +208,8 @@ public class LVAServiceImpl implements LVAService {
 
     @Override
     public int firstYearInStudyProgress() throws ServiceException {
-        if (propertyService.getProperty("user.firstYear") != null && !propertyService.getProperty("user.firstYear").isEmpty()) {
-            return Integer.parseInt(propertyService.getProperty("user.firstYear"));
+        if (propertyService.getProperty(PropertyService.FIRST_YEAR) != null && !propertyService.getProperty(PropertyService.FIRST_YEAR).isEmpty()) {
+            return Integer.parseInt(propertyService.getProperty(PropertyService.FIRST_YEAR));
         } else {
             logger.error("Erstes Jahr Property File wurde nicht gefunden.");
             throw new ServiceException("Erstes Jahr Property File wurde nicht gefunden.");
@@ -218,8 +219,8 @@ public class LVAServiceImpl implements LVAService {
     @Override
     public int numberOfSemestersInStudyProgress() throws ServiceException {
         try {
-            if ((propertyService.getProperty("user.firstYear") != null && !propertyService.getProperty("user.firstYear").isEmpty()) && !readAll().isEmpty()) {
-                int beginning = Integer.parseInt(propertyService.getProperty("user.firstYear"));
+            if ((propertyService.getProperty(PropertyService.FIRST_YEAR) != null && !propertyService.getProperty(PropertyService.FIRST_YEAR).isEmpty()) && !readAll().isEmpty()) {
+                int beginning = Integer.parseInt(propertyService.getProperty(PropertyService.FIRST_YEAR));
                 LVA temp = null;
                 for (LVA l : readAll()) {
                     if (temp == null)
@@ -269,7 +270,7 @@ public class LVAServiceImpl implements LVAService {
             }
         } catch (ValidationException e) {
             logger.error("Exception: "+ e.getMessage());
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 }
