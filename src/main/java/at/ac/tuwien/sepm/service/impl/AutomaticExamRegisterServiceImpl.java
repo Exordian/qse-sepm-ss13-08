@@ -196,7 +196,7 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
         try {
             zidAuthService.getTISSCookies();
         } catch (ServiceException e) {
-            zidAuthService.authenticate(propertyService.getProperty("tiss.user"), propertyService.getProperty("tiss.password"));
+            zidAuthService.authenticate(propertyService.getProperty(PropertyService.TISS_USER), propertyService.getProperty(PropertyService.TISS_PASSWORD));
             zidAuthService.loginTISS();
         }
     }

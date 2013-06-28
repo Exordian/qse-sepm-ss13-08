@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.service.impl;
 import at.ac.tuwien.sepm.dao.hsqldb.TestHelper;
 import at.ac.tuwien.sepm.entity.TissExam;
 import at.ac.tuwien.sepm.service.AutomaticExamRegisterService;
+import at.ac.tuwien.sepm.service.PropertyService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,8 +31,8 @@ public class AutomaticExamRegisterServiceImplTest {
     public void tissData()  {
         TestHelper.drop();
         TestHelper.create();
-        propertyService.setProperty("tiss.user", "jenglisc");
-        propertyService.setProperty("tiss.password", "xx");
+        propertyService.setProperty(PropertyService.TISS_USER, "jenglisc");
+        propertyService.setProperty(PropertyService.TISS_PASSWORD, "xx");
     }
 
     @Test
