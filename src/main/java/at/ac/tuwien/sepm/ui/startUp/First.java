@@ -50,7 +50,7 @@ public class First extends SimpleDisplayPanel {
             }
         } catch (ServiceException e) {
             logger.error(e);
-            PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Lesen der Daten aufgetreten.",SmallInfoPanel.Error);
+            PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Daten aufgetreten.",SmallInfoPanel.Error);
         }
         studyDrop.addItemListener(new ItemListener() {
             @Override
@@ -68,7 +68,7 @@ public class First extends SimpleDisplayPanel {
             public void actionPerformed(ActionEvent e) {
                 try{
                     if(studyDrop.getSelectedIndex()== 0 && !confirmed){
-                        PanelTube.backgroundPanel.viewInfoText("Wollen sie wirklich fortfahren, ohne ein Studium zu importieren?", SmallInfoPanel.Warning);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Wollen sie wirklich fortfahren, ohne ein Studium zu importieren?", SmallInfoPanel.Warning);
                         confirmed=true;
                         throw new EscapeException();
                     }
@@ -80,12 +80,12 @@ public class First extends SimpleDisplayPanel {
                             startUp.propertyService.setProperty(PropertyService.TISS_USER,tissUsername.getText());
                             startUp.propertyService.setProperty(PropertyService.TISS_PASSWORD,new String(tissPassword.getPassword()));
                         } catch (ServiceException ex) {
-                            PanelTube.backgroundPanel.viewInfoText("Die TISS-Daten sind ungültig!",SmallInfoPanel.Warning);
+                            PanelTube.backgroundPanel.viewSmallInfoText("Die TISS-Daten sind ungültig!",SmallInfoPanel.Warning);
                             throw new EscapeException();
                         }
 
                     }else if((un==0)!=(pw==0)){
-                        PanelTube.backgroundPanel.viewInfoText("Die TISS-Daten sind ungültig!", SmallInfoPanel.Warning);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Die TISS-Daten sind ungültig!", SmallInfoPanel.Warning);
                         throw new EscapeException();
                     }
 
@@ -94,7 +94,7 @@ public class First extends SimpleDisplayPanel {
                     }else{
                         setWaiting(true);
                         startUp.propertyService.setProperty(PropertyService.MAJOR,studyDrop.getSelectedItem().toString());
-                        PanelTube.backgroundPanel.viewInfoText("Studium wird geladen. Bitte um etwas Geduld.", SmallInfoPanel.Info);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Studium wird geladen. Bitte um etwas Geduld.", SmallInfoPanel.Info);
                         FetcherTask task = new FetcherTask();
                         task.execute();
                     }
@@ -177,11 +177,11 @@ public class First extends SimpleDisplayPanel {
                 for(Module m : currentModules) {
                     startUp.moduleService.create(m);
                 }
-                PanelTube.backgroundPanel.viewInfoText("Gratuliere, das Studium wurde geladen und importiert!", SmallInfoPanel.Success);
+                PanelTube.backgroundPanel.viewSmallInfoText("Gratuliere, das Studium wurde geladen und importiert!", SmallInfoPanel.Success);
                 startUp.next();
             } catch (ServiceException e) {
                 logger.info("couldn't load LVAs", e);
-                PanelTube.backgroundPanel.viewInfoText("Die LVAs konnten leider nicht geladen werden.", SmallInfoPanel.Error);
+                PanelTube.backgroundPanel.viewSmallInfoText("Die LVAs konnten leider nicht geladen werden.", SmallInfoPanel.Error);
 
             }
             setWaiting(false);

@@ -135,7 +135,7 @@ public class ModulePanel extends StandardInsidePanel {
                 } catch (ServiceException e) {
                     log.info("Exception caught while loading Modules");
                     log.error("Exception: " + e.getMessage());
-                    PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden der Module", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden der Module", SmallInfoPanel.Error);
                 }
 
                 ModulePanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

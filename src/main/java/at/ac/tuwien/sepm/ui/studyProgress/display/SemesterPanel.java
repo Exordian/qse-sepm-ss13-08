@@ -21,15 +21,15 @@ public class SemesterPanel extends StandardInsidePanel {
     private LvaDisplayPanel pane;
     private int height;
 
-    public SemesterPanel(int x, int y, String title, ArrayList<LVA> lvas) {
+    public SemesterPanel(int x, int y) {
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
         this.height=380;
         setBounds(x-51, y, (int) whiteSpace.getWidth(), height);
         initSemesterTitle();
-        this.lvas = lvas;
-        semesterTitle.setText(title);
+        this.lvas = new ArrayList<LVA>();
+        semesterTitle.setText("dummy");
         initLvaTable();
     }
 

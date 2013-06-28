@@ -113,16 +113,16 @@ public class ViewDate extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewDate.this, "Wollen sie diesen Termin wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             dateService.deleteDate(dateEntity.getId());
-                            PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gelöscht.", SmallInfoPanel.Success);
+                            PanelTube.backgroundPanel.viewSmallInfoText("Der Termin wurde gelöscht.", SmallInfoPanel.Success);
                         }
                     } else {
-                        PanelTube.backgroundPanel.viewInfoText("Dieser Termin ist noch nicht in der Datenbank.", SmallInfoPanel.Error);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Dieser Termin ist noch nicht in der Datenbank.", SmallInfoPanel.Error);
                     }
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("DateEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -139,7 +139,7 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     dateEntity.setDescription(description.getText());
                     dateEntity.setIntersectable(intersectable.isSelected());
                     if (convertDateAndTime(fromTime, from).isAfter(convertDateAndTime(toTime, to))) {
-                        PanelTube.backgroundPanel.viewInfoText("Das Start-Datum muss vor dem End-Datum liegen.", SmallInfoPanel.Warning);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Das Start-Datum muss vor dem End-Datum liegen.", SmallInfoPanel.Warning);
                         return;
                     }
                     dateEntity.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
@@ -149,12 +149,12 @@ public class ViewDate extends StandardSimpleInsidePanel {
                     } else {
                         dateService.createDate(dateEntity);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gespeichert.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Der Termin wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("DateEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });

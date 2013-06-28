@@ -139,19 +139,19 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                         int i = JOptionPane.showConfirmDialog(ViewLvaDate.this, "Wollen sie diesen Termin wirklich löschen?", "", JOptionPane.YES_NO_OPTION);
                         if (i == 0) {
                             lvaDateService.delete(lvaDate.getId());
-                            PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gelöscht.", SmallInfoPanel.Success);
+                            PanelTube.backgroundPanel.viewSmallInfoText("Der Termin wurde gelöscht.", SmallInfoPanel.Success);
                         }
                     } else {
-                        PanelTube.backgroundPanel.viewInfoText("Dieser Termin ist noch nicht in der Datenbank.", SmallInfoPanel.Error);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Dieser Termin ist noch nicht in der Datenbank.", SmallInfoPanel.Error);
                     }
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("LvaDateEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("LvaDateEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -171,7 +171,7 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                     lvaDate.setLva(((LvaSelectItem) lva.getSelectedItem()).get().getId());
                     lvaDate.setAttendanceRequired(attendanceRequired.isSelected());
                     if (convertDateAndTime(fromTime, from).isAfter(convertDateAndTime(toTime, to))) {
-                        PanelTube.backgroundPanel.viewInfoText("Das Start-Datum muss vor dem End-Datum liegen.", SmallInfoPanel.Warning);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Das Start-Datum muss vor dem End-Datum liegen.", SmallInfoPanel.Warning);
                         return;
                     }
                     lvaDate.setTime(new TimeFrame(convertDateAndTime(fromTime, from), convertDateAndTime(toTime, to)));
@@ -181,15 +181,15 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
                     } else {
                         lvaDateService.create(lvaDate);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Der Termin wurde gespeichert.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Der Termin wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("LvaDateEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("LvaDateEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });

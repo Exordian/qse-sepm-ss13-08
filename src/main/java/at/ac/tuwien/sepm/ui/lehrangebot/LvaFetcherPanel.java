@@ -141,7 +141,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                     int option = startMergeDialog();
                     logger.debug("user pressed option "+option);
                     if(option == 0) {
-                        PanelTube.backgroundPanel.viewInfoText("Überschneidende neue Daten wurden verworfen.",SmallInfoPanel.Info);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Überschneidende neue Daten wurden verworfen.", SmallInfoPanel.Info);
                     } else if(option == 1) {
                         for(Module m : moduleService.getNewModulesWithMergeConflicts()) {
                             moduleService.update(m);
@@ -149,13 +149,13 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                         for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
                             metaLVAService.update(m);
                         }
-                        PanelTube.backgroundPanel.viewInfoText("Daten wurden erfolgreich gespeichert.",SmallInfoPanel.Success);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gespeichert.", SmallInfoPanel.Success);
                     } else if(option == 2) {
                         logger.info("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),1));
                         PanelTube.backgroundPanel.viewMerge(metaLVAService.getOldMetaLvasWithMergeConflicts(), metaLVAService.getNewMetaLvasWithMergeConflicts());
                     }
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Daten wurden erfolgreich gespeichert.",SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gespeichert.", SmallInfoPanel.Success);
                 }
             } else if(item instanceof CurriculumSelectItem) {
                 moduleService.startMergeSession();
@@ -167,7 +167,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                     int option = startMergeDialog();
                     logger.debug("user pressed option "+option);
                     if(option == 0) {
-                        PanelTube.backgroundPanel.viewInfoText("Überschneidende neue Daten wurden verworfen.",SmallInfoPanel.Info);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Überschneidende neue Daten wurden verworfen.", SmallInfoPanel.Info);
                     } else if(option == 1) {
                         for(Module m : moduleService.getNewModulesWithMergeConflicts()) {
                             moduleService.update(m);
@@ -175,7 +175,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                         for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
                             metaLVAService.update(m);
                         }
-                        PanelTube.backgroundPanel.viewInfoText("Daten wurden erfolgreich gespeichert.",SmallInfoPanel.Success);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gespeichert.", SmallInfoPanel.Success);
 
                     } else if(option == 2) {
                         logger.info("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),1));
@@ -183,7 +183,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
 
                     }
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Daten wurden erfolgreich gespeichert.",SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gespeichert.", SmallInfoPanel.Success);
                 }
             } else if(item instanceof MetaLvaSelectItem) {
                 metaLVAService.startMergeSession();
@@ -193,12 +193,12 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                     int option = startMergeDialog();
                     logger.debug("user pressed option "+option);
                     if(option == 0) {
-                        PanelTube.backgroundPanel.viewInfoText("Überschneidende neue Daten wurden verworfen.",SmallInfoPanel.Info);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Überschneidende neue Daten wurden verworfen.", SmallInfoPanel.Info);
                     } else if(option == 1) {
                         for(MetaLVA m : moduleService.getNewMetaLvasWithMergeConflicts()) {
                             metaLVAService.update(m);
                         }
-                        PanelTube.backgroundPanel.viewInfoText("Daten wurden erfolgreich gespeichert.",SmallInfoPanel.Success);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gespeichert.", SmallInfoPanel.Success);
 
                     } else if(option == 2) {
                         logger.info("merging old: \n"+LVAUtil.formatMetaLVA(metaLVAService.getOldMetaLvasWithMergeConflicts(),1));
@@ -206,15 +206,15 @@ public class LvaFetcherPanel extends StandardInsidePanel {
 
                     }
                 }else{
-                    PanelTube.backgroundPanel.viewInfoText("Daten wurden erfolgreich gespeichert.",SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gespeichert.", SmallInfoPanel.Success);
                 }
             }
         } catch (ServiceException e) {
             logger.error("metalva create failed");
-            PanelTube.backgroundPanel.viewInfoText("Es gab Probleme beim speichern.",SmallInfoPanel.Error);
+            PanelTube.backgroundPanel.viewSmallInfoText("Es gab Probleme beim speichern.", SmallInfoPanel.Error);
         } catch (ValidationException e) {
             logger.error("tried to import invalid lva");
-            PanelTube.backgroundPanel.viewInfoText("Es gab Probleme beim speichern.",SmallInfoPanel.Error);
+            PanelTube.backgroundPanel.viewSmallInfoText("Es gab Probleme beim speichern.", SmallInfoPanel.Error);
 
         }
     }
@@ -258,10 +258,10 @@ public class LvaFetcherPanel extends StandardInsidePanel {
                 treeView.setViewportView(tissTree);
 
                 tissTree.setSelectionPath(new TreePath(tissTree.getModel().getRoot()));
-                PanelTube.backgroundPanel.viewInfoText("Fertig geladen. Klicken sie auf \"Importieren\" um fortzufahren.", SmallInfoPanel.Info);
+                PanelTube.backgroundPanel.viewSmallInfoText("Fertig geladen. Klicken sie auf \"Importieren\" um fortzufahren.", SmallInfoPanel.Info);
             } catch (ServiceException e) {
                 logger.info("couldn't build LvaTree", e);
-                PanelTube.backgroundPanel.viewInfoText("Die LVAs konnten nicht geladen werden.", SmallInfoPanel.Error);
+                PanelTube.backgroundPanel.viewSmallInfoText("Die LVAs konnten nicht geladen werden.", SmallInfoPanel.Error);
             }
             freeUI();
             return null;

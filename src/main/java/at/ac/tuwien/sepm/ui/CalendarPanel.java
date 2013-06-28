@@ -38,7 +38,6 @@ public class CalendarPanel extends StandardInsidePanel {
     private JButton importBtn;
     private JButton exportBtn;
     private JButton todayBtn;
-    private JButton deleteAllDatesBtn;
     private JLabel month;
     private WideComboBox semester;
     private DefaultComboBoxModel<SemesterComboBoxItem> semesterCbmdl;
@@ -57,10 +56,6 @@ public class CalendarPanel extends StandardInsidePanel {
     private static final String OVERWRITE_FILE_TITLE = "Soll die Datei überschrieben werden?";
     private static final String[] OVERWRITE_FILE_BUTTON_TEXT = {"Ja", "Nein"};
 
-    private static final String DELETE_ALL_DATES_MESSAGE = "Es werden alle privaten Termine gelöscht.\nLVA-Termine bleiben gespeichert." +
-            "\nMöchten Sie fortfahren?";
-    private static final String DELETE_ALL_DATES_TITLE = "Termine wirklich löschen?";
-    private static final String[] DELETE_ALL_DATES_BUTTON_TEXT = {"Ja", "Nein"};
 
     private JFileChooser jfc;
 
@@ -114,13 +109,13 @@ public class CalendarPanel extends StandardInsidePanel {
 
     private void createTop() {
         month = new JLabel(activeView.getTimeIntervalInfo().toUpperCase());
-        month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 500, 30);
+        month.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5, (int)(size.getHeight()/2-image.getHeight(null)/2)-31, 800, 30);
         month.setForeground(Color.WHITE);
         month.setFont(standardTitleFont);
 
         semester = new WideComboBox();
         semesterCbmdl = new DefaultComboBoxModel<>();
-        semester.setBounds((int)((size.getWidth()/2)-(image.getWidth(null)/2))+5+295, (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 90, 20);
+        semester.setBounds((int) ((size.getWidth() / 2) - (image.getWidth(null) / 2)) + 5 + 295, (int) (size.getHeight() / 2 - image.getHeight(null) / 2) + 5, 130, 20);
         semester.setFont(standardTextFont);
 
         todayBtn = new JButton("Heute");
@@ -131,42 +126,13 @@ public class CalendarPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent e) {
                 activeView.goToDay(DateTime.now());
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
-            }
-        });
-
-        deleteAllDatesBtn = new JButton("Private Termine löschen");
-        deleteAllDatesBtn.setBounds((int)(todayBtn.getX() + todayBtn.getWidth() + 2), (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 180, 20);
-        deleteAllDatesBtn.setFont(standardButtonFont);
-        deleteAllDatesBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    int i = JOptionPane.showOptionDialog(new JFrame(),
-                            DELETE_ALL_DATES_MESSAGE,
-                            DELETE_ALL_DATES_TITLE,
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,
-                            DELETE_ALL_DATES_BUTTON_TEXT,
-                            DELETE_ALL_DATES_BUTTON_TEXT[1]);
-
-                    if(i == 0) {
-                        dateService.deleteAllDates();
-                        PanelTube.backgroundPanel.viewInfoText("Termine erfolgreich gelöscht", SmallInfoPanel.Success);
-                        calPanelMonth.refresh();
-                        calPanelWeek.refresh();
-                    }
-                } catch (ServiceException e1) {
-                    log.error(e1);
-                    PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim löschen aufgetreten", SmallInfoPanel.Error);
-                }
+                semester.setSelectedIndex(semester.getItemCount()-1);
             }
         });
 
         this.add(month);
         this.add(semester);
         this.add(todayBtn);
-        this.add(deleteAllDatesBtn);
     }
 
     @PostConstruct
@@ -178,7 +144,6 @@ public class CalendarPanel extends StandardInsidePanel {
                     if( ((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getSemester() != null) {
                         activeView.goToDay(SemesterDateGenerator.getTimeFrame(((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getYear(), ((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getSemester()).from());
                         month.setText(activeView.getTimeIntervalInfo().toUpperCase().toUpperCase());
-                        semester.setSelectedIndex(0);
                     }
                 }
             }
@@ -233,28 +198,36 @@ public class CalendarPanel extends StandardInsidePanel {
     }
 
     private void refreshTop() {
+        SemesterComboBoxItem selectedSemester = null;
+        if (semester != null && semester.getItemCount() != 0) {
+            selectedSemester = (SemesterComboBoxItem)semester.getSelectedItem();
+        }
+
         semester.removeAllItems();
-        semesterCbmdl.addElement(new SemesterComboBoxItem(0, null));
-
-        boolean winterSem = true;// lvaService.isFirstSemesterAWinterSemester();
-        int semesters=0;// = lvaService.numberOfSemestersInStudyProgress();
-        int year=DateTime.now().getYear();// = lvaService.firstYearInStudyProgress();
-        try{
-            winterSem = lvaService.isFirstSemesterAWinterSemester();
-            semesters = lvaService.numberOfSemestersInStudyProgress();
-            year = lvaService.firstYearInStudyProgress();
-        }catch (ServiceException e) {
-            log.error(e);
-        }
-        for (int x = 0; x < semesters; x++) {
-            Semester temp = winterSem ? Semester.W : Semester.S;
-            semesterCbmdl.addElement(new SemesterComboBoxItem(year, temp));
-            if (winterSem) {
-                year++;
+        try {
+            boolean winterSem = lvaService.isFirstSemesterAWinterSemester();
+            int semesters = lvaService.numberOfSemestersInStudyProgress();
+            int year = lvaService.firstYearInStudyProgress();
+            for (int x = 0; x < semesters; x++) {
+                Semester temp = winterSem ? Semester.W : Semester.S;
+                semesterCbmdl.addElement(new SemesterComboBoxItem(year, temp));
+                if (winterSem) {
+                    year++;
+                }
+                winterSem = !winterSem;
             }
-            winterSem = !winterSem;
+        } catch (ServiceException e) {
+            PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
         }
 
+        if (selectedSemester != null) {
+            for (int i = 0; i < semester.getModel().getSize();i++) {
+                if (((SemesterComboBoxItem)semester.getItemAt(i)).equals(selectedSemester)) {
+                    semester.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void createImportButton() {
@@ -273,8 +246,7 @@ public class CalendarPanel extends StandardInsidePanel {
                         datesImported = iCalendarService.icalImport(file);
                         activeView.refresh();
                     } catch (ServiceException e) {
-                        PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Error);
-                        log.error(e);
+                        PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
                         return;
                     }
                 } else {
@@ -284,8 +256,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 if(datesImported == 1) {
                     date = " Termin ";
                 }
-                PanelTube.backgroundPanel.viewInfoText(datesImported + date + "erfolgreich exportiert.", SmallInfoPanel.Success);
-                // PanelTube.backgroundPanel.viewImport();
+                PanelTube.backgroundPanel.viewSmallInfoText(datesImported + date + "erfolgreich exportiert.", SmallInfoPanel.Success);
             }
         });
 
@@ -294,7 +265,7 @@ public class CalendarPanel extends StandardInsidePanel {
 
     private void createExportButton() {
         exportBtn = new JButton("Als iCalendar exportieren");
-        exportBtn.setBounds(669, 581, 175, 38);
+        exportBtn.setBounds(639, 581, 200, 38);
         exportBtn.setFont(standardButtonFont);
         exportBtn.addActionListener(new ActionListener() {
             @Override
@@ -319,8 +290,9 @@ public class CalendarPanel extends StandardInsidePanel {
                             try {
                                 iCalendarService.icalExport(file);
                             } catch (ServiceException e) {
-                                PanelTube.backgroundPanel.viewInfoText(e.getMessage(), SmallInfoPanel.Error);
+                                PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
                                 log.error(e);
+                                PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
                                 return;
                             }
                         }
@@ -328,7 +300,7 @@ public class CalendarPanel extends StandardInsidePanel {
                         return;
                     }
                 } while(jfcChosen == JFileChooser.APPROVE_OPTION && breakExport==1);
-                PanelTube.backgroundPanel.viewInfoText("Kalender erfolgreich exportiert.", SmallInfoPanel.Success);
+                PanelTube.backgroundPanel.viewSmallInfoText("Kalender erfolgreich exportiert.", SmallInfoPanel.Success);
             }
         });
 
@@ -360,7 +332,7 @@ public class CalendarPanel extends StandardInsidePanel {
                     activeView.last();
                     month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 } catch (ServiceException e) {
-                    PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden des Kalenders.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden des Kalenders.", SmallInfoPanel.Error);
                     // TODO use info panel
                     month.setText("ERROR");
                 }
@@ -379,7 +351,7 @@ public class CalendarPanel extends StandardInsidePanel {
                     activeView.next();
                     month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 } catch (ServiceException e) {
-                    PanelTube.backgroundPanel.viewInfoText("Fehler beim Laden des Kalenders.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden des Kalenders.", SmallInfoPanel.Error);
                     // TODO use info panel
                     month.setText("ERROR");
                 }
@@ -490,6 +462,7 @@ public class CalendarPanel extends StandardInsidePanel {
         if (month != null && semester != null && fwd != null && bwd != null) {
             if (s.equals("show")) {
                 month.setVisible(true);
+                todayBtn.setVisible(true);
                 semester.setVisible(true);
                 fwd.setVisible(true);
                 bwd.setVisible(true);
@@ -497,6 +470,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 exportBtn.setVisible(true);
             } else if (s.equals("hide")) {
                 month.setVisible(false);
+                todayBtn.setVisible(false);
                 semester.setVisible(false);
                 fwd.setVisible(false);
                 bwd.setVisible(false);
@@ -512,6 +486,17 @@ public class CalendarPanel extends StandardInsidePanel {
     public void refresh() {
         activeView.refresh();
         refreshTop();
+        if (semester.getItemCount() != 0) {
+            SemesterComboBoxItem temp = (SemesterComboBoxItem)semester.getSelectedItem();
+            int month = 0;
+            if(temp.getSemester() == Semester.S) {
+                month = 3;
+            } else {
+                month = 10;
+            }
+            DateTime tempTime = new DateTime(temp.getYear(), month, 1, 1, 1);
+            activeView.goToDay(tempTime);
+        }
     }
 
     public void jumpToDate(DateTime anyDateOfWeek) {
@@ -534,6 +519,13 @@ public class CalendarPanel extends StandardInsidePanel {
 
         public Semester getSemester() {
             return sem;
+        }
+
+        public boolean equals(SemesterComboBoxItem other) {
+            if (this.getYear() == other.getYear() && this.getSemester() == other.getSemester()) {
+                return true;
+            }
+            return false;
         }
 
         public String toString() {

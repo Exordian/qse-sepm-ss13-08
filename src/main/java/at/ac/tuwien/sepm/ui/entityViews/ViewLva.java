@@ -88,7 +88,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
             }
         } catch (ServiceException e) {
             log.error("Exception: "+ e.getMessage());
-            PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
+            PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
         }
         if (lva == null) {
             this.lva=new LVA();
@@ -150,15 +150,15 @@ public class ViewLva extends StandardSimpleInsidePanel {
                     } else {
                         lvaService.create(lva);
                     }
-                    PanelTube.backgroundPanel.viewInfoText("Die Lva wurde gespeichert.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Lva wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("LvaEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
                     log.error("LvaEntity is invalid.");
-                    PanelTube.backgroundPanel.viewInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -265,7 +265,7 @@ public class ViewLva extends StandardSimpleInsidePanel {
             }
         } catch (ServiceException e) {
             log.error("Exception: "+ e.getMessage());
-            PanelTube.backgroundPanel.viewInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
+            PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
         }
         metaLVAInput.setFont(standardTextFont);
         metaLVAInput.setBounds(inputLeftX, metaLVALabel.getY(), inputLeftWidth,textHeight);

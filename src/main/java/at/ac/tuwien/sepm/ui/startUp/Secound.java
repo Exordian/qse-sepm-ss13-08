@@ -50,7 +50,7 @@ public class Secound extends SimpleDisplayPanel {
                         startUp.propertyService.setProperty(PropertyService.FACEBOOK_USER, facebookUsername.getText());
                         startUp.propertyService.setProperty(PropertyService.FACEBOOK_PASSWORD, new String(facebookPassword.getPassword()));
                     } else if ((un == 0) != (pw == 0)) {
-                        PanelTube.backgroundPanel.viewInfoText("Die Facebook-Daten sind ungültig!", SmallInfoPanel.Warning);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Die Facebook-Daten sind ungültig!", SmallInfoPanel.Warning);
                         throw new EscapeException();
                     }
                     startUp.next();

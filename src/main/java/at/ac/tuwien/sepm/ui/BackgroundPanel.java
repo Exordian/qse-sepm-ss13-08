@@ -43,9 +43,13 @@ public class BackgroundPanel extends JPanel {
     private ViewModule viewModule;
     private ViewStartUp viewStartup;
     private Image image;
+
     private StandardInsidePanel lastComponent;
+    private StandardSimpleInsidePanel lastSimpleComponent;
+
     private int lastImage;
     private SmallInfoPanel smallInfoPanel;
+    private BiggerInfoPanel biggerInfoPanel;
     private ArrayList<JButton> tabs;
 
     private Timer hideInfoTimer;
@@ -58,7 +62,7 @@ public class BackgroundPanel extends JPanel {
     @Autowired
     public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate,
                            ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,
-                           ViewModule viewModule, SmallInfoPanel smallInfoPanel,ViewMerge viewMerge,ViewStartUp viewStartUp,
+                           ViewModule viewModule, SmallInfoPanel smallInfoPanel, BiggerInfoPanel biggerInfoPanel, ViewMerge viewMerge,ViewStartUp viewStartUp,
                            PropertyService propertyService) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
@@ -75,6 +79,7 @@ public class BackgroundPanel extends JPanel {
         this.viewLVAdate=viewLVAdate;
         this.viewTodo=viewTodo;
         this.viewDeadline=viewDeadline;
+        this.biggerInfoPanel=biggerInfoPanel;
         this.viewStartup = viewStartUp;
         changeImage(1);
         createPropertiesButton();
@@ -85,10 +90,9 @@ public class BackgroundPanel extends JPanel {
             viewStartup(true);
         }
 
-
-
-        log.info("Background Panel initialized.");
+        log.info("Panels initialized.");
     }
+
     public void setControlsEnabled(boolean b){
         for(JButton button:tabs){
             button.setEnabled(b);
@@ -100,12 +104,13 @@ public class BackgroundPanel extends JPanel {
         }
         properties.setEnabled(b);
     }
+
     //wenn neue entity erzeugt werden soll ->  viewDate(null)
     public void viewDate(DateEntity dateEntity, DateTime dateTime) {
         removeAddedPanels();
         viewDate.setDateEntity(dateEntity, dateTime);
         viewDate.setVisible(true);
-        this.add(viewDate);
+        addSimplePanel(viewDate);
         this.revalidate();
         this.repaint();
     }
@@ -114,7 +119,7 @@ public class BackgroundPanel extends JPanel {
         removeAddedPanels();
         viewMerge.setIntersectingMetaLVAs(oldMetaLVAs, newMetaLVAs);
         viewMerge.setVisible(true);
-        this.add(viewMerge);
+        addSimplePanel(viewMerge);
         this.revalidate();
         this.repaint();
     }
@@ -123,7 +128,7 @@ public class BackgroundPanel extends JPanel {
         removeAddedPanels();
         viewLVAdate.setLVADateEntity(lvaDate, dateTime);
         viewLVAdate.setVisible(true);
-        this.add(viewLVAdate);
+        addSimplePanel(viewLVAdate);
         this.revalidate();
         this.repaint();
     }
@@ -132,7 +137,7 @@ public class BackgroundPanel extends JPanel {
         removeAddedPanels();
         viewTodo.setTodo(todo);
         viewTodo.setVisible(true);
-        this.add(viewTodo);
+        addSimplePanel(viewTodo);
         this.revalidate();
         this.repaint();
     }
@@ -141,7 +146,7 @@ public class BackgroundPanel extends JPanel {
         removeAddedPanels();
         viewDeadline.setDeadline(deadline);
         viewDeadline.setVisible(true);
-        this.add(viewDeadline);
+        addSimplePanel(viewDeadline);
         this.revalidate();
         this.repaint();
     }
@@ -150,7 +155,7 @@ public class BackgroundPanel extends JPanel {
         removeAddedPanels();
         viewLva.setLva(lva);
         viewLva.setVisible(true);
-        this.add(viewLva);
+        addSimplePanel(viewLva);
         this.revalidate();
         this.repaint();
     }
@@ -159,7 +164,7 @@ public class BackgroundPanel extends JPanel {
         removeAddedPanels();
         viewMetaLva.setMetaLva(metalva);
         viewMetaLva.setVisible(true);
-        this.add(viewMetaLva);
+        addSimplePanel(viewMetaLva);
         this.revalidate();
         this.repaint();
     }
@@ -167,10 +172,11 @@ public class BackgroundPanel extends JPanel {
         removeAddedPanels();
         viewModule.setModule(module);
         viewModule.setVisible(true);
-        this.add(viewModule);
+        addSimplePanel(viewModule);
         this.revalidate();
         this.repaint();
     }
+
     public void viewStartup(boolean lock) {
         setControlsEnabled(!lock);
         removeAddedPanels();
@@ -195,8 +201,10 @@ public class BackgroundPanel extends JPanel {
     *   2 = SmallInfoPanel.Info,
     *   3 = SmallInfoPanel.Warning
     *   4 = SmallInfoPanel.Success)
+    *
+    *   Für die größere Ausgabe: einfach für jede neue Fehlerzeile ein \n in den String einfügen
     */
-    public void viewInfoText(String s, int nmb) {
+    public void viewSmallInfoText(String s, int nmb) {
         smallInfoPanel.setVisible(true);
         smallInfoPanel.setInfoText(s, nmb);
         this.add(smallInfoPanel);
@@ -205,20 +213,53 @@ public class BackgroundPanel extends JPanel {
         hideInfoText();
     }
 
+    public void viewBiggerInfoText(String message) {
+        biggerInfoPanel.setVisible(true);
+        biggerInfoPanel.setInfoText(message);
+        this.add(biggerInfoPanel);
 
-    void hideInfoText() {
-        if(hideInfoTimer!=null){
-            hideInfoTimer.stop();
+        removeAddedPanels();
+        if (lastSimpleComponent == null) {
+            this.add(lastComponent);
+        } else {
+            this.add(lastSimpleComponent);
         }
+
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void hideInfoText() {
+        stopInfoTextTimer();
         hideInfoTimer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 smallInfoPanel.setVisible(false);
                 BackgroundPanel.this.remove(smallInfoPanel);
+                if (biggerInfoPanel.isVisible()) {
+                    hideBiggerInfoText();
+                }
             }
         });
         hideInfoTimer.setRepeats(false);
-        hideInfoTimer.start();
+        startInfoTextTimer();
+    }
+
+    public void hideBiggerInfoText() {
+        biggerInfoPanel.setVisible(false);
+        BackgroundPanel.this.remove(biggerInfoPanel);
+    }
+
+    public void stopInfoTextTimer() {
+        if(hideInfoTimer!=null && hideInfoTimer.isRunning()){
+            hideInfoTimer.stop();
+        }
+    }
+
+    public void startInfoTextTimer() {
+        if (!hideInfoTimer.isRunning()) {
+            hideInfoTimer.start();
+        }
     }
 
     @Override
@@ -245,9 +286,15 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewStartup);
     }
 
+    private void addSimplePanel(StandardSimpleInsidePanel c) {
+        this.add(c);
+        lastSimpleComponent=c;
+    }
+
     private void addPanel(StandardInsidePanel c) {
         this.add(c);
         lastComponent = c;
+        lastSimpleComponent = null;
     }
 
     public void showLastComponent() {
@@ -294,6 +341,7 @@ public class BackgroundPanel extends JPanel {
             this.repaint();
         } catch (IOException e) {
             log.error("Error: " + e.getMessage());
+            viewSmallInfoText("Fehler beim Lesen aus der Datenbank aufgetreten",SmallInfoPanel.Error);
         }
     }
 
