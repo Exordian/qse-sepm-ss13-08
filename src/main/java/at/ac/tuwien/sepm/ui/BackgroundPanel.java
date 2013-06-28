@@ -330,10 +330,10 @@ public class BackgroundPanel extends JPanel {
                     propsPanel.refresh();
                     break;
                 case 5:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));//todo grafik für startup-wizard in der kein tab selektiert ist (die buttons sind noch intakt).
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/nothingSelected.jpg"));
                     break;
                 case 6:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/settings.jpg"));//todo grafik für startup-wizard in der alle tabs deaktiviert sind.
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/nothingness.jpg"));
                     break;
                 default:
                     break;

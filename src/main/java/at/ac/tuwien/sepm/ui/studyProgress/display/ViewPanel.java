@@ -85,13 +85,13 @@ public class ViewPanel extends StandardInsidePanel {
                     temp.add(l);
             }
             semester.setLvas(temp);
-            String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
-            semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
         } catch (ServiceException e) {
             log.error(e.getMessage());
         } catch (ValidationException e) {
             log.error(e.getMessage());
         }
+        String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
+        semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
     }
 
     private void initButtons() {
