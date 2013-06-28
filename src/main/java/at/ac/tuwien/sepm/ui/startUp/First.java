@@ -93,7 +93,7 @@ public class First extends SimpleDisplayPanel {
                         startUp.next();
                     }else{
                         setWaiting(true);
-                        startUp.propertyService.setProperty("user.majorName",studyDrop.getSelectedItem().toString());
+                        startUp.propertyService.setProperty(PropertyService.MAJOR,studyDrop.getSelectedItem().toString());
                         PanelTube.backgroundPanel.viewInfoText("Studium wird geladen. Bitte um etwas Geduld.", SmallInfoPanel.Info);
                         FetcherTask task = new FetcherTask();
                         task.execute();
@@ -119,7 +119,7 @@ public class First extends SimpleDisplayPanel {
         addText("\n\nUm dir LVAs für dein aktuelles Semester einzutragen (was du für alle Funktionen in dieser App brauchst), " +
                 "musst du vorher ein Studium importieren. Wähle hier dein Studium aus. Die Daten werden aus dem TISS ausgelesen. " +
                 "Du kannst auch diesen Schritt auch erst später unter Lehrangebot -> Importieren " +
-                "ausführen\n.",false);
+                "ausführen.\n",false);
         addRow(new JTextArea("Studium"), studyDrop, false);
         addText("", false);
 

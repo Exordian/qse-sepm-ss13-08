@@ -201,8 +201,12 @@ public class ViewModule extends StandardSimpleInsidePanel {
 
     public void setModule(Module module) {
         priorityInput.setText("");
-        if (module == null) {
-
+        boolean createNew = (module == null);
+        metaLVADisplayPanel.setVisible(!createNew);
+        metaLVALabel.setVisible(!createNew);
+        priorityInput.setVisible(!createNew);
+        priorityLabel.setVisible(!createNew);
+        if (createNew) {
             this.module = new Module();
             this.module.setMetaLvas(new ArrayList<MetaLVA>(0));
             changeTitle("Neues Modul");
