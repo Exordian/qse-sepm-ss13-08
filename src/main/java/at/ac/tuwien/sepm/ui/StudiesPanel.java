@@ -151,4 +151,8 @@ public class StudiesPanel extends StandardInsidePanel {
         }
     }
 
+    public void refresh() {
+        viewPanel.refresh();
+        planningPanel.refresh();
+    }
 }

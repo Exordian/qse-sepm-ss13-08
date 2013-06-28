@@ -18,6 +18,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,7 +109,7 @@ public class ViewPanel extends StandardInsidePanel {
         bwd.setOpaque(false);
         bwd.setContentAreaFilled(false);
         bwd.setBorderPainted(false);
-        bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        bwd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -133,7 +135,7 @@ public class ViewPanel extends StandardInsidePanel {
     }
 
     private void initSemesterPanel() {
-        semester = new SemesterPanel(this.getX(), majorName.getY() + majorName.getHeight() + 30, "1. Semester", new ArrayList<LVA>());
+        semester = new SemesterPanel(this.getX(), majorName.getY() + majorName.getHeight() + 30);
         this.add(semester);
     }
 

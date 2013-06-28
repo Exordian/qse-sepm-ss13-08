@@ -176,6 +176,7 @@ public class BackgroundPanel extends JPanel {
         this.revalidate();
         this.repaint();
     }
+
     public void viewStartup(boolean lock) {
         setControlsEnabled(!lock);
         removeAddedPanels();

@@ -126,6 +126,7 @@ public class CalendarPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent e) {
                 activeView.goToDay(DateTime.now());
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                semester.setSelectedIndex(semester.getItemCount()-1);
             }
         });
 
@@ -197,8 +198,12 @@ public class CalendarPanel extends StandardInsidePanel {
     }
 
     private void refreshTop() {
+        SemesterComboBoxItem selectedSemester = null;
+        if (semester != null && semester.getItemCount() != 0) {
+            selectedSemester = (SemesterComboBoxItem)semester.getSelectedItem();
+        }
+
         semester.removeAllItems();
-        //semesterCbmdl.addElement(new SemesterComboBoxItem(0, null));
         try {
             boolean winterSem = lvaService.isFirstSemesterAWinterSemester();
             int semesters = lvaService.numberOfSemestersInStudyProgress();
@@ -213,6 +218,15 @@ public class CalendarPanel extends StandardInsidePanel {
             }
         } catch (ServiceException e) {
             PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
+        }
+
+        if (selectedSemester != null) {
+            for (int i = 0; i < semester.getModel().getSize();i++) {
+                if (((SemesterComboBoxItem)semester.getItemAt(i)).equals(selectedSemester)) {
+                    semester.setSelectedIndex(i);
+                    break;
+                }
+            }
         }
     }
 
@@ -243,7 +257,6 @@ public class CalendarPanel extends StandardInsidePanel {
                     date = " Termin ";
                 }
                 PanelTube.backgroundPanel.viewSmallInfoText(datesImported + date + "erfolgreich exportiert.", SmallInfoPanel.Success);
-                // PanelTube.backgroundPanel.viewImport();
             }
         });
 
@@ -473,6 +486,17 @@ public class CalendarPanel extends StandardInsidePanel {
     public void refresh() {
         activeView.refresh();
         refreshTop();
+        if (semester.getItemCount() != 0) {
+            SemesterComboBoxItem temp = (SemesterComboBoxItem)semester.getSelectedItem();
+            int month = 0;
+            if(temp.getSemester() == Semester.S) {
+                month = 3;
+            } else {
+                month = 10;
+            }
+            DateTime tempTime = new DateTime(temp.getYear(), month, 1, 1, 1);
+            activeView.goToDay(tempTime);
+        }
     }
 
     public void jumpToDate(DateTime anyDateOfWeek) {
@@ -495,6 +519,13 @@ public class CalendarPanel extends StandardInsidePanel {
 
         public Semester getSemester() {
             return sem;
+        }
+
+        public boolean equals(SemesterComboBoxItem other) {
+            if (this.getYear() == other.getYear() && this.getSemester() == other.getSemester()) {
+                return true;
+            }
+            return false;
         }
 
         public String toString() {
