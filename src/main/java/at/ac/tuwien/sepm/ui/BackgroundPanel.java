@@ -89,14 +89,8 @@ public class BackgroundPanel extends JPanel {
             //things, which happen on first startup
             viewStartup(true);
         }
-        viewSmallInfoText("test1-blablablablablablablablablablablablablaaaaaaaaaaaaaaaaablablablabla\n" +
-                "test3-blablablablablablablablablablablablablablablablabla\n" +
-                "test4-blablablablablablablablablablablablablablablablabla\n" +
-                "test5-blablablablablablablablablablablablablablablablabla\n" +
-                "test6-blablablablablablablablablablablablablablablablabla\n" +
-                "test7-blablablablablablablablablablablablablablablablabla\n" +
-                "test8-blablablablablablablablablablablablablablablablabla\n", 1);
-        log.info("Background Panel initialized.");
+
+        log.info("Panels initialized.");
     }
 
     public void setControlsEnabled(boolean b){
@@ -206,6 +200,8 @@ public class BackgroundPanel extends JPanel {
     *   2 = SmallInfoPanel.Info,
     *   3 = SmallInfoPanel.Warning
     *   4 = SmallInfoPanel.Success)
+    *
+    *   Für die größere Ausgabe: einfach für jede neue Fehlerzeile ein \n in den String einfügen
     */
     public void viewSmallInfoText(String s, int nmb) {
         smallInfoPanel.setVisible(true);

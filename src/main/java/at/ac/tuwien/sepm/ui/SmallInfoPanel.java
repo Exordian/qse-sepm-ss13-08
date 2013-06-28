@@ -89,9 +89,7 @@ public class SmallInfoPanel extends StandardInsidePanel {
 
     public void setInfoText(String s, int nmb) {
         this.message = s;
-        if(s.length() <= MAX_LETTERS) {
-            infoText.setText(this.message);
-        } else {
+        if(s.length() >= MAX_LETTERS || s.contains("(\r\n|\n)")) {
             switch(nmb) {
                 case 1:
                     infoText.setText("Fehler! Um mehr zu erfahren, druecken Sie bitte rechts.");
@@ -108,6 +106,8 @@ public class SmallInfoPanel extends StandardInsidePanel {
                 default:
                     break;
             }
+        } else {
+            infoText.setText(this.message);
         }
         infoText.setFont(standardButtonFont);
         changeImage(nmb);

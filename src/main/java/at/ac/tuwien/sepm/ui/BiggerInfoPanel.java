@@ -53,8 +53,9 @@ public class BiggerInfoPanel extends StandardInsidePanel {
     }
 
     public void setInfoText(String s) {
-        s.replaceAll("(\r\n|\n)", "(\r\n|\n) *");
-        infoText.setText(s);
+        String gg = "-" + s.replaceAll("(\r\n|\n)", "\r\n" + "-");
+        gg = gg.substring(0, gg.length()-1);
+        infoText.setText(gg);
     }
 
     @Override
