@@ -276,18 +276,19 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         int buttonWidthInit =buttonWidth;
         public MySimplePanel(double width, double height, StandardInsidePanel standardInsidePanel) {
             super(width, height, standardInsidePanel);
-            inputWidthLeft-= 40;
-            labelWidthLeft-=50;
-            inputXLeft-=30;
-            labelXLeft+=bigSpace;
+            //inputWidthLeft-= 40;
+            //labelWidthLeft-=30;
+            //labelXLeft+=bigSpace;
+            //inputXLeft=labelXLeft+labelWidthLeft+smallSpace;
+
 
             refresh();
 
         }
         public void refresh(){
             buttonWidth= inputWidthLeft;
-            lastLeftBottomHeight=getHeight();
-            lastRightBottomHeight=getHeight();
+            lastLeftBottomHeight=getHeight()-bigSpace;
+            lastRightBottomHeight=lastLeftBottomHeight;
             lastLeftTopHeight=bigSpace;
             lastRightTopHeight=bigSpace;
             removeAll();
@@ -299,9 +300,8 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             addRow(new JTextArea("Jahr"),year,true);
             addRow(new JTextArea("Semester"),semester,true);
             addEmptyArea(bigSpace*3,true);
-            addRow(new JTextArea("Startup-Wizard"),showWizard,true);
-
             buttonWidth=buttonWidthInit;
+            addRow(new JTextArea("Startup-Wizard"),showWizard,true);
 
             addEmptyArea(bigSpace*2,false);
             addRow(new JTextArea("TISS-login"),tiss,false);
@@ -317,10 +317,11 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 addText("Eingeloggt als: " + propertyService.getProperty(PropertyService.FACEBOOK_USER),Font.BOLD,false);
                 //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(PropertyService.TISS_USER));
             }
-            addEmptyArea(bigSpace,false,false);
 
             buttonWidth=labelWidthRight+20;
-            addRow(deleteALL,save,false,false);
+            addRow(deleteALL,deleteAllDatesBtn,true,false);
+            addRow(null,save,false,false);
+
         }
     }
 }

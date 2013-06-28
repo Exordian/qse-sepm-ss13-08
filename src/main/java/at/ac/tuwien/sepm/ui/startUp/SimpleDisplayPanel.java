@@ -165,9 +165,8 @@ public abstract class SimpleDisplayPanel extends JPanel{
                 textLabel.setEditable(false);
             }
             add(label);
-            if(!top){
-                tempHeight-=label.getPreferredSize().height;
-            }
+
+
 
             if(label instanceof JButton){
                 tempLabelWidth = buttonWidth;
@@ -183,10 +182,14 @@ public abstract class SimpleDisplayPanel extends JPanel{
                     tempLabelWidth=(tempInputX - tempLabelX) + tempInputWidth;
                 }
             }
+            int tempToAdd = label.getPreferredSize().height;
+            if(!top){
+                tempHeight-=tempToAdd;
+            }
             label.setBounds(tempLabelX, tempHeight,tempLabelWidth,label.getPreferredSize().height);
             label.setBounds(tempLabelX, tempHeight,tempLabelWidth,label.getPreferredSize().height);
             if(!top){
-                tempHeight+=label.getPreferredSize().height;
+                tempHeight+=tempToAdd;
             }
             tempMax = label.getPreferredSize().height;
         }
@@ -206,29 +209,21 @@ public abstract class SimpleDisplayPanel extends JPanel{
                     input.setFont(standardInsidePanel.standardButtonFont);
                 }
                 JButton inputButton = (JButton)input;
-                if(!top){
-                    tempHeight-=input.getPreferredSize().height;
-                }
                 tempWidth=buttonWidth;//inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, input.getPreferredSize().height);
             }else if(input instanceof JProgressBar){
-                if(!top){
-                    tempHeight-=input.getPreferredSize().height;
-                }
                 JProgressBar inputButton = (JProgressBar)input;
                 tempWidth=buttonWidth;//inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, input.getPreferredSize().height);
             }else{
-                if(!top){
-                    tempHeight-=input.getPreferredSize().height;
-                }
                 if(input instanceof JTextComponent){
                     JTextComponent inputText = (JTextComponent)input;
                     inputText.setBorder(new JTextField().getBorder());
                 }
             }
-            input.setBounds(tempInputX+(tempInputWidth-tempWidth), tempHeight, tempWidth, input.getPreferredSize().height);
             if(!top){
-                tempHeight+=input.getPreferredSize().height;
+                tempHeight-=input.getPreferredSize().height;
             }
+            input.setBounds(tempInputX+(tempInputWidth-tempWidth), tempHeight, tempWidth, input.getPreferredSize().height);
+
 
             tempMax=Math.max(tempMax,input.getBounds().height);
         }
