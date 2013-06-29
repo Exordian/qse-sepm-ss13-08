@@ -69,6 +69,7 @@ public class ViewPanel extends StandardInsidePanel {
     }
 
     public void refresh() {
+        semesterList.refresh();
         ArrayList<LVA> temp = null;
         setMajorName();
         if (getSemesterAnzahl() <= 1 && makeSure == null) {
@@ -203,7 +204,7 @@ public class ViewPanel extends StandardInsidePanel {
     private class SemesterList {
         private int semesterAnz;
         private boolean currWinterSemester;
-        private int currSemester;
+        private int currSemester = 0;
 
         SemesterList() {
             refresh();
@@ -211,10 +212,12 @@ public class ViewPanel extends StandardInsidePanel {
 
         void refresh() {
             this.semesterAnz = getSemesterAnzahl();
-            this.currSemester = this.semesterAnz;
-            this.currWinterSemester = isFirstSemesterWinter();
-            for (int i = 1; i  < semesterAnz; i++) {
-                this.currWinterSemester =!this.currWinterSemester;
+            if (currSemester == 0) {
+                this.currSemester = semesterAnz;
+                this.currWinterSemester = isFirstSemesterWinter();
+                for (int i = 1; i  < semesterAnz; i++) {
+                    this.currWinterSemester =!this.currWinterSemester;
+                }
             }
         }
 
