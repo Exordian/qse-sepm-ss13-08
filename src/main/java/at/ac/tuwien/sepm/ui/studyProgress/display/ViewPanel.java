@@ -41,6 +41,7 @@ public class ViewPanel extends StandardInsidePanel {
     private PropertyService propertyService;
 
     private SemesterList semesterList;
+    private ArrayList<LVA> makeSure = null;
 
     //private int semesterAnz = 6;
     //private int currSemester = 1;
@@ -67,17 +68,18 @@ public class ViewPanel extends StandardInsidePanel {
         revalidate();
     }
 
-    //@Scheduled(fixedDelay = 5000)
     public void refresh() {
-        if (getSemesterAnzahl() <= 1) {
-            //   bwd.setVisible(false);        //todo remove if bwd and fwd button setcursor is resolved
-            //  fwd.setVisible(false);
+        ArrayList<LVA> temp = null;
+        setMajorName();
+        if (getSemesterAnzahl() <= 1 && makeSure == null) {
+            bwd.setVisible(false);
+            fwd.setVisible(false);
         } else {
             bwd.setVisible(true);
             fwd.setVisible(true);
         }
         try {
-            ArrayList<LVA> temp = new ArrayList<>();
+            temp = new ArrayList<>();
             for (LVA l : service.readByYearAndSemester(semesterList.getCurrentYear(), semesterList.getCurrentSemesterIsWinterSemester())) {
                 if (l.isInStudyProgress())
                     temp.add(l);
@@ -88,8 +90,25 @@ public class ViewPanel extends StandardInsidePanel {
         } catch (ValidationException e) {
             log.error(e.getMessage());
         }
-        String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
-        semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
+        if (getSemesterAnzahl() != 0 && semesterList.getCurrentSemester() != 0 && temp != null) {
+            if (temp.isEmpty() && makeSure == null) {
+                semester.setSemesterTitle("Bitte planen Sie ein Semester!");
+                bwd.setVisible(false);
+                fwd.setVisible(false);
+            } else {
+                makeSure=temp;
+                String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
+                semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
+            }
+        } else {
+            semester.setSemesterTitle("Bitte planen Sie ein Semester!");
+            bwd.setVisible(false);
+            fwd.setVisible(false);
+        }
+    }
+
+    public void refreshSemesterList() {
+        semesterList.refresh();
     }
 
     private void initButtons() {
@@ -107,7 +126,7 @@ public class ViewPanel extends StandardInsidePanel {
         bwd.setOpaque(false);
         bwd.setContentAreaFilled(false);
         bwd.setBorderPainted(false);
-        bwd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        bwd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));     //todo  bwd and fwd button setcursor doesnt work
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -144,7 +163,10 @@ public class ViewPanel extends StandardInsidePanel {
     }
 
     public void setMajorName() {
-        String temp = propertyService.getProperty(PropertyService.MAJOR,"Kein Studium angegeben");
+        String temp = propertyService.getProperty(PropertyService.MAJOR);
+        if (temp == null || temp.isEmpty()) {
+            majorName.setText("Kein Studium angegeben");
+        }
         majorName.setText(temp);
         repaint();
     }
@@ -176,16 +198,21 @@ public class ViewPanel extends StandardInsidePanel {
         }
     }
 
+
+
     private class SemesterList {
         private int semesterAnz;
         private boolean currWinterSemester;
         private int currSemester;
 
         SemesterList() {
-            this.semesterAnz = getSemesterAnzahl();
-            this.currSemester = semesterAnz;
-            this.currWinterSemester = isFirstSemesterWinter();
+            refresh();
+        }
 
+        void refresh() {
+            this.semesterAnz = getSemesterAnzahl();
+            this.currSemester = this.semesterAnz;
+            this.currWinterSemester = isFirstSemesterWinter();
             for (int i = 1; i  < semesterAnz; i++) {
                 this.currWinterSemester =!this.currWinterSemester;
             }
@@ -193,7 +220,7 @@ public class ViewPanel extends StandardInsidePanel {
 
         int getCurrentYear() {
             if (isFirstSemesterWinter()) {
-                    return getFirstYear() + (currSemester/2);
+                return getFirstYear() + (currSemester/2);
             } else {
                 if (currWinterSemester) {
                     return getFirstYear() + (currSemester/2) -1;

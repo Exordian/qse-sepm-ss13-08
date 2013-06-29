@@ -59,7 +59,7 @@ public class CalendarPanel extends StandardInsidePanel {
 
     private JFileChooser jfc;
 
-
+    private PropertyService propertyService;
     private LVAService lvaService;
 
     private DateService dateService;
@@ -72,9 +72,10 @@ public class CalendarPanel extends StandardInsidePanel {
     private ICalendarService iCalendarService;
 
     @Autowired
-    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel, LVAService lvaService, DateService dateService) {
+    public CalendarPanel(CalMonthGenerator calPanelMonth, CalWeekGenerator calPanelWeek, TodoPanel todoPanel, LVAService lvaService, DateService dateService, PropertyService propertyService) {
         init();
         PanelTube.calendarPanel=this;
+        this.propertyService=propertyService;
         this.lvaService=lvaService;
         this.dateService=dateService;
         this.calPanelMonth=calPanelMonth;
@@ -198,13 +199,15 @@ public class CalendarPanel extends StandardInsidePanel {
     }
 
     private void refreshTop() {
+        semester.setVisible(true);
         SemesterComboBoxItem selectedSemester = null;
-        if (semester != null && semester.getItemCount() != 0) {
-            selectedSemester = (SemesterComboBoxItem)semester.getSelectedItem();
-        }
-
-        semester.removeAllItems();
         try {
+            if (semester != null && semester.getItemCount() != 0) {
+                selectedSemester = (SemesterComboBoxItem)semester.getSelectedItem();
+            }
+            semester.removeAllItems();
+
+
             boolean winterSem = lvaService.isFirstSemesterAWinterSemester();
             int semesters = lvaService.numberOfSemestersInStudyProgress();
             int year = lvaService.firstYearInStudyProgress();
@@ -217,7 +220,11 @@ public class CalendarPanel extends StandardInsidePanel {
                 winterSem = !winterSem;
             }
         } catch (ServiceException e) {
-            PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
+            semester.setVisible(false);
+            if (PanelTube.backgroundPanel != null) {
+                if (propertyService.getProperty(PropertyService.FIRST_RUN) != null && !propertyService.getProperty(PropertyService.FIRST_RUN).isEmpty())
+                    PanelTube.backgroundPanel.viewSmallInfoText("Bitte planen Sie ein Semester!", SmallInfoPanel.Warning);
+            }
         }
 
         if (selectedSemester != null) {
@@ -383,6 +390,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 calPanelWeek.refresh();
                 activeView = calPanelWeek;
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                refreshTop();
                 calPanelWeek.revalidate();
                 calPanelWeek.repaint();
 
@@ -402,6 +410,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 calPanelMonth.refresh();
                 activeView = calPanelMonth;
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                refreshTop();
                 calPanelMonth.revalidate();
                 calPanelMonth.repaint();
             }
@@ -486,6 +495,9 @@ public class CalendarPanel extends StandardInsidePanel {
     public void refresh() {
         activeView.refresh();
         refreshTop();
+    }
+
+    private void refreshSelectedSemester() {
         if (semester.getItemCount() != 0) {
             SemesterComboBoxItem temp = (SemesterComboBoxItem)semester.getSelectedItem();
             int month = 0;

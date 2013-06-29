@@ -94,7 +94,7 @@ public class First extends SimpleDisplayPanel {
                     }else{
                         setWaiting(true);
                         startUp.propertyService.setProperty(PropertyService.MAJOR,studyDrop.getSelectedItem().toString());
-                        PanelTube.backgroundPanel.viewSmallInfoText("Studium wird geladen. Bitte um etwas Geduld.", SmallInfoPanel.Info);
+                        PanelTube.backgroundPanel.viewSmallInfoText("Studium wird geladen. Bitte etwas Geduld.", SmallInfoPanel.Info);
                         FetcherTask task = new FetcherTask();
                         task.execute();
                     }

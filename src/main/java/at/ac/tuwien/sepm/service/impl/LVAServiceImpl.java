@@ -231,6 +231,10 @@ public class LVAServiceImpl implements LVAService {
                                 temp = l;
                     }
                 }
+                if (!temp.isInStudyProgress()) {
+                    logger.error("Sie müssen sich ein Studium planen lassen.");
+                    throw new ValidationException("Sie müssen sich ein Studium planen lassen.");
+                }
                 int x = temp.getYear()-beginning;
                 boolean isLastWinterSemester = false;
 
@@ -243,7 +247,11 @@ public class LVAServiceImpl implements LVAService {
                 }
 
                 if (x == 0) {
-                    return isFirstSemesterAWinterSemester()? 2 : 1;
+                    if (beginning == 0) {
+                         return 0;
+                    } else {
+                        return isFirstSemesterAWinterSemester()? 2 : 1;
+                    }
                 } else {
                     if (!isFirstSemesterAWinterSemester()) {
                         if (!isLastWinterSemester) {
@@ -269,7 +277,7 @@ public class LVAServiceImpl implements LVAService {
                 }
             }
         } catch (ValidationException e) {
-            logger.error("Exception: "+ e.getMessage());
+            logger.error(e.getMessage());
             throw new ServiceException(e);
         }
     }

@@ -42,12 +42,16 @@ public class SemesterPanel extends StandardInsidePanel {
     private void initSemesterTitle() {
         semesterTitle = new JLabel();
         semesterTitle.setFont(standardSmallerTitleFont);
-        semesterTitle.setBounds(this.getX() + 50, 0, 300, 35);
+        semesterTitle.setBounds(this.getX() + 50, 0, 600, 35);
         this.add(semesterTitle);
     }
 
     public void setLvas(List<LVA> lvas) {
         pane.refresh(lvas);
+    }
+
+    public List<LVA> getLvas() {
+        return this.lvas;
     }
 
     public void setSemesterTitle(String title) {

@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.metaLva.MetaLVADisplayPanel;
+import at.ac.tuwien.sepm.ui.studyProgress.display.ViewPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -35,6 +36,7 @@ public class PlanPanel extends StandardInsidePanel {
     MetaLVAService metaLVAService;
     LVAService lvaService;
     DateService dateService;
+    private ViewPanel viewPanel;
 
     /*@Autowired
     LVAService lvaService;
@@ -91,9 +93,9 @@ public class PlanPanel extends StandardInsidePanel {
     private boolean planningInProgress;
 
     @Autowired
-    public PlanPanel(DateService dateService,MetaLVAService metaLVAService,LVAService lvaService) {
+    public PlanPanel(DateService dateService,MetaLVAService metaLVAService,LVAService lvaService, ViewPanel viewPanel) {
 
-        
+        this.viewPanel=viewPanel;
         this.lvaService = lvaService;
         this.metaLVAService = metaLVAService;
         this.dateService=dateService;
@@ -179,6 +181,7 @@ public class PlanPanel extends StandardInsidePanel {
                         PanelTube.backgroundPanel.viewSmallInfoText("Daten erfolgreich Übernommen", SmallInfoPanel.Success);
                         refreshMetaLVAs(new ArrayList<MetaLVA>(0));
                         take.setEnabled(false);
+                        viewPanel.refreshSemesterList();
                     }catch(EscapeException e1){
                         take.setEnabled(false);
                     }
