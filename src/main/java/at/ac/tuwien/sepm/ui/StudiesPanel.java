@@ -17,20 +17,17 @@ import java.util.ArrayList;
 public class StudiesPanel extends StandardInsidePanel {
     private JButton tab1;
     private JButton tab2;
-    private JButton tab3;
     private JButton tab4;
     private PlanPanel planningPanel;
-    private ExportPanel exportPanel;
     private ViewPanel viewPanel;
     private RegisterExamPanel registerExamPanel;
 
     private PropertyService propertyService;
 
     @Autowired
-    public StudiesPanel(PropertyService propertyService, PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel, RegisterExamPanel registerExamPanel) {
+    public StudiesPanel(PropertyService propertyService, PlanPanel planningPanel, ViewPanel viewPanel, RegisterExamPanel registerExamPanel) {
         init();
         this.planningPanel = planningPanel;
-        this.exportPanel = exportPanel;
         this.viewPanel = viewPanel;
         this.registerExamPanel = registerExamPanel;
         this.propertyService = propertyService;
@@ -44,13 +41,11 @@ public class StudiesPanel extends StandardInsidePanel {
     private void createTabButtons() {
         tab1 = new JButton();
         tab2 = new JButton();
-        tab3 = new JButton();
         tab4 = new JButton();
 
         ArrayList<JButton> tabs = new ArrayList<JButton>();
         tabs.add(tab1);
         tabs.add(tab2);
-        tabs.add(tab3);
         tabs.add(tab4);
 
         tab1.setBounds(41,30,160,40);
@@ -59,7 +54,6 @@ public class StudiesPanel extends StandardInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(1);
                 remove(planningPanel);
-                remove(exportPanel);
                 remove(registerExamPanel);
                 add(viewPanel);
                 viewPanel.refresh();
@@ -73,7 +67,6 @@ public class StudiesPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeImage(2);
-                remove(exportPanel);
                 remove(viewPanel);
                 remove(registerExamPanel);
                 add(planningPanel);
@@ -82,22 +75,6 @@ public class StudiesPanel extends StandardInsidePanel {
                 StudiesPanel.this.repaint();
             }
         });
-
-        tab3.setBounds(41+160*2,30,160,40);
-        tab3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                changeImage(3);
-                add(exportPanel);
-                remove(viewPanel);
-                remove(planningPanel);
-                remove(registerExamPanel);
-                exportPanel.refresh();
-                StudiesPanel.this.validate();
-                StudiesPanel.this.repaint();
-            }
-        });
-
         tab4.setBounds(41+160*3+396,30,160,40);
         tab4.addActionListener(new ActionListener() {
             @Override
@@ -106,8 +83,7 @@ public class StudiesPanel extends StandardInsidePanel {
                     JOptionPane.showMessageDialog(StudiesPanel.this, "Um dieses Modul nutzen zu können müssen Sie die TISS Kennungsdaten unter Einstellungen angeben", "Anmeldungen", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                changeImage(4);
-                remove(exportPanel);
+                changeImage(3);
                 remove(viewPanel);
                 remove(planningPanel);
                 add(registerExamPanel);
@@ -117,7 +93,7 @@ public class StudiesPanel extends StandardInsidePanel {
             }
         });
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             tabs.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
             tabs.get(i).setOpaque(false);
             tabs.get(i).setContentAreaFilled(false);
@@ -130,16 +106,13 @@ public class StudiesPanel extends StandardInsidePanel {
         try{
             switch(nmb) {
                 case 1:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/studa.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/studanz.png"));
                     break;
                 case 2:
                     image = ImageIO.read(ClassLoader.getSystemResource("img/studp.png"));
                     break;
                 case 3:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/stude.png"));
-                    break;
-                case 4:
-                    image = ImageIO.read(ClassLoader.getSystemResource("img/studg.png"));
+                    image = ImageIO.read(ClassLoader.getSystemResource("img/studan.png"));
                     break;
                 default:
                     break;

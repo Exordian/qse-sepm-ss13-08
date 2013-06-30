@@ -33,6 +33,7 @@ public class ViewPanel extends StandardInsidePanel {
     private JLabel majorName = new JLabel("dummy");
     private JButton fwd;
     private JButton bwd;
+    private JButton exportButton;
     private SemesterPanel semester;
     private LVAService service;
     private PropertyService propertyService;
@@ -107,6 +108,7 @@ public class ViewPanel extends StandardInsidePanel {
     private void initButtons() {
         fwd = new JButton();
         bwd = new JButton();
+        exportButton= new JButton("Semesterdaten exportieren");
 
         try {
             bwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navleft.png"))));
@@ -141,8 +143,19 @@ public class ViewPanel extends StandardInsidePanel {
                 refresh();
             }
         });
-        this.add(fwd);
+
+        exportButton.setBounds(semester.getX(),semester.getY()+semester.getHeight()+5,200,40);
+        exportButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        exportButton.setFont(standardButtonFont);
+        exportButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //todo
+            }
+        });
+
         this.add(bwd);
+        this.add(exportButton);
     }
 
     private void initSemesterPanel() {
@@ -236,15 +249,27 @@ public class ViewPanel extends StandardInsidePanel {
 
         void next() {
             if (currSemester < semesterAnz) {
+                ViewPanel.this.add(bwd);
+                ViewPanel.this.add(fwd);
                 currSemester++;
                 currWinterSemester =!currWinterSemester;
+                if (currSemester == semesterAnz) {
+                    ViewPanel.this.remove(fwd);
+                }
+                ViewPanel.this.repaint();
             }
         }
 
         void last() {
             if (currSemester > 1) {
+                ViewPanel.this.add(bwd);
+                ViewPanel.this.add(fwd);
                 currSemester--;
                 currWinterSemester =!currWinterSemester;
+                if (currSemester == 1) {
+                    ViewPanel.this.remove(bwd);
+                }
+                ViewPanel.this.repaint();
             }
         }
     }
