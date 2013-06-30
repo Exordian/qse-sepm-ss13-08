@@ -12,6 +12,8 @@ public class Module {
     private String description;
     private Boolean completeall;
     private List<MetaLVA> metaLvas;
+    private boolean tempBooleanContained;
+    private boolean tempBooleanOptional;
 
     public List<MetaLVA> getMetaLvas() {
         return metaLvas;
@@ -59,6 +61,22 @@ public class Module {
 
     public void setCompleteall(Boolean completeall) {
         this.completeall = completeall;
+    }
+
+    public boolean getTempBooleanContained() {
+        return tempBooleanContained;
+    }
+
+    public void setTempBooleanContained(boolean tempBooleanContained) {
+        this.tempBooleanContained = tempBooleanContained;
+    }
+
+    public boolean getTempBooleanOptional() {
+        return tempBooleanOptional;
+    }
+
+    public void setTempBooleanOptional(boolean tempBooleanOptional) {
+        this.tempBooleanOptional = tempBooleanOptional;
     }
 
     @Override
