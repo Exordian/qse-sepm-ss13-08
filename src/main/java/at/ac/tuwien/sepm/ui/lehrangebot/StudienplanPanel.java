@@ -3,19 +3,28 @@ package at.ac.tuwien.sepm.ui.lehrangebot;
 import at.ac.tuwien.sepm.entity.Curriculum;
 import at.ac.tuwien.sepm.entity.Module;
 import at.ac.tuwien.sepm.service.*;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
+import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.activation.MimetypesFileTypeMap;
+import javax.annotation.PostConstruct;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 
@@ -29,45 +38,199 @@ import java.util.List;
 
 @UI
 public class StudienplanPanel extends StandardInsidePanel {
-    protected CreateCurriculumService service;
+    protected CreateCurriculumService curriculumService;
+    protected ModuleService moduleService;
 
     private static final int MAX_INFO_LENGTH = 18;
 
     private JPanel panel;
     private JButton baddcurr;
     private JButton bcreate;
+    private JButton bimport;
     private JTable tmodule;
     private DefaultTableModel mmodule;
     private JScrollPane spane;
-    private JComboBox<CurriculumComboBoxItem> ccurr;
+    private WideComboBox ccurr;
     private DefaultComboBoxModel<CurriculumComboBoxItem> mcurr;
+    private JFileChooser jfc;
+    private List<Module> optionalModules;
+    private List<Module> requiredModules;
+    private Map<String, Module> modules;
+    private CurriculumDisplayPanel curriculumDisplayPanel;
 
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
-    public StudienplanPanel(CreateCurriculumService service) {
-        this.service=service;
+    public StudienplanPanel(CreateCurriculumService curriculumService, ModuleService moduleService) {
+        this.curriculumService = curriculumService;
+        this.moduleService=moduleService;
         this.setLayout(new GridLayout());
         this.setOpaque(false);
         loadFonts();
-        setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(),(int) whiteSpace.getWidth(),(int) whiteSpace.getHeight());
+        setBounds((int)startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(),(int) whiteSpace.getWidth(),(int) whiteSpace.getHeight());
+
         initPanel();
+        initFileChooser();
         initAddCurriculumButton();
         initCurriculumComboBox();
         initModuleTable();
+        initButtonImport();
         initButtonCreate();
-        placeComponents();
         initCurriculumComboBoxActionListener();
+        refreshModuleMap();
+        initCurriculumDisplayPanel();
+        setBackground(Color.RED);
+        setVisible(true);
         revalidate();
         repaint();
     }
 
+    @PostConstruct
     public void placeComponents() {
-        this.add(panel);
+        panel.setLayout(new MigLayout("nogrid, fill"));
+        panel.add(ccurr);
         panel.add(baddcurr);
-        panel.add(ccurr, "wrap");
-        panel.add(spane, "span, wrap");
+        panel.add(bimport, "wrap");
+        //panel.add(spane, "grow, span, wrap");
+        panel.add(curriculumDisplayPanel, "wrap");
         panel.add(bcreate);
+        this.add(panel);
+        panel.setOpaque(false);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void initCurriculumDisplayPanel () {
+        refreshModuleMap();
+        refreshCurriculumComboBox();
+        curriculumDisplayPanel = new CurriculumDisplayPanel(new ArrayList<>(modules.values()), (int)whiteSpace.getWidth(), (int)whiteSpace.getHeight()-baddcurr.getHeight()-bcreate.getHeight());
+    }
+
+    private void refreshModuleMap() {
+        modules = new HashMap<>();
+        List<Module> moduleList = new ArrayList<>();
+        try {
+            moduleList = moduleService.readAll();
+        } catch (ServiceException e) {
+            PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
+        }
+
+        for(Module m : moduleList) {
+            m.setTempBooleanContained(false);
+            modules.put(m.getName(), m);
+        }
+
+    }
+
+    private void initFileChooser() {
+        jfc = new JFileChooser();
+        jfc.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f==null) {
+                    return false;
+                }
+
+                MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
+                mimetypesFileTypeMap.addMimeTypes("application/pdf pdf PDF");
+                String mimeType = mimetypesFileTypeMap.getContentType(f);
+
+                if (f.isDirectory()) {
+                    return true;
+                } else if(mimeType.equals("application/pdf")) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            @Override
+            public String getDescription() {
+                if(System.getProperty("user.language").equals("de")) {
+                    return "pdf Dateien (*.pdf)";
+                }
+                return "pdf files (*.pdf)";
+            }
+        });
+        jfc.setFont(standardTextFont);
+    }
+
+    private void initButtonImport() {
+        bimport = new JButton();
+        bimport.setText("Studienplan importieren");
+        bimport.setFont(standardButtonFont);
+        bimport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jfc.showOpenDialog(StudienplanPanel.this) == JFileChooser.APPROVE_OPTION) {
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die Daten werden geladen ... ", SmallInfoPanel.Info);
+                    File file = jfc.getSelectedFile();
+                    try {
+                        log.info("pdf path: " + file.getPath());
+                        optionalModules = moduleService.getOptionalModules(file.getPath());
+                        requiredModules = moduleService.getRequiredModules(file.getPath());
+                    } catch (ServiceException e1) {
+                        PanelTube.backgroundPanel.viewSmallInfoText(e1.getMessage(), SmallInfoPanel.Error);
+                        return;
+                    }
+
+                    int modulesNotFound = 0;
+                    String moduleNotFoundNames = "";
+
+                    refreshModuleMap();
+                    for(Module m : optionalModules) {
+                        Module temp = modules.get("Modul " + m.getName());
+                        if (temp != null) {
+                            temp.setTempBooleanContained(true);
+                            temp.setTempBooleanOptional(true);
+                            temp.setCompleteall(true);
+                        } else {
+                            moduleNotFoundNames = addToModuleNotFoundString(modulesNotFound, moduleNotFoundNames, m.getName());
+                            modulesNotFound++;
+                            log.info("optional module not found: " + m.getName());
+                        }
+                    }
+
+                    for(Module m : requiredModules) {
+                        Module temp = modules.get("Modul " + m.getName());
+                        if (temp != null) {
+                            temp.setTempBooleanContained(true);
+                            temp.setTempBooleanOptional(false);
+                            temp.setCompleteall(true);
+                        } else {
+                            moduleNotFoundNames = addToModuleNotFoundString(modulesNotFound, moduleNotFoundNames, m.getName());
+                            modulesNotFound++;
+                            log.info("required module not found: " + "Modul " + m.getName());
+                        }
+                    }
+
+                    curriculumDisplayPanel.refresh(new ArrayList<Module>(modules.values()));
+                    curriculumDisplayPanel.changeStateOfContainedComboBox("selected");
+                    if (modulesNotFound == 0) {
+                        PanelTube.backgroundPanel.viewSmallInfoText("Die Daten sind geladen.", SmallInfoPanel.Success);
+                    } else {
+                        String moduleString = " Module sind ";
+                        if (modulesNotFound == 1) {
+                            moduleString = " Modul ist ";
+                        }
+                        PanelTube.backgroundPanel.viewSmallInfoText("   " + modulesNotFound + moduleString + "sind noch nicht gespeichert:" + moduleNotFoundNames + "   ", SmallInfoPanel.Error);
+                        log.info(modulesNotFound + " modules not stored yet ... ");
+                    }
+                } else {
+                    return;
+                }
+            }
+        });
+    }
+
+    private String addToModuleNotFoundString (int modulesNotFound, String s, String name) {
+        if (modulesNotFound==0) {
+            s += " '" + name + "'";
+        } else {
+            s += ", '" + name + "'";
+        }
+
+        return s;
     }
 
     public void initButtonCreate() {
@@ -79,33 +242,37 @@ public class StudienplanPanel extends StandardInsidePanel {
             @Transactional
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (ccurr.getSelectedItem() != null) {
+                    if (ccurr.getSelectedItem()!=null && ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get() != null) {
                         int cid = ((CurriculumComboBoxItem) ccurr.getSelectedItem()).get().getId();
-                        HashMap<Module, Boolean> mMap = service.readModuleByCurriculum(cid);
+                        HashMap<Module, Boolean> mMap = curriculumService.readModuleByCurriculum(cid);
                         Set<Module> mSet = mMap.keySet();
-                        HashMap<Integer, Module> mids = new HashMap<Integer, Module>();
+                        HashMap<Integer, Module> mids = new HashMap<>();
 
                         for (Module m : mSet) {
                             mids.put(m.getId(), m);
                         }
 
-                        int rows = mmodule.getRowCount();
-                        for (int i = 0; i < rows; i++) {
-                            int mid = (Integer) mmodule.getValueAt(i, 1);
-                            if ((Boolean) (mmodule.getValueAt(i, 0))) { // Das Modul wurde ausgewählt
-                                if (mids.get(mid) == null) { // das modul wird neu aufgenommen
-                                    service.addModuleToCurriculum(mid, cid, (Boolean) (mmodule.getValueAt(i, 3)));
-                                } else { // das modul ist schon drinnen
-                                    if (mMap.get(mids.get(mid)).booleanValue() != ((Boolean) mmodule.getValueAt(i, 3)).booleanValue()) { // Es wird upgedated
-                                        service.deleteModuleFromCurriculum(mid, cid);
-                                        service.addModuleToCurriculum(mid, cid, (Boolean) (mmodule.getValueAt(i, 3)));
+                        List<Module> allModules = curriculumDisplayPanel.getAllModules();
+                        for (Module m : allModules) {
+                            int mid = m.getId();
+                            if (m.getTempBooleanContained() == true) { // the module has been chosen
+                                if (mids.get(mid) == null) { // the module is new added to the curriculum
+                                    curriculumService.addModuleToCurriculum(mid, cid, !m.getTempBooleanOptional());
+                                } else { // the module is already in the curriculum
+                                    if (mMap.get(mids.get(mid)).booleanValue() != m.getTempBooleanOptional()) { // update is necessary
+                                        curriculumService.deleteModuleFromCurriculum(mid, cid);
+                                        curriculumService.addModuleToCurriculum(mid, cid, !m.getTempBooleanOptional());
                                     }
                                 }
-                            } else { // Das modul wurde nicht ausgewählt
-                                if (mids.get(mid) != null) { // das modul war vorher im studienplan und wird gelöscht
-                                    service.deleteModuleFromCurriculum(mid, cid);
+                            } else { // the module has not been chosen
+                                if (mids.get(mid) != null) { // the module was in the curriculum and has to be deleted
+                                    curriculumService.deleteModuleFromCurriculum(mid, cid);
                                 }
                             }
+                            Module module = new Module();
+                            module.setId(m.getId());
+                            module.setCompleteall(m.isCompleteall());
+                            moduleService.update(module);
                         }
                     }
                 } catch (ServiceException e1) {
@@ -113,37 +280,46 @@ public class StudienplanPanel extends StandardInsidePanel {
                     return;
                 }
                 fillTable();
+                PanelTube.backgroundPanel.viewSmallInfoText("Der Studium ist erfolgreich gespeichert.", SmallInfoPanel.Success);
             }
         });
     }
 
     public void initCurriculumComboBox() {
-        mcurr = new DefaultComboBoxModel<CurriculumComboBoxItem>();
-        ccurr = new JComboBox(mcurr);
+        mcurr = new DefaultComboBoxModel<>();
+        ccurr = new WideComboBox(mcurr);
         ccurr.setFont(standardButtonFont);
-        fillCurriculumComboBox();
+        mcurr.addElement(new CurriculumComboBoxItem(null));
+        refreshCurriculumComboBox();
     }
 
     public void initCurriculumComboBoxActionListener() {
-        ccurr.addActionListener(new ActionListener() {
+        ccurr.addItemListener(new ItemListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                fillTable();
+            public void itemStateChanged(ItemEvent e) {
+                if (ccurr.getSelectedItem() != null && ccurr.getSelectedItem() instanceof CurriculumComboBoxItem && ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get() != null) {
+                    PanelTube.backgroundPanel.viewSmallInfoText("Das Studium wird geladen ... ", SmallInfoPanel.Info);
+                    fillTable();
+                    PanelTube.backgroundPanel.viewSmallInfoText("Das Studium ist geladen.", SmallInfoPanel.Success);
+                } else if (curriculumDisplayPanel != null) {
+                    curriculumDisplayPanel.changeStateOfContainedComboBox("disabled");
+                }
             }
         });
     }
 
-    public void fillCurriculumComboBox() {
-        List<Curriculum> l = new ArrayList<Curriculum>();
+    public void refreshCurriculumComboBox() {
+        List<Curriculum> l;
 
         try {
-            l = service.readAllCurriculum();
+            l = curriculumService.readAllCurriculum();
         } catch (ServiceException e) {
             log.error("Error: " + e.getMessage());
             return;
         }
 
         mcurr.removeAllElements();
+        mcurr.addElement(new CurriculumComboBoxItem(null));
 
         for(Curriculum c : l) {
             mcurr.addElement(new CurriculumComboBoxItem(c));
@@ -151,8 +327,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     }
 
     public void initPanel() {
-        panel = new JPanel();
-        panel.setLayout(new MigLayout());
+        panel = new JPanel(new MigLayout("debug"));
         panel.setBounds(whiteSpace);
         panel.setBackground(Color.WHITE);
     }
@@ -193,36 +368,39 @@ public class StudienplanPanel extends StandardInsidePanel {
         };
 
         spane = new JScrollPane(tmodule);
-        spane.setBackground(Color.WHITE);
+        spane.setBackground(Color.BLUE);
         //spane.setMinimumSize(new Dimension(650, 400));
 
         fillTable();
     }
 
     public void fillTable() {
+        if(ccurr.getSelectedItem()!=null && ccurr.getSelectedItem() instanceof CurriculumComboBoxItem && ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get() != null){
+            List<Module> list;
+            try {
+                list = curriculumService.readAllModules();
+            } catch (ServiceException e) {
+                PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
+                log.error("Error: " + e.getMessage());
+                return;
+            }
 
-        List<Module> list = new ArrayList<Module>();
-        try {
-            list = service.readAllModules();
-        } catch (ServiceException e) {
-            log.error("Error: " + e.getMessage());
-            return;
-        }
+            log.info("StudienplanPanel.fillTable(): " + list.size() + " modules loaded  ... ");
 
-        if(ccurr.getSelectedItem()!=null){
             int cid = ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get().getId();
-            HashMap<Module, Boolean> mMap = new HashMap<Module, Boolean>();
+            HashMap<Module, Boolean> mMap;
 
             try {
-                mMap = service.readModuleByCurriculum(cid);
+                mMap = curriculumService.readModuleByCurriculum(cid);
             } catch (ServiceException e) {
+                PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
                 log.error("Error: " + e.getMessage());
                 return;
             }
 
             Set<Module> mSet = mMap.keySet();
-            HashMap<Integer, Module> midsMap = new HashMap<Integer, Module>();
-            Set<Integer> mids = new HashSet<Integer>();
+            HashMap<Integer, Module> midsMap = new HashMap<>();
+            Set<Integer> mids = new HashSet<>();
 
             for(Module m : mSet) {
                 mids.add(m.getId());
@@ -230,14 +408,22 @@ public class StudienplanPanel extends StandardInsidePanel {
             }
 
             clearTable();
-
+            modules = new HashMap<>(list.size());
             for(Module m : list) {
                 if(mids.contains(m.getId())) {
-                    mmodule.addRow(createTableRow(true, mMap.get(midsMap.get(m.getId())), m));
+                    // "Enthalten", "ID", "Name", "Pflichtmodul", "Beschreibung"
+                    m.setTempBooleanContained(true);
+                    m.setTempBooleanOptional(!mMap.get(midsMap.get(m.getId())));
+                    //mmodule.addRow(createTableRow(true, mMap.get(midsMap.get(m.getId())), m));
                 } else {
-                    mmodule.addRow(createTableRow(false, false, m));
+                    m.setTempBooleanContained(false);
+                    m.setTempBooleanOptional(false);
+                    //mmodule.addRow(createTableRow(false, false, m));
                 }
+                modules.put(m.getName(), m);
             }
+            curriculumDisplayPanel.refresh(new ArrayList<Module>(modules.values()));
+            curriculumDisplayPanel.changeStateOfContainedComboBox("selected");
         }
     }
 
@@ -252,7 +438,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     private class CurriculumComboBoxItem {
         private Curriculum c;
 
-        CurriculumComboBoxItem(Curriculum c) {
+        public CurriculumComboBoxItem(Curriculum c) {
             this.c = c;
         }
 
@@ -260,6 +446,8 @@ public class StudienplanPanel extends StandardInsidePanel {
             return c;
         }
         public String toString() {
+            if (c == null)
+                return "Studium auswählen";
             return c.getStudyNumber();
         }
 
@@ -409,12 +597,12 @@ public class StudienplanPanel extends StandardInsidePanel {
                     curriculum.setEctsSoftskill(s);
 
                     try {
-                        service.createCurriculum(curriculum);
+                        curriculumService.createCurriculum(curriculum);
                     } catch (ServiceException e1) {
                         log.error("Error: " + e1.getMessage());
                     }
 
-                    fillCurriculumComboBox();
+                    refreshCurriculumComboBox();
                     dispose();
                 }
             });
