@@ -21,7 +21,6 @@ import java.awt.event.*;
  */
 
 @UI
-@Scope("singleton")
 public class TodoPanel extends StandardInsidePanel {
     Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
     private TodoService todoService;
@@ -172,7 +171,6 @@ public class TodoPanel extends StandardInsidePanel {
         this.add(showDeadline);
     }
 
-    @Scheduled(fixedDelay = 5000)
     public void refresh() {
         if (showTodo) {
             todoTable.refreshTodos(todoService);
@@ -184,11 +182,9 @@ public class TodoPanel extends StandardInsidePanel {
     private void changeTables() {
         if (showTodo) {
             pane.setViewportView(todoTable);
-            //this.remove(deadlineTable);
             PanelTube.calendarPanel.showTodo(true);
 
         } else {
-           // this.remove(todoTable);
             pane.setViewportView(deadlineTable);
             PanelTube.calendarPanel.showTodo(false);
         }

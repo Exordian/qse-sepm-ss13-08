@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.metaLva.LvaDisplayPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +21,15 @@ public class SemesterPanel extends StandardInsidePanel {
     private List<LVA> lvas;
     private LvaDisplayPanel pane;
     private int height;
+    private int width;
 
     public SemesterPanel(int x, int y) {
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
         this.height=380;
-        setBounds(x-51, y, (int) whiteSpace.getWidth(), height);
+        this.width=1014-100;
+        setBounds(x, y, width, height);
         initSemesterTitle();
         this.lvas = new ArrayList<LVA>();
         semesterTitle.setText("dummy");
@@ -34,15 +37,17 @@ public class SemesterPanel extends StandardInsidePanel {
     }
 
     private void initLvaTable() {
-        pane = new LvaDisplayPanel(lvas, (int) whiteSpace.getWidth()-100, height);
-        pane.setBounds(this.getX() + 50, semesterTitle.getY() + semesterTitle.getHeight() + 5, (int) whiteSpace.getWidth() - 100, height - semesterTitle.getHeight() - 5);
+        pane = new LvaDisplayPanel(lvas, width, height);
+        pane.setBounds(0 , semesterTitle.getY() + semesterTitle.getHeight() + 5, width, height - semesterTitle.getHeight() - 5);
         this.add(pane);
+        pane.setBackground(Color.WHITE);
+        pane.getTable().getTableHeader().setBackground(Color.WHITE);
     }
 
     private void initSemesterTitle() {
         semesterTitle = new JLabel();
         semesterTitle.setFont(standardSmallerTitleFont);
-        semesterTitle.setBounds(this.getX() + 50, 0, 600, 35);
+        semesterTitle.setBounds(0, 0, 600, 35);
         this.add(semesterTitle);
     }
 

@@ -211,8 +211,10 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     propertyService.removeProperty(PropertyService.TISS_PASSWORD);
                     //propertyService.removeProperty(PropertyService."user.defaultECTS");
                     propertyService.removeProperty(PropertyService.FIRST_RUN);
+
                     //todo alte datenbank daten löschen
-                    PanelTube.backgroundPanel.viewSmallInfoText("Property-file geleert, rest noch nicht implementiert!",SmallInfoPanel.Warning);
+
+                    PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gelöscht!",SmallInfoPanel.Success);
                     PanelTube.backgroundPanel.viewStartup(true);
                     //System.exit(0);
                 }
@@ -224,7 +226,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
         this.add(deleteALL);
 
 
-        deleteAllDatesBtn = new JButton("Private Termine löschen");    //todo neben den button delete all button setzen
+        deleteAllDatesBtn = new JButton("Private Termine löschen");
         deleteAllDatesBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -51,20 +51,20 @@ public class SmallInfoPanel extends StandardInsidePanel {
         but.setOpaque(false);
         but.setContentAreaFilled(false);
         but.setBorderPainted(false);
-        but.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        changeButtonImage("img/downwards.png");
+        but.setCursor(new Cursor(Cursor.HAND_CURSOR));    //todo funktioniert auch nicht -.-
+        changeButtonImage("img/downwards");
         but.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (showMore) {
-                    changeButtonImage("img/downwards.png");
+                    changeButtonImage("img/downwards");
                     PanelTube.backgroundPanel.hideBiggerInfoText();
                     PanelTube.backgroundPanel.startInfoTextTimer();
                     showMore=false;
                 } else {
                     PanelTube.backgroundPanel.stopInfoTextTimer();
                     PanelTube.backgroundPanel.viewBiggerInfoText(message);
-                    changeButtonImage("img/upwards.png");
+                    changeButtonImage("img/upwards");
                     showMore=true;
                 }
             }
@@ -74,7 +74,17 @@ public class SmallInfoPanel extends StandardInsidePanel {
 
     private void changeButtonImage(String s) {
         try {
-            but.setIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(s))));
+            StringBuilder temp = new StringBuilder();
+            StringBuilder temp2 = new StringBuilder();
+
+            temp2.append(s);
+            temp.append(s);
+
+            temp.append(".png");
+            but.setIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(temp.toString()))));
+
+            temp2.append("highlight.png");
+            but.setRolloverIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource(temp2.toString()))));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -84,12 +94,13 @@ public class SmallInfoPanel extends StandardInsidePanel {
         infoText = new JLabel("dummy");
         infoText.setForeground(new Color(198, 205, 199));
         infoText.setBounds(47,0, 843, 40);
+        infoText.setFont(standardButtonFont);
         this.add(infoText);
     }
 
     public void setInfoText(String s, int nmb) {
         this.message = s;
-        if(s.length() >= MAX_LETTERS || s.contains("(\r\n|\n)")) {
+        if(s.contains("\n") || s.length() >= MAX_LETTERS) {
             this.add(but);
             switch(nmb) {
                 case 1:
@@ -111,7 +122,6 @@ public class SmallInfoPanel extends StandardInsidePanel {
             this.remove(but);
             infoText.setText(this.message);
         }
-        infoText.setFont(standardButtonFont);
         changeImage(nmb);
     }
 

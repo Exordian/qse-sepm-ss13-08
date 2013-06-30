@@ -100,7 +100,6 @@ public class PlanPanel extends StandardInsidePanel {
         this.metaLVAService = metaLVAService;
         this.dateService=dateService;
 
-
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();

@@ -238,6 +238,8 @@ public class CalendarPanel extends StandardInsidePanel {
             if (selectedSemester.getYear() == temp.getYear() && selectedSemester.getSemester() == SemesterDateGenerator.getSemester(temp)) {
                 activeView.goToDay(DateTime.now());
             }
+        } else {
+            semester.setSelectedIndex(semester.getItemCount()-1);
         }
     }
 
@@ -326,6 +328,8 @@ public class CalendarPanel extends StandardInsidePanel {
         try {
             bwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navleft.png"))));
             fwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navright.png"))));
+            bwd.setRolloverIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navlefthighlight.png"))));
+            fwd.setRolloverIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navrighthighlight.png"))));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -498,6 +502,7 @@ public class CalendarPanel extends StandardInsidePanel {
     @Override
     public void refresh() {
         activeView.refresh();
+        todoPanel.refresh();
         refreshTop();
     }
 

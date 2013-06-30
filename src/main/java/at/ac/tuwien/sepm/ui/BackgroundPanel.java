@@ -84,11 +84,12 @@ public class BackgroundPanel extends JPanel {
         changeImage(1);
         createPropertiesButton();
         createTabButtons();
-
         if(Boolean.parseBoolean(propertyService.getProperty(PropertyService.FIRST_RUN,"true"))){
             //things, which happen on first startup
             viewStartup(true);
         }
+
+        //viewSmallInfoText("test\ntest", SmallInfoPanel.Success);
 
         log.info("Panels initialized.");
     }

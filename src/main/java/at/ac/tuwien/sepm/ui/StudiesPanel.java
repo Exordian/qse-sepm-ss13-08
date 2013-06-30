@@ -28,14 +28,13 @@ public class StudiesPanel extends StandardInsidePanel {
 
     @Autowired
     public StudiesPanel(PropertyService propertyService, PlanPanel planningPanel, ExportPanel exportPanel, ViewPanel viewPanel, RegisterExamPanel registerExamPanel) {
+        init();
         this.planningPanel = planningPanel;
         this.exportPanel = exportPanel;
         this.viewPanel = viewPanel;
         this.registerExamPanel = registerExamPanel;
         this.propertyService = propertyService;
         add(viewPanel);
-
-        init();
         changeImage(1);
         createTabButtons();
         this.repaint();

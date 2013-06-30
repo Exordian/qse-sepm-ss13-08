@@ -11,7 +11,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -30,42 +29,33 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 @UI
-@Scope("singleton")
 public class ViewPanel extends StandardInsidePanel {
     private JLabel majorName = new JLabel("dummy");
     private JButton fwd;
     private JButton bwd;
     private SemesterPanel semester;
-    // private JList semesterList;
     private LVAService service;
     private PropertyService propertyService;
 
     private SemesterList semesterList;
     private ArrayList<LVA> makeSure = null;
-
-    //private int semesterAnz = 6;
-    //private int currSemester = 1;
-    //private int year = 2013;
-    //private boolean isWinterSemester = true;
-
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
     public ViewPanel(LVAService service, PropertyService propertyService) {
         this.propertyService=propertyService;
         this.service=service;
+        this.semesterList = new SemesterList();
         this.setLayout(null);
         this.setOpaque(false);
         loadFonts();
-        setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(), (int) whiteSpace.getWidth(), (int) whiteSpace.getHeight());
-        this.semesterList = new SemesterList();
+        setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(),(int) whiteSpace.getWidth(),(int) whiteSpace.getHeight());
+
         setMajorName();
         initMajorName();
         initSemesterPanel();
         initButtons();
         refresh();
-        repaint();
-        revalidate();
     }
 
     public void refresh() {
@@ -106,6 +96,8 @@ public class ViewPanel extends StandardInsidePanel {
             bwd.setVisible(false);
             fwd.setVisible(false);
         }
+        this.revalidate();
+        this.repaint();
     }
 
     public void refreshSemesterList() {
@@ -119,15 +111,16 @@ public class ViewPanel extends StandardInsidePanel {
         try {
             bwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navleft.png"))));
             fwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navright.png"))));
+            bwd.setRolloverIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navlefthighlight.png"))));
+            fwd.setRolloverIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navrighthighlight.png"))));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-
+        bwd.setCursor(new Cursor(Cursor.HAND_CURSOR));
         bwd.setBounds(10, majorName.getY() + majorName.getHeight() + semester.getHeight() / 2, 40, 40);
         bwd.setOpaque(false);
         bwd.setContentAreaFilled(false);
         bwd.setBorderPainted(false);
-        bwd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));     //todo  bwd and fwd button setcursor doesnt work
         bwd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
