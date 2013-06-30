@@ -142,7 +142,7 @@ public class CalendarPanel extends StandardInsidePanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    if( ((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getSemester() != null) {
+                    if(((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getSemester() != null) {
                         activeView.goToDay(SemesterDateGenerator.getTimeFrame(((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getYear(), ((SemesterComboBoxItem)semesterCbmdl.getSelectedItem()).getSemester()).from());
                         month.setText(activeView.getTimeIntervalInfo().toUpperCase().toUpperCase());
                     }
@@ -228,11 +228,15 @@ public class CalendarPanel extends StandardInsidePanel {
         }
 
         if (selectedSemester != null) {
+            DateTime temp = new DateTime(DateTime.now());
             for (int i = 0; i < semester.getModel().getSize();i++) {
                 if (((SemesterComboBoxItem)semester.getItemAt(i)).equals(selectedSemester)) {
                     semester.setSelectedIndex(i);
                     break;
                 }
+            }
+            if (selectedSemester.getYear() == temp.getYear() && selectedSemester.getSemester() == SemesterDateGenerator.getSemester(temp)) {
+                activeView.goToDay(DateTime.now());
             }
         }
     }
@@ -389,8 +393,8 @@ public class CalendarPanel extends StandardInsidePanel {
                 add(calPanelWeek);
                 calPanelWeek.refresh();
                 activeView = calPanelWeek;
-                month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 refreshTop();
+                month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 calPanelWeek.revalidate();
                 calPanelWeek.repaint();
 
@@ -409,8 +413,8 @@ public class CalendarPanel extends StandardInsidePanel {
                 add(calPanelMonth);
                 calPanelMonth.refresh();
                 activeView = calPanelMonth;
-                month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 refreshTop();
+                month.setText(activeView.getTimeIntervalInfo().toUpperCase());
                 calPanelMonth.revalidate();
                 calPanelMonth.repaint();
             }
@@ -495,20 +499,6 @@ public class CalendarPanel extends StandardInsidePanel {
     public void refresh() {
         activeView.refresh();
         refreshTop();
-    }
-
-    private void refreshSelectedSemester() {
-        if (semester.getItemCount() != 0) {
-            SemesterComboBoxItem temp = (SemesterComboBoxItem)semester.getSelectedItem();
-            int month = 0;
-            if(temp.getSemester() == Semester.S) {
-                month = 3;
-            } else {
-                month = 10;
-            }
-            DateTime tempTime = new DateTime(temp.getYear(), month, 1, 1, 1);
-            activeView.goToDay(tempTime);
-        }
     }
 
     public void jumpToDate(DateTime anyDateOfWeek) {
