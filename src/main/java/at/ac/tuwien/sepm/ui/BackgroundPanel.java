@@ -89,7 +89,7 @@ public class BackgroundPanel extends JPanel {
             viewStartup(true);
         }
 
-        //viewSmallInfoText("test\ntest", SmallInfoPanel.Success);
+       // viewSmallInfoText("test\ntest", SmallInfoPanel.Success);
 
         log.info("Panels initialized.");
     }

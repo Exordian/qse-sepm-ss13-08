@@ -51,7 +51,7 @@ public class SmallInfoPanel extends StandardInsidePanel {
         but.setOpaque(false);
         but.setContentAreaFilled(false);
         but.setBorderPainted(false);
-        but.setCursor(new Cursor(Cursor.HAND_CURSOR));    //todo funktioniert auch nicht -.-
+        but.setCursor(new Cursor(Cursor.HAND_CURSOR));
         changeButtonImage("img/downwards");
         but.addActionListener(new ActionListener() {
             @Override
