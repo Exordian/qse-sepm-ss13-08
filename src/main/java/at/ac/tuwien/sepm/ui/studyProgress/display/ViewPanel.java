@@ -1,9 +1,8 @@
 package at.ac.tuwien.sepm.ui.studyProgress.display;
 
 import at.ac.tuwien.sepm.entity.LVA;
-import at.ac.tuwien.sepm.service.LVAService;
-import at.ac.tuwien.sepm.service.PropertyService;
-import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
@@ -23,13 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Flo
- * Date: 01.06.13
- * Time: 19:23
- * To change this template use File | Settings | File Templates.
- */
 @UI
 public class ViewPanel extends StandardInsidePanel {
     private JLabel majorName = new JLabel("dummy");
@@ -43,6 +35,15 @@ public class ViewPanel extends StandardInsidePanel {
 
     private SemesterList semesterList;
     private ArrayList<LVA> makeSure = null;
+
+    private ArrayList<LVA> lvas;
+
+    @Autowired
+    private FacebookService facebookService;
+
+    @Autowired
+    private MetaLVAService metaLVAService;
+
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
@@ -87,6 +88,7 @@ public class ViewPanel extends StandardInsidePanel {
                             if (l.isInStudyProgress())
                                 temp.add(l);
                         }
+                        lvas = temp;
                         semester.setLvas(temp);
                     if (getSemesterAnzahl() != 0 && semesterList.getCurrentSemester() != 0 && temp != null) {
                         if (temp.isEmpty() && makeSure == null) {
@@ -172,6 +174,31 @@ public class ViewPanel extends StandardInsidePanel {
 
         this.add(bwd);
         this.add(exportButton);
+
+        JButton shareButton = new JButton("Auf Facebook teilen");
+        shareButton.setFont(standardButtonFont);
+        //shareButton.setBounds((int) paneExams.getX(), (int) paneExams.getY() + (int) paneExams.getHeight() + 8, 150, 30);
+        shareButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<MetaLVA> metaLVAs = new ArrayList<MetaLVA>();
+                for(LVA lva : lvas) {
+                    try {
+                        if(lva.getMetaLVA() != null && lva.getMetaLVA().getName() != null)
+                            metaLVAs.add(lva.getMetaLVA());
+                        else
+                            metaLVAs.add(metaLVAService.readById(lva.getMetaLVA().getId()));
+                    } catch (ServiceException e1) {
+                        log.error("meta lva not found", e1);
+                    }
+                }
+                facebookService.postLvasToWall(metaLVAs);
+            }
+        });
+        shareButton.setEnabled(true);
+        shareButton.setVisible(true);
+        shareButton.setBounds((int) (semester.getX()+exportButton.getBounds().getWidth() + 20),semester.getY()+semester.getHeight()+5,200,40);
+        this.add(shareButton);
     }
 
     private void initSemesterPanel() {

@@ -275,10 +275,10 @@ public class ViewLvaDate extends StandardSimpleInsidePanel {
         } catch(ValidationException e) {
             log.error(e.getMessage());
         }
-
-        for (LVA t : lvas) {
-            lva.addItem(new LvaSelectItem(t));
-        }
+        if(lvas != null)
+            for (LVA t : lvas) {
+                lva.addItem(new LvaSelectItem(t));
+            }
         lva.setFont(standardTextFont);
         lva.setBounds(lvaLabel.getX() + lvaLabel.getWidth() + 10, lvaLabel.getY(), 200,25);
         this.add(lva);

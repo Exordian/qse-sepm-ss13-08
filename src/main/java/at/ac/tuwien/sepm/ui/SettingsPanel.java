@@ -152,7 +152,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 JFrame newframe = new JFrame("Login Daten");
                 newframe.setIconImage(new ImageIcon("src/main/resources/img/icon.jpg").getImage());
-                final LoginDataFrame temp = new LoginDataFrame();
+                final LoginDataFacebookFrame temp = new LoginDataFacebookFrame();
                 newframe.add(temp);
                 newframe.setLocationRelativeTo(null);
                 newframe.pack();
@@ -164,8 +164,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
                         //nameLabelFacebook.setText("Eingeloggt als: " + temp.getName());
-                        propertyService.setProperty(PropertyService.FACEBOOK_USER, temp.getName());
-                        propertyService.setProperty(PropertyService.FACEBOOK_PASSWORD, temp.getPassword());
+                        propertyService.setProperty(PropertyService.FACEBOOK_KEY, temp.getKey());
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
                         content.refresh();
@@ -206,8 +205,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     propertyService.removeProperty(PropertyService.FIRST_YEAR);
                     propertyService.removeProperty(PropertyService.FIRST_SEMESTER);
                     propertyService.removeProperty(PropertyService.MAJOR);
-                    propertyService.removeProperty(PropertyService.FACEBOOK_USER);
-                    propertyService.removeProperty(PropertyService.FACEBOOK_PASSWORD);
+                    propertyService.removeProperty(PropertyService.FACEBOOK_KEY);
                     propertyService.removeProperty(PropertyService.TISS_USER);
                     propertyService.removeProperty(PropertyService.TISS_PASSWORD);
                     //propertyService.removeProperty(PropertyService."user.defaultECTS");
@@ -315,9 +313,8 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             }
             addEmptyArea(bigSpace*2,false);
             addRow(new JTextArea("Facebook-login"),facebook,false);
-            if (propertyService.getProperty(PropertyService.FACEBOOK_USER) != null && !propertyService.getProperty(PropertyService.FACEBOOK_USER).isEmpty() &&
-                    propertyService.getProperty(PropertyService.FACEBOOK_PASSWORD) != null && !propertyService.getProperty(PropertyService.FACEBOOK_PASSWORD).isEmpty()) {
-                addText("Eingeloggt als: " + propertyService.getProperty(PropertyService.FACEBOOK_USER),Font.BOLD,false);
+            if (propertyService.getProperty(PropertyService.FACEBOOK_KEY) != null && !propertyService.getProperty(PropertyService.FACEBOOK_KEY).isEmpty()) {
+                addText("Eingeloggt",Font.BOLD,false);
                 //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(PropertyService.TISS_USER));
             }
 

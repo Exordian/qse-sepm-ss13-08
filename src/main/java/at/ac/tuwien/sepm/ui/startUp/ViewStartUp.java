@@ -57,7 +57,7 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
         //temp.add(new JLabel("blabla"));
         //allPanels.add(temp);
         allPanels.add(new First(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this));
-        allPanels.add(new Secound(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this));
+        allPanels.add(new Second(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this));
         allPanels.add(new Third(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this));
 
         for(JPanel p: allPanels){
