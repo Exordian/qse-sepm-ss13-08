@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.DefaultFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -192,6 +193,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         ectsInput.setEditor(new JSpinner.NumberEditor(ectsInput, "0.#"));
         ectsInput.setFont(standardTextFont);
         ectsInput.setBounds(inputX, ectsLabel.getY(), inputWidth, oHeight);
+        ((DefaultFormatter)((JSpinner.DefaultEditor)ectsInput.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
         this.add(ectsInput);
 
         typeLabel = new JLabel("Typ:");
@@ -246,6 +248,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         priorityInput.setFont(standardTextFont);
         priorityInput.setBounds(inputX, priorityLabel.getY(), inputWidth, oHeight);
         priorityInput.setValue(5);
+        ((DefaultFormatter)((JSpinner.DefaultEditor)priorityInput.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
         this.add(priorityInput);
 
         completedLabel = new JLabel("Abgeschlossen:");
