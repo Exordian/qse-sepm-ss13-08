@@ -255,14 +255,14 @@ public class DBDateDaoTest {
         TestHelper.insert(0);
         LVA e0 = dao.readNotToIntersectByYearSemester(2013, Semester.S);
         LVA e1 = dao.readNotToIntersectByYearSemester(2013, Semester.W);
-        assert(e0.getLectures().size()==11);
-        assert(e1.getLectures().size()==2);
+        assert(e0.getExams().size()==11);
+        assert(e1.getExams().size()==2);
     }
 
     @Test
     public void testReadNotIntersectableByNotExistingYearSemester() throws Exception {
         TestHelper.insert(0);
-        assert(dao.readNotToIntersectByYearSemester(2, Semester.S).getLectures().size()==0);
+        assert(dao.readNotToIntersectByYearSemester(2, Semester.S).getExams().size()==0);
     }
 
     @Test

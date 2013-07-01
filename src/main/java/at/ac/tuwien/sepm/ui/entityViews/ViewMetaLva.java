@@ -57,6 +57,9 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     private JLabel completedLabel;
     private JCheckBox completedInput;
 
+    private JLabel timeEstimateLabel;
+    private JTextField timeEstimateInput;
+
     private JLabel precursorLabel;
     private MetaLVADisplayPanel precursorPanel;
 
@@ -109,7 +112,12 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     metaLVA.setSemestersOffered((Semester) semestersOfferedInput.getSelectedItem());
                     metaLVA.setType((LvaType) typeInput.getSelectedItem());
                     metaLVA.setPrecursor(precursor);
-
+                    /*
+                    if (timeEstimateInput.getText() != null) {
+                        int timeEstimate = Integer.parseInt(timeEstimateInput.getText());
+                        metaLVA.setTimeEstimate(new Integer(timeEstimate));
+                    }
+                    */
                     if (metaLVA.getId() != null) {
                         if (metaLVAService.readById(metaLVA.getId()) != null)
                             metaLVAService.update(metaLVA);
@@ -122,7 +130,11 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                 } catch (ServiceException e) {
                     log.error("MetaLvaEntity is invalid.");
                     PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
-                }
+                } /*catch (NumberFormatException e) {
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die geschätzte Zeit ist keine gültige Zahl.", SmallInfoPanel.Error);
+                    timeEstimateInput.requestFocus();
+                    timeEstimateInput.selectAll();
+                }   */
             }
         });
         this.add(save);
@@ -252,6 +264,19 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         completedLabel.setFont(standardTextFont);
         completedLabel.setBounds(labelX, priorityLabel.getY() + priorityLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(completedLabel);
+
+        timeEstimateLabel = new JLabel("Geschätzte Zeit");
+        timeEstimateLabel.setFont(standardTextFont);
+        timeEstimateLabel.setBounds(completedLabel.getBounds().x, completedLabel.getBounds().y + completedLabel.getHeight() + smallSpace, labelWidth, oHeight);
+        this.add(timeEstimateLabel);
+
+        timeEstimateInput = new JTextField();
+        timeEstimateInput.setFont(standardTextFont);
+        timeEstimateInput.setBounds(inputX, timeEstimateLabel.getY(), inputWidth, oHeight);
+        if(metaLVA != null && metaLVA.getTimeEstimate() != null) {
+            timeEstimateInput.setText("" + metaLVA.getTimeEstimate().intValue());
+        }
+        this.add(timeEstimateInput);
 
         completedInput = new JCheckBox();
         completedInput.addChangeListener(dONTFUCKINGBUGSWINGListener());

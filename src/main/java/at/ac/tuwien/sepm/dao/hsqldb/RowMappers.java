@@ -104,6 +104,7 @@ class RowMappers {
                 entity.setPriority(rs.getInt(6));
                 entity.setECTS(rs.getFloat(7));
                 entity.setModule(rs.getInt(8));
+                entity.setTimeEstimate(rs.getInt(9));
                 return entity;
             }
         };

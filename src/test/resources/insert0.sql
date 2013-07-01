@@ -9,16 +9,16 @@ INSERT INTO Module (id,name,description,completeAll) VALUES
 (null,'Freie Wahlfächer','Da kann man beliebige Sachen raussuchen',FALSE),
 (null,'Studieneingangsgespräch','Muss am Anfang des Studiums gemacht werden',TRUE);
 
-INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module) VALUES
-(null,'104.265','Algebra und Diskrete Mathematik für Informatik und Wirtschaftsinformatik',2,0,0,4,0),
-(null,'104.263','Algebra und Diskrete Mathematik für Informatik und Wirtschaftsinformatik',2,2,0,5,0),
-(null,'186.813','Algorithmen und Datenstrukturen 1',0,1,0,6,1),
-(null,'186.815','Algorithmen und Datenstrukturen 2',0,1,0,3,1),
-(null,'187.329','Techniksoziologie und Technikpsychologie',2,1,0,3,2),
-(null,'187.298','Forschungsmethoden',2,1,0,3,2),
-(null,'280.239','EDV-Vertragsrecht',1,0,0,1.5,2),
-(null,'181.208','Softskills für TechnikerInnen',2,1,0,3,2),
-(null,'195.039','Studieneingangsgespräch',2,2,'0','0.2','3');
+INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module,timeEstimate) VALUES
+(null,'104.265','Algebra und Diskrete Mathematik für Informatik und Wirtschaftsinformatik',2,0,0,4,0,1234),
+(null,'104.263','Algebra und Diskrete Mathematik für Informatik und Wirtschaftsinformatik',2,2,0,5,0,null),
+(null,'186.813','Algorithmen und Datenstrukturen 1',0,1,0,6,1,null),
+(null,'186.815','Algorithmen und Datenstrukturen 2',0,1,0,3,1,null),
+(null,'187.329','Techniksoziologie und Technikpsychologie',2,1,0,3,2,null),
+(null,'187.298','Forschungsmethoden',2,1,0,3,2,null),
+(null,'280.239','EDV-Vertragsrecht',1,0,0,1.5,2,null),
+(null,'181.208','Softskills für TechnikerInnen',2,1,0,3,2,null),
+(null,'195.039','Studieneingangsgespräch',2,2,'0','0.2','3',null);
 
 INSERT INTO Predecessor (predecessor,successor) VALUES
 (8,2),
