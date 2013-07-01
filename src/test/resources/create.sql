@@ -40,7 +40,8 @@ CREATE TABLE MetaLVA (
   priority FLOAT DEFAULT 0 NOT NULL,
   ects FLOAT NOT NULL,
   module INTEGER REFERENCES Module (id),
-  timeEstimate INTEGER,
+  minTimeEstimate INTEGER,
+  maxTimeEstimate INTEGER,
   UNIQUE (lvaNumber)
 );
 

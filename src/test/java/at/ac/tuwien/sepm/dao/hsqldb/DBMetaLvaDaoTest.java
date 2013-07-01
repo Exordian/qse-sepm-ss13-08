@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.dao.hsqldb;
 import at.ac.tuwien.sepm.entity.MetaLVA;
 import at.ac.tuwien.sepm.service.LvaType;
 import at.ac.tuwien.sepm.service.Semester;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,8 @@ public class DBMetaLvaDaoTest {
         e0.setPriority(0f);
         e0.setECTS(4);
         e0.setModule(0);
-        e0.setTimeEstimate(175);
+        e0.setMinTimeEstimate(175);
+        e0.setMaxTimeEstimate(1234);
 
         assert(dao.create(e0));
 
@@ -56,7 +58,10 @@ public class DBMetaLvaDaoTest {
         assert(e1.getLVAs().size()==0);
         assert(e1.getPrecursor().size()==0);
         assert(e1.getModule()==e0.getModule());
-        assert(e1.getTimeEstimate().intValue()==e0.getTimeEstimate().intValue());
+        assert(e1.getMinTimeEstimate().intValue()==e0.getMinTimeEstimate().intValue());
+        assert(e1.getMaxTimeEstimate().intValue()==e0.getMaxTimeEstimate().intValue());
+        Assert.assertEquals(e1.getMinTimeEstimate().intValue(), e0.getMinTimeEstimate().intValue());
+        Assert.assertEquals(e1.getMaxTimeEstimate().intValue(), e0.getMaxTimeEstimate().intValue());
     }
 
     @Test
@@ -77,7 +82,8 @@ public class DBMetaLvaDaoTest {
         e0.setPriority(0f);
         e0.setECTS(4);
         e0.setModule(0);
-        e0.setTimeEstimate(null);
+        e0.setMinTimeEstimate(null);
+        e0.setMaxTimeEstimate(1234);
 
         e1.setNr("104.qwer");
         e1.setName("Name 1");
@@ -86,7 +92,8 @@ public class DBMetaLvaDaoTest {
         e1.setPriority(1f);
         e1.setECTS(5);
         e1.setModule(0);
-        e1.setTimeEstimate(1234);
+        e1.setMinTimeEstimate(1234);
+        e1.setMaxTimeEstimate(null);
 
         e2.setNr("104.wert");
         e2.setName("Name 2");
@@ -95,7 +102,8 @@ public class DBMetaLvaDaoTest {
         e2.setPriority(2f);
         e2.setECTS(6);
         e2.setModule(0);
-        e2.setTimeEstimate(12341234);
+        e2.setMinTimeEstimate(12341234);
+        e2.setMaxTimeEstimate(1234);
 
         e3.setNr("104.zrt");
         e3.setName("NAme 3");
@@ -104,7 +112,8 @@ public class DBMetaLvaDaoTest {
         e3.setPriority(3f);
         e3.setECTS(7);
         e3.setModule(0);
-        e3.setTimeEstimate(1234);
+        e3.setMinTimeEstimate(1234);
+        e3.setMaxTimeEstimate(1234123);
 
         assert(dao.create(e0));
         assert(dao.create(e1));
@@ -316,7 +325,8 @@ public class DBMetaLvaDaoTest {
         assert(e0.getType().equals(LvaType.VO));
         assert(e0.getPriority()==0f);
         assert(e0.getECTS()==4);
-        assert(e0.getTimeEstimate()==1234);
+        assert(e0.getMinTimeEstimate()==1234);
+        assert(e0.getMaxTimeEstimate()==1234);
 
         assert(e0.getLVAs().size()==1);
         assert(e0.getLVAs().get(0).getLectures().size()==12);
@@ -480,7 +490,8 @@ public class DBMetaLvaDaoTest {
         e0.setPriority(10f);
         e0.setECTS(10);
         e0.setModule(2);
-        e0.setTimeEstimate(234);
+        e0.setMinTimeEstimate(234);
+        e0.setMaxTimeEstimate(12341234);
 
         assert(dao.update(e0));
 
@@ -495,7 +506,8 @@ public class DBMetaLvaDaoTest {
         assert(e1.getLVAs().size()==1);
         assert(e1.getPrecursor().size()==1);
         assert(e1.getModule()==e0.getModule());
-        assert(e1.getTimeEstimate().intValue()==e0.getTimeEstimate().intValue());
+        assert(e1.getMinTimeEstimate().intValue()==e0.getMinTimeEstimate().intValue());
+        assert(e1.getMaxTimeEstimate().intValue()==e0.getMaxTimeEstimate().intValue());
     }
 
     @Test(expected = IOException.class)

@@ -76,8 +76,8 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
 
         @Override
         public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-            String stmt = "INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module,timeEstimate) VALUES " +
-                    "(null,?,?,?,?,?,?,?,?)";
+            String stmt = "INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module,minTimeEstimate,maxTimeEstimate) VALUES " +
+                    "(null,?,?,?,?,?,?,?,?,?)";
 
             //PreparedStatement ps = jdbcTemplate.getDataSource().getConnection().prepareStatement(stmt);
             PreparedStatement ps = con.prepareStatement(stmt);
@@ -88,7 +88,8 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
             ps.setFloat(5, e.getPriority());
             ps.setFloat(6, e.getECTS());
             ps.setInt(7, e.getModule());
-            ps.setObject(8, e.getTimeEstimate());
+            ps.setObject(8, e.getMinTimeEstimate());
+            ps.setObject(9, e.getMaxTimeEstimate());
 
             /*
             String sql = "INSERT INTO MetaLVA (id,lvaNumber,name,semester,type,priority,ects,module)" +
@@ -265,7 +266,8 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
         String stmtUpdatePriority = "UPDATE metalva SET priority=? WHERE id=?;";
         String stmtUpdateEcts = "UPDATE metalva SET ects=? WHERE id=?;";
         String stmtUpdateModule= "UPDATE metalva SET module=? WHERE id=?;";
-        String stmtUpdateTimeEstimate= "UPDATE metalva SET timeEstimate=? WHERE id=?;";
+        String stmtUpdateMinTimeEstimate= "UPDATE metalva SET minTimeEstimate=? WHERE id=?;";
+        String stmtUpdateMaxTimeEstimate= "UPDATE metalva SET maxTimeEstimate=? WHERE id=?;";
 
         if(toUpdate.getNr() != null) {
             jdbcTemplate.update(stmtUpdateLvaNumber, toUpdate.getNr(), toUpdate.getId());
@@ -279,8 +281,11 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
         if(toUpdate.getType() != null) {
             jdbcTemplate.update(stmtUpdateType, toUpdate.getType().ordinal(), toUpdate.getId());
         }
-        if(toUpdate.getTimeEstimate() != null) {
-            jdbcTemplate.update(stmtUpdateTimeEstimate, toUpdate.getTimeEstimate(), toUpdate.getId());
+        if(toUpdate.getMinTimeEstimate() != null) {
+            jdbcTemplate.update(stmtUpdateMinTimeEstimate, toUpdate.getMinTimeEstimate(), toUpdate.getId());
+        }
+        if(toUpdate.getMaxTimeEstimate() != null) {
+            jdbcTemplate.update(stmtUpdateMaxTimeEstimate, toUpdate.getMaxTimeEstimate(), toUpdate.getId());
         }
         jdbcTemplate.update(stmtUpdatePriority, toUpdate.getPriority(), toUpdate.getId());
         jdbcTemplate.update(stmtUpdateEcts, toUpdate.getECTS(), toUpdate.getId());

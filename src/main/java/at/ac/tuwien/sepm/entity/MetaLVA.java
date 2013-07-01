@@ -21,8 +21,9 @@ public class MetaLVA implements Comparable<MetaLVA>{
     private float priority=-1;
     private Semester semestersOffered;
     private int module;
-    private Integer timeEstimate;
-    
+    private Integer minTimeEstimate;
+    private Integer maxTimeEstimate;
+
     private ArrayList<LVA> lvas;
     private HashMap<Integer,LVA> lvasMap;
     
@@ -160,12 +161,20 @@ public class MetaLVA implements Comparable<MetaLVA>{
         this.completed = completed;
     }
 
-    public Integer getTimeEstimate() {
-        return timeEstimate;
+    public Integer getMinTimeEstimate() {
+        return minTimeEstimate;
     }
 
-    public void setTimeEstimate(Integer timeEstimate) {
-        this.timeEstimate = timeEstimate;
+    public void setMinTimeEstimate(Integer minTimeEstimate) {
+        this.minTimeEstimate = minTimeEstimate;
+    }
+
+    public Integer getMaxTimeEstimate() {
+        return maxTimeEstimate;
+    }
+
+    public void setMaxTimeEstimate(Integer maxTimeEstimate) {
+        this.maxTimeEstimate = maxTimeEstimate;
     }
 
     public String toString(){
