@@ -280,7 +280,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                     return;
                 }
                 fillTable();
-                PanelTube.backgroundPanel.viewSmallInfoText("Der Studium ist erfolgreich gespeichert.", SmallInfoPanel.Success);
+                PanelTube.backgroundPanel.viewSmallInfoText("Das Studium ist erfolgreich gespeichert.", SmallInfoPanel.Success);
             }
         });
     }

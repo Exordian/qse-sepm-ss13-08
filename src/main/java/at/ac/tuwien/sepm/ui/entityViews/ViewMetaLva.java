@@ -58,6 +58,12 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     private JLabel completedLabel;
     private JCheckBox completedInput;
 
+    private JLabel minTimeEstimateLabel;
+    private JTextField minTimeEstimateInput;
+
+    private JLabel maxTimeEstimateLabel;
+    private JTextField maxTimeEstimateInput;
+
     private JLabel precursorLabel;
     private MetaLVADisplayPanel precursorPanel;
 
@@ -65,7 +71,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     private MetaLVADisplayPanel addPrecursorPanel;
     private JButton showAddPrecursorPanelButton;
     private JButton addPrecursorButton;
-    
+
     private List<MetaLVA> precursor;
 
 
@@ -110,6 +116,33 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     metaLVA.setSemestersOffered((Semester) semestersOfferedInput.getSelectedItem());
                     metaLVA.setType((LvaType) typeInput.getSelectedItem());
                     metaLVA.setPrecursor(precursor);
+                    metaLVA.setMinTimeEstimate(null);
+                    metaLVA.setMaxTimeEstimate(null);
+
+                    if (minTimeEstimateInput.getText() != null && !containsOf(minTimeEstimateInput.getText(), ' ')) {
+                        try {
+                            int timeEstimate = Integer.parseInt(minTimeEstimateInput.getText());
+                            metaLVA.setMinTimeEstimate(new Integer(timeEstimate));
+                        }  catch (NumberFormatException e) {
+                            PanelTube.backgroundPanel.viewSmallInfoText("Die geschätzte minimale Zeit ist keine gültige Zahl.", SmallInfoPanel.Error);
+                            minTimeEstimateInput.requestFocus();
+                            minTimeEstimateInput.selectAll();
+                            return;
+                        }
+                    }
+
+                    if (maxTimeEstimateInput.getText() != null && !containsOf(maxTimeEstimateInput.getText(), ' ')) {
+                        try {
+                            int timeEstimate = Integer.parseInt(maxTimeEstimateInput.getText());
+                            metaLVA.setMaxTimeEstimate(new Integer(timeEstimate));
+                        }  catch (NumberFormatException e) {
+                            PanelTube.backgroundPanel.viewSmallInfoText("Die geschätzte maximale Zeit ist keine gültige Zahl.", SmallInfoPanel.Error);
+                            maxTimeEstimateInput.requestFocus();
+                            maxTimeEstimateInput.selectAll();
+                            return;
+                        }
+                    }
+
 
                     if (metaLVA.getId() != null) {
                         if (metaLVAService.readById(metaLVA.getId()) != null)
@@ -117,6 +150,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     } else {
                         metaLVAService.create(metaLVA);
                     }
+
                     PanelTube.backgroundPanel.viewSmallInfoText("Die LVA wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
@@ -129,16 +163,29 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         this.add(save);
     }
 
+    private boolean containsOf(String s, char c) {
+        if (s!=null) {
+            for (int i=0; i<s.length(); i++) {
+                if (s.charAt(i) != c) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     private void addContent() {
         int smallSpace = 10;
         int bigSpace=20;
-        
+
         int labelX = (int) (simpleWhiteSpace.getX()+bigSpace);
         int labelWidth = 180;
-        
+
         int inputX = labelX+labelWidth+smallSpace;
         int inputWidth = 140;
-        
+
         int oHeight = 25;
 
         int rightX = inputX+inputWidth+bigSpace*2;
@@ -172,7 +219,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             }
         });
         this.add(nameInput);
-        
+
         nrLabel = new JLabel("Lva Nummer:");
         nrLabel.setFont(standardTextFont);
         nrLabel.setBounds(labelX, nameLabel.getY() + nameLabel.getHeight() + smallSpace, labelWidth,oHeight);
@@ -221,7 +268,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         semestersOfferedInput.setBounds(inputX, semestersOfferedLabel.getY(), inputWidth, oHeight);
         this.add(semestersOfferedInput);
 
-        moduleLabel = new JLabel("Gehört zu Modul:");
+        moduleLabel = new JLabel("Gehört zu Modu:");
         moduleLabel.setFont(standardTextFont);
         moduleLabel.setBounds(labelX, semestersOfferedLabel.getY() + semestersOfferedLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(moduleLabel);
@@ -256,6 +303,26 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         completedLabel.setBounds(labelX, priorityLabel.getY() + priorityLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(completedLabel);
 
+        minTimeEstimateLabel = new JLabel("Geschätzte minimale Zeit");
+        minTimeEstimateLabel.setFont(standardTextFont);
+        minTimeEstimateLabel.setBounds(completedLabel.getBounds().x, completedLabel.getBounds().y + completedLabel.getHeight() + smallSpace, labelWidth, oHeight);
+        this.add(minTimeEstimateLabel);
+
+        maxTimeEstimateLabel = new JLabel("Geschätzte maximale Zeit");
+        maxTimeEstimateLabel.setFont(standardTextFont);
+        maxTimeEstimateLabel.setBounds(minTimeEstimateLabel.getBounds().x, minTimeEstimateLabel.getBounds().y + minTimeEstimateLabel.getHeight() + smallSpace, labelWidth, oHeight);
+        this.add(maxTimeEstimateLabel);
+
+        minTimeEstimateInput = new JTextField();
+        minTimeEstimateInput.setFont(standardTextFont);
+        minTimeEstimateInput.setBounds(inputX, minTimeEstimateLabel.getY(), inputWidth, oHeight);
+        this.add(minTimeEstimateInput);
+
+        maxTimeEstimateInput = new JTextField();
+        maxTimeEstimateInput.setFont(standardTextFont);
+        maxTimeEstimateInput.setBounds(inputX, maxTimeEstimateLabel.getY(), inputWidth, oHeight);
+        this.add(maxTimeEstimateInput);
+
         completedInput = new JCheckBox();
         completedInput.addChangeListener(dONTFUCKINGBUGSWINGListener());
         completedInput.setBackground(new Color(0, 0, 0, 0));
@@ -275,7 +342,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         addPrecursorLabel.setFont(standardTextFont);
         addPrecursorLabel.setBounds(rightX, precursorPanel.getY()+precursorPanel.getHeight()+smallSpace, rightWidth, oHeight);
         this.add(addPrecursorLabel);
-        
+
         showAddPrecursorPanelButton = new JButton("Vorgänger hinzufügen");
         showAddPrecursorPanelButton.setFont(standardButtonFont);
 
@@ -344,6 +411,8 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             moduleInput.setSelectedIndex(0);
             completedInput.setSelected(false);
             precursorPanel.refresh(new ArrayList<MetaLVA>(0));
+            minTimeEstimateInput.setText("");
+            maxTimeEstimateInput.setText("");
             precursor=new ArrayList<MetaLVA>(0);
         } else {
             this.metaLVA=metaLVA;
@@ -362,6 +431,17 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             completedInput.setSelected(metaLVA.isCompleted());
             precursorPanel.refresh(metaLVA.getPrecursor());
             precursor = metaLVA.getPrecursor();
+            if(metaLVA.getMinTimeEstimate() != null) {
+                minTimeEstimateInput.setText("" + metaLVA.getMinTimeEstimate());
+            } else {
+                minTimeEstimateInput.setText("fuck");
+            }
+            if(metaLVA.getMaxTimeEstimate() != null) {
+                maxTimeEstimateInput.setText("" + metaLVA.getMaxTimeEstimate());
+            } else {
+                maxTimeEstimateInput.setText("fuck");
+            }
+            maxTimeEstimateInput.setText("" + metaLVA.getMaxTimeEstimate());
         }
         ArrayList<MetaLVA> toRemove = new ArrayList<MetaLVA>();
         for(MetaLVA m1:allMetaLVAs){

@@ -68,8 +68,9 @@ public interface DateDao {
     public List<DateEntity> readByDay(DateTime date) throws DataAccessException;
 
     /**
-     * Read all dates which should not be intersected by the SemesterPlanner, which are in the specified year and semester. A winter semester starts on 1.
-     * October and ends on 31. January, a summer semester starts on 1. March and ends on 30. June.
+     * Read all dates which should not be intersected by the SemesterPlanner, which are in the specified year and
+     * semester. A winter semester starts on 1. October and ends on 31. January, a summer semester starts on 1. March
+     * and ends on 30. June.
      * @param year The year.
      * @param semester The semester. Should be <code>Semester.S</code> or <code>Semester.W</code>.
      * @return A <code>List<LVA></code> where all dates are stored as TimeFrame into the field <code>times</code>. If
