@@ -270,7 +270,7 @@ public class CalendarPanel extends StandardInsidePanel {
                 if(datesImported == 1) {
                     date = " Termin ";
                 }
-                PanelTube.backgroundPanel.viewSmallInfoText(datesImported + date + "erfolgreich exportiert.", SmallInfoPanel.Success);
+                PanelTube.backgroundPanel.viewSmallInfoText(datesImported + date + "erfolgreich importiert.", SmallInfoPanel.Success);
             }
         });
 
