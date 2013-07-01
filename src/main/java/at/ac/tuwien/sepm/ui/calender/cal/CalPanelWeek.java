@@ -243,7 +243,7 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
                     +" " + firstDay.getYear();
         } else {
             return firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + ". " + firstDay.minusDays(firstDay.getDayOfWeek()-1).monthOfYear().getAsText(Locale.GERMANY) + " bis " +
-                    firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + ". " + firstDay.monthOfYear().getAsText(Locale.GERMANY)
+                    firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + ". " + firstDay.plusDays(7-firstDay.getDayOfWeek()).monthOfYear().getAsText(Locale.GERMANY)
                     +" " + firstDay.getYear();
         }
     }
