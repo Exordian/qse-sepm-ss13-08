@@ -7,9 +7,13 @@ import at.ac.tuwien.sepm.service.CalService;
 import at.ac.tuwien.sepm.service.DateService;
 import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 //import net.miginfocom.swing.MigLayout;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import javax.swing.*;
@@ -24,6 +28,7 @@ import java.util.List;
  */
 @UI
 public abstract class CalAbstractView extends StandardInsidePanel {
+    private Logger logger = LogManager.getLogger(CalAbstractView.class.getSimpleName());
 
     private CalService calService;
     private LVAService lvaService;
@@ -117,22 +122,53 @@ public abstract class CalAbstractView extends StandardInsidePanel {
      */
     public void setDates () throws ServiceException {
         //CalServiceImpl s = new CalServiceImpl();
-
+        String error = null;
         for (DayPanel day : days) {
-            List<LvaDate> l1 = calService.getLVADatesByDateInStudyProgress(day.getDate());
-            List<DateEntity> l2 = calService.getAllNotLVADatesAt(day.getDate());
-            LinkedList<DateLabel> r = new LinkedList<DateLabel>();
-            for (Date d : l1) {
-                r.addLast(new DateLabel(d, dateService, showTime, standardButtonFont));
+            try {
+                List<LvaDate> l1 = calService.getLVADatesByDateInStudyProgress(day.getDate());
+                List<DateEntity> l2 = calService.getAllNotLVADatesAt(day.getDate());
+                LinkedList<DateLabel> r = new LinkedList<DateLabel>();
+                for (Date d : l1) {
+                    r.addLast(new DateLabel(d, dateService, showTime, standardButtonFont));
+                }
+                for (Date d : l2) {
+                    r.addLast(new DateLabel(d, dateService, showTime, standardButtonFont));
+                }
+                Collections.sort(r);
+                day.setDateLabels(r);
+                day.refreshDates();
+            } catch (ServiceException e) {
+                if (e.getMessage() == null) {
+                    error = "Die Termine konnten nicht geladen werden.";
+                } else {
+                    error = splitExceptionMessage(e.getMessage());
+                }
+                break;
             }
-            for (Date d : l2) {
-                r.addLast(new DateLabel(d, dateService, showTime, standardButtonFont));
+        }
+
+        if (error != null) {
+            logger.info("the dates could not be read");
+            if (PanelTube.backgroundPanel != null) {
+                PanelTube.backgroundPanel.viewSmallInfoText(error, SmallInfoPanel.Error);
             }
-            Collections.sort(r);
-            day.setDateLabels(r);
-            day.refreshDates();
         }
     }
+
+    private String splitExceptionMessage(String exceptionMessage) {
+        String[] s = exceptionMessage.split(" ");
+        String result = "";
+        if(s.length > 1) {
+            for(int i=1; i<s.length; i++) {
+                result += s[i] + " ";
+            }
+        }
+        if(result.equals("")) {
+            result = "Die Termine konnten nicht geladen werden.";
+        }
+        return result;
+    }
+
     /*
     public void addDate(Date date) {
         for(DayPanel c : days) {

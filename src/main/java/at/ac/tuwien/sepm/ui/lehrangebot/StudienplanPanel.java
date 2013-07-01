@@ -112,7 +112,9 @@ public class StudienplanPanel extends StandardInsidePanel {
         try {
             moduleList = moduleService.readAll();
         } catch (ServiceException e) {
-            PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
+            if(PanelTube.backgroundPanel != null) {
+                PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
+            }
         }
 
         for(Module m : moduleList) {
