@@ -82,6 +82,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 }
                 //propertyService.setProperty(PropertyService."user.defaultECTS", ects.getText());
                 setVisible(false);
+                PanelTube.calendarPanel.refreshTop();
                 PanelTube.backgroundPanel.viewSmallInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Success);
                 PanelTube.backgroundPanel.showLastComponent();
             }

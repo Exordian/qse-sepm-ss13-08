@@ -50,7 +50,8 @@ public class First extends SimpleDisplayPanel {
             }
         } catch (ServiceException e) {
             logger.error(e);
-            PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Daten aufgetreten.",SmallInfoPanel.Error);
+            if (PanelTube.backgroundPanel != null)
+                PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Daten aufgetreten.",SmallInfoPanel.Error);
         }
         studyDrop.addItemListener(new ItemListener() {
             @Override

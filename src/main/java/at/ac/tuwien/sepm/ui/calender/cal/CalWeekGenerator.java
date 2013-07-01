@@ -48,11 +48,6 @@ public class CalWeekGenerator extends JPanel implements CalendarInterface {
     }
 
     @Override
-    public void semester() {
-        calPanelWeek.semester();
-    }
-
-    @Override
     public void next() throws ServiceException {
         calPanelWeek.next();
     }
@@ -70,5 +65,9 @@ public class CalWeekGenerator extends JPanel implements CalendarInterface {
     @Override
     public void goToDay(DateTime day) {
         calPanelWeek.goToDay(day);
+    }
+
+    public DateTime getFirstDay() {
+        return calPanelWeek.getFirstDay();
     }
 }

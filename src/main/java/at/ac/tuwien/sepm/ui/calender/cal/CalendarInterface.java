@@ -14,10 +14,10 @@ import org.joda.time.DateTime;
 @UI
 public interface CalendarInterface {
     public void refresh();
-    public void semester();
     public void next() throws ServiceException;
     public void last() throws ServiceException;
     public void goToDay(DateTime date);
     public void init();
+    public DateTime getFirstDay();
     String getTimeIntervalInfo();
 }

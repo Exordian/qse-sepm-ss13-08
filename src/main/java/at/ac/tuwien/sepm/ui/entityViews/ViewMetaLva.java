@@ -316,24 +316,24 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         completedLabel.setBounds(labelX, priorityLabel.getY() + priorityLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(completedLabel);
 
-        minTimeEstimateLabel = new JLabel("Geschätzte minimale Zeit");
+        minTimeEstimateLabel = new JLabel("Geschätzte minimale Zeit:");
         minTimeEstimateLabel.setFont(standardTextFont);
-        minTimeEstimateLabel.setBounds(completedLabel.getBounds().x, completedLabel.getBounds().y + completedLabel.getHeight() + smallSpace, labelWidth, oHeight);
+        minTimeEstimateLabel.setBounds(completedLabel.getBounds().x, completedLabel.getBounds().y + completedLabel.getHeight() + smallSpace, labelWidth+50, oHeight);
         this.add(minTimeEstimateLabel);
 
-        maxTimeEstimateLabel = new JLabel("Geschätzte maximale Zeit");
+        maxTimeEstimateLabel = new JLabel("Geschätzte maximale Zeit:");
         maxTimeEstimateLabel.setFont(standardTextFont);
-        maxTimeEstimateLabel.setBounds(minTimeEstimateLabel.getBounds().x, minTimeEstimateLabel.getBounds().y + minTimeEstimateLabel.getHeight() + smallSpace, labelWidth, oHeight);
+        maxTimeEstimateLabel.setBounds(minTimeEstimateLabel.getBounds().x, minTimeEstimateLabel.getBounds().y + minTimeEstimateLabel.getHeight() + smallSpace, labelWidth+50, oHeight);
         this.add(maxTimeEstimateLabel);
 
         minTimeEstimateInput = new JTextField();
         minTimeEstimateInput.setFont(standardTextFont);
-        minTimeEstimateInput.setBounds(inputX, minTimeEstimateLabel.getY(), inputWidth, oHeight);
+        minTimeEstimateInput.setBounds(inputX+50, minTimeEstimateLabel.getY(), inputWidth-50, oHeight);
         this.add(minTimeEstimateInput);
 
         maxTimeEstimateInput = new JTextField();
         maxTimeEstimateInput.setFont(standardTextFont);
-        maxTimeEstimateInput.setBounds(inputX, maxTimeEstimateLabel.getY(), inputWidth, oHeight);
+        maxTimeEstimateInput.setBounds(inputX+50, maxTimeEstimateLabel.getY(), inputWidth-50, oHeight);
         this.add(maxTimeEstimateInput);
 
         completedInput = new JCheckBox();
