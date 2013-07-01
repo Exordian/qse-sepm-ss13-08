@@ -161,6 +161,5 @@ public class LvaPanel extends StandardInsidePanel {
                 LvaPanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         }.start();
-
     }
 }

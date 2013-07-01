@@ -5,8 +5,10 @@ import at.ac.tuwien.sepm.service.LVAService;
 import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -37,6 +39,7 @@ public class ViewPanel extends StandardInsidePanel {
     private SemesterPanel semester;
     private LVAService service;
     private PropertyService propertyService;
+    private boolean refreshing;
 
     private SemesterList semesterList;
     private ArrayList<LVA> makeSure = null;
@@ -59,46 +62,59 @@ public class ViewPanel extends StandardInsidePanel {
         refresh();
     }
 
-    public void refresh() {
-        semesterList.refresh();
-        ArrayList<LVA> temp = null;
-        setMajorName();
-        if (getSemesterAnzahl() <= 1 && makeSure == null) {
-            bwd.setVisible(false);
-            fwd.setVisible(false);
-        } else {
-            bwd.setVisible(true);
-            fwd.setVisible(true);
+    public synchronized void refresh() {
+        if(refreshing){
+            return;
         }
-        try {
-            temp = new ArrayList<>();
-            for (LVA l : service.readByYearAndSemester(semesterList.getCurrentYear(), semesterList.getCurrentSemesterIsWinterSemester())) {
-                if (l.isInStudyProgress())
-                    temp.add(l);
+        refreshing = true;
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        new Thread(){
+            @Override
+            public void run(){
+                try {
+                    semesterList.refresh();
+                    ArrayList<LVA> temp = null;
+                    setMajorName();
+                    if (getSemesterAnzahl() <= 1 && makeSure == null) {
+                        bwd.setVisible(false);
+                        fwd.setVisible(false);
+                    } else {
+                        bwd.setVisible(true);
+                        fwd.setVisible(true);
+                    }
+                        temp = new ArrayList<>();
+                        for (LVA l : service.readByYearAndSemester(semesterList.getCurrentYear(), semesterList.getCurrentSemesterIsWinterSemester())) {
+                            if (l.isInStudyProgress())
+                                temp.add(l);
+                        }
+                        semester.setLvas(temp);
+                    if (getSemesterAnzahl() != 0 && semesterList.getCurrentSemester() != 0 && temp != null) {
+                        if (temp.isEmpty() && makeSure == null) {
+                            semester.setSemesterTitle("Bitte planen Sie ein Semester!");
+                            bwd.setVisible(false);
+                            fwd.setVisible(false);
+                        } else {
+                            makeSure=temp;
+                            String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
+                            semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
+                        }
+                    } else {
+                        semester.setSemesterTitle("Bitte planen Sie ein Semester!");
+                        bwd.setVisible(false);
+                        fwd.setVisible(false);
+                    }
+                    ViewPanel.this.repaint();
+                    refreshing = false;
+                } catch (ServiceException e) {
+                    log.error(e);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden des Studienverlaufs", SmallInfoPanel.Error);
+                } catch (ValidationException e) {
+                    log.error(e);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden des Studienverlaufs", SmallInfoPanel.Error);
+                }
+                ViewPanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
-            semester.setLvas(temp);
-        } catch (ServiceException e) {
-            log.error(e.getMessage());
-        } catch (ValidationException e) {
-            log.error(e.getMessage());
-        }
-        if (getSemesterAnzahl() != 0 && semesterList.getCurrentSemester() != 0 && temp != null) {
-            if (temp.isEmpty() && makeSure == null) {
-                semester.setSemesterTitle("Bitte planen Sie ein Semester!");
-                bwd.setVisible(false);
-                fwd.setVisible(false);
-            } else {
-                makeSure=temp;
-                String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
-                semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
-            }
-        } else {
-            semester.setSemesterTitle("Bitte planen Sie ein Semester!");
-            bwd.setVisible(false);
-            fwd.setVisible(false);
-        }
-        this.revalidate();
-        this.repaint();
+        }.start();
     }
 
     public void refreshSemesterList() {
