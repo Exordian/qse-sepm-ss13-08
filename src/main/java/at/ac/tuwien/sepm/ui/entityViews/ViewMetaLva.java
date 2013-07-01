@@ -143,7 +143,6 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                         }
                     }
 
-
                     if (metaLVA.getId() != null) {
                         if (metaLVAService.readById(metaLVA.getId()) != null)
                             metaLVAService.update(metaLVA);
@@ -156,11 +155,25 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("MetaLvaEntity is invalid.");
-                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText(splitExceptionMessage(e.getMessage()), SmallInfoPanel.Error);
                 }
             }
         });
         this.add(save);
+    }
+
+    private String splitExceptionMessage(String exceptionMessage) {
+        String[] s = exceptionMessage.split(" ");
+        String result = "";
+        if(s.length > 1) {
+            for(int i=1; i<s.length; i++) {
+                result += s[i] + " ";
+            }
+        }
+        if(result.equals("")) {
+            result = "Die Daten konnten nicht gespeichert werden.";
+        }
+        return result;
     }
 
     private boolean containsOf(String s, char c) {
