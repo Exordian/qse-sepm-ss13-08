@@ -180,9 +180,9 @@ public class ViewPanel extends StandardInsidePanel {
                 }
                 try {
                     facebookService.postLvasToWall(metaLVAs);
-                    PanelTube.backgroundPanel.viewSmallInfoText("Studienverlauf wurde auf die Wall gepostet.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Studienverlauf wurde auf Facebook geteilt.", SmallInfoPanel.Success);
                 } catch(FacebookOAuthException fb) {
-                    PanelTube.backgroundPanel.viewSmallInfoText("Facebook API Key ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Der Facebook API Key ist ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
