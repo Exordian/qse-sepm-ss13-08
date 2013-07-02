@@ -303,7 +303,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                 if (ccurr.getSelectedItem() != null && ccurr.getSelectedItem() instanceof CurriculumComboBoxItem && ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get() != null) {
                     PanelTube.backgroundPanel.viewSmallInfoText("Das Studium wird geladen ... ", SmallInfoPanel.Info);
                     fillTable();
-                    PanelTube.backgroundPanel.viewSmallInfoText("Das Studium ist geladen.", SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Das Studium wurde geladen.", SmallInfoPanel.Success);
                 } else if (curriculumDisplayPanel != null) {
                     curriculumDisplayPanel.changeStateOfContainedComboBox("disabled");
                 }

@@ -172,6 +172,7 @@ public class BackgroundPanel extends JPanel {
 
     public void viewCurriculum() {
         removeAddedPanels();
+        viewCurriculum.setUpForNewCurriculum();
         viewCurriculum.setVisible(true);
         addSimplePanel(viewCurriculum);
         this.revalidate();
