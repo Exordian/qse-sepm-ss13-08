@@ -74,6 +74,9 @@ public class ICalendarServiceImpl implements ICalendarService {
             throw new ServiceException(COULD_NOT_IMPORT_CALENDAR + " Die Datei konnte nicht gefunden werden.", e);
         } catch (ParserException e) {
             logger.info("Calender could not be parsed", e);
+            if (e.getMessage().contains("Unparseable date:")) {
+                throw new ServiceException("Der Kalender konnte nicht geladen werden. Ein Termin hat ein ungültiges Datum.");
+            }
             throw new ServiceException(COULD_NOT_IMPORT_CALENDAR + " Die Datei ist beschädigt.", e);
         } catch (IOException e) {
             logger.info("Calender could not be read.", e);
