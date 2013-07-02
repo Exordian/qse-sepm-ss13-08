@@ -27,7 +27,6 @@ public class ViewPanel extends StandardInsidePanel {
     private JLabel majorName = new JLabel("dummy");
     private JButton fwd;
     private JButton bwd;
-    private JButton exportButton;
     private SemesterPanel semester;
     private LVAService service;
     private PropertyService propertyService;
@@ -126,7 +125,6 @@ public class ViewPanel extends StandardInsidePanel {
     private void initButtons() {
         fwd = new JButton();
         bwd = new JButton();
-        exportButton= new JButton("Semesterdaten exportieren");
 
         try {
             bwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navleft.png"))));
@@ -161,19 +159,7 @@ public class ViewPanel extends StandardInsidePanel {
                 refresh();
             }
         });
-
-        exportButton.setBounds(semester.getX(),semester.getY()+semester.getHeight()+5,200,40);
-        exportButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        exportButton.setFont(standardButtonFont);
-        exportButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                //todo
-            }
-        });
-
         this.add(bwd);
-        this.add(exportButton);
 
         JButton shareButton = new JButton("Auf Facebook teilen");
         shareButton.setFont(standardButtonFont);
@@ -197,7 +183,7 @@ public class ViewPanel extends StandardInsidePanel {
         });
         shareButton.setEnabled(true);
         shareButton.setVisible(true);
-        shareButton.setBounds((int) (semester.getX()+exportButton.getBounds().getWidth() + 20),semester.getY()+semester.getHeight()+5,200,40);
+        shareButton.setBounds(semester.getX(),semester.getY()+semester.getHeight()+5,200,40);
         this.add(shareButton);
     }
 

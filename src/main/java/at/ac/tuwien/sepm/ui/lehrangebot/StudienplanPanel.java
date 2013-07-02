@@ -215,7 +215,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                         if (modulesNotFound == 1) {
                             moduleString = " Modul ist ";
                         }
-                        PanelTube.backgroundPanel.viewSmallInfoText("   " + modulesNotFound + moduleString + "sind noch nicht gespeichert:" + moduleNotFoundNames + "   ", SmallInfoPanel.Error);
+                        PanelTube.backgroundPanel.viewSmallInfoText(modulesNotFound + moduleString + "noch nicht gespeichert:\n" + moduleNotFoundNames + "   ", SmallInfoPanel.Error);
                         log.info(modulesNotFound + " modules not stored yet ... ");
                     }
                 } else {
@@ -229,7 +229,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         if (modulesNotFound==0) {
             s += " '" + name + "'";
         } else {
-            s += ", '" + name + "'";
+            s += "\n'" + name + "'";
         }
 
         return s;
