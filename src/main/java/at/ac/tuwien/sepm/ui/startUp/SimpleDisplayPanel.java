@@ -88,15 +88,39 @@ public abstract class SimpleDisplayPanel extends JPanel{
     public double getPanelWidth() {
         return width;
     }
+    /**
+     * adds text
+     * @param s the text to add
+     * @param left if the text should be added to the right half or the left half of the panel
+     */
     public void addText(String s,boolean left){
         addRow(new JTextArea(s),null,left);
     }
+
+    /**
+     * adds text
+     * @param s the text to add
+     * @param font the additional font
+     * @param left if the text should be added to the right half or the left half of the panel
+     */
     public void addText(String s,Integer font,boolean left){
         addRow(new JTextArea(s),font,null,null,left,true);
     }
+    /**
+    * adds empty space
+    * @param space height of the empty space
+    * @param left if the space should be added right or left
+    */
     public void addEmptyArea(int space,boolean left){
         addEmptyArea(space,left,true);
     }
+
+    /**
+     * adds empty space
+     * @param space height of the empty space
+     * @param left if the space should be added right or left
+     * @param top if the space should be added on top or from the bottom
+     */
     public void addEmptyArea(int space,boolean left,boolean top){
         if(top){
             if(left){
@@ -116,12 +140,29 @@ public abstract class SimpleDisplayPanel extends JPanel{
         addRow(label,input,left,true);
 
     }
-    public void addRow(JComponent label, JComponent input,boolean left,boolean top){
-        addRow(label,null,input,null,left,top);
+    /**
+     * adds a new Row.
+     * @param leftComp the component, which will be added on the left
+     * @param rightComp the component, which will be added on the right
+     * @param left if the row is added to the left or to the right
+     * @param top if the should be added to the top (if false, it will be added to the bottom)
+     */
+    public void addRow(JComponent leftComp, JComponent rightComp,boolean left,boolean top){
+        addRow(leftComp,null,rightComp,null,left,top);
     }
-    public void addRow(JComponent label,Integer fontLabel, JComponent input,Integer fontInput,boolean left,boolean top){
-        allLabels.add(label);
-        allInputs.add(input);
+
+    /**
+     * adds a new Row.
+     * @param leftComp the component, which will be added on the left
+     * @param leftFont the font extra, which will be applied to the left component
+     * @param rightComp the component, which will be added on the right
+     * @param rightFont the font extra, which will be applied to the right component
+     * @param left if the row is added to the left or to the right
+     * @param top if the should be added to the top (if false, it will be added to the bottom)
+     */
+    public void addRow(JComponent leftComp,Integer leftFont, JComponent rightComp,Integer rightFont,boolean left,boolean top){
+        allLabels.add(leftComp);
+        allInputs.add(rightComp);
         int tempLabelX,tempLabelWidth,tempInputX,tempInputWidth,tempHeight;
         if(left){
             if(!top){
@@ -147,85 +188,85 @@ public abstract class SimpleDisplayPanel extends JPanel{
         }
         
         int tempMax = 0;
-        if(label!=null){
+        if(leftComp !=null){
 
-            if(fontLabel!=null){
-                label.setFont(standardInsidePanel.standardTextFont.deriveFont(fontLabel));
+            if(leftFont !=null){
+                leftComp.setFont(standardInsidePanel.standardTextFont.deriveFont(leftFont));
             }else{
-                label.setFont(standardInsidePanel.standardTextFont);
+                leftComp.setFont(standardInsidePanel.standardTextFont);
             }
 
-            if(label instanceof JTextComponent){
-                JTextComponent textLabel = (JTextArea)label;
-                if(label instanceof JTextArea){
-                    JTextArea areaLabel = (JTextArea)label;
+            if(leftComp instanceof JTextComponent){
+                JTextComponent textLabel = (JTextArea) leftComp;
+                if(leftComp instanceof JTextArea){
+                    JTextArea areaLabel = (JTextArea) leftComp;
                     areaLabel.setWrapStyleWord(true);
                     areaLabel.setLineWrap(true);
                 }
                 textLabel.setEditable(false);
             }
-            add(label);
+            add(leftComp);
 
 
 
-            if(label instanceof JButton){
+            if(leftComp instanceof JButton){
                 tempLabelWidth = buttonWidth;
-                if(fontLabel!=null){
-                    label.setFont(standardInsidePanel.standardButtonFont.deriveFont(fontLabel));
+                if(leftFont !=null){
+                    leftComp.setFont(standardInsidePanel.standardButtonFont.deriveFont(leftFont));
                 }else{
-                    label.setFont(standardInsidePanel.standardButtonFont);
+                    leftComp.setFont(standardInsidePanel.standardButtonFont);
                 }
             }else{
-                if(input!=null){
+                if(rightComp !=null){
 
                 }else{
                     tempLabelWidth=(tempInputX - tempLabelX) + tempInputWidth;
                 }
             }
-            int tempToAdd = label.getPreferredSize().height;
+            int tempToAdd = leftComp.getPreferredSize().height;
             if(!top){
                 tempHeight-=tempToAdd;
             }
-            label.setBounds(tempLabelX, tempHeight,tempLabelWidth,label.getPreferredSize().height);
-            label.setBounds(tempLabelX, tempHeight,tempLabelWidth,label.getPreferredSize().height);
+            leftComp.setBounds(tempLabelX, tempHeight,tempLabelWidth, leftComp.getPreferredSize().height);
+            leftComp.setBounds(tempLabelX, tempHeight,tempLabelWidth, leftComp.getPreferredSize().height);
             if(!top){
                 tempHeight+=tempToAdd;
             }
-            tempMax = label.getPreferredSize().height;
+            tempMax = leftComp.getPreferredSize().height;
         }
-        if(input!=null){
+        if(rightComp !=null){
 
-            add(input);
-            if(fontInput!=null){
-                input.setFont(standardInsidePanel.standardTextFont.deriveFont(fontInput));
+            add(rightComp);
+            if(rightFont !=null){
+                rightComp.setFont(standardInsidePanel.standardTextFont.deriveFont(rightFont));
             }else{
-                input.setFont(standardInsidePanel.standardTextFont);
+                rightComp.setFont(standardInsidePanel.standardTextFont);
             }
             int tempWidth=tempInputWidth;
-            if(input instanceof JButton){
-                if(fontInput!=null){
-                    input.setFont(standardInsidePanel.standardButtonFont.deriveFont(fontInput));
+            if(rightComp instanceof JButton){
+                if(rightFont !=null){
+                    rightComp.setFont(standardInsidePanel.standardButtonFont.deriveFont(rightFont));
                 }else{
-                    input.setFont(standardInsidePanel.standardButtonFont);
+                    rightComp.setFont(standardInsidePanel.standardButtonFont);
                 }
-                JButton inputButton = (JButton)input;
-                tempWidth=buttonWidth;//inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, input.getPreferredSize().height);
-            }else if(input instanceof JProgressBar){
-                JProgressBar inputButton = (JProgressBar)input;
-                tempWidth=buttonWidth;//inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, input.getPreferredSize().height);
+                JButton inputButton = (JButton) rightComp;
+                tempWidth=buttonWidth;//inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, rightComp.getPreferredSize().height);
+            }else if(rightComp instanceof JProgressBar){
+                JProgressBar inputButton = (JProgressBar) rightComp;
+                tempWidth=buttonWidth;//inputButton.setBounds(tempInputX+(tempInputWidth-buttonWidth), tempHeight, buttonWidth, rightComp.getPreferredSize().height);
             }else{
-                if(input instanceof JTextComponent){
-                    JTextComponent inputText = (JTextComponent)input;
+                if(rightComp instanceof JTextComponent){
+                    JTextComponent inputText = (JTextComponent) rightComp;
                     inputText.setBorder(new JTextField().getBorder());
                 }
             }
             if(!top){
-                tempHeight-=input.getPreferredSize().height;
+                tempHeight-= rightComp.getPreferredSize().height;
             }
-            input.setBounds(tempInputX+(tempInputWidth-tempWidth), tempHeight, tempWidth, input.getPreferredSize().height);
+            rightComp.setBounds(tempInputX+(tempInputWidth-tempWidth), tempHeight, tempWidth, rightComp.getPreferredSize().height);
 
 
-            tempMax=Math.max(tempMax,input.getBounds().height);
+            tempMax=Math.max(tempMax, rightComp.getBounds().height);
         }
         if(top){
             if(left){
@@ -243,4 +284,5 @@ public abstract class SimpleDisplayPanel extends JPanel{
 
     }
     public abstract void refresh();
+    public abstract void reset();
 }

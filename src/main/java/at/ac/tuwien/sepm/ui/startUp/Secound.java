@@ -99,6 +99,11 @@ public class Secound extends SimpleDisplayPanel {
 
     @Override
     public void refresh() {
+
+    }
+
+    @Override
+    public void reset() {
         facebookUsername.setText(startUp.propertyService.getProperty(PropertyService.FACEBOOK_USER,""));
         facebookPassword.setText(startUp.propertyService.getProperty(PropertyService.FACEBOOK_PASSWORD,""));
         year.setYear(Integer.parseInt(startUp.propertyService.getProperty(PropertyService.FIRST_YEAR,""+ DateTime.now().getYear())));

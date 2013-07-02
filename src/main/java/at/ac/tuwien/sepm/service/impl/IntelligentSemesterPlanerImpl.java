@@ -320,13 +320,15 @@ public class IntelligentSemesterPlanerImpl implements IntelligentSemesterPlaner 
             }
             public void changePriorityBySemester(float delta){
                 Semester temp = lva.getSemestersOffered();
-                switch(temp){
-                case S:
-                case W:
-                    priority+=delta;
-                    break;
-                case W_S:
-                    priority-=delta;
+                if(temp!=null){
+                    switch(temp){
+                    case S:
+                    case W:
+                        priority+=delta;
+                        break;
+                    case W_S:
+                        priority-=delta;
+                    }
                 }
             }
             public void randomize(float maxMult){

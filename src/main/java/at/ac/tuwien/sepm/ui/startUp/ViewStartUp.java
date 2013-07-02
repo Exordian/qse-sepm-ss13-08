@@ -78,6 +78,12 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
         allPanels.get(currentIndex).refresh();
 
     }
+    public void showStartup(){
+        jump(0);
+        for(SimpleDisplayPanel p:allPanels){
+            p.reset();
+        }
+    }
     protected void next(){
         if(currentIndex+1 == allPanels.size()){
             propertyService.setProperty(PropertyService.FIRST_RUN,"false");
@@ -91,6 +97,9 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
     }
     protected void back(){
         jump(currentIndex-1);
+    }
+    public void reset(){
+
     }
 
 

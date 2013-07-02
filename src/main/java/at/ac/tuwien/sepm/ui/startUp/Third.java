@@ -81,4 +81,9 @@ public class Third extends SimpleDisplayPanel {
         //TODO fill me <3
         //TODO no!
     }
+
+    @Override
+    public void reset() {
+        //TODO fill me <3
+    }
 }
