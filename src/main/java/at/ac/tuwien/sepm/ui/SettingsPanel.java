@@ -224,6 +224,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     }
 
                     PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gelöscht!", SmallInfoPanel.Success);
+                    PanelTube.studienplanPanel.refreshCurriculumComboBox();
                     PanelTube.backgroundPanel.viewStartup(true);
                 }
             }

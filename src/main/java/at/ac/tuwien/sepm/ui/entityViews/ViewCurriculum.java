@@ -58,8 +58,9 @@ public class ViewCurriculum extends StandardSimpleInsidePanel {
     }
 
     public void setUpForNewCurriculum() {
+        changeTitle("Neuer Studienplan");
         tnumber.setText("");
-        tname.setText("Neuer Studienplan");
+        tname.setText("");
         tdescription.setText("");
         ttitle.setText("");
         tectsc.setText("");
