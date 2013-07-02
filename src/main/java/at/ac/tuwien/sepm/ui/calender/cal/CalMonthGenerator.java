@@ -52,11 +52,6 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
     }
 
     @Override
-    public void semester() {
-        calPanelMonth.semester();
-    }
-
-    @Override
     public void next() throws ServiceException {
         calPanelMonth.next();
     }
@@ -74,5 +69,9 @@ public class CalMonthGenerator extends JPanel implements CalendarInterface {
     @Override
     public String getTimeIntervalInfo() {
         return calPanelMonth.getTimeIntervalInfo();
+    }
+
+    public DateTime getFirstDay() {
+        return calPanelMonth.getFirstDay();
     }
 }

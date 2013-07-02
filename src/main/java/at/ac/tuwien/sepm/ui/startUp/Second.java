@@ -18,11 +18,10 @@ import java.awt.event.ActionListener;
 /**
  * Author: Georg Plaz
  */
-public class Secound extends SimpleDisplayPanel {
-    private static Logger logger = LogManager.getLogger(Secound.class);
+public class Second extends SimpleDisplayPanel {
+    private static Logger logger = LogManager.getLogger(Second.class);
 
-    private JTextField facebookUsername = new JTextField();
-    private JPasswordField facebookPassword = new JPasswordField();
+    private JTextField facebookKey = new JTextField();
     private JButton progressFurther= new JButton("Weiter");
     private JButton goBack= new JButton("Zurück");
     private JProgressBar progressBar = new JProgressBar();
@@ -30,7 +29,7 @@ public class Secound extends SimpleDisplayPanel {
     private JYearChooser year = new JYearChooser();
     private ViewStartUp startUp;
 
-    public Secound(double width, double height, ViewStartUp parent) {
+    public Second(double width, double height, ViewStartUp parent) {
         super(width, height,parent);
         this.startUp=parent;
         subInit();
@@ -42,21 +41,15 @@ public class Secound extends SimpleDisplayPanel {
         progressFurther.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
 
-                    int un = facebookUsername.getText().length();
-                    int pw = facebookPassword.getPassword().length;
-                    if (un > 0 && pw > 0) {
-                        startUp.propertyService.setProperty(PropertyService.FACEBOOK_USER, facebookUsername.getText());
-                        startUp.propertyService.setProperty(PropertyService.FACEBOOK_PASSWORD, new String(facebookPassword.getPassword()));
-                    } else if ((un == 0) != (pw == 0)) {
-                        PanelTube.backgroundPanel.viewSmallInfoText("Die Facebook-Daten sind ungültig!", SmallInfoPanel.Warning);
-                        throw new EscapeException();
-                    }
-                    startUp.next();
-                    startUp.propertyService.setProperty(PropertyService.FIRST_SEMESTER, ((Semester) semesterDrop.getSelectedItem()).toShortString());
-                    startUp.propertyService.setProperty(PropertyService.FIRST_YEAR, ""+year.getYear());
-                } catch (EscapeException ignore) {      }
+                int un = facebookKey.getText().length();
+                if (un > 0) {
+                    startUp.propertyService.setProperty(PropertyService.FACEBOOK_KEY, facebookKey.getText());
+                    startUp.facebookService.authenticate();
+                }
+                startUp.next();
+                startUp.propertyService.setProperty(PropertyService.FIRST_SEMESTER, ((Semester) semesterDrop.getSelectedItem()).toShortString());
+                startUp.propertyService.setProperty(PropertyService.FIRST_YEAR, ""+year.getYear());
             }
         });
         goBack.addActionListener(new ActionListener() {
@@ -80,8 +73,7 @@ public class Secound extends SimpleDisplayPanel {
         addText("Wenn du diesen Service nutzen willst, kannst du deine Facebookdaten hier eintragen.",false);
         addText("Die Angabe ist optional.\n", false);
 
-        addRow(new JTextArea("Facebook-Username"), facebookUsername, false);
-        addRow(new JTextArea("Facebook-Passwort"),facebookPassword,false);
+        addRow(new JTextArea("Facebook-API-Key"), facebookKey, false);
 
         addRow(null,progressFurther,false,false);
 
@@ -91,21 +83,21 @@ public class Secound extends SimpleDisplayPanel {
     private void setWaiting(boolean b){
         progressFurther.setEnabled(!b);
         progressBar.setVisible(b);
-        facebookPassword.setEnabled(!b);
-        facebookUsername.setEnabled(!b);
+        facebookKey.setEnabled(!b);
         //studyDrop.setEnabled(!b);
     }
 
 
     @Override
     public void refresh() {
+        facebookKey.setText(startUp.propertyService.getProperty(PropertyService.FACEBOOK_KEY, ""));
 
     }
 
     @Override
     public void reset() {
-        facebookUsername.setText(startUp.propertyService.getProperty(PropertyService.FACEBOOK_USER,""));
-        facebookPassword.setText(startUp.propertyService.getProperty(PropertyService.FACEBOOK_PASSWORD,""));
+        facebookKey.setText(startUp.propertyService.getProperty(PropertyService.FACEBOOK_KEY, ""));
+
         year.setYear(Integer.parseInt(startUp.propertyService.getProperty(PropertyService.FIRST_YEAR,""+ DateTime.now().getYear())));
         semesterDrop.setSelectedItem(Semester.parse(startUp.propertyService.getProperty(PropertyService.FIRST_SEMESTER, Semester.W.toString())));
     }

@@ -59,6 +59,10 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
         this.revalidate();
     }
 
+    public DateTime getFirstDay() {
+        return firstDay;
+    }
+
     public void goToDay(DateTime day) {
         firstDay = day;
         setDays();
@@ -233,18 +237,13 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
 
     @Override
     public String getTimeIntervalInfo() {
-        /*
-        return String s = firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getMonthOfYear() + "." + firstDay.minusDays(firstDay.getDayOfWeek()-1).getYear()
-                + " bis " +
-                firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getMonthOfYear() + "." + firstDay.plusDays(7-firstDay.getDayOfWeek()).getYear();
-        */
         if(firstDay.minusDays(firstDay.getDayOfWeek()-1).getMonthOfYear() == firstDay.plusDays(7-firstDay.getDayOfWeek()).getMonthOfYear()) {
-        return firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + ". bis " +
-                firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + ". " + firstDay.monthOfYear().getAsText(Locale.GERMANY)
-                +" " + firstDay.getYear();
+            return firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + ". bis " +
+                    firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + ". " + firstDay.monthOfYear().getAsText(Locale.GERMANY)
+                    +" " + firstDay.getYear();
         } else {
             return firstDay.minusDays(firstDay.getDayOfWeek()-1).getDayOfMonth() + ". " + firstDay.minusDays(firstDay.getDayOfWeek()-1).monthOfYear().getAsText(Locale.GERMANY) + " bis " +
-                    firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + ". " + firstDay.monthOfYear().getAsText(Locale.GERMANY)
+                    firstDay.plusDays(7-firstDay.getDayOfWeek()).getDayOfMonth() + ". " + firstDay.plusDays(7-firstDay.getDayOfWeek()).monthOfYear().getAsText(Locale.GERMANY)
                     +" " + firstDay.getYear();
         }
     }
@@ -256,10 +255,5 @@ public class CalPanelWeek extends CalAbstractView implements CalendarInterface {
         } catch (ServiceException e) {
             logger.error(e);
         }
-    }
-
-    @Override
-    public void semester() {
-        // TODO
     }
 }

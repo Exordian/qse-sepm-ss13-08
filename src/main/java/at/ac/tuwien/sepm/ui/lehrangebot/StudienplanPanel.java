@@ -112,7 +112,9 @@ public class StudienplanPanel extends StandardInsidePanel {
         try {
             moduleList = moduleService.readAll();
         } catch (ServiceException e) {
-            PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
+            if(PanelTube.backgroundPanel != null) {
+                PanelTube.backgroundPanel.viewSmallInfoText(e.getMessage(), SmallInfoPanel.Error);
+            }
         }
 
         for(Module m : moduleList) {
@@ -209,11 +211,11 @@ public class StudienplanPanel extends StandardInsidePanel {
                     if (modulesNotFound == 0) {
                         PanelTube.backgroundPanel.viewSmallInfoText("Die Daten sind geladen.", SmallInfoPanel.Success);
                     } else {
-                        String moduleString = " Module sind ";
+                        String moduleString = " Module konnten nicht gespeichert werden, da sie nicht exisitieren:\n";
                         if (modulesNotFound == 1) {
-                            moduleString = " Modul ist ";
+                            moduleString = " Modul konnte nicht gespeichert werden, da es nicht exisitiert:\n";
                         }
-                        PanelTube.backgroundPanel.viewSmallInfoText("   " + modulesNotFound + moduleString + "sind noch nicht gespeichert:" + moduleNotFoundNames + "   ", SmallInfoPanel.Error);
+                        PanelTube.backgroundPanel.viewSmallInfoText(modulesNotFound + moduleString + moduleNotFoundNames + "   ", SmallInfoPanel.Error);
                         log.info(modulesNotFound + " modules not stored yet ... ");
                     }
                 } else {
@@ -227,7 +229,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         if (modulesNotFound==0) {
             s += " '" + name + "'";
         } else {
-            s += ", '" + name + "'";
+            s += "\n'" + name + "'";
         }
 
         return s;
@@ -280,7 +282,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                     return;
                 }
                 fillTable();
-                PanelTube.backgroundPanel.viewSmallInfoText("Der Studium ist erfolgreich gespeichert.", SmallInfoPanel.Success);
+                PanelTube.backgroundPanel.viewSmallInfoText("Das Studium ist erfolgreich gespeichert.", SmallInfoPanel.Success);
             }
         });
     }

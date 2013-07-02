@@ -225,11 +225,6 @@ public class DBLvaDateDao extends DBBaseDao implements LvaDateDao {
         return result;
     }
 
-    /**
-     * todo
-     * @param date
-     * @return
-     */
     @Override
     public List<LvaDate> readByDayInStudyProgress(DateTime date) {
         String stmt = "SELECT * FROM lvadate WHERE " +

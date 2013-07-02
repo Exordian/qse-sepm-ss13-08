@@ -155,11 +155,21 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
     @Override
     public void addRegistration(TissExam tissExam) throws ServiceException {
         try {
+            for(TissExam te : pendingRegistrationDao.readAllTissExams())
+                if(te.getLvanr().equals(tissExam.getLvanr()))
+                    return;
             pendingRegistrationDao.create(tissExam);
             loadFromDB();
         } catch (IOException e) {
             throw new ServiceException("invalid tiss exam", e);
         }
+    }
+
+    @Override
+    public void deleteRegistrationsForLva(TissExam tissExam) {
+        for(TissExam ti : pendingRegistrationDao.readAllTissExams())
+            if(ti.equals(tissExam))
+                pendingRegistrationDao.delete(ti.getId());
     }
 
     @Scheduled(fixedDelay = 3000)

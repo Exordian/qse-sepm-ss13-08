@@ -57,7 +57,7 @@ public class First extends SimpleDisplayPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
-                    if(studyDrop.getSelectedIndex()== 0 && !confirmed){
+                    if(studyDrop.getSelectedIndex()<=0 && !confirmed){
                         PanelTube.backgroundPanel.viewSmallInfoText("Wollen sie wirklich fortfahren, ohne ein Studium zu importieren?", SmallInfoPanel.Warning);
                         confirmed=true;
                         throw new EscapeException();
@@ -79,7 +79,7 @@ public class First extends SimpleDisplayPanel {
                         throw new EscapeException();
                     }
 
-                    if(studyDrop.getSelectedIndex()==0){
+                    if(studyDrop.getSelectedIndex()<=0){
                         startUp.next();
                     }else{
                         setWaiting(true);

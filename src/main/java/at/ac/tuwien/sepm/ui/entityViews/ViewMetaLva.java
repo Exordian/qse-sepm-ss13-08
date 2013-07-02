@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.DefaultFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,6 +58,12 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     private JLabel completedLabel;
     private JCheckBox completedInput;
 
+    private JLabel minTimeEstimateLabel;
+    private JSpinner minTimeEstimateInput;
+
+    private JLabel maxTimeEstimateLabel;
+    private JSpinner maxTimeEstimateInput;
+
     private JLabel precursorLabel;
     private MetaLVADisplayPanel precursorPanel;
 
@@ -64,7 +71,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
     private MetaLVADisplayPanel addPrecursorPanel;
     private JButton showAddPrecursorPanelButton;
     private JButton addPrecursorButton;
-    
+
     private List<MetaLVA> precursor;
 
 
@@ -103,12 +110,44 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     metaLVA.setName(nameInput.getText());
                     metaLVA.setCompleted(completedInput.isSelected());
                     metaLVA.setECTS(((Number) ectsInput.getValue()).floatValue());
+                    if (((ModuleSelectItem) moduleInput.getSelectedItem()).get() == null) {
+                        PanelTube.backgroundPanel.viewSmallInfoText("Es wurde kein Modul ausgewählt.", SmallInfoPanel.Error);
+                        return;
+                    }
                     metaLVA.setModule(((ModuleSelectItem) moduleInput.getSelectedItem()).get().getId());
                     metaLVA.setNr(nrInput.getText());
                     metaLVA.setPriority(((Number) priorityInput.getValue()).floatValue());
                     metaLVA.setSemestersOffered((Semester) semestersOfferedInput.getSelectedItem());
                     metaLVA.setType((LvaType) typeInput.getSelectedItem());
                     metaLVA.setPrecursor(precursor);
+                    metaLVA.setMinTimeEstimate(null);
+                    metaLVA.setMaxTimeEstimate(null);
+
+                    metaLVA.setMinTimeEstimate(((Number) minTimeEstimateInput.getValue()).intValue());
+                    /*if (minTimeEstimateInput.getText() != null && !containsOf(minTimeEstimateInput.getText(), ' ')) {
+                        try {
+                            int timeEstimate = Integer.parseInt(minTimeEstimateInput.getText());
+                            metaLVA.setMinTimeEstimate(new Integer(timeEstimate));
+                        }  catch (NumberFormatException e) {
+                            PanelTube.backgroundPanel.viewSmallInfoText("Die geschätzte minimale Zeit ist keine gültige Zahl.", SmallInfoPanel.Error);
+                            minTimeEstimateInput.requestFocus();
+                            minTimeEstimateInput.selectAll();
+                            return;
+                        }
+                    }  */
+
+                    metaLVA.setMaxTimeEstimate(((Number) maxTimeEstimateInput.getValue()).intValue());
+                    /*if (maxTimeEstimateInput.getText() != null && !containsOf(maxTimeEstimateInput.getText(), ' ')) {
+                        try {
+                            int timeEstimate = Integer.parseInt(maxTimeEstimateInput.getText());
+                            metaLVA.setMaxTimeEstimate(new Integer(timeEstimate));
+                        }  catch (NumberFormatException e) {
+                            PanelTube.backgroundPanel.viewSmallInfoText("Die geschätzte maximale Zeit ist keine gültige Zahl.", SmallInfoPanel.Error);
+                            maxTimeEstimateInput.requestFocus();
+                            maxTimeEstimateInput.selectAll();
+                            return;
+                        }
+                    } */
 
                     if (metaLVA.getId() != null) {
                         if (metaLVAService.readById(metaLVA.getId()) != null)
@@ -116,28 +155,56 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                     } else {
                         metaLVAService.create(metaLVA);
                     }
+
                     PanelTube.backgroundPanel.viewSmallInfoText("Die LVA wurde gespeichert.", SmallInfoPanel.Success);
                     setVisible(false);
                     PanelTube.backgroundPanel.showLastComponent();
                 } catch (ServiceException e) {
                     log.error("MetaLvaEntity is invalid.");
-                    PanelTube.backgroundPanel.viewSmallInfoText("Die Angaben sind ungültig.", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText(splitExceptionMessage(e.getMessage()), SmallInfoPanel.Error);
                 }
             }
         });
         this.add(save);
     }
 
+    private String splitExceptionMessage(String exceptionMessage) {
+        String[] s = exceptionMessage.split(" ");
+        String result = "";
+        if(s.length > 1) {
+            for(int i=1; i<s.length; i++) {
+                result += s[i] + " ";
+            }
+        }
+        if(result.equals("")) {
+            result = "Die Daten konnten nicht gespeichert werden.";
+        }
+        return result;
+    }
+
+    private boolean containsOf(String s, char c) {
+        if (s!=null) {
+            for (int i=0; i<s.length(); i++) {
+                if (s.charAt(i) != c) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     private void addContent() {
         int smallSpace = 10;
         int bigSpace=20;
-        
+
         int labelX = (int) (simpleWhiteSpace.getX()+bigSpace);
         int labelWidth = 180;
-        
+
         int inputX = labelX+labelWidth+smallSpace;
         int inputWidth = 140;
-        
+
         int oHeight = 25;
 
         int rightX = inputX+inputWidth+bigSpace*2;
@@ -171,7 +238,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             }
         });
         this.add(nameInput);
-        
+
         nrLabel = new JLabel("Lva Nummer:");
         nrLabel.setFont(standardTextFont);
         nrLabel.setBounds(labelX, nameLabel.getY() + nameLabel.getHeight() + smallSpace, labelWidth,oHeight);
@@ -192,6 +259,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         ectsInput.setEditor(new JSpinner.NumberEditor(ectsInput, "0.#"));
         ectsInput.setFont(standardTextFont);
         ectsInput.setBounds(inputX, ectsLabel.getY(), inputWidth, oHeight);
+        ((DefaultFormatter)((JSpinner.DefaultEditor)ectsInput.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
         this.add(ectsInput);
 
         typeLabel = new JLabel("Typ:");
@@ -226,8 +294,10 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
 
         moduleInput = new WideComboBox();
         try {
-            for (Module m :  moduleService.readAll())
-                moduleInput.addItem(new ModuleSelectItem(m));
+            List<Module> temp = moduleService.readAll();
+            if (temp != null)
+                for (Module m :  temp)
+                    moduleInput.addItem(new ModuleSelectItem(m));
         } catch (ServiceException e) {
             log.error("Exception: " +e.getMessage());
         }
@@ -246,12 +316,48 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         priorityInput.setFont(standardTextFont);
         priorityInput.setBounds(inputX, priorityLabel.getY(), inputWidth, oHeight);
         priorityInput.setValue(5);
+        ((DefaultFormatter)((JSpinner.DefaultEditor)priorityInput.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
         this.add(priorityInput);
 
         completedLabel = new JLabel("Abgeschlossen:");
         completedLabel.setFont(standardTextFont);
         completedLabel.setBounds(labelX, priorityLabel.getY() + priorityLabel.getHeight() + smallSpace, labelWidth,oHeight);
         this.add(completedLabel);
+
+        minTimeEstimateLabel = new JLabel("Geschätzte minimale Zeit:");
+        minTimeEstimateLabel.setFont(standardTextFont);
+        minTimeEstimateLabel.setBounds(completedLabel.getBounds().x, completedLabel.getBounds().y + completedLabel.getHeight() + smallSpace, labelWidth+50, oHeight);
+        this.add(minTimeEstimateLabel);
+
+        maxTimeEstimateLabel = new JLabel("Geschätzte maximale Zeit:");
+        maxTimeEstimateLabel.setFont(standardTextFont);
+        maxTimeEstimateLabel.setBounds(minTimeEstimateLabel.getBounds().x, minTimeEstimateLabel.getBounds().y + minTimeEstimateLabel.getHeight() + smallSpace, labelWidth+50, oHeight);
+        this.add(maxTimeEstimateLabel);
+
+        minTimeEstimateInput = new JSpinner();
+        minTimeEstimateInput.setModel(new SpinnerNumberModel(0, 0, 1000, 1));
+        minTimeEstimateInput.setFont(standardTextFont);
+        minTimeEstimateInput.setBounds(inputX+50, minTimeEstimateLabel.getY(), inputWidth-50, oHeight);
+        ((DefaultFormatter)((JSpinner.DefaultEditor)minTimeEstimateInput.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
+        this.add(minTimeEstimateInput);
+
+
+        /*minTimeEstimateInput = new JTextField();
+        minTimeEstimateInput.setFont(standardTextFont);
+        minTimeEstimateInput.setBounds(inputX+50, minTimeEstimateLabel.getY(), inputWidth-50, oHeight);
+        this.add(minTimeEstimateInput);*/
+
+        maxTimeEstimateInput = new JSpinner();
+        maxTimeEstimateInput.setModel(new SpinnerNumberModel(0, 0, 1000, 1));
+        maxTimeEstimateInput.setFont(standardTextFont);
+        maxTimeEstimateInput.setBounds(inputX+50, maxTimeEstimateLabel.getY(), inputWidth-50, oHeight);
+        ((DefaultFormatter)((JSpinner.DefaultEditor)maxTimeEstimateInput.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
+        this.add(maxTimeEstimateInput);
+
+       /* maxTimeEstimateInput = new JTextField();
+        maxTimeEstimateInput.setFont(standardTextFont);
+        maxTimeEstimateInput.setBounds(inputX+50, maxTimeEstimateLabel.getY(), inputWidth-50, oHeight);
+        this.add(maxTimeEstimateInput); */
 
         completedInput = new JCheckBox();
         completedInput.addChangeListener(dONTFUCKINGBUGSWINGListener());
@@ -272,7 +378,7 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
         addPrecursorLabel.setFont(standardTextFont);
         addPrecursorLabel.setBounds(rightX, precursorPanel.getY()+precursorPanel.getHeight()+smallSpace, rightWidth, oHeight);
         this.add(addPrecursorLabel);
-        
+
         showAddPrecursorPanelButton = new JButton("Vorgänger hinzufügen");
         showAddPrecursorPanelButton.setFont(standardButtonFont);
 
@@ -341,6 +447,9 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             moduleInput.setSelectedIndex(0);
             completedInput.setSelected(false);
             precursorPanel.refresh(new ArrayList<MetaLVA>(0));
+            ectsInput.setValue(0);
+            minTimeEstimateInput.setValue(0);
+            maxTimeEstimateInput.setValue(0);
             precursor=new ArrayList<MetaLVA>(0);
         } else {
             this.metaLVA=metaLVA;
@@ -359,6 +468,16 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
             completedInput.setSelected(metaLVA.isCompleted());
             precursorPanel.refresh(metaLVA.getPrecursor());
             precursor = metaLVA.getPrecursor();
+            if(metaLVA.getMinTimeEstimate() != null && metaLVA.getMinTimeEstimate() != 0) {
+                minTimeEstimateInput.setValue(metaLVA.getMinTimeEstimate());
+            } else {
+                minTimeEstimateInput.setValue(metaLVA.getECTS()*25);
+            }
+            if(metaLVA.getMaxTimeEstimate() != null && metaLVA.getMaxTimeEstimate() != 0) {
+                maxTimeEstimateInput.setValue(metaLVA.getMaxTimeEstimate());
+            } else {
+                maxTimeEstimateInput.setValue(metaLVA.getECTS()*25);
+            }
         }
         ArrayList<MetaLVA> toRemove = new ArrayList<MetaLVA>();
         for(MetaLVA m1:allMetaLVAs){

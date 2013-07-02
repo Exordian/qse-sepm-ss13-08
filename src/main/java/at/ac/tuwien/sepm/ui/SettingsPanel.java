@@ -50,6 +50,12 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private MySimplePanel content;
     @Autowired
     private AuthService authService;
+    @Autowired
+    private FacebookService facebookService;
+
+    @Autowired
+    private DeleteWholeDBService deleteWholeDBService;
+
 
     @Autowired
     public SettingsPanel(PropertyService propertyService, CreateCurriculumService createCurriculumService, DateService dateService) {
@@ -82,6 +88,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 }
                 //propertyService.setProperty(PropertyService."user.defaultECTS", ects.getText());
                 setVisible(false);
+                PanelTube.calendarPanel.refreshTop();
                 PanelTube.backgroundPanel.viewSmallInfoText("Die Daten wurden gespeichert.", SmallInfoPanel.Success);
                 PanelTube.backgroundPanel.showLastComponent();
             }
@@ -151,7 +158,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 JFrame newframe = new JFrame("Login Daten");
                 newframe.setIconImage(new ImageIcon("src/main/resources/img/icon.jpg").getImage());
-                final LoginDataFrame temp = new LoginDataFrame();
+                final LoginDataFacebookFrame temp = new LoginDataFacebookFrame();
                 newframe.add(temp);
                 newframe.setLocationRelativeTo(null);
                 newframe.pack();
@@ -163,8 +170,8 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     public void windowClosed(WindowEvent e) {
                         super.windowClosed(e);
                         //nameLabelFacebook.setText("Eingeloggt als: " + temp.getName());
-                        propertyService.setProperty(PropertyService.FACEBOOK_USER, temp.getName());
-                        propertyService.setProperty(PropertyService.FACEBOOK_PASSWORD, temp.getPassword());
+                        propertyService.setProperty(PropertyService.FACEBOOK_KEY, temp.getKey());
+                        facebookService.authenticate();
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
                         content.refresh();
@@ -205,26 +212,23 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     propertyService.removeProperty(PropertyService.FIRST_YEAR);
                     propertyService.removeProperty(PropertyService.FIRST_SEMESTER);
                     propertyService.removeProperty(PropertyService.MAJOR);
-                    propertyService.removeProperty(PropertyService.FACEBOOK_USER);
-                    propertyService.removeProperty(PropertyService.FACEBOOK_PASSWORD);
+                    propertyService.removeProperty(PropertyService.FACEBOOK_KEY);
                     propertyService.removeProperty(PropertyService.TISS_USER);
                     propertyService.removeProperty(PropertyService.TISS_PASSWORD);
-                    //propertyService.removeProperty(PropertyService."user.defaultECTS");
                     propertyService.removeProperty(PropertyService.FIRST_RUN);
 
-                    //todo alte datenbank daten löschen
+                    try {
+                        deleteWholeDBService.deleteAll();
+                    } catch (ServiceException e) {
+                        PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim loeschen der Datenbank aufgetreten!", SmallInfoPanel.Error);
+                    }
 
-                    PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gelöscht!",SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gelöscht!", SmallInfoPanel.Success);
                     PanelTube.backgroundPanel.viewStartup(true);
-                    //System.exit(0);
                 }
             }
         });
-        //this.add(deleteALL);
-
-
         this.add(deleteALL);
-
 
         deleteAllDatesBtn = new JButton("Private Termine löschen");
         deleteAllDatesBtn.addActionListener(new ActionListener() {
@@ -250,8 +254,6 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 }
             }
         });
-
-
         content = new MySimplePanel(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this);
         this.add(content);
         content.setBounds(simpleWhiteSpace);
@@ -320,9 +322,8 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             }
             addEmptyArea(bigSpace*2,false);
             addRow(new JTextArea("Facebook-login"),facebook,false);
-            if (propertyService.getProperty(PropertyService.FACEBOOK_USER) != null && !propertyService.getProperty(PropertyService.FACEBOOK_USER).isEmpty() &&
-                    propertyService.getProperty(PropertyService.FACEBOOK_PASSWORD) != null && !propertyService.getProperty(PropertyService.FACEBOOK_PASSWORD).isEmpty()) {
-                addText("Eingeloggt als: " + propertyService.getProperty(PropertyService.FACEBOOK_USER),Font.BOLD,false);
+            if (propertyService.getProperty(PropertyService.FACEBOOK_KEY) != null && !propertyService.getProperty(PropertyService.FACEBOOK_KEY).isEmpty()) {
+                addText("Eingeloggt",Font.BOLD,false);
                 //nameLabelTISS.setText("Eingeloggt als: " + propertyService.getProperty(PropertyService.TISS_USER));
             }
 

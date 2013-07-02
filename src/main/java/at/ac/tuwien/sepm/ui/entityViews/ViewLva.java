@@ -82,10 +82,11 @@ public class ViewLva extends StandardSimpleInsidePanel {
     public void setLva(LVA lva) {
         metaLVAInput.removeAllItems();
         try {
-            allMetaLVAs =metaLVAService.readAll();
-            for (MetaLVA t : allMetaLVAs) {
-                metaLVAInput.addItem(new MetaLvaSelectItem(t));
-            }
+            allMetaLVAs = metaLVAService.readAll();
+            if(allMetaLVAs != null)
+                for (MetaLVA t : allMetaLVAs) {
+                    metaLVAInput.addItem(new MetaLvaSelectItem(t));
+                }
         } catch (ServiceException e) {
             log.error("Exception: "+ e.getMessage());
             PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);
@@ -259,10 +260,11 @@ public class ViewLva extends StandardSimpleInsidePanel {
         metaLVAInput = new WideComboBox();
 
         try {
-            allMetaLVAs =metaLVAService.readAll();
-            for (MetaLVA t : allMetaLVAs) {
-                metaLVAInput.addItem(new MetaLvaSelectItem(t));
-            }
+            allMetaLVAs = metaLVAService.readAll();
+            if(allMetaLVAs != null)
+                for (MetaLVA t : allMetaLVAs) {
+                    metaLVAInput.addItem(new MetaLvaSelectItem(t));
+                }
         } catch (ServiceException e) {
             log.error("Exception: "+ e.getMessage());
             PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Datenbank aufgetreten", SmallInfoPanel.Error);

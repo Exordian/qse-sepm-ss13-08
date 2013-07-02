@@ -65,4 +65,36 @@ public class TissExam {
     public void setTissExamState(TissExamState tissExamState) {
         this.tissExamState = tissExamState;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TissExam)) return false;
+
+        TissExam tissExam = (TissExam) o;
+
+        if (id != tissExam.id) return false;
+        if (endRegistration != null ? !endRegistration.equals(tissExam.endRegistration) : tissExam.endRegistration != null)
+            return false;
+        if (lvanr != null ? !lvanr.equals(tissExam.lvanr) : tissExam.lvanr != null) return false;
+        if (mode != null ? !mode.equals(tissExam.mode) : tissExam.mode != null) return false;
+        if (name != null ? !name.equals(tissExam.name) : tissExam.name != null) return false;
+        if (startRegistration != null ? !startRegistration.equals(tissExam.startRegistration) : tissExam.startRegistration != null)
+            return false;
+        if (tissExamState != tissExam.tissExamState) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (lvanr != null ? lvanr.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (mode != null ? mode.hashCode() : 0);
+        result = 31 * result + (startRegistration != null ? startRegistration.hashCode() : 0);
+        result = 31 * result + (endRegistration != null ? endRegistration.hashCode() : 0);
+        result = 31 * result + (tissExamState != null ? tissExamState.hashCode() : 0);
+        return result;
+    }
 }

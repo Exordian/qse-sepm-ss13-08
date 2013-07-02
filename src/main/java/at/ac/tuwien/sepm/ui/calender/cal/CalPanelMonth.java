@@ -53,6 +53,10 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         */
     }
 
+    public DateTime getFirstDay() {
+        return firstDay;
+    }
+
     public void init() {
         initPanel();
         try {
@@ -167,10 +171,6 @@ public class CalPanelMonth extends CalAbstractView implements CalendarInterface 
         refresh();
         repaint();
         revalidate();
-    }
-
-    public void semester() {
-        //todo für die jcombobox in der man das semester auswählen kann in calendarpanel
     }
 
     public void next() throws ServiceException {

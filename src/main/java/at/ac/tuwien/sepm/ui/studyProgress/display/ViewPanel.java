@@ -1,12 +1,14 @@
 package at.ac.tuwien.sepm.ui.studyProgress.display;
 
 import at.ac.tuwien.sepm.entity.LVA;
-import at.ac.tuwien.sepm.service.LVAService;
-import at.ac.tuwien.sepm.service.PropertyService;
-import at.ac.tuwien.sepm.service.ServiceException;
+import at.ac.tuwien.sepm.entity.MetaLVA;
+import at.ac.tuwien.sepm.service.*;
 import at.ac.tuwien.sepm.service.impl.ValidationException;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
+import com.restfb.exception.FacebookOAuthException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -21,25 +23,27 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Flo
- * Date: 01.06.13
- * Time: 19:23
- * To change this template use File | Settings | File Templates.
- */
 @UI
 public class ViewPanel extends StandardInsidePanel {
     private JLabel majorName = new JLabel("dummy");
     private JButton fwd;
     private JButton bwd;
-    private JButton exportButton;
     private SemesterPanel semester;
     private LVAService service;
     private PropertyService propertyService;
+    private boolean refreshing;
 
     private SemesterList semesterList;
     private ArrayList<LVA> makeSure = null;
+
+    private ArrayList<LVA> lvas;
+
+    @Autowired
+    private FacebookService facebookService;
+
+    @Autowired
+    private MetaLVAService metaLVAService;
+
     private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
     @Autowired
@@ -59,46 +63,60 @@ public class ViewPanel extends StandardInsidePanel {
         refresh();
     }
 
-    public void refresh() {
-        semesterList.refresh();
-        ArrayList<LVA> temp = null;
-        setMajorName();
-        if (getSemesterAnzahl() <= 1 && makeSure == null) {
-            bwd.setVisible(false);
-            fwd.setVisible(false);
-        } else {
-            bwd.setVisible(true);
-            fwd.setVisible(true);
+    public synchronized void refresh() {
+        if(refreshing){
+            return;
         }
-        try {
-            temp = new ArrayList<>();
-            for (LVA l : service.readByYearAndSemester(semesterList.getCurrentYear(), semesterList.getCurrentSemesterIsWinterSemester())) {
-                if (l.isInStudyProgress())
-                    temp.add(l);
+        refreshing = true;
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        new Thread(){
+            @Override
+            public void run(){
+                try {
+                    semesterList.refresh();
+                    ArrayList<LVA> temp = null;
+                    setMajorName();
+                    if (getSemesterAnzahl() <= 1 && makeSure == null) {
+                        bwd.setVisible(false);
+                        fwd.setVisible(false);
+                    } else {
+                        bwd.setVisible(true);
+                        fwd.setVisible(true);
+                    }
+                        temp = new ArrayList<>();
+                        for (LVA l : service.readByYearAndSemester(semesterList.getCurrentYear(), semesterList.getCurrentSemesterIsWinterSemester())) {
+                            if (l.isInStudyProgress())
+                                temp.add(l);
+                        }
+                        lvas = temp;
+                        semester.setLvas(temp);
+                    if (getSemesterAnzahl() != 0 && semesterList.getCurrentSemester() != 0 && temp != null) {
+                        if (temp.isEmpty() && makeSure == null) {
+                            semester.setSemesterTitle("Bitte planen Sie ein Semester!");
+                            bwd.setVisible(false);
+                            fwd.setVisible(false);
+                        } else {
+                            makeSure=temp;
+                            String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
+                            semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
+                        }
+                    } else {
+                        semester.setSemesterTitle("Bitte planen Sie ein Semester!");
+                        bwd.setVisible(false);
+                        fwd.setVisible(false);
+                    }
+                    ViewPanel.this.repaint();
+                    refreshing = false;
+                } catch (ServiceException e) {
+                    log.error(e.getMessage());
+                    PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden des Studienverlaufs", SmallInfoPanel.Error);
+                } catch (ValidationException e) {
+                    log.error(e.getMessage());
+                    PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden des Studienverlaufs", SmallInfoPanel.Error);
+                }
+                ViewPanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
-            semester.setLvas(temp);
-        } catch (ServiceException e) {
-            log.error(e.getMessage());
-        } catch (ValidationException e) {
-            log.error(e.getMessage());
-        }
-        if (getSemesterAnzahl() != 0 && semesterList.getCurrentSemester() != 0 && temp != null) {
-            if (temp.isEmpty() && makeSure == null) {
-                semester.setSemesterTitle("Bitte planen Sie ein Semester!");
-                bwd.setVisible(false);
-                fwd.setVisible(false);
-            } else {
-                makeSure=temp;
-                String tempo = semesterList.getCurrentSemesterIsWinterSemester()? "WS" : "SS";
-                semester.setSemesterTitle(semesterList.getCurrentSemester() + ". Semester (" + semesterList.getCurrentYear() + ", " + tempo + ")");
-            }
-        } else {
-            semester.setSemesterTitle("Bitte planen Sie ein Semester!");
-            bwd.setVisible(false);
-            fwd.setVisible(false);
-        }
-        this.revalidate();
-        this.repaint();
+        }.start();
     }
 
     public void refreshSemesterList() {
@@ -108,7 +126,6 @@ public class ViewPanel extends StandardInsidePanel {
     private void initButtons() {
         fwd = new JButton();
         bwd = new JButton();
-        exportButton= new JButton("Semesterdaten exportieren");
 
         try {
             bwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navleft.png"))));
@@ -143,19 +160,36 @@ public class ViewPanel extends StandardInsidePanel {
                 refresh();
             }
         });
+        this.add(bwd);
 
-        exportButton.setBounds(semester.getX(),semester.getY()+semester.getHeight()+5,200,40);
-        exportButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        exportButton.setFont(standardButtonFont);
-        exportButton.addActionListener(new ActionListener() {
+        JButton shareButton = new JButton("Auf Facebook teilen");
+        shareButton.setFont(standardButtonFont);
+        shareButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                //todo
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<MetaLVA> metaLVAs = new ArrayList<MetaLVA>();
+                for(LVA lva : lvas) {
+                    try {
+                        if(lva.getMetaLVA() != null && lva.getMetaLVA().getName() != null)
+                            metaLVAs.add(lva.getMetaLVA());
+                        else
+                            metaLVAs.add(metaLVAService.readById(lva.getMetaLVA().getId()));
+                    } catch (ServiceException e1) {
+                        log.error("meta lva not found", e1);
+                    }
+                }
+                try {
+                    facebookService.postLvasToWall(metaLVAs);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Studienverlauf wurde auf Facebook geteilt.", SmallInfoPanel.Success);
+                } catch(FacebookOAuthException fb) {
+                    PanelTube.backgroundPanel.viewSmallInfoText("Der Facebook API Key ist ungültig.", SmallInfoPanel.Error);
+                }
             }
         });
-
-        this.add(bwd);
-        this.add(exportButton);
+        shareButton.setEnabled(true);
+        shareButton.setVisible(true);
+        shareButton.setBounds(semester.getX(),semester.getY()+semester.getHeight()+5,200,40);
+        this.add(shareButton);
     }
 
     private void initSemesterPanel() {
@@ -182,7 +216,7 @@ public class ViewPanel extends StandardInsidePanel {
         try {
             return service.numberOfSemestersInStudyProgress();
         } catch (ServiceException e) {
-            log.error(e.getMessage());
+            log.info(e.getMessage());
             return 0;
         }
     }
@@ -191,7 +225,7 @@ public class ViewPanel extends StandardInsidePanel {
         try {
             return service.firstYearInStudyProgress();
         } catch (ServiceException e) {
-            log.error(e.getMessage());
+            log.info(e.getMessage());
             return DateTime.now().getYear();
         }
     }
@@ -200,7 +234,7 @@ public class ViewPanel extends StandardInsidePanel {
         try {
             return service.isFirstSemesterAWinterSemester();
         } catch (ServiceException e) {
-            log.error(e.getMessage());
+            log.info(e.getMessage());
             return true;
         }
     }

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ui.startUp;
 
+import at.ac.tuwien.sepm.service.FacebookService;
 import at.ac.tuwien.sepm.service.LvaFetcherService;
 import at.ac.tuwien.sepm.service.ModuleService;
 import at.ac.tuwien.sepm.service.PropertyService;
@@ -31,13 +32,15 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
     protected ModuleService moduleService;
     protected PropertyService propertyService;
     protected ZidAuthService authService;
+    protected FacebookService facebookService;
 
     @Autowired
-    public ViewStartUp(LvaFetcherService lvaFetcherService,ModuleService moduleService,PropertyService propertyService,ZidAuthService authService) {
+    public ViewStartUp(LvaFetcherService lvaFetcherService,ModuleService moduleService,PropertyService propertyService,ZidAuthService authService, FacebookService facebookService) {
         this.lvaFetcherService = lvaFetcherService;
         this.moduleService=moduleService;
         this.propertyService=propertyService;
         this.authService=authService;
+        this.facebookService = facebookService;
         addImage();
         init();
 
@@ -57,7 +60,7 @@ public class ViewStartUp extends StandardSimpleInsidePanel {
         //temp.add(new JLabel("blabla"));
         //allPanels.add(temp);
         allPanels.add(new First(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this));
-        allPanels.add(new Secound(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this));
+        allPanels.add(new Second(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this));
         allPanels.add(new Third(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this));
 
         for(JPanel p: allPanels){

@@ -343,6 +343,37 @@ public class MetaLVAServiceImpl implements MetaLVAService {
             logger.error("Invalid MetaLVA: "+ error_msg);
             throw new ServiceException("Invalid MetaLVA: "+ error_msg);
         }
+
+        String s = "Der minimale Schätzwert darf nicht größer als der Maximale sein.";
+        if (toValidate.getMinTimeEstimate()!=null && toValidate.getMaxTimeEstimate()!=null) {
+            if (toValidate.getMinTimeEstimate().intValue() > toValidate.getMaxTimeEstimate().intValue()) {
+                throw new ServiceException(s);
+            }
+        } else if (toValidate.getMinTimeEstimate()!=null || toValidate.getMaxTimeEstimate()!=null) {
+            MetaLVA metaLVA = null;
+            try {
+                metaLVA = metaLvaDao.readById(toValidate.getId());
+            } catch (DataAccessException e) {
+                throw new ServiceException("Die Daten konnten nicht gespeichert werden.");
+            }
+
+            if (metaLVA != null) {
+                if (toValidate.getMinTimeEstimate() != null) {
+                    if (metaLVA.getMaxTimeEstimate() != null) {
+                        if (toValidate.getMinTimeEstimate().intValue() > metaLVA.getMaxTimeEstimate().intValue()) {
+                            throw new ServiceException(s);
+                        }
+                    }
+                }
+                if (toValidate.getMaxTimeEstimate() != null) {
+                    if (metaLVA.getMinTimeEstimate() != null) {
+                        if (metaLVA.getMinTimeEstimate().intValue() > toValidate.getMaxTimeEstimate().intValue()) {
+                            throw new ServiceException(s);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override

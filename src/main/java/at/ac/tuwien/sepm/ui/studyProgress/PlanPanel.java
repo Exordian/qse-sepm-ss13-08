@@ -181,6 +181,7 @@ public class PlanPanel extends StandardInsidePanel {
                         refreshMetaLVAs(new ArrayList<MetaLVA>(0));
                         take.setEnabled(false);
                         viewPanel.refreshSemesterList();
+                        PanelTube.calendarPanel.refreshTop();
                     }catch(EscapeException e1){
                         take.setEnabled(false);
                     }
