@@ -188,6 +188,7 @@ public class First extends SimpleDisplayPanel {
                     startUp.moduleService.create(m);
                 }
                 PanelTube.backgroundPanel.viewSmallInfoText("Gratuliere, das Studium wurde geladen und importiert!", SmallInfoPanel.Success);
+                PanelTube.studienplanPanel.fillTable();
                 startUp.next();
             } catch (ServiceException e) {
                 logger.info("couldn't load LVAs", e);
