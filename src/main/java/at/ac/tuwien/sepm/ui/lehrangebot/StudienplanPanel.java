@@ -41,7 +41,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     protected CreateCurriculumService curriculumService;
     protected ModuleService moduleService;
 
-    private static final int MAX_INFO_LENGTH = 18;
+    private final int MAX_INFO_LENGTH = 18;
 
     private JPanel panel;
     private JButton baddcurr;
@@ -58,7 +58,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     private Map<String, Module> modules;
     private CurriculumDisplayPanel curriculumDisplayPanel;
 
-    private Logger log = LogManager.getLogger(this.getClass().getSimpleName());
+    private static Logger log = LogManager.getLogger(StudienplanPanel.class.getSimpleName());
 
     @Autowired
     public StudienplanPanel(CreateCurriculumService curriculumService, ModuleService moduleService) {
@@ -378,6 +378,7 @@ public class StudienplanPanel extends StandardInsidePanel {
     }
 
     public void fillTable() {
+        log.info("StudienplanPanel.fillTable() called ... ");
         if(ccurr.getSelectedItem()!=null && ccurr.getSelectedItem() instanceof CurriculumComboBoxItem && ((CurriculumComboBoxItem)ccurr.getSelectedItem()).get() != null){
             List<Module> list;
             try {
@@ -414,24 +415,21 @@ public class StudienplanPanel extends StandardInsidePanel {
             modules = new HashMap<>(list.size());
             for(Module m : list) {
                 if(mids.contains(m.getId())) {
-                    // "Enthalten", "ID", "Name", "Pflichtmodul", "Beschreibung"
                     m.setTempBooleanContained(true);
                     m.setTempBooleanOptional(!mMap.get(midsMap.get(m.getId())));
-                    //mmodule.addRow(createTableRow(true, mMap.get(midsMap.get(m.getId())), m));
                 } else {
                     m.setTempBooleanContained(false);
                     m.setTempBooleanOptional(false);
-                    //mmodule.addRow(createTableRow(false, false, m));
                 }
                 modules.put(m.getName(), m);
             }
             curriculumDisplayPanel.refresh(new ArrayList<Module>(modules.values()));
-            curriculumDisplayPanel.changeStateOfContainedComboBox("selected");
+            if (mMap.size() > 0) {
+                curriculumDisplayPanel.changeStateOfContainedComboBox("selected");
+            } else {
+                curriculumDisplayPanel.changeStateOfContainedComboBox("disabled");
+            }
         }
-    }
-
-    private Object[] createTableRow (Boolean incurriculum, Boolean obligatory, Module m) {
-        return new Object[]{incurriculum, m.getId(), m.getName(), obligatory, m.getDescription()};
     }
 
     private void clearTable() {
