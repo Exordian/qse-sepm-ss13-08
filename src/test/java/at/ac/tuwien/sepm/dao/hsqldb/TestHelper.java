@@ -15,7 +15,8 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 //@Component
 @Repository
 public class TestHelper extends DBBaseDao {
-    static final String PATH = "src/test/resources/";
+    static final String PATH = "src/main/resources/";
+    static final String PATHTEST = "src/test/resources/";
     /*
     private static JdbcTemplate jdbcTemplate;
 
@@ -38,7 +39,7 @@ public class TestHelper extends DBBaseDao {
 
     public static void insert(int fileNumber) {
         //System.out.println(NumberGenerator.get() + "TestHelper.insert() called ...");
-        JdbcTestUtils.executeSqlScript(jdbcTemplate, new FileSystemResource(PATH + "insert" + fileNumber + ".sql"), false);
+        JdbcTestUtils.executeSqlScript(jdbcTemplate, new FileSystemResource(PATHTEST + "insert" + fileNumber + ".sql"), false);
     }
 
     public static void all(int fileNumber) {

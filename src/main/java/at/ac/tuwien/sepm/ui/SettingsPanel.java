@@ -54,6 +54,10 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private FacebookService facebookService;
 
     @Autowired
+    private DeleteWholeDBService deleteWholeDBService;
+
+
+    @Autowired
     public SettingsPanel(PropertyService propertyService, CreateCurriculumService createCurriculumService, DateService dateService) {
         this.createCurriculumService=createCurriculumService;
         this.propertyService=propertyService;
@@ -211,22 +215,20 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                     propertyService.removeProperty(PropertyService.FACEBOOK_KEY);
                     propertyService.removeProperty(PropertyService.TISS_USER);
                     propertyService.removeProperty(PropertyService.TISS_PASSWORD);
-                    //propertyService.removeProperty(PropertyService."user.defaultECTS");
                     propertyService.removeProperty(PropertyService.FIRST_RUN);
 
-                    //todo alte datenbank daten löschen
+                    try {
+                        deleteWholeDBService.deleteAll();
+                    } catch (ServiceException e) {
+                        PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim loeschen der Datenbank aufgetreten!", SmallInfoPanel.Error);
+                    }
 
-                    PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gelöscht!",SmallInfoPanel.Success);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Daten wurden erfolgreich gelöscht!", SmallInfoPanel.Success);
                     PanelTube.backgroundPanel.viewStartup(true);
-                    //System.exit(0);
                 }
             }
         });
-        //this.add(deleteALL);
-
-
         this.add(deleteALL);
-
 
         deleteAllDatesBtn = new JButton("Private Termine löschen");
         deleteAllDatesBtn.addActionListener(new ActionListener() {
@@ -252,8 +254,6 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                 }
             }
         });
-
-
         content = new MySimplePanel(simpleWhiteSpace.getWidth(),simpleWhiteSpace.getHeight(),this);
         this.add(content);
         content.setBounds(simpleWhiteSpace);

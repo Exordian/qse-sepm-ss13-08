@@ -1,10 +1,7 @@
 package at.ac.tuwien.sepm.ui.startUp;
 
-import at.ac.tuwien.sepm.service.EscapeException;
 import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.ui.SmallInfoPanel;
-import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import com.toedter.calendar.JYearChooser;
 import org.apache.log4j.LogManager;
@@ -41,20 +38,15 @@ public class Second extends SimpleDisplayPanel {
         progressFurther.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
 
                     int un = facebookKey.getText().length();
                     if (un > 0) {
                         startUp.propertyService.setProperty(PropertyService.FACEBOOK_KEY, facebookKey.getText());
                         startUp.facebookService.authenticate();
-                    } else if (un == 0) {
-                        PanelTube.backgroundPanel.viewSmallInfoText("Die Facebook-Daten sind ungültig!", SmallInfoPanel.Warning);
-                        throw new EscapeException();
                     }
                     startUp.next();
                     startUp.propertyService.setProperty(PropertyService.FIRST_SEMESTER, ((Semester) semesterDrop.getSelectedItem()).toShortString());
                     startUp.propertyService.setProperty(PropertyService.FIRST_YEAR, ""+year.getYear());
-                } catch (EscapeException ignore) {      }
             }
         });
         goBack.addActionListener(new ActionListener() {
