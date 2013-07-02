@@ -12,12 +12,14 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 /**
  * Author: Georg Plaz
@@ -157,7 +159,11 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFrame newframe = new JFrame("Login Daten");
-                newframe.setIconImage(new ImageIcon("src/main/resources/img/icon.jpg").getImage());
+                try {
+                    newframe.setIconImage(ImageIO.read(ClassLoader.getSystemResource("img/icon.jpg")));
+                } catch (IOException e) {
+                    log.error(e);
+                }
                 final LoginDataFacebookFrame temp = new LoginDataFacebookFrame();
                 newframe.add(temp);
                 newframe.setLocationRelativeTo(null);

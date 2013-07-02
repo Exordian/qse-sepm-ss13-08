@@ -320,10 +320,10 @@ public class CalendarPanel extends StandardInsidePanel {
         bwd = new JButton();
 
         try {
-            bwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navleft.png"))));
-            fwd.setIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navright.png"))));
-            bwd.setRolloverIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navlefthighlight.png"))));
-            fwd.setRolloverIcon(new ImageIcon(ImageIO.read(new File("src/main/resources/img/navrighthighlight.png"))));
+            bwd.setIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("img/navleft.png"))));
+            fwd.setIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("img/navright.png"))));
+            bwd.setRolloverIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("img/navlefthighlight.png"))));
+            fwd.setRolloverIcon(new ImageIcon(ImageIO.read(ClassLoader.getSystemResource("img/navrighthighlight.png"))));
         } catch (IOException e) {
             e.printStackTrace();
         }
