@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
+import com.restfb.exception.FacebookOAuthException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -178,7 +179,11 @@ public class ViewPanel extends StandardInsidePanel {
                         log.error("meta lva not found", e1);
                     }
                 }
-                facebookService.postLvasToWall(metaLVAs);
+                try {
+                    facebookService.postLvasToWall(metaLVAs);
+                } catch(FacebookOAuthException fb) {
+                    PanelTube.backgroundPanel.viewSmallInfoText("Facebook API Key ungültig", SmallInfoPanel.Error);
+                }
             }
         });
         shareButton.setEnabled(true);

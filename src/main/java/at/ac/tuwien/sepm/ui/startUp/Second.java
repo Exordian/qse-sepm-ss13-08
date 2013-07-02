@@ -46,6 +46,7 @@ public class Second extends SimpleDisplayPanel {
                     int un = facebookKey.getText().length();
                     if (un > 0) {
                         startUp.propertyService.setProperty(PropertyService.FACEBOOK_KEY, facebookKey.getText());
+                        startUp.facebookService.authenticate();
                     } else if (un == 0) {
                         PanelTube.backgroundPanel.viewSmallInfoText("Die Facebook-Daten sind ungültig!", SmallInfoPanel.Warning);
                         throw new EscapeException();
