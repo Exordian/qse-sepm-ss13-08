@@ -165,6 +165,13 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
         }
     }
 
+    @Override
+    public void deleteRegistrationsForLva(TissExam tissExam) {
+        for(TissExam ti : pendingRegistrationDao.readAllTissExams())
+            if(ti.equals(tissExam))
+                pendingRegistrationDao.delete(ti.getId());
+    }
+
     @Scheduled(fixedDelay = 3000)
     private void tryRegister() {
         Iterator<TissExam> it = tissExamList.iterator();

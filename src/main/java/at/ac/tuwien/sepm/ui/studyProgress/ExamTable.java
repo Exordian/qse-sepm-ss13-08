@@ -18,19 +18,19 @@ public class ExamTable extends JTable {
     int width = colWidth[0]+colWidth[1]+colWidth[2]+colWidth[3]+colWidth[4];
     DefaultTableModel model;
 
-    public ExamTable(int width){
-        init(width);
+    public ExamTable(int width, boolean pendingTable){
+        init(width, pendingTable);
     }
 
-    public ExamTable(List<TissExam> exams, int width){
+    public ExamTable(List<TissExam> exams, int width, boolean pendingTable){
         this.exams = exams;
-        init(width);
+        init(width, pendingTable);
         setExams(exams);
     }
 
-    public ExamTable(List<TissExam> exams){
+    public ExamTable(List<TissExam> exams, boolean pendingTable){
         this.exams = exams;
-        init(this.width);
+        init(this.width, pendingTable);
         setExams(exams);
     }
 
@@ -38,8 +38,9 @@ public class ExamTable extends JTable {
         return colWidth[index];
     }
 
-    private void init(int width){
-        this.setDefaultRenderer(Object.class, new ExamTableRenderer());
+    private void init(int width, boolean pendingTable){
+        if (pendingTable)
+            this.setDefaultRenderer(Object.class, new ExamTableRenderer());
         model = new DefaultTableModel(new String[]{"LVA","Prüfung","Modus","Anmeldebeginn","Anmeldeende", "Status"},0){
             @Override
             public boolean isCellEditable(int row,int col){
@@ -77,7 +78,7 @@ public class ExamTable extends JTable {
         public Component getTableCellRendererComponent(JTable table,Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component cell= super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if(((String)table.getModel().getValueAt(row, 5)).startsWith("NOT")) {
-                setForeground(new Color(180, 108, 0));
+                setForeground(new Color(225, 138, 7));
             } else {
                 setForeground(new Color(0, 99, 0));
             }

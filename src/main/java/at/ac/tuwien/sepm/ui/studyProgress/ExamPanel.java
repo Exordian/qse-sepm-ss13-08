@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.ui.studyProgress;
 
 import at.ac.tuwien.sepm.entity.TissExam;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
+import at.ac.tuwien.sepm.ui.StandardInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
 import at.ac.tuwien.sepm.ui.template.HintTextField;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -13,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @UI
-public class ExamPanel extends JPanel {
+public class ExamPanel extends StandardInsidePanel {
     private List<TissExam> allExams;
     private List<TissExam> filteredExams;
 
@@ -28,26 +31,35 @@ public class ExamPanel extends JPanel {
     private JPanel searchPanel = new JPanel();
 
     private JScrollPane pane = new JScrollPane();
-
     int tWidth;
-    public ExamPanel(List<TissExam> exams, int width, int height){
+
+    private RegisterExamPanel registerExamPanel;
+
+    public ExamPanel(List<TissExam> exams, int width, int height, boolean pendingTable, RegisterExamPanel registerExamPanel){
         this.tWidth =width;
         this.allExams = exams;
         filteredExams = exams;
-        table = new ExamTable(exams,width);
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger() || (e.getButton() == 3)) {
-                    JTable source = ExamPanel.this.getTable();
-                    int row = source.rowAtPoint( e.getPoint() );
-                    int column = source.columnAtPoint( e.getPoint() );
+        this.registerExamPanel=registerExamPanel;
+        table = new ExamTable(exams,width, pendingTable);
+        if (pendingTable)
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.isPopupTrigger() || (e.getButton() == 3)) {
+                        JTable source = ExamPanel.this.getTable();
+                        int row = source.rowAtPoint( e.getPoint() );
+                        int column = source.columnAtPoint( e.getPoint() );
 
-                    if (! source.isRowSelected(row))
-                        source.changeSelection(row, column, false, false);
+                        if (! source.isRowSelected(row))
+                            source.changeSelection(row, column, false, false);
+
+                        if(((String)table.getModel().getValueAt(row, 5)).startsWith("NOT")) {
+                            JPopupMenu popup = new PopUpMenu();
+                            popup.show(e.getComponent(), e.getX(), e.getY());
+                        }
+                    }
                 }
-            }
-        });
+            });
 
         int searchHeight = 20;
         add(searchPanel);
@@ -108,6 +120,32 @@ public class ExamPanel extends JPanel {
 
     public ExamTable getTable() {
         return table;
+    }
+
+    private class PopUpMenu extends JPopupMenu {
+        private JMenuItem button2;
+
+        public PopUpMenu(){
+            button2 = new JMenuItem("Loeschen");
+            button2.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    new Thread(){
+                        @Override
+                        public void run(){
+                            try {
+                                sleep(10);//waiting, so the right-clicked item really is selected
+                            } catch (InterruptedException ignore) {
+                            }
+                            registerExamPanel.deletePending(getTable().getSelectedExam());
+                            PanelTube.backgroundPanel.viewSmallInfoText("Die ausstehende Anmeldung wurde geloescht.", SmallInfoPanel.Success);
+                        }
+                    }.start();
+                }
+            });
+            add(button2);
+            button2.setFont(standardButtonFont);
+        }
     }
 }
 

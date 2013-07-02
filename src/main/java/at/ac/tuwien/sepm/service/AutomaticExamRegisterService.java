@@ -12,4 +12,6 @@ public interface AutomaticExamRegisterService {
     void addRegistration(TissExam tissExam) throws ServiceException;
 
     List<TissExam> getPendingExamRegistrations();
+
+    void deleteRegistrationsForLva(TissExam tissExam);
 }
