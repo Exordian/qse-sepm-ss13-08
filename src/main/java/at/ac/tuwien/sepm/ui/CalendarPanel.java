@@ -96,6 +96,7 @@ public class CalendarPanel extends StandardInsidePanel {
         tab2.doClick();    //trolo
         tab1.doClick();    //trolo more
         refreshTop();
+
         this.revalidate();
         this.repaint();
     }
