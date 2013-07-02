@@ -56,12 +56,12 @@ public interface LvaDao {
     public List<LVA> readUncompletedByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
 
     /**
-     * todo
-     * @param year
-     * @param semester
-     * @param isInStudyProgress
-     * @return
-     * @throws DataAccessException
+     * Return all lvas with given year, semester and study in progress
+     * @param year lva year
+     * @param semester lva semester
+     * @param isInStudyProgress lva in current study progress
+     * @return A list containing all matching lvas or an empty list if there was no match.
+     * @throws DataAccessException If the data could not be read because any error occurred.
      */
     public List<LVA> readByYearSemesterStudyProgress(int year, Semester semester, boolean isInStudyProgress) throws DataAccessException;
     /**
