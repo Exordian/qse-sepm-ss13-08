@@ -94,7 +94,6 @@ public class LvaFetcherServiceImplTest {
         Assert.isTrue(realLva.getPerformanceRecord().startsWith("Beurteilung der Lösung"));
         //Assert.isTrue(realLva.getLecturer().size() == 2);
         //Assert.isTrue(realLva.getLecturer().get(0).startsWith("Puntigam"));
-        // TODO: LVADate Test, requires LvaDate in Lva
     }
 
     @Test(expected = ServiceException.class)

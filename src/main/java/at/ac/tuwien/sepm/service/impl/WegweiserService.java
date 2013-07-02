@@ -31,18 +31,20 @@ public class WegweiserService implements RoomFinderService {
 
     private Elements roomList;
 
-    // TODO: make this async
     @PostConstruct
     void init() {
-        try {
-            URL tuwienRooms = new URL(BASE_URL + HS_LIST);
-            Document tuwienRoomsDoc = Jsoup.parse(tuwienRooms, timeout);
+        new Thread() {
+            public void run() {
+                try {
+                    URL tuwienRooms = new URL(BASE_URL + HS_LIST);
+                    Document tuwienRoomsDoc = Jsoup.parse(tuwienRooms, timeout);
 
-            roomList = tuwienRoomsDoc.select(".maintext li");
-        } catch (IOException e) {
-            log.error("could not pre cache rooms");
-        }
-
+                    roomList = tuwienRoomsDoc.select(".maintext li");
+                } catch (IOException e) {
+                    log.error("could not pre cache rooms");
+                }
+            }
+        }.start();
     }
 
     @Override

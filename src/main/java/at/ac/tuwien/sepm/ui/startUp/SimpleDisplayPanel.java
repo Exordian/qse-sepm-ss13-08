@@ -242,5 +242,5 @@ public abstract class SimpleDisplayPanel extends JPanel{
         }
 
     }
-    public abstract void refresh();
+    public void refresh() {};
 }
