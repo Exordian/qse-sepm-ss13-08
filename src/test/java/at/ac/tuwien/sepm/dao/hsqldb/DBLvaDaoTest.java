@@ -831,7 +831,7 @@ public class DBLvaDaoTest {
         assert(!dao.update(null));
     }
 
-    /*@Test(expected = DataAccessException.class)
+    @Test(expected = DataAccessException.class)
     public void testUpdateNotExistingMetaLva() throws Exception {
         TestHelper.insert(4);
 
@@ -847,5 +847,5 @@ public class DBLvaDaoTest {
         e0.setInStudyProgress(true);
 
         assert(dao.update(e0));
-    }*///todo repair this test
+    }
 }
