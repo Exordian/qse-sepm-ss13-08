@@ -101,7 +101,7 @@ public class LvaFetcherPanel extends StandardInsidePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 performImport();
-                StudienplanPanel.fillTable();
+                PanelTube.studienplanPanel.fillTable();
             }
         });
         importb.setEnabled(false);
