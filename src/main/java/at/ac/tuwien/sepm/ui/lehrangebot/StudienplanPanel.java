@@ -186,7 +186,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                         if (temp != null) {
                             temp.setTempBooleanContained(true);
                             temp.setTempBooleanOptional(true);
-                            temp.setCompleteall(true);
+                            temp.setCompleteall(calcCompleteAll(m.getName()));
                         } else {
                             moduleNotFoundNames = addToModuleNotFoundString(modulesNotFound, moduleNotFoundNames, m.getName());
                             modulesNotFound++;
@@ -199,7 +199,7 @@ public class StudienplanPanel extends StandardInsidePanel {
                         if (temp != null) {
                             temp.setTempBooleanContained(true);
                             temp.setTempBooleanOptional(false);
-                            temp.setCompleteall(true);
+                            temp.setCompleteall(calcCompleteAll(m.getName()));
                         } else {
                             moduleNotFoundNames = addToModuleNotFoundString(modulesNotFound, moduleNotFoundNames, m.getName());
                             modulesNotFound++;
@@ -224,6 +224,13 @@ public class StudienplanPanel extends StandardInsidePanel {
                 }
             }
         });
+    }
+
+    private boolean calcCompleteAll (String name) {
+        if (name == null) {
+            return true;
+        }
+        return !(name.contains("Bachelorarbeit") || name.contains("Freie Wahl"));
     }
 
     private String addToModuleNotFoundString (int modulesNotFound, String s, String name) {
