@@ -62,6 +62,7 @@ public class StudienplanPanel extends StandardInsidePanel {
 
     @Autowired
     public StudienplanPanel(CreateCurriculumService curriculumService, ModuleService moduleService) {
+        PanelTube.studienplanPanel=this;
         this.curriculumService = curriculumService;
         this.moduleService=moduleService;
         this.setLayout(new GridLayout());
@@ -341,7 +342,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         baddcurr.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AddCurriculumFrame();
+                PanelTube.backgroundPanel.viewCurriculum();
             }
         });
     }
@@ -454,7 +455,7 @@ public class StudienplanPanel extends StandardInsidePanel {
         }
 
     }
-
+    /*
     private class AddCurriculumFrame extends JFrame {
         private JPanel panel;
         private JLabel lnumber;
@@ -627,5 +628,5 @@ public class StudienplanPanel extends StandardInsidePanel {
             panel.add(tectss, "wrap");
             panel.add(bok);
         }
-    }
+    }*/
 }

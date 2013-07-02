@@ -53,6 +53,7 @@ public class BackgroundPanel extends JPanel {
     private ArrayList<JButton> tabs;
 
     private Timer hideInfoTimer;
+    private ViewCurriculum viewCurriculum;
 
     @Autowired
     RoomFinderService roomFinderService;
@@ -63,9 +64,10 @@ public class BackgroundPanel extends JPanel {
     public BackgroundPanel(CalendarPanel calPanel, StudiesPanel studPanel, LehrangebotPanel lehrPanel, SettingsPanel propsPanel, ViewDate viewDate,
                            ViewLvaDate viewLVAdate, ViewTODO viewTodo, ViewDeadline viewDeadline, ViewLva viewLva, ViewMetaLva viewMetaLva,
                            ViewModule viewModule, SmallInfoPanel smallInfoPanel, BiggerInfoPanel biggerInfoPanel, ViewMerge viewMerge,ViewStartUp viewStartUp,
-                           PropertyService propertyService) {
+                           PropertyService propertyService, ViewCurriculum viewCurriculum) {
         this.setLayout(null);
         PanelTube.backgroundPanel=this;
+        this.viewCurriculum=viewCurriculum;
         this.viewMerge = viewMerge;
         this.viewMetaLva=viewMetaLva;
         this.viewModule = viewModule;
@@ -88,8 +90,6 @@ public class BackgroundPanel extends JPanel {
             //things, which happen on first startup
             viewStartup(true);
         }
-
-       // viewSmallInfoText("test\ntest", SmallInfoPanel.Success);
 
         log.info("Panels initialized.");
     }
@@ -169,6 +169,15 @@ public class BackgroundPanel extends JPanel {
         this.revalidate();
         this.repaint();
     }
+
+    public void viewCurriculum() {
+        removeAddedPanels();
+        viewCurriculum.setVisible(true);
+        addSimplePanel(viewCurriculum);
+        this.revalidate();
+        this.repaint();
+    }
+
     public void viewModule(Module module) {
         removeAddedPanels();
         viewModule.setModule(module);
@@ -285,6 +294,7 @@ public class BackgroundPanel extends JPanel {
         this.remove(viewDeadline);
         this.remove(lehrPanel);
         this.remove(viewStartup);
+        this.remove(viewCurriculum);
     }
 
     private void addSimplePanel(StandardSimpleInsidePanel c) {

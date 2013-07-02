@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ui.template;
 
 import at.ac.tuwien.sepm.ui.BackgroundPanel;
 import at.ac.tuwien.sepm.ui.CalendarPanel;
+import at.ac.tuwien.sepm.ui.lehrangebot.StudienplanPanel;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,4 +14,5 @@ import at.ac.tuwien.sepm.ui.CalendarPanel;
 public class PanelTube {
     public static BackgroundPanel backgroundPanel;
     public static CalendarPanel calendarPanel;
+    public static StudienplanPanel studienplanPanel;
 }
