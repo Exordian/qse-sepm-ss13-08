@@ -184,7 +184,6 @@ public class DayPanel extends JPanel {
     }
 
     private class CalDisplayAllDatesFrame extends JFrame {
-        // TODO implement this frame or panel or whatever ...
         private List<DateLabel> dates;
         private JLabel text = new JLabel();
 
