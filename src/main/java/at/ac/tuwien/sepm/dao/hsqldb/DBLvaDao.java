@@ -84,7 +84,6 @@ public class DBLvaDao extends DBBaseDao implements LvaDao {
         jdbcTemplate.update(new PrivatePreparedCreateStatementCreator(toCreate, semester), keyHolder);
         logger.info("after jdbcTemplate");
 
-        // TODO use the key holder
         // toCreate.setId(keyHolder.getKey().intValue());
 
         Integer id = jdbcTemplate.queryForObject("SELECT id FROM lva WHERE metalva=? AND year=? AND iswintersemester=?", RowMappers.getIntegerRowMapper(), toCreate.getMetaLVA().getId(), toCreate.getYear(), semester);

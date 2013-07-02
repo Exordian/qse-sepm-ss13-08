@@ -298,6 +298,12 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
             removeAll();
             init();
         }
+
+        @Override
+        public void reset() {
+            refresh();
+        }
+
         private void init(){
             addEmptyArea(bigSpace*2,true);
             addText("Studienbeginn",true);

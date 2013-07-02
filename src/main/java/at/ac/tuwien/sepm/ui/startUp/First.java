@@ -39,20 +39,9 @@ public class First extends SimpleDisplayPanel {
         subInit();
     }
     public void subInit(){
-        refresh();
+        //refresh();
         studyDrop = new WideComboBox();
-        studyDrop.addItem(new CurriculumContainer());
-        try {
-            for(Curriculum c : startUp.lvaFetcherService.getAcademicPrograms()){
-                if (((c.getName().startsWith("Bachelor")) || (c.getName().startsWith("Master"))) && ((c.getName().contains("nformatik") || c.getName().contains("Software")) && !c.getName().contains("Geod"))){
-                    studyDrop.addItem(new CurriculumContainer(c));
-                }
-            }
-        } catch (ServiceException e) {
-            logger.error(e);
-            if (PanelTube.backgroundPanel != null)
-                PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler beim Lesen der Daten aufgetreten.",SmallInfoPanel.Error);
-        }
+
         studyDrop.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -68,7 +57,7 @@ public class First extends SimpleDisplayPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
-                    if(studyDrop.getSelectedIndex()== 0 && !confirmed){
+                    if(studyDrop.getSelectedIndex()<=0 && !confirmed){
                         PanelTube.backgroundPanel.viewSmallInfoText("Wollen sie wirklich fortfahren, ohne ein Studium zu importieren?", SmallInfoPanel.Warning);
                         confirmed=true;
                         throw new EscapeException();
@@ -90,7 +79,7 @@ public class First extends SimpleDisplayPanel {
                         throw new EscapeException();
                     }
 
-                    if(studyDrop.getSelectedIndex()==0){
+                    if(studyDrop.getSelectedIndex()<=0){
                         startUp.next();
                     }else{
                         setWaiting(true);
@@ -142,10 +131,30 @@ public class First extends SimpleDisplayPanel {
 
     @Override
     public void refresh() {
+        confirmed=false;
+        int selected = studyDrop.getSelectedIndex();
+        studyDrop.removeAllItems();
+        studyDrop.addItem(new CurriculumContainer());
+        try {
+            for(Curriculum c : startUp.lvaFetcherService.getAcademicPrograms()){
+                if (((c.getName().startsWith("Bachelor")) || (c.getName().startsWith("Master"))) && ((c.getName().contains("nformatik") || c.getName().contains("Software")) && !c.getName().contains("Geod"))){
+                    studyDrop.addItem(new CurriculumContainer(c));
+                }
+            }
+        } catch (ServiceException e) {
+            logger.error(e);
+            PanelTube.backgroundPanel.viewSmallInfoText("Es ist ein Fehler aufgetreten ",SmallInfoPanel.Error);
+        }
+        studyDrop.setSelectedIndex(selected);
+
+    }
+
+    @Override
+    public void reset() {
         tissUsername.setText(startUp.propertyService.getProperty(PropertyService.TISS_USER,""));
         tissPassword.setText(startUp.propertyService.getProperty(PropertyService.TISS_PASSWORD,""));
-        confirmed=false;
-        //studyDrop.setSelectedItem(); todo
+
+
     }
 
     private class CurriculumContainer{

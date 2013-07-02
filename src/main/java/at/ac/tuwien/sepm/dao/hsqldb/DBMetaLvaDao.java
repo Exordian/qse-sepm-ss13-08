@@ -56,7 +56,6 @@ public class DBMetaLvaDao extends DBBaseDao implements MetaLvaDao {
 
         jdbcTemplate.update(new PrivatePreparedCreateStatementCreator(toCreate, semester.ordinal()), keyHolder);
 
-        // TODO use the key holder
         // toCreate.setId(keyHolder.getKey().intValue());
 
         Integer id = jdbcTemplate.queryForObject("SELECT id FROM metalva WHERE lvanumber=?", RowMappers.getIntegerRowMapper(), toCreate.getNr());

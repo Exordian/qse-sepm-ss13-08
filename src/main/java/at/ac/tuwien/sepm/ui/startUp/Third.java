@@ -74,4 +74,16 @@ public class Third extends SimpleDisplayPanel {
         tissUsername.setEnabled(!b);
         studyDrop.setEnabled(!b);
     }
+
+
+    @Override
+    public void refresh() {
+        //TODO fill me <3
+        //TODO no!
+    }
+
+    @Override
+    public void reset() {
+        //TODO fill me <3
+    }
 }

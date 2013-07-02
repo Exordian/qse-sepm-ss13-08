@@ -1,7 +1,10 @@
 package at.ac.tuwien.sepm.ui.startUp;
 
+import at.ac.tuwien.sepm.service.EscapeException;
 import at.ac.tuwien.sepm.service.PropertyService;
 import at.ac.tuwien.sepm.service.Semester;
+import at.ac.tuwien.sepm.ui.SmallInfoPanel;
+import at.ac.tuwien.sepm.ui.template.PanelTube;
 import at.ac.tuwien.sepm.ui.template.WideComboBox;
 import com.toedter.calendar.JYearChooser;
 import org.apache.log4j.LogManager;
@@ -39,14 +42,14 @@ public class Second extends SimpleDisplayPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                    int un = facebookKey.getText().length();
-                    if (un > 0) {
-                        startUp.propertyService.setProperty(PropertyService.FACEBOOK_KEY, facebookKey.getText());
-                        startUp.facebookService.authenticate();
-                    }
-                    startUp.next();
-                    startUp.propertyService.setProperty(PropertyService.FIRST_SEMESTER, ((Semester) semesterDrop.getSelectedItem()).toShortString());
-                    startUp.propertyService.setProperty(PropertyService.FIRST_YEAR, ""+year.getYear());
+                int un = facebookKey.getText().length();
+                if (un > 0) {
+                    startUp.propertyService.setProperty(PropertyService.FACEBOOK_KEY, facebookKey.getText());
+                    startUp.facebookService.authenticate();
+                }
+                startUp.next();
+                startUp.propertyService.setProperty(PropertyService.FIRST_SEMESTER, ((Semester) semesterDrop.getSelectedItem()).toShortString());
+                startUp.propertyService.setProperty(PropertyService.FIRST_YEAR, ""+year.getYear());
             }
         });
         goBack.addActionListener(new ActionListener() {
@@ -88,6 +91,13 @@ public class Second extends SimpleDisplayPanel {
     @Override
     public void refresh() {
         facebookKey.setText(startUp.propertyService.getProperty(PropertyService.FACEBOOK_KEY, ""));
+
+    }
+
+    @Override
+    public void reset() {
+        facebookKey.setText(startUp.propertyService.getProperty(PropertyService.FACEBOOK_KEY, ""));
+
         year.setYear(Integer.parseInt(startUp.propertyService.getProperty(PropertyService.FIRST_YEAR,""+ DateTime.now().getYear())));
         semesterDrop.setSelectedItem(Semester.parse(startUp.propertyService.getProperty(PropertyService.FIRST_SEMESTER, Semester.W.toString())));
     }
