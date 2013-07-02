@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.service.ServiceException;
 import at.ac.tuwien.sepm.ui.SmallInfoPanel;
 import at.ac.tuwien.sepm.ui.StandardSimpleInsidePanel;
 import at.ac.tuwien.sepm.ui.UI;
+import at.ac.tuwien.sepm.ui.lehrangebot.StudienplanPanel;
 import at.ac.tuwien.sepm.ui.template.PanelTube;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -145,17 +146,24 @@ public class ViewCurriculum extends StandardSimpleInsidePanel {
                 Integer s;
 
                 if(number==null || number.equals("")) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie eine Studienkennzahl an.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Bitte geben Sie eine Studienkennzahl an.", SmallInfoPanel.Error);
+                    tnumber.requestFocus();
+                    tnumber.selectAll();
                     return;
                 }
                 if(name==null || name.equals("")) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie einen Namen an.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Bitte geben Sie einen Namen an.", SmallInfoPanel.Error);
+                    tname.requestFocus();
+                    tname.selectAll();
                     return;
                 }
                 if(title==null || title.equals("")) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie den akademischen Titel an.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Bitte geben Sie den akademischen Titel an.", SmallInfoPanel.Error);
+                    ttitle.requestFocus();
+                    ttitle.selectAll();
                     return;
                 }
+                /*
                 if(ectsc==null) {
                     JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie die Wahl-ECTS-Punkte an.");
                     return;
@@ -168,6 +176,8 @@ public class ViewCurriculum extends StandardSimpleInsidePanel {
                     JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie die SoftSkill-ECTS-Punkte an.");
                     return;
                 }
+                */
+                /*
                 try {
                     c = Integer.parseInt(ectsc);
                 } catch (NumberFormatException e1) {
@@ -186,21 +196,21 @@ public class ViewCurriculum extends StandardSimpleInsidePanel {
                     JOptionPane.showMessageDialog(new JFrame(), "Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.");
                     return;
                 }
-
+                */
                 Curriculum curriculum = new Curriculum();
                 curriculum.setStudyNumber(number);
                 curriculum.setName(name);
                 curriculum.setDescription(description);
                 curriculum.setAcademicTitle(title);
-                curriculum.setEctsChoice(c);
-                curriculum.setEctsFree(f);
-                curriculum.setEctsSoftskill(s);
-
+                curriculum.setEctsChoice(0);
+                curriculum.setEctsFree(0);
+                curriculum.setEctsSoftskill(0);
                 try {
                     curriculumService.createCurriculum(curriculum);
                 } catch (ServiceException e1) {
                     PanelTube.backgroundPanel.viewSmallInfoText("Es gab einen Fehler beim Erstellen des Studienplans.", SmallInfoPanel.Error);
                     log.error("Error: " + e1.getMessage());
+                    return;
                 }
                 PanelTube.studienplanPanel.refreshCurriculumComboBox();
                 PanelTube.backgroundPanel.viewSmallInfoText("Studienplan wurde gespeichert.", SmallInfoPanel.Success);
@@ -217,12 +227,14 @@ public class ViewCurriculum extends StandardSimpleInsidePanel {
         this.add(tdescription);
         this.add(ltitle);
         this.add(ttitle);
+        /*
         this.add(lectsc);
         this.add(tectsc);
         this.add(lectsf);
         this.add(tectsf);
         this.add(lectss);
         this.add(tectss);
+        */
         this.add(bok);
 
         lname.setBounds((int)simpleWhiteSpace.getX() + bigSpace,(int)simpleWhiteSpace.getY() + bigSpace,labelWidth,oHeight);
