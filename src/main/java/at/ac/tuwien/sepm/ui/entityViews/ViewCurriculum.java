@@ -164,48 +164,59 @@ public class ViewCurriculum extends StandardSimpleInsidePanel {
                     ttitle.selectAll();
                     return;
                 }
-                /*
+
                 if(ectsc==null) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie die Wahl-ECTS-Punkte an.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Bitte geben Sie die Wahl-ECTS-Punkte an.", SmallInfoPanel.Error);
+                    tectsc.requestFocus();
+                    tectsc.selectAll();
                     return;
                 }
                 if(ectsf==null) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie die Frei-ECTS-Punkte an.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Bitte geben Sie die Frei-ECTS-Punkte an.", SmallInfoPanel.Error);
+                    tectsf.requestFocus();
+                    tectsf.selectAll();
                     return;
                 }
                 if(ectss==null) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Bitte geben Sie die SoftSkill-ECTS-Punkte an.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Bitte geben Sie die SoftSkill-ECTS-Punkte an.", SmallInfoPanel.Error);
+                    tectss.requestFocus();
+                    tectss.selectAll();
                     return;
                 }
-                */
-                /*
+
                 try {
                     c = Integer.parseInt(ectsc);
                 } catch (NumberFormatException e1) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Die angegebenen Wahl-ECTS-Punkte sind keine gültige zahl.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die angegebenen Wahl-ECTS-Punkte sind keine gültige zahl.", SmallInfoPanel.Error);
+                    tectsc.requestFocus();
+                    tectsc.selectAll();
                     return;
                 }
                 try {
                     f = Integer.parseInt(ectsf);
                 } catch (NumberFormatException e1) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Die angegebenen Frei-ECTS-Punkte sind keine gültige zahl.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die angegebenen Frei-ECTS-Punkte sind keine gültige zahl.", SmallInfoPanel.Error);
+                    tectsf.requestFocus();
+                    tectsf.selectAll();
                     return;
                 }
                 try {
                     s = Integer.parseInt(ectss);
                 } catch (NumberFormatException e1) {
-                    JOptionPane.showMessageDialog(new JFrame(), "Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.");
+                    PanelTube.backgroundPanel.viewSmallInfoText("Die angegebenen SoftSkill-ECTS-Punkte sind keine gültige zahl.", SmallInfoPanel.Error);
+                    tectss.requestFocus();
+                    tectss.selectAll();
                     return;
                 }
-                */
+
                 Curriculum curriculum = new Curriculum();
                 curriculum.setStudyNumber(number);
                 curriculum.setName(name);
                 curriculum.setDescription(description);
                 curriculum.setAcademicTitle(title);
-                curriculum.setEctsChoice(0);
-                curriculum.setEctsFree(0);
-                curriculum.setEctsSoftskill(0);
+                curriculum.setEctsChoice(c);
+                curriculum.setEctsFree(f);
+                curriculum.setEctsSoftskill(s);
                 try {
                     curriculumService.createCurriculum(curriculum);
                 } catch (ServiceException e1) {
@@ -214,7 +225,7 @@ public class ViewCurriculum extends StandardSimpleInsidePanel {
                     return;
                 }
                 PanelTube.studienplanPanel.refreshCurriculumComboBox();
-                PanelTube.backgroundPanel.viewSmallInfoText("Studienplan wurde gespeichert.", SmallInfoPanel.Success);
+                PanelTube.backgroundPanel.viewSmallInfoText("Der Studienplan wurde gespeichert.", SmallInfoPanel.Success);
                 setVisible(false);
                 PanelTube.backgroundPanel.showLastComponent();
             }
@@ -228,14 +239,12 @@ public class ViewCurriculum extends StandardSimpleInsidePanel {
         this.add(tdescription);
         this.add(ltitle);
         this.add(ttitle);
-        /*
         this.add(lectsc);
         this.add(tectsc);
         this.add(lectsf);
         this.add(tectsf);
         this.add(lectss);
         this.add(tectss);
-        */
         this.add(bok);
 
         lname.setBounds((int)simpleWhiteSpace.getX() + bigSpace,(int)simpleWhiteSpace.getY() + bigSpace,labelWidth,oHeight);
