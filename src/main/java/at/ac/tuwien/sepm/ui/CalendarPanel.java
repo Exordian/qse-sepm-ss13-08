@@ -207,7 +207,6 @@ public class CalendarPanel extends StandardInsidePanel {
         semester.setVisible(true);
         try {
             semester.removeAllItems();
-
             boolean winterSem = lvaService.isFirstSemesterAWinterSemester();
             int semesters = lvaService.numberOfSemestersInStudyProgress();
             int year = lvaService.firstYearInStudyProgress();
@@ -395,9 +394,9 @@ public class CalendarPanel extends StandardInsidePanel {
                 add(calPanelWeek);
                 calPanelWeek.refresh();
                 activeView = calPanelWeek;
-                //refreshTop();
                 goToDateNow();
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                refreshSemesterBox();
                 calPanelWeek.revalidate();
                 calPanelWeek.repaint();
 
@@ -417,9 +416,9 @@ public class CalendarPanel extends StandardInsidePanel {
                 add(calPanelMonth);
                 calPanelMonth.refresh();
                 activeView = calPanelMonth;
-                //refreshTop();
                 goToDateNow();
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
+                refreshSemesterBox();
                 calPanelMonth.revalidate();
                 calPanelMonth.repaint();
             }
@@ -500,6 +499,13 @@ public class CalendarPanel extends StandardInsidePanel {
         }
     }
 
+    private void refreshSemesterBox() {
+        if (semester.getItemCount() == 0)
+            semester.setVisible(false);
+        else
+            semester.setVisible(true);
+    }
+
     @Override
     public void refresh() {
         if (activeView instanceof CalWeekGenerator) {
@@ -510,6 +516,7 @@ public class CalendarPanel extends StandardInsidePanel {
         if (activeView instanceof CalWeekGenerator) {
             goToDateNow();
         }
+        refreshSemesterBox();
     }
 
     public void jumpToDate(DateTime anyDateOfWeek) {

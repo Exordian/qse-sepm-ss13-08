@@ -232,7 +232,7 @@ public class LVAServiceImpl implements LVAService {
                     }
                 }
                 if (!temp.isInStudyProgress()) {
-                    logger.error("Sie müssen sich ein Studium planen lassen.");
+                    logger.info("Sie müssen sich ein Studium planen lassen.");
                     throw new ValidationException("Sie müssen sich ein Studium planen lassen.");
                 }
                 int x = temp.getYear()-beginning;
@@ -269,7 +269,7 @@ public class LVAServiceImpl implements LVAService {
                 }
             } else {
                 if (readAll().isEmpty()) {
-                    logger.error("Sie müssen sich ein Studium planen lassen.");
+                    logger.info("Sie müssen sich ein Studium planen lassen.");
                     throw new ValidationException("Sie müssen sich ein Studium planen lassen.");
                 } else {
                     logger.error("Erstes Jahr Property File wurde nicht gefunden.");
@@ -277,8 +277,8 @@ public class LVAServiceImpl implements LVAService {
                 }
             }
         } catch (ValidationException e) {
-            logger.error(e.getMessage());
-            throw new ServiceException(e);
+            logger.info(e.getMessage());
+            throw new ServiceException(e.getMessage());
         }
     }
 }

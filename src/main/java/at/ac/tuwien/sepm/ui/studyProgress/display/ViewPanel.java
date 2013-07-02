@@ -108,10 +108,10 @@ public class ViewPanel extends StandardInsidePanel {
                     ViewPanel.this.repaint();
                     refreshing = false;
                 } catch (ServiceException e) {
-                    log.error(e);
+                    log.error(e.getMessage());
                     PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden des Studienverlaufs", SmallInfoPanel.Error);
                 } catch (ValidationException e) {
-                    log.error(e);
+                    log.error(e.getMessage());
                     PanelTube.backgroundPanel.viewSmallInfoText("Fehler beim Laden des Studienverlaufs", SmallInfoPanel.Error);
                 }
                 ViewPanel.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -164,7 +164,6 @@ public class ViewPanel extends StandardInsidePanel {
 
         JButton shareButton = new JButton("Auf Facebook teilen");
         shareButton.setFont(standardButtonFont);
-        //shareButton.setBounds((int) paneExams.getX(), (int) paneExams.getY() + (int) paneExams.getHeight() + 8, 150, 30);
         shareButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -181,8 +180,9 @@ public class ViewPanel extends StandardInsidePanel {
                 }
                 try {
                     facebookService.postLvasToWall(metaLVAs);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Studienverlauf wurde auf die Wall gepostet.", SmallInfoPanel.Success);
                 } catch(FacebookOAuthException fb) {
-                    PanelTube.backgroundPanel.viewSmallInfoText("Facebook API Key ungültig", SmallInfoPanel.Error);
+                    PanelTube.backgroundPanel.viewSmallInfoText("Facebook API Key ungültig.", SmallInfoPanel.Error);
                 }
             }
         });
@@ -216,7 +216,7 @@ public class ViewPanel extends StandardInsidePanel {
         try {
             return service.numberOfSemestersInStudyProgress();
         } catch (ServiceException e) {
-            log.error(e.getMessage());
+            log.info(e.getMessage());
             return 0;
         }
     }
@@ -225,7 +225,7 @@ public class ViewPanel extends StandardInsidePanel {
         try {
             return service.firstYearInStudyProgress();
         } catch (ServiceException e) {
-            log.error(e.getMessage());
+            log.info(e.getMessage());
             return DateTime.now().getYear();
         }
     }
@@ -234,7 +234,7 @@ public class ViewPanel extends StandardInsidePanel {
         try {
             return service.isFirstSemesterAWinterSemester();
         } catch (ServiceException e) {
-            log.error(e.getMessage());
+            log.info(e.getMessage());
             return true;
         }
     }
