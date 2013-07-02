@@ -115,7 +115,12 @@ public class ViewMetaLva extends StandardSimpleInsidePanel {
                         return;
                     }
                     metaLVA.setModule(((ModuleSelectItem) moduleInput.getSelectedItem()).get().getId());
-                    metaLVA.setNr(nrInput.getText());
+                    if (metaLVAService.readByLvaNumber(nrInput.getText()) == null) {
+                        metaLVA.setNr(nrInput.getText());
+                    } else {
+                        PanelTube.backgroundPanel.viewSmallInfoText("Eine Lva mit dieser Nummer existiert bereits.", SmallInfoPanel.Error);
+                        return;
+                    }
                     metaLVA.setPriority(((Number) priorityInput.getValue()).floatValue());
                     metaLVA.setSemestersOffered((Semester) semestersOfferedInput.getSelectedItem());
                     metaLVA.setType((LvaType) typeInput.getSelectedItem());
