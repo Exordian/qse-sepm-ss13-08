@@ -50,6 +50,8 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
     private MySimplePanel content;
     @Autowired
     private AuthService authService;
+    @Autowired
+    private FacebookService facebookService;
 
     @Autowired
     public SettingsPanel(PropertyService propertyService, CreateCurriculumService createCurriculumService, DateService dateService) {
@@ -165,6 +167,7 @@ public class SettingsPanel extends StandardSimpleInsidePanel {
                         super.windowClosed(e);
                         //nameLabelFacebook.setText("Eingeloggt als: " + temp.getName());
                         propertyService.setProperty(PropertyService.FACEBOOK_KEY, temp.getKey());
+                        facebookService.authenticate();
                         SettingsPanel.this.revalidate();
                         SettingsPanel.this.setVisible(true);
                         content.refresh();
