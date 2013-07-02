@@ -211,11 +211,11 @@ public class StudienplanPanel extends StandardInsidePanel {
                     if (modulesNotFound == 0) {
                         PanelTube.backgroundPanel.viewSmallInfoText("Die Daten sind geladen.", SmallInfoPanel.Success);
                     } else {
-                        String moduleString = " Module sind ";
+                        String moduleString = " Module konnten nicht gespeichert werden, da sie nicht exisitieren:\n";
                         if (modulesNotFound == 1) {
-                            moduleString = " Modul ist ";
+                            moduleString = " Modul konnte nicht gespeichert werden, da es nicht exisitiert:\n";
                         }
-                        PanelTube.backgroundPanel.viewSmallInfoText(modulesNotFound + moduleString + "noch nicht gespeichert:\n" + moduleNotFoundNames + "   ", SmallInfoPanel.Error);
+                        PanelTube.backgroundPanel.viewSmallInfoText(modulesNotFound + moduleString + moduleNotFoundNames + "   ", SmallInfoPanel.Error);
                         log.info(modulesNotFound + " modules not stored yet ... ");
                     }
                 } else {

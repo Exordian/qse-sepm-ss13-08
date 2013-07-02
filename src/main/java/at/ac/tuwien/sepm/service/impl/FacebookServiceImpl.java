@@ -24,7 +24,7 @@ public class FacebookServiceImpl implements FacebookService {
 
     @Override
     public void authenticate()  {
-        facebookClient = new DefaultFacebookClient(propertyService.getProperty("facebook.key"));
+        facebookClient = new DefaultFacebookClient(propertyService.getProperty(PropertyService.FACEBOOK_KEY));
     }
 
     @Override

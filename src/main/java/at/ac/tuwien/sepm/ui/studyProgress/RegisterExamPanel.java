@@ -43,6 +43,8 @@ public class RegisterExamPanel extends StandardInsidePanel {
     private JButton registerButton;
     private JProgressBar progressBar;
 
+    private List<TissExam> registeredExams;
+
 
     @Autowired
     public RegisterExamPanel(AutomaticExamRegisterService automaticExamRegisterService, MetaLVAService metaLVAService, DateService dateService) {
@@ -52,6 +54,7 @@ public class RegisterExamPanel extends StandardInsidePanel {
         this.automaticExamRegisterService = automaticExamRegisterService;
         this.metaLVAService = metaLVAService;
         this.dateService = dateService;
+        registeredExams = new ArrayList<>();
         setBounds((int) startCoordinateOfWhiteSpace.getX(), (int) startCoordinateOfWhiteSpace.getY(),(int) whiteSpace.getWidth(),(int) whiteSpace.getHeight());
         addContent();
         addTitles();
@@ -119,7 +122,9 @@ public class RegisterExamPanel extends StandardInsidePanel {
 
     @Scheduled(fixedDelay = 3000)
     public void refreshRegistrations() {
-        pendingExamPanel.refresh(automaticExamRegisterService.getPendingExamRegistrations());
+        List<TissExam> pendingExamRegistrations = automaticExamRegisterService.getPendingExamRegistrations();
+        pendingExamRegistrations.addAll(registeredExams);
+        pendingExamPanel.refresh(pendingExamRegistrations);
     }
 
     @Override
@@ -136,12 +141,15 @@ public class RegisterExamPanel extends StandardInsidePanel {
         protected Void doInBackground() throws Exception {
             try {
                 List<TissExam> tissExamList = new ArrayList<>();
+                registeredExams.clear();
                 for(MetaLVA metaLVA : metaLVAService.readUncompletedByYearSemesterStudyProgress(dateService.getCurrentYearOfSemester(),dateService.getCurrentSemester(),true)) {
                     try {
                         List<TissExam> lvaExamList = automaticExamRegisterService.listExamsForLva(metaLVA.getNr());
                         for(TissExam exam : lvaExamList)
                             if(exam.getTissExamState() == TissExamState.NOT_REGISTERED)
                                 tissExamList.add(exam);
+                            else
+                                registeredExams.add(exam);
                     } catch (ServiceException e) {
                         log.info("no exams for "+metaLVA.getNr());
                     }

@@ -155,6 +155,9 @@ public class AutomaticExamRegisterServiceImpl implements AutomaticExamRegisterSe
     @Override
     public void addRegistration(TissExam tissExam) throws ServiceException {
         try {
+            for(TissExam te : pendingRegistrationDao.readAllTissExams())
+                if(te.getLvanr().equals(tissExam.getLvanr()))
+                    return;
             pendingRegistrationDao.create(tissExam);
             loadFromDB();
         } catch (IOException e) {
