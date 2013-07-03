@@ -50,7 +50,7 @@ public class ICalendarServiceImplTest {
     public void testIcalImportCorruptCalendarFile() throws Exception {
         TestHelper.drop();
         TestHelper.create();
-        service.icalImport(new File("src/test/resources/curruptIestIcal.ics"));
+        service.icalImport(new File("src/test/resources/corruptTestIcal.ics"));
     }
 
     @Test
