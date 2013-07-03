@@ -121,7 +121,7 @@ public class ICalendarServiceImpl implements ICalendarService {
         }
 
         logger.info(datesCreated + " dates successful imported");
-        debug1(dates);
+        //debug1(dates);
         return datesCreated;
     }
 
@@ -298,7 +298,7 @@ public class ICalendarServiceImpl implements ICalendarService {
     }
 
     private int addSeries(ArrayList<DateEntity> dates, RRule rule, String name, String description, Date baseDate, TimeFrame time, boolean intersectable) {
-        debug3(dates, rule, name, description, baseDate, time, intersectable);
+        //debug3(dates, rule, name, description, baseDate, time, intersectable);
 
         net.fortuna.ical4j.model.DateTime until;
 
@@ -336,7 +336,7 @@ public class ICalendarServiceImpl implements ICalendarService {
                 logger.info("could not add series '" +  name + "'\taddSeries: the way, how the duration of the series is represented, is not provided by this method");
                 return -1;
             }
-            debug2(rule, name);
+            //debug2(rule, name);
         } else { // the duration of the series is represented by a start and stop date
             DateTime dt = new DateTime(rule.getRecur().getUntil().getTime());
             until = new net.fortuna.ical4j.model.DateTime(dt.getMillis() + time.to().getMillis() - time.from().getMillis());
@@ -363,7 +363,7 @@ public class ICalendarServiceImpl implements ICalendarService {
 
         return dateList.size();
     }
-
+    /*
     private void debug1(ArrayList<DateEntity> dates) {
         String s = "all " + dates.size() + " imported dates:";
         int i=0;
@@ -425,4 +425,5 @@ public class ICalendarServiceImpl implements ICalendarService {
         debug3 += DEBUG_TABS + "time==null\t\t\t\t\t\t\t" +      (time==null);
         logger.info(debug3);
     }
+    */
 }
