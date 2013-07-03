@@ -65,7 +65,7 @@ public class SemesterDateGeneratorTest {
     @Test
     public void testGetSemester() throws Exception {
         DateTime temp = new DateTime(2013,2,1,1,1);
-        //assert(SemesterDateGenerator.getSemester(temp) == Semester.W);   //TODO if abfrage falsch
+        assert(SemesterDateGenerator.getSemester(temp) == Semester.W);
 
         DateTime temp2 = new DateTime(2013,6,1,1,1);
         assert(SemesterDateGenerator.getSemester(temp2) == Semester.S);

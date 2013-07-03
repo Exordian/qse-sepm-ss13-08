@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.service;
 
-import at.ac.tuwien.sepm.service.Semester;
-import at.ac.tuwien.sepm.service.TimeFrame;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -129,10 +127,10 @@ public class SemesterDateGenerator {
     }
 
     public static Semester getSemester(DateTime date) {
-        if (date.getMonthOfYear() >= SOMMER_SEMESTER_START_MONTH+1 && date.getMonthOfYear() <= WINTER_SEMESTER_STOP_MONTH) {
-            return Semester.W;
-        } else {
+        if (date.getMonthOfYear() >= SOMMER_SEMESTER_START_MONTH && date.getMonthOfYear() <= SOMMER_SEMESTER_STOP_MONTH) {
             return Semester.S;
+        } else {
+            return Semester.W;
         }
     }
 
