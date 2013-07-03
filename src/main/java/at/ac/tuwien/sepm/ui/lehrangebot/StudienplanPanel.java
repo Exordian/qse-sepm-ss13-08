@@ -48,7 +48,6 @@ public class StudienplanPanel extends StandardInsidePanel {
     private JButton bcreate;
     private JButton bimport;
     private JTable tmodule;
-    private DefaultTableModel mmodule;
     private JScrollPane spane;
     private WideComboBox ccurr;
     private DefaultComboBoxModel<CurriculumComboBoxItem> mcurr;
@@ -388,7 +387,6 @@ public class StudienplanPanel extends StandardInsidePanel {
                 midsMap.put(m.getId(), m);
             }
 
-            clearTable();
             modules = new HashMap<>(list.size());
             for(Module m : list) {
                 if(mids.contains(m.getId())) {
@@ -410,10 +408,6 @@ public class StudienplanPanel extends StandardInsidePanel {
             refreshModuleMap();
             curriculumDisplayPanel.refresh(new ArrayList<>(modules.values()));
         }
-    }
-
-    private void clearTable() {
-        mmodule.setRowCount(0);
     }
 
     private class CurriculumComboBoxItem {
