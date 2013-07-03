@@ -61,4 +61,22 @@ public class SemesterDateGeneratorTest {
         TimeFrame t0 = SemesterDateGenerator.getTimeFrame(new DateTime(2013, 8, 8, 1, 1, 1, 1));
         assert(t0==null);
     }
+
+    @Test
+    public void testGetSemester() throws Exception {
+        DateTime temp = new DateTime(2013,2,1,1,1);
+        //assert(SemesterDateGenerator.getSemester(temp) == Semester.W);   //TODO if abfrage falsch
+
+        DateTime temp2 = new DateTime(2013,6,1,1,1);
+        assert(SemesterDateGenerator.getSemester(temp2) == Semester.S);
+    }
+
+    @Test
+    public void testGetYear() throws Exception {
+        DateTime temp = new DateTime(2013,2,1,1,1);
+        assert(SemesterDateGenerator.getYear(temp)==2012);
+
+        DateTime temp2 = new DateTime(2013,3,1,1,1);
+        assert(SemesterDateGenerator.getYear(temp2)==2013);
+    }
 }
