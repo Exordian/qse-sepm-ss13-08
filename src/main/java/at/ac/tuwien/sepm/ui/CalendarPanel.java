@@ -120,11 +120,11 @@ public class CalendarPanel extends StandardInsidePanel {
 
         semester = new WideComboBox();
         semesterCbmdl = new DefaultComboBoxModel<>();
-        semester.setBounds((int) ((size.getWidth() / 2) - (image.getWidth(null) / 2)) + 5 + 295, (int) (size.getHeight() / 2 - image.getHeight(null) / 2) + 5, 130, 20);
+
         semester.setFont(standardTextFont);
 
         todayBtn = new JButton("Heute");
-        todayBtn.setBounds((int)(semester.getX() + semester.getWidth() + 2), (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 90, 20);
+
         todayBtn.setFont(standardButtonFont);
         todayBtn.addActionListener(new ActionListener() {
             @Override
@@ -134,6 +134,9 @@ public class CalendarPanel extends StandardInsidePanel {
                 month.setText(activeView.getTimeIntervalInfo().toUpperCase());
             }
         });
+        todayBtn.setBounds((int) ((size.getWidth() / 2) - (image.getWidth(null) / 2)) + 5 + 295, (int) (size.getHeight() / 2 - image.getHeight(null) / 2) + 5, 90, 20);
+        semester.setBounds(todayBtn.getX() + todayBtn.getWidth() + 5, (int)(size.getHeight()/2-image.getHeight(null)/2)+5, 130, 20);
+
 
         this.add(month);
         this.add(semester);
